@@ -1,0 +1,35 @@
+; Hallenherz — Handball-Manager
+; Godot 4.x Projektkonfiguration
+
+config_version=5
+
+[application]
+
+config/name="Hallenherz"
+config/description="Ein tiefgehender Handball-Manager. Alle Grafiken prozedural, keine externen Assets."
+run/main_scene="res://ui/App.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+
+[autoload]
+
+Stil="*res://autoload/Stil.gd"
+Namen="*res://autoload/Namen.gd"
+Welt="*res://autoload/Welt.gd"
+
+[display]
+
+window/size/viewport_width=1500
+window/size/viewport_height=940
+window/size/resizable=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_2d=2
