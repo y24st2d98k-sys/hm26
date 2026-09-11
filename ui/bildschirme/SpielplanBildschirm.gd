@@ -103,7 +103,7 @@ func _kalender() -> void:
 		var eintraege: Array = []
 		for mid in Welt.spiele_am_tag(tag):
 			var m: Dictionary = Welt.partie(mid)
-			if str(m["heim"]) != cid and str(m["gast"]) != cid:
+			if m.is_empty() or (str(m["heim"]) != cid and str(m["gast"]) != cid):
 				continue
 			var gegner: String = str(m["gast"]) if str(m["heim"]) == cid else str(m["heim"])
 			eintraege.append({"text": "%s %s (%s)" % ["gegen" if str(m["heim"]) == cid else "bei",

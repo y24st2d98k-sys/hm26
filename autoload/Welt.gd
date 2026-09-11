@@ -197,7 +197,9 @@ func tag_weiter() -> Dictionary:
 	var heute: Array = (spiele_am_tag(t) as Array).duplicate()
 	var eigenes := ""
 	for mid in heute:
-		var m: Dictionary = daten["spiele"][mid]
+		var m: Dictionary = daten["spiele"].get(mid, {})
+		if m.is_empty() or bool(m["gespielt"]):
+			continue
 		if str(m["heim"]) == mein_verein_id or str(m["gast"]) == mein_verein_id:
 			eigenes = mid
 	if eigenes != "":
@@ -217,8 +219,8 @@ func tag_weiter() -> Dictionary:
 func spieltag_abwickeln(t: int) -> void:
 	var heute: Array = (spiele_am_tag(t) as Array).duplicate()
 	for mid in heute:
-		var m: Dictionary = daten["spiele"][mid]
-		if bool(m["gespielt"]):
+		var m: Dictionary = daten["spiele"].get(mid, {})
+		if m.is_empty() or bool(m["gespielt"]):
 			continue
 		partie_simulieren(mid)
 	_wettbewerbe_fortschreiben()

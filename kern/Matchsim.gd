@@ -672,15 +672,20 @@ func _strafzeiten_pruefen(t: Dictionary) -> void:
 			offen.append(e)
 	t["gesperrt"] = offen
 
+## Feldspieler, die eine Mannschaft gerade wirklich auf dem Parkett hat.
+## Bei einer Zeitstrafe rueckt zwar jemand von der Bank in die Aufstellung
+## (damit alle Positionen besetzt bleiben), gezaehlt wird die Mannschaft aber
+## in Unterzahl — genau das ist der Nachteil, den eine Hinausstellung bringt.
 func _feldspieler(t: Dictionary) -> int:
-	var aktiv: int = 0
+	var besetzt: int = 0
 	for pos in t["angriff_auf"].keys():
 		if pos == "TW":
 			continue
 		if str(t["angriff_auf"][pos]) != "":
-			aktiv += 1
+			besetzt += 1
+	var grenze: int = 7 if bool(t["sieben_gegen_sechs"]) else 6
 	var strafen: int = (t["gesperrt"] as Array).size()
-	return clampi(6 - strafen, 3, 7) if not t["sieben_gegen_sechs"] else clampi(7 - strafen, 3, 7)
+	return clampi(mini(besetzt, grenze) - strafen, 3, 7)
 
 func _vom_platz_nehmen(t: Dictionary, sid: String) -> void:
 	for pos in (t["angriff_auf"] as Dictionary).keys():
