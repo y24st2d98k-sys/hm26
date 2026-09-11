@@ -103,6 +103,29 @@ func aktualisieren() -> void:
 		titelkarte.add_child(Stil.info_zeile(Kalender.saison_text(Welt.startjahr(), int(e["saison"])),
 			"%s (%s)" % [str(e["titel"]), str(Welt.verein(str(e["verein"])).get("name", ""))], Stil.AKZENT))
 
+	var eigenes: Dictionary = t.get("eigenes_angebot", {})
+	if not eigenes.is_empty() and Welt.daten["vereine"].has(str(eigenes["verein"])):
+		var ev: Dictionary = Welt.verein(str(eigenes["verein"]))
+		var vk := Bausteine.karte_in(inhalt, "Angebot Ihres Vereins")
+		vk.add_child(Stil.text("%s bietet Ihnen eine Verlängerung an." % str(ev["name"]), Stil.S_NORMAL, Stil.AKZENT))
+		vk.add_child(Stil.info_zeile("Laufzeit", "%d Jahre" % int(eigenes["jahre"])))
+		vk.add_child(Stil.info_zeile("Wochengehalt", Stil.geld(float(eigenes["gehalt"]))))
+		var vz := Stil.hbox(8)
+		vk.add_child(vz)
+		var ja := Stil.knopf_primaer("Unterschreiben")
+		ja.pressed.connect(func():
+			var erg := Vorstand.vertrag_verlaengern(Welt.daten)
+			_melde(str(erg["grund"]), bool(erg["ok"]))
+			Welt.zustand_geaendert.emit()
+			aktualisieren())
+		vz.add_child(ja)
+		var nein := Stil.knopf("Ablehnen")
+		nein.pressed.connect(func():
+			Vorstand.angebot_ablehnen(Welt.daten)
+			_melde("Angebot abgelehnt.")
+			aktualisieren())
+		vz.add_child(nein)
+
 	var angebote: Array = t.get("jobangebote", [])
 	var jobs := Bausteine.karte_in(inhalt, "Angebote anderer Vereine")
 	if angebote.is_empty():

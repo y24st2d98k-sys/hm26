@@ -15,6 +15,8 @@ func _ready() -> void:
 			_saison_test(730)
 		"halbsaison":
 			_saison_test(300)
+		"langzeit":
+			_langzeit_test(1100)
 		_:
 			_spiele_test()
 	print("Dauer: %d ms" % (Time.get_ticks_msec() - start))
@@ -125,3 +127,111 @@ func _saison_test(dauer: int) -> void:
 		var v: Dictionary = d["vereine"][Welt.mein_verein_id]
 		print("Kasse: %s, Vorstandsvertrauen: %.0f, Kabine: %.0f" % [Stil.geld(float(v["kasse"])), float(v["vorstand"]["vertrauen"]), float(v["stimmung_kabine"])])
 		print("Trainerruf: %.1f, Praegungen: %s" % [float(d["trainer"]["ruf"]), str(d["trainer"]["praegungen"])])
+
+## Drei Saisons am Stück: prüft Auf-/Abstieg, Titel, Alterung und Karriere.
+func _langzeit_test(dauer: int) -> void:
+	Welt.neues_spiel("c_005", {"vorname": "Test", "nachname": "Trainer", "hintergrund": "exprofi"}, 31337)
+	var d := Welt.daten
+	printerr("Start: %s in %s" % [d["vereine"][Welt.mein_verein_id]["name"], Welt.wettbewerb_name(str(d["vereine"][Welt.mein_verein_id]["liga"]))])
+	var tage := 0
+	while tage < dauer:
+		var u := Welt.tag_weiter()
+		if u.has("art") and str(u["art"]) == "eigenes_spiel":
+			Welt.partie_simulieren(str(u["spiel"]))
+			Welt.spieltag_abwickeln(Welt.tag())
+			Welt._wochenrhythmus(Welt.tag())
+			Welt._saison_pruefen(Welt.tag())
+		tage += 1
+		if tage % 365 == 0:
+			printerr("  ... Tag %d, %s" % [tage, Welt.datum_text()])
+	printerr("Ende: %s, Saison %s" % [Welt.datum_text(), Welt.saison_text()])
+	printerr("")
+	printerr("Meister je Nation:")
+	for nid in d["nationen"].keys():
+		var nation: Dictionary = d["nationen"][nid]
+		var h: Array = nation.get("meister_historie", [])
+		var namen: Array = []
+		for e in h:
+			namen.append("%s: %s" % [Kalender.saison_text(Welt.startjahr(), int(e["saison"])),
+				str(d["vereine"].get(str(e["verein"]), {}).get("name", "?"))])
+		printerr("  %-14s %s" % [nation["name"], " | ".join(namen)])
+	printerr("")
+	printerr("Auf- und Abstieg (Deutschland):")
+	var oben: Dictionary = d["ligen"]["l_de1"]
+	var unten: Dictionary = d["ligen"]["l_de2"]
+	printerr("  1. Liga: %d Vereine, 2. Liga: %d Vereine" % [(oben["vereine"] as Array).size(), (unten["vereine"] as Array).size()])
+	var auf: Array = []
+	for cid in unten.get("aufsteiger", []):
+		auf.append(str(d["vereine"][cid]["name"]))
+	var ab: Array = []
+	for cid in oben.get("absteiger", []):
+		ab.append(str(d["vereine"][cid]["name"]))
+	printerr("  Letzte Aufsteiger: %s" % ", ".join(auf))
+	printerr("  Letzte Absteiger:  %s" % ", ".join(ab))
+	printerr("")
+	printerr("Pokal- und Europasieger:")
+	for pid in d["pokale"].keys():
+		var pokal: Dictionary = d["pokale"][pid]
+		var h2: Array = pokal.get("sieger_historie", [])
+		if h2.is_empty():
+			continue
+		printerr("  %-24s %s" % [pokal["name"], str(d["vereine"].get(str(h2[0]["verein"]), {}).get("name", "?"))])
+	for wid in d["international"].keys():
+		var wb: Dictionary = d["international"][wid]
+		var h3: Array = wb.get("sieger_historie", [])
+		var namen3: Array = []
+		for e in h3:
+			namen3.append(str(d["vereine"].get(str(e["verein"]), {}).get("name", "?")))
+		printerr("  %-24s %s" % [wb["name"], " | ".join(namen3)])
+	printerr("")
+	var t: Dictionary = d["trainer"]
+	printerr("Trainerkarriere:")
+	printerr("  Verein: %s" % str(d["vereine"].get(str(t["verein"]), {}).get("name", "vereinslos")))
+	printerr("  Ruf %.1f (%s), %d Spiele, %d Siege, %d Titel" % [float(t["ruf"]), Trainerkarriere.ruf_stufe(float(t["ruf"])),
+		int(t["statistik"]["spiele"]), int(t["statistik"]["siege"]), (t["titel"] as Array).size()])
+	printerr("  Prägungen: %s" % str(t["praegungen"]))
+	var hs: Dictionary = t["handschrift"]
+	var achsen: Array = []
+	for a in hs.keys():
+		achsen.append("%s %d" % [a, int(float(hs[a]))])
+	printerr("  Handschrift: %s" % ", ".join(achsen))
+	printerr("  Stationen: %d" % (t["stationen"] as Array).size())
+	printerr("")
+	printerr("Welt:")
+	printerr("  Spieler: %d, davon vereinslos: %d" % [d["spieler"].size(), _vereinslos(d)])
+	var alt := 0.0
+	for sid in d["spieler"].keys():
+		alt += float(d["spieler"][sid]["alter"])
+	printerr("  Durchschnittsalter: %.1f" % (alt / maxf(float(d["spieler"].size()), 1.0)))
+	var kadergroessen: Array = []
+	var kleinster := 99
+	for cid in d["vereine"].keys():
+		var n: int = (d["vereine"][cid]["kader"] as Array).size()
+		kadergroessen.append(n)
+		kleinster = mini(kleinster, n)
+	var summe := 0
+	for n2 in kadergroessen:
+		summe += int(n2)
+	printerr("  Kadergröße: Ø %.1f, kleinster Kader %d" % [float(summe) / maxf(float(kadergroessen.size()), 1.0), kleinster])
+	printerr("  Transfers gesamt: %d" % (d["transfermarkt"]["verlauf"] as Array).size())
+	printerr("  Presse: %d, Hallenfunk: %d, Nachrichten: %d" % [(d["presse"] as Array).size(), (d["social"] as Array).size(), (d["nachrichten"] as Array).size()])
+	printerr("  Rekorde:")
+	for k in d["rekorde"].keys():
+		var r: Dictionary = d["rekorde"][k]
+		if not r.is_empty():
+			printerr("    %-24s %s" % [k, str(r.get("text", ""))])
+	if Welt.mein_verein_id != "":
+		var v: Dictionary = d["vereine"][Welt.mein_verein_id]
+		printerr("  Eigener Verein: Kasse %s, Ruf %d, Kabine %d, Vorstand %d" % [
+			Stil.geld(float(v["kasse"])), int(float(v["ruf"])), int(float(v["stimmung_kabine"])), int(float(v["vorstand"]["vertrauen"]))])
+		var rivalen := Chronik.rivalen(d, Welt.mein_verein_id, 3)
+		for r2 in rivalen:
+			printerr("    Rivale: %-30s %d (%s)" % [str(d["vereine"][str(r2["verein"])]["name"]),
+				int(float(r2["intensitaet"])), Chronik.rivalitaet_stufe(float(r2["intensitaet"]))])
+
+func _vereinslos(d: Dictionary) -> int:
+	var z := 0
+	for sid in d["spieler"].keys():
+		if str(d["spieler"][sid]["verein"]) == "":
+			z += 1
+	return z

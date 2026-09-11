@@ -166,7 +166,7 @@ static func _lose_pokalrunde(d: Dictionary, pid: String, teilnehmer: Array) -> v
 		return
 	var runde: int = int(pokal["runde"])
 	var basis: int = int(pokal.get("basis", 0))
-	var termin: int = basis + POKAL_TERMINE[mini(runde, POKAL_TERMINE.size() - 1)]
+	var termin: int = maxi(basis + POKAL_TERMINE[mini(runde, POKAL_TERMINE.size() - 1)], int(d["tag"]) + 4)
 	var liste: Array = teilnehmer.duplicate()
 	# Auf Zweierpotenz reduzieren: Freilose an die besten Vereine
 	var ziel: int = 1
@@ -240,7 +240,7 @@ static func _plane_supercups(d: Dictionary, basis: int) -> void:
 # -------------------------------------------------------- International ---
 
 const GRUPPEN_TERMINE := [104, 118, 138, 152, 166, 208]
-const KO_TERMINE := [236, 250, 264, 278, 292, 310]
+const KO_TERMINE := [222, 234, 248, 260, 274, 288, 302, 318]
 
 static func _plane_international(d: Dictionary, basis: int) -> void:
 	var krone: Dictionary = d["international"]["i_krone"]
@@ -337,8 +337,10 @@ static func _ko_runde(d: Dictionary, wb: Dictionary, basis: int, teams: Array) -
 		return
 	var runde: int = int(wb["runde"])
 	var idx: int = mini(runde * 2, KO_TERMINE.size() - 2)
-	var t1: int = basis + KO_TERMINE[idx]
-	var t2: int = basis + KO_TERMINE[idx + 1]
+	# Termine duerfen nie in der Vergangenheit liegen, sonst wird die Runde nie gespielt.
+	var frueheste: int = int(d["tag"]) + 4
+	var t1: int = maxi(basis + KO_TERMINE[idx], frueheste)
+	var t2: int = maxi(basis + KO_TERMINE[idx + 1], t1 + 7)
 	var paarungen: Array = []
 	var finale: bool = teams.size() == 2
 	for i in range(0, teams.size() - 1, 2):

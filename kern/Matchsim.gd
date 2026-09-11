@@ -324,7 +324,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 
 	# Technischer Fehler / Ballgewinn der Abwehr
 	var risiko: float = clampf(float(a["taktik"]["risiko"]) + float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["risiko"]), 0.0, 100.0)
-	var p_fehler: float = clampf(0.185 - diff * 0.0022 + (risiko - 50.0) * 0.0009, 0.05, 0.36) * float(td["ballgewinn"])
+	var p_fehler: float = clampf(0.185 - diff * 0.0020 + (risiko - 50.0) * 0.0009, 0.06, 0.28) * float(td["ballgewinn"])
 	if a["sieben_gegen_sechs"]:
 		p_fehler *= 1.35
 	if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "kontrolleur"):
@@ -360,7 +360,7 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 
 	var tw := _spieler_auf(v, "TW")
 	var block_mod: float = float(td["block"])
-	var p_block: float = clampf(0.140 - diff * 0.0016, 0.03, 0.26) * block_mod
+	var p_block: float = clampf(0.140 - diff * 0.0014, 0.04, 0.20) * block_mod
 	if pos == "KM" or pos == "LA" or pos == "RA":
 		p_block *= 0.45
 	if rng.randf() < p_block:
@@ -368,8 +368,8 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 
 	var wurfguete: float = _wurfguete(sp, pos, a, diff)
 	var paradenwert: float = _paradenwert(v, tw, pos)
-	var p_tor: float = clampf(0.815 + (wurfguete - paradenwert) * 0.0105, 0.20, 0.90)
-	var p_vorbei: float = clampf(0.115 - (wurfguete - paradenwert) * 0.0009, 0.04, 0.20)
+	var p_tor: float = clampf(0.815 + (wurfguete - paradenwert) * 0.0098, 0.36, 0.86)
+	var p_vorbei: float = clampf(0.115 - (wurfguete - paradenwert) * 0.0009, 0.05, 0.17)
 	var w: float = rng.randf()
 	if w < p_vorbei:
 		zst["bewertung"] += 0.16
@@ -432,7 +432,7 @@ func _wurfguete(sp: Dictionary, pos: String, a: Dictionary, diff: float) -> floa
 		if abstand <= 2:
 			druck = 0.9 + 0.2 * nerven
 	var puls_bonus: float = _puls_wirkung(a)
-	return basis * 5.0 * (0.70 + 0.30 * kraft) * float(z_sch["tagesform"]) * druck * puls_bonus + diff * 0.22
+	return basis * 5.0 * (0.70 + 0.30 * kraft) * float(z_sch["tagesform"]) * druck * puls_bonus + clampf(diff, -30.0, 30.0) * 0.22
 
 func _paradenwert(v: Dictionary, tw: String, pos: String) -> float:
 	if tw == "":

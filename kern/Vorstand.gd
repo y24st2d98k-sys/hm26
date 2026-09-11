@@ -72,7 +72,7 @@ static func nach_spiel(d: Dictionary, cid: String, m: Dictionary) -> void:
 	var gegner: String = str(m["gast"]) if str(m["heim"]) == cid else str(m["heim"])
 	var erwartung: float = clampf(0.5 + (float(v["ruf"]) - float(d["vereine"][gegner]["ruf"])) / 90.0, 0.12, 0.88)
 	var ergebnis: float = 1.0 if eigene > fremde else (0.5 if eigene == fremde else 0.0)
-	var delta: float = (ergebnis - erwartung) * 3.4
+	var delta: float = (ergebnis - erwartung) * 2.8
 	if str(m["art"]) == "pokal" and ergebnis == 0.0:
 		delta -= 2.2
 	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + delta, 0.0, 100.0)
@@ -101,7 +101,7 @@ static func wochenpruefung(d: Dictionary, cid: String) -> void:
 	if gespielt < 3:
 		return
 	var gewicht: float = clampf(float(gespielt) / float(maxi(int(liga["spieltage"]), 1)), 0.1, 1.0)
-	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + abweichung * 0.35 * gewicht, 0.0, 100.0)
+	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + abweichung * 0.22 * gewicht, 0.0, 100.0)
 	v["fans"]["zufriedenheit"] = clampf(float(v["fans"]["zufriedenheit"]) + abweichung * 0.3 * gewicht, 0.0, 100.0)
 	if Trainerkarriere.hat_praegung(d, "eiserne_hand"):
 		v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + 0.15, 0.0, 100.0)
@@ -132,7 +132,8 @@ static func _konsequenzen(d: Dictionary, cid: String, platz: int, gewicht: float
 			"betreff": "Rückendeckung",
 			"text": "Der Vorstand stellt sich öffentlich hinter Sie. Die Krise gilt als überwunden.",
 		})
-	if vertrauen < 7.0 and gewicht > 0.2:
+	# Entlassen wird nur, wer nach ausdruecklicher Warnung nicht reagiert.
+	if vertrauen < 8.0 and gewicht > 0.3 and warnstufe >= 2:
 		entlassung(d, cid)
 
 static func entlassung(d: Dictionary, cid: String) -> void:
@@ -177,21 +178,67 @@ static func lagebericht(d: Dictionary, cid: String) -> Dictionary:
 		"warnstufe": int(v["vorstand"].get("warnstufe", 0)),
 	}
 
-## Vertragsangebot des eigenen Vorstands (bei guter Arbeit).
+## Prueft zum Saisonwechsel den Trainervertrag: verlaengern, auslaufen lassen
+## oder — bei schlechter Arbeit — nicht mehr weiterbeschaeftigen.
 static func vertragsangebot_pruefen(d: Dictionary, cid: String) -> void:
 	var t: Dictionary = d["trainer"]
 	if t.is_empty() or str(t["verein"]) != cid:
 		return
 	var rest: int = int(t["vertrag"]["bis_saison"]) - Welt.saison_index()
-	if rest > 1:
-		return
 	var v: Dictionary = d["vereine"][cid]
-	if float(v["vorstand"]["vertrauen"]) < 55.0:
+	var vertrauen: float = float(v["vorstand"]["vertrauen"])
+	if rest < 0:
+		# Vertrag ist ausgelaufen — der Vorstand entscheidet.
+		if vertrauen >= 42.0:
+			_angebot_speichern(d, cid, 2)
+			Welt.nachricht({
+				"typ": "vorstand", "wichtig": true,
+				"betreff": "Ihr Vertrag ist ausgelaufen",
+				"text": "%s bietet Ihnen eine Verlängerung an. Sie finden das Angebot auf dem Karrierebildschirm." % v["name"],
+			})
+		else:
+			Welt.nachricht({
+				"typ": "vorstand", "wichtig": true,
+				"betreff": "Vertrag wird nicht verlängert",
+				"text": "%s verzichtet auf eine Weiterbeschäftigung. Sie sind ab sofort vereinslos." % v["name"],
+			})
+			Trainerkarriere.verein_wechseln(d, "")
+			Welt.mein_verein_id = ""
 		return
+	if rest > 1 or vertrauen < 55.0:
+		return
+	_angebot_speichern(d, cid, 2)
 	Welt.nachricht({
-		"typ": "vorstand", "wichtig": true, "aktion": "vertragsangebot",
+		"typ": "vorstand", "wichtig": true,
 		"betreff": "Vertragsverlängerung angeboten",
-		"text": "%s möchte mit Ihnen verlängern: zwei weitere Jahre, %s pro Woche." % [
+		"text": "%s möchte mit Ihnen verlängern: zwei weitere Jahre, %s pro Woche. Das Angebot liegt auf dem Karrierebildschirm." % [
 			v["name"], Stil.geld(float(t["vertrag"]["gehalt"]) * 1.2)],
-		"daten": {"verein": cid, "gehalt": float(t["vertrag"]["gehalt"]) * 1.2, "jahre": 2},
 	})
+
+static func _angebot_speichern(d: Dictionary, cid: String, jahre: int) -> void:
+	var t: Dictionary = d["trainer"]
+	var ruf_bonus: float = 1.0 + clampf((float(t["ruf"]) - 40.0) / 160.0, -0.1, 0.4)
+	t["eigenes_angebot"] = {
+		"verein": cid,
+		"gehalt": float(t["vertrag"]["gehalt"]) * 1.2 * ruf_bonus,
+		"jahre": jahre,
+		"tag": int(d["tag"]),
+	}
+
+## Nimmt das Angebot des eigenen Vereins an.
+static func vertrag_verlaengern(d: Dictionary) -> Dictionary:
+	var t: Dictionary = d["trainer"]
+	var angebot: Dictionary = t.get("eigenes_angebot", {})
+	if angebot.is_empty():
+		return {"ok": false, "grund": "Es liegt kein Angebot vor."}
+	var cid: String = str(angebot["verein"])
+	if str(t["verein"]) == "":
+		Trainerkarriere.verein_wechseln(d, cid)
+	t["vertrag"]["bis_saison"] = Welt.saison_index() + int(angebot["jahre"])
+	t["vertrag"]["gehalt"] = float(angebot["gehalt"])
+	t["eigenes_angebot"] = {}
+	d["vereine"][cid]["vorstand"]["vertrauen"] = clampf(float(d["vereine"][cid]["vorstand"]["vertrauen"]) + 4.0, 0.0, 100.0)
+	return {"ok": true, "grund": "Vertrag bis Saison %s unterschrieben." % Kalender.saison_text(int(d["startjahr"]), int(t["vertrag"]["bis_saison"]))}
+
+static func angebot_ablehnen(d: Dictionary) -> void:
+	d["trainer"]["eigenes_angebot"] = {}

@@ -102,8 +102,8 @@ static func wochenlogik(d: Dictionary) -> void:
 		if bool(d["vereine"][cid].get("ist_mensch", false)):
 			continue
 		_trainingsplan(d, cid)
-		if Namen.zufall() < 0.2:
-			_vertraege_pflegen(d, cid)
+		_vertraege_pflegen(d, cid)
+		kader_auffuellen(d, cid)
 		if Namen.zufall() < 0.08:
 			_personal_pflegen(d, cid)
 		if Namen.zufall() < 0.1:
@@ -129,20 +129,94 @@ static func _trainingsplan(d: Dictionary, cid: String) -> void:
 			zuteilung[kader[i]] = 1
 	p["regeneration_zuteilung"] = zuteilung
 
+## Verlaengert auslaufende Vertraege. Ein Verein laesst nur gehen, wen er wirklich
+## nicht braucht — sonst wuerde die Liga binnen weniger Saisons ausbluten.
 static func _vertraege_pflegen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	var saison: int = Welt.saison_index()
+	var kaderstaerke := _kaderschnitt(d, cid)
 	for sid in (v["kader"] as Array).duplicate():
 		var sp: Dictionary = d["spieler"][sid]
 		var rest: int = int(sp["vertrag"].get("bis_saison", 9)) - saison
 		if rest > 0:
 			continue
+		var staerke: float = Spielerfabrik.gesamt(sp)
 		var wunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"]))
-		if Finanzen.gehaltsauslastung(d, cid) > 105.0 and Spielerfabrik.gesamt(sp) < 55.0:
+		var auslastung := Finanzen.gehaltsauslastung(d, cid)
+		# Zu teuer und zu schwach: der Verein laesst ihn ziehen.
+		if auslastung > 112.0 and staerke < kaderstaerke - 6.0:
 			continue
-		if Namen.zufall() < 0.65:
-			sp["vertrag"]["gehalt"] = wunsch * Namen.bereich(1.0, 1.1)
-			sp["vertrag"]["bis_saison"] = saison + Namen.wuerfel(2, 4)
+		if int(sp["alter"]) >= 35 and staerke < kaderstaerke - 4.0:
+			continue
+		if (v["kader"] as Array).size() > 24 and staerke < kaderstaerke - 10.0:
+			continue
+		sp["vertrag"]["gehalt"] = wunsch * Namen.bereich(1.0, 1.12)
+		sp["vertrag"]["bis_saison"] = saison + Namen.wuerfel(2, 4)
+
+static func _kaderschnitt(d: Dictionary, cid: String) -> float:
+	var summe := 0.0
+	var n := 0
+	for sid in d["vereine"][cid]["kader"]:
+		summe += Spielerfabrik.gesamt(d["spieler"][sid])
+		n += 1
+	return summe / maxf(float(n), 1.0)
+
+## Fuellt Luecken im Kader mit vereinslosen Spielern.
+## Ohne das wuerde der Markt sich mit Spielern fuellen, die niemand mehr holt.
+static func kader_auffuellen(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	if bool(v.get("ist_mensch", false)):
+		return
+	for _versuch in range(6):
+		var kader: Array = v["kader"]
+		var luecke := _fehlende_position(d, cid)
+		if luecke == "" and kader.size() >= 16:
+			return
+		var pos: String = luecke if luecke != "" else _schwaechste_position(d, cid)
+		var kandidat := _bester_freier(d, cid, pos)
+		if kandidat == "":
+			if luecke == "":
+				return
+			continue
+		var sp: Dictionary = d["spieler"][kandidat]
+		var gehalt: float = Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"]))
+		Transfermarkt.transfer_durchfuehren(d, kandidat, cid, 0.0, gehalt, Namen.wuerfel(1, 3), "rotation")
+
+## Position, auf der dem Verein ein einsatzfaehiger Spieler fehlt.
+static func _fehlende_position(d: Dictionary, cid: String) -> String:
+	var zaehler := {}
+	for p in Spielerfabrik.POSITIONEN:
+		zaehler[p] = 0
+	for sid in d["vereine"][cid]["kader"]:
+		var sp: Dictionary = d["spieler"][sid]
+		zaehler[str(sp["position"])] = int(zaehler[str(sp["position"])]) + 1
+	for p in Spielerfabrik.POSITIONEN:
+		var soll: int = 2 if p == "TW" else 2
+		if int(zaehler[p]) < soll:
+			return p
+	return ""
+
+static func _schwaechste_position(d: Dictionary, cid: String) -> String:
+	return Transfermarkt._schwaechste_position(d, cid)
+
+## Bester vereinsloser Spieler auf einer Position, den der Verein bezahlen kann.
+static func _bester_freier(d: Dictionary, cid: String, pos: String) -> String:
+	var v: Dictionary = d["vereine"][cid]
+	var spielraum: float = float(v["gehaltsbudget"]) * 1.1 - Finanzen.spielergehaelter(d, cid) - Finanzen.personalgehaelter(d, cid)
+	var best := ""
+	var bw := -1.0
+	for sid in d["spieler"].keys():
+		var sp: Dictionary = d["spieler"][sid]
+		if str(sp["verein"]) != "" or str(sp["position"]) != pos:
+			continue
+		var gehalt: float = Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"]))
+		if gehalt > maxf(spielraum, float(v["gehaltsbudget"]) * 0.06):
+			continue
+		var w: float = Spielerfabrik.gesamt(sp)
+		if w > bw:
+			bw = w
+			best = sid
+	return best
 
 static func _personal_pflegen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
@@ -166,8 +240,18 @@ static func _infrastruktur(d: Dictionary, cid: String) -> void:
 	if float(v["kasse"]) > kosten * 2.5:
 		Finanzen.ausbau_starten(d, cid, bereich)
 
+## Alle KI-Vereine verlaengern auslaufende Vertraege — muss VOR dem
+## Vertragsablauf zum Saisonwechsel laufen.
+static func vertragsrunde(d: Dictionary) -> void:
+	for cid in d["vereine"].keys():
+		if bool(d["vereine"][cid].get("ist_mensch", false)):
+			continue
+		_vertraege_pflegen(d, cid)
+
 ## Setzt fuer alle KI-Vereine eine sinnvolle Startaufstellung nach der Saisonpause.
 static func saisonvorbereitung(d: Dictionary) -> void:
+	for cid in d["vereine"].keys():
+		kader_auffuellen(d, cid)
 	for cid in d["vereine"].keys():
 		Weltgenerator._setze_standardaufstellung(d, cid)
 		if not bool(d["vereine"][cid].get("ist_mensch", false)):

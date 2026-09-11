@@ -216,6 +216,7 @@ static func europapokal_feiern(d: Dictionary, wid: String) -> void:
 # ---------------------------------------------------------- Neue Saison ---
 
 static func neue_saison(d: Dictionary, mein: String) -> void:
+	KI.vertragsrunde(d)
 	_vertraege_ablaufen(d)
 	_karriereenden(d)
 	_nachwuchs(d)
@@ -227,6 +228,12 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 		d["vereine"][cid]["vorstand"]["warnstufe"] = 0
 	KI.saisonvorbereitung(d)
 	Spielplan.erzeuge_saison(d)
+	if mein != "" and (d["vereine"][mein]["kader"] as Array).size() < 15:
+		Welt.nachricht({
+			"typ": "verein", "wichtig": true,
+			"betreff": "Der Kader ist zu klein",
+			"text": "Nur noch %d Spieler stehen unter Vertrag. Auf dem Transfermarkt finden Sie vereinslose Spieler, die ablösefrei zu haben sind." % (d["vereine"][mein]["kader"] as Array).size(),
+		})
 	if mein != "":
 		Vorstand.vertragsangebot_pruefen(d, mein)
 		Medien.saisonauftakt(d, mein)

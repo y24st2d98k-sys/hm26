@@ -153,6 +153,7 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 			var cid := "c_%03d" % index
 			var vn: Dictionary = Namen.verein(nid, vergeben)
 			vergeben[vn["name"]] = true
+			vn["kurz"] = _eindeutiges_kuerzel(str(vn["kurz"]), vergeben)
 			# Rufverteilung: Spitze der Liga deutlich staerker als Schlusslicht.
 			var spanne: float = 18.0 if int(liga["stufe"]) == 1 else 13.0
 			var ruf: float = clampf(float(liga["ruf"]) + spanne * (1.0 - float(i) / maxf(float(liga["teams"]) - 1.0, 1.0)) - spanne * 0.45 + Namen.bereich(-4.0, 4.0), 12.0, 99.0)
@@ -170,6 +171,25 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 	_erzeuge_rivalitaeten(d)
 	# Ein Grundstock an vereinslosen Spielern
 	_erzeuge_freie_spieler(d, 90)
+
+## Sorgt dafuer, dass kein Kuerzel doppelt vergeben wird.
+static func _eindeutiges_kuerzel(vorschlag: String, vergeben: Dictionary) -> String:
+	var schluessel := "kurz:" + vorschlag
+	if not vergeben.has(schluessel):
+		vergeben[schluessel] = true
+		return vorschlag
+	var buchstaben := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	for i in range(buchstaben.length()):
+		var neu := vorschlag.substr(0, 2) + buchstaben[i]
+		if not vergeben.has("kurz:" + neu):
+			vergeben["kurz:" + neu] = true
+			return neu
+	for i in range(100):
+		var neu2 := vorschlag.substr(0, 2) + str(i % 10)
+		if not vergeben.has("kurz:" + neu2):
+			vergeben["kurz:" + neu2] = true
+			return neu2
+	return vorschlag
 
 static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String, lid: String, ruf: float, reichtum: float) -> Dictionary:
 	var palette: Array = Namen.waehle(WAPPEN_PALETTEN)

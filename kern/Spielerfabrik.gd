@@ -249,7 +249,7 @@ static func alters_faktor(alter_jahre: int) -> float:
 static func marktwert(spieler: Dictionary) -> float:
 	var g: float = gesamt(spieler)
 	var alter_jahre: int = int(spieler["alter"])
-	var basis: float = pow(maxf(g - 28.0, 1.0), 2.45) * 3.6
+	var basis: float = pow(maxf(g - 28.0, 1.0), 2.45) * 28.0
 	var alters_mod := 1.0
 	if alter_jahre <= 20:
 		alters_mod = 1.5

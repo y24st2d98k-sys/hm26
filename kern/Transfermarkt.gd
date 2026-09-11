@@ -354,7 +354,7 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 	Medien.transfer_meldung(d, sid, von, nach, ablöse)
 	Chronik.transfer_pruefen(d, sid, ablöse)
 	if nach != "":
-		Weltgenerator._setze_standardaufstellung(d, nach)
+		KI.aufstellung_pruefen(d, nach)
 
 static func _aufstellung_saeubern(d: Dictionary, cid: String, sid: String) -> void:
 	var auf: Dictionary = d["vereine"][cid]["aufstellung"]
