@@ -101,6 +101,8 @@ func wettbewerb_name(wid: String) -> String:
 		return str(daten["pokale"][wid]["name"])
 	if daten["international"].has(wid):
 		return str(daten["international"][wid]["name"])
+	if wid.begins_with("test_"):
+		return "Vorbereitungsspiel"
 	if wid.begins_with("sc_"):
 		var nid := wid.substr(3)
 		return str(daten["nationen"].get(nid, {}).get("supercup_name", "Supercup"))

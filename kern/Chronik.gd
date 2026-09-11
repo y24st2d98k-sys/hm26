@@ -7,6 +7,8 @@ extends RefCounted
 ## an Spielern, die genug fuer den Verein geleistet haben, um Legende zu werden.
 
 static func spiel_eintragen(d: Dictionary, m: Dictionary) -> void:
+	if str(m["art"]) == "test":
+		return
 	_rekorde_pruefen(d, m)
 	_rivalitaet_pflegen(d, m)
 	_legenden_pflegen(d, m)

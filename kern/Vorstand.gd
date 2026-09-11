@@ -66,6 +66,8 @@ static func _zieltext(schluessel: String) -> String:
 
 ## Reaktion nach einem Spiel des Spielervereins.
 static func nach_spiel(d: Dictionary, cid: String, m: Dictionary) -> void:
+	if str(m["art"]) == "test":
+		return
 	var v: Dictionary = d["vereine"][cid]
 	var eigene: int = int(m["tore_heim"]) if str(m["heim"]) == cid else int(m["tore_gast"])
 	var fremde: int = int(m["tore_gast"]) if str(m["heim"]) == cid else int(m["tore_heim"])

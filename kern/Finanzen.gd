@@ -30,6 +30,8 @@ static func spieltag_abrechnen(d: Dictionary, m: Dictionary) -> void:
 	var einnahme: float = float(zuschauer) * preis
 	if str(m["art"]) == "international":
 		einnahme *= 1.25
+	elif str(m["art"]) == "test":
+		einnahme *= 0.45
 	buchen(d, str(m["heim"]), einnahme, "Eintritt %s" % Welt.wettbewerb_name(str(m["wettbewerb"])), "zuschauer")
 	# Auswaertsteam: Reisekosten
 	buchen(d, str(m["gast"]), -(1400.0 + float(d["vereine"][m["gast"]]["ruf"]) * 60.0), "Reisekosten", "reise")

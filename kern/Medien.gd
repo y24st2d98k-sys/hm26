@@ -63,6 +63,9 @@ static func beitrag(d: Dictionary, text: String, tonfall: String, typ_filter: Ar
 # ---------------------------------------------------------- Spielberichte ---
 
 static func spielbericht(d: Dictionary, m: Dictionary, cid: String) -> void:
+	if str(m["art"]) == "test":
+		_testspielnotiz(d, m, cid)
+		return
 	var ist_heim: bool = str(m["heim"]) == cid
 	var eigene: int = int(m["tore_heim"]) if ist_heim else int(m["tore_gast"])
 	var fremde: int = int(m["tore_gast"]) if ist_heim else int(m["tore_heim"])
@@ -80,6 +83,22 @@ static func spielbericht(d: Dictionary, m: Dictionary, cid: String) -> void:
 	var tonfall := "jubel" if abstand >= 6 else ("lob" if abstand > 0 else ("neutral" if abstand == 0 else ("kritik" if abstand > -6 else "verriss")))
 	artikel(d, schlagzeile, text, tonfall, "spiel", {"spiel": str(m["id"]), "verein": cid})
 	_social_zum_spiel(d, m, cid, abstand, derby, held)
+
+## Vorbereitungsspiele bekommen nur eine kurze Notiz statt eines Berichts.
+static func _testspielnotiz(d: Dictionary, m: Dictionary, cid: String) -> void:
+	if Namen.zufall() > 0.45:
+		return
+	var ist_heim: bool = str(m["heim"]) == cid
+	var eigene: int = int(m["tore_heim"]) if ist_heim else int(m["tore_gast"])
+	var fremde: int = int(m["tore_gast"]) if ist_heim else int(m["tore_heim"])
+	var gegner: String = str(m["gast"]) if ist_heim else str(m["heim"])
+	var texte := [
+		"Erkenntnisse im Test gegen %s: Beim %d:%d wurde vor allem die Abwehr geprüft." % [d["vereine"][gegner]["name"], eigene, fremde],
+		"Testspiel gegen %s endet %d:%d. Der Trainerstab verteilte die Spielzeit breit." % [d["vereine"][gegner]["name"], eigene, fremde],
+		"%d:%d im Test gegen %s — Ergebnisse zählen in der Vorbereitung bekanntlich wenig." % [eigene, fremde, d["vereine"][gegner]["name"]],
+	]
+	artikel(d, "Vorbereitung: %d:%d gegen %s" % [eigene, fremde, d["vereine"][gegner]["name"]],
+		str(texte[Namen.wuerfel(0, texte.size() - 1)]), "neutral", "vorbereitung", {"verein": cid})
 
 static func _schlagzeile(v: Dictionary, g: Dictionary, abstand: int, eigene: int, fremde: int,
 		derby: bool, art: String, held: Dictionary, d: Dictionary) -> String:

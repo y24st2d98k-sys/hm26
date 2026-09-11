@@ -8,6 +8,10 @@ static func spiel_verbuchen(d: Dictionary, m: Dictionary) -> void:
 	var th: int = int(m["tore_heim"])
 	var tg: int = int(m["tore_gast"])
 	var art: String = str(m["art"])
+	if art == "test":
+		# Vorbereitungsspiele zaehlen nicht: keine Tabelle, keine Statistik,
+		# keine Formkurve. Nur Kraefte und Verletzungen wirken nach.
+		return
 
 	if art == "liga":
 		_tabelle_eintragen(d["ligen"][m["wettbewerb"]]["tabelle"], heim, th, tg)

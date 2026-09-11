@@ -130,6 +130,9 @@ herausnehmen.
   Gruppen, dann K.-o. mit Hin- und Rückspiel) und die *Challenge-Trophäe*
   (reines K.-o.). Qualifikation über die Abschlusstabellen und Pokalsieger.
 * **Nationale Supercups** zwischen Meister und Pokalsieger.
+* **Vorbereitungsspiele** im Juli und August: fünf Testspiele gegen Gegner
+  ähnlicher Stärke, die für keine Tabelle zählen, aber Spielpraxis, Fitness
+  und einen ersten Blick auf den neuen Kader liefern.
 * Die Welt lebt ohne Zutun weiter: KI-Vereine stellen auf, passen ihre Taktik
   an den Gegner an, transferieren, verlängern Verträge, bauen aus, ersetzen
   altersbedingt ausscheidendes Personal und ziehen jedes Jahr eigene Talente
@@ -147,7 +150,7 @@ herausnehmen.
 | **4 Transfer & Scouting** | Aktive Suche mit acht Filtern, zweistufige Verhandlung (Verein, dann Spieler), Gegenangebote, Leihen, Transferfenster mit Fristmeldungen, Scoutaufträge mit Unschärfe |
 | **5 Vereinsführung** | Einnahmen aus Zuschauern, Sponsoring, Medien, Merchandising und Preisgeldern; sechs Ausbaubereiche; sieben Personalrollen mit messbarer Wirkung; Vorstand mit Ziel, Vertrauen, Warnstufen und Entlassung |
 | **6 Trainerkarriere** | Eigener Vertrag, Ruf, Stationen, Titelsammlung, Jobangebote, Handschrift mit Prägungen — alles vereinsübergreifend |
-| **7 Zeitablauf** | Tageskalender mit Trainingsalltag, Wochenrhythmus (Montag: Abrechnung, Training, Presse, Vorstand; Donnerstag: Kabine, Gerüchte), Winterpause, Transferfenster |
+| **7 Zeitablauf** | Tageskalender mit Vorbereitung, Trainingsalltag und Wochenrhythmus (Montag: Abrechnung, Training, Presse, Vorstand; Donnerstag: Kabine, Gerüchte), Winterpause, Transferfenster; eine Drei-Wochen-Vorschau zeigt Spiele, Fristen, Scoutberichte und Bauabschlüsse |
 | **8 Immersion** | Presse und „Hallenfunk" reagieren auf Ergebnis, Derbycharakter, Serien, Einzelleistungen und Vereinslage; Rivalitäten wachsen aus Duellen; Chronik mit Titeln, Legenden, Rekorden und Saisonverlauf |
 | **9 Persistenz** | 5 Speicherplätze, vollständiger Zustand in einer Datei, Klartext-Beschreibung daneben, automatische Ergänzung fehlender Felder beim Laden |
 

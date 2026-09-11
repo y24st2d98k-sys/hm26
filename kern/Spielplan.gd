@@ -20,6 +20,7 @@ static func erzeuge_saison(d: Dictionary) -> void:
 	for pid in d["pokale"].keys():
 		_plane_pokal_start(d, pid, basis)
 	_plane_supercups(d, basis)
+	_plane_testspiele(d, basis)
 	_plane_international(d, basis)
 
 static func _neue_spiel_id(d: Dictionary) -> String:
@@ -236,6 +237,39 @@ static func _plane_supercups(d: Dictionary, basis: int) -> void:
 		if meister == "" or pokalsieger == "" or meister == pokalsieger:
 			continue
 		neues_spiel(d, "sc_" + nid, "supercup", 1, basis + 38, meister, pokalsieger)
+
+# ------------------------------------------------------ Vorbereitung ---
+
+const TEST_TERMINE := [12, 19, 26, 33, 40]
+
+## Vorbereitungsspiele im Juli und August. Sie zaehlen fuer keine Tabelle und
+## keine Statistik, geben der Mannschaft aber Spielpraxis — und dem Trainer den
+## ersten Blick auf den neuen Kader.
+static func _plane_testspiele(d: Dictionary, basis: int) -> void:
+	for nid in d["nationen"].keys():
+		var vereine: Array = []
+		for lid in (d["nationen"][nid]["ligen"] as Array):
+			vereine.append_array(d["ligen"][lid]["vereine"])
+		if vereine.size() < 2:
+			continue
+		# Nach Ruf sortieren und nur innerhalb kleiner Fenster mischen, damit
+		# Testspiele halbwegs ausgeglichen sind statt 40:12 zu enden.
+		vereine.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
+		for runde in range(TEST_TERMINE.size()):
+			var liste: Array = []
+			for start in range(0, vereine.size(), 4):
+				var fenster: Array = vereine.slice(start, mini(start + 4, vereine.size()))
+				fenster.shuffle()
+				liste.append_array(fenster)
+			var termin: int = basis + TEST_TERMINE[runde]
+			for i in range(0, liste.size() - 1, 2):
+				var heim: String = str(liste[i])
+				var gast: String = str(liste[i + 1])
+				if runde % 2 == 1:
+					var tausch := heim
+					heim = gast
+					gast = tausch
+				neues_spiel(d, "test_" + nid, "test", runde + 1, termin, heim, gast)
 
 # -------------------------------------------------------- International ---
 
