@@ -244,6 +244,12 @@ Partie ergibt sich aus einer Mischung von Vereinsruf und tatsächlicher Stärke 
 zehn besten Spieler. Sonst würde ein Verein mit großem Namen und dünnem Kader
 seinen Trainer für Ergebnisse bestrafen, die dem Kader entsprechen.
 
+**Automatische Aufstellung ist voreingestellt, aber abschaltbar.** Ohne sie
+würde eine Mannschaft mit müden oder formschwachen Spielern auflaufen, solange
+niemand eingreift — während KI-Vereine vor jeder Partie neu aufstellen. Wer
+selbst aufstellen will, schaltet sie auf dem Aufstellungsbildschirm ab und
+bekommt dort stattdessen Warnungen zu Spielern, die nicht in Verfassung sind.
+
 **Taktikänderungen im Spiel gelten nur für dieses Spiel.** Die Simulation
 arbeitet auf einer Kopie der Vereinstaktik. Wer dauerhaft umstellen will, tut
 das auf dem Aufstellungsbildschirm.

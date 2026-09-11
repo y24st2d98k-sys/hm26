@@ -171,7 +171,6 @@ static func _angebot_bearbeiten(d: Dictionary, a: Dictionary) -> void:
 	if not d["spieler"].has(sid):
 		a["status"] = "abgelehnt"
 		return
-	var sp: Dictionary = d["spieler"][sid]
 	var status: String = str(a["status"])
 	if status == "offen":
 		if str(a["von"]) == "":
@@ -310,7 +309,6 @@ static func zurueckziehen(d: Dictionary, angebots_id: String) -> void:
 static func _transfer_vollziehen(d: Dictionary, a: Dictionary) -> void:
 	var sid: String = str(a["spieler"])
 	var nach: String = str(a["nach"])
-	var von: String = str(a["von"])
 	var ablöse: float = float(a["ablöse"])
 	if str(a["art"]) == "leihe":
 		leihe_vollziehen(d, sid, nach, int(a["laufzeit"]))
@@ -328,7 +326,7 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 	if von != "" and d["vereine"].has(von):
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		Finanzen.buchen(d, von, ablöse, "Transfererlös %s" % Spielerfabrik.voller_name(sp), "transfer")
-		_aufstellung_saeubern(d, von, sid)
+		aufstellung_saeubern(d, von, sid)
 	if nach != "" and d["vereine"].has(nach):
 		(d["vereine"][nach]["kader"] as Array).append(sid)
 		Finanzen.buchen(d, nach, -ablöse, "Ablöse %s" % Spielerfabrik.voller_name(sp), "transfer")
@@ -356,7 +354,7 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 	if nach != "":
 		KI.aufstellung_pruefen(d, nach)
 
-static func _aufstellung_saeubern(d: Dictionary, cid: String, sid: String) -> void:
+static func aufstellung_saeubern(d: Dictionary, cid: String, sid: String) -> void:
 	var auf: Dictionary = d["vereine"][cid]["aufstellung"]
 	for block in ["angriff", "abwehr"]:
 		var b: Dictionary = auf.get(block, {})
@@ -375,13 +373,13 @@ static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: 
 	sp["leihe"] = {"stammverein": von, "bis_saison": Welt.saison_index() + maxi(saisons, 1)}
 	if von != "" and d["vereine"].has(von):
 		(d["vereine"][von]["kader"] as Array).erase(sid)
-		_aufstellung_saeubern(d, von, sid)
+		aufstellung_saeubern(d, von, sid)
 	(d["vereine"][nach]["kader"] as Array).append(sid)
 	sp["verein"] = nach
 	(d["transfermarkt"]["verlauf"] as Array).push_front({
 		"tag": int(d["tag"]), "spieler": sid, "von": von, "nach": nach, "ablöse": 0.0, "art": "leihe",
 	})
-	Weltgenerator._setze_standardaufstellung(d, nach)
+	Weltgenerator.setze_standardaufstellung(d, nach)
 
 ## Vertragsverlaengerung eines eigenen Spielers.
 static func vertrag_verlaengern(d: Dictionary, sid: String, gehalt: float, laufzeit: int, rolle: String) -> Dictionary:
@@ -412,7 +410,7 @@ static func vertrag_aufloesen(d: Dictionary, sid: String) -> Dictionary:
 		return {"ok": false, "grund": "Die Abfindung von %s ist nicht finanzierbar." % Stil.geld(abfindung)}
 	Finanzen.buchen(d, cid, -abfindung, "Abfindung %s" % Spielerfabrik.voller_name(sp), "transfer")
 	(d["vereine"][cid]["kader"] as Array).erase(sid)
-	_aufstellung_saeubern(d, cid, sid)
+	aufstellung_saeubern(d, cid, sid)
 	sp["verein"] = ""
 	sp["vertrag"] = {}
 	return {"ok": true, "grund": "%s wurde freigestellt (Abfindung: %s)." % [Spielerfabrik.voller_name(sp), Stil.geld(abfindung)]}
@@ -441,7 +439,7 @@ static func _ki_verstaerkung(d: Dictionary, cid: String) -> bool:
 	var budget: float = float(v["transferbudget"])
 	if budget < 25000.0:
 		return false
-	var schwaeche := _schwaechste_position(d, cid)
+	var schwaeche := schwaechste_position(d, cid)
 	if schwaeche == "":
 		return false
 	var kandidaten := suchen(d, {"position": schwaeche, "limit": 60}, cid)
@@ -467,7 +465,7 @@ static func _ki_verstaerkung(d: Dictionary, cid: String) -> bool:
 		return true
 	return false
 
-static func _schwaechste_position(d: Dictionary, cid: String) -> String:
+static func schwaechste_position(d: Dictionary, cid: String) -> String:
 	var beste := {}
 	for pos in Spielerfabrik.POSITIONEN:
 		beste[pos] = 0.0

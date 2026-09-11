@@ -258,7 +258,7 @@ static func _vertraege_ablaufen(d: Dictionary) -> void:
 		if not leihe.is_empty() and int(leihe.get("bis_saison", 0)) <= saison:
 			var stamm: String = str(leihe["stammverein"])
 			(d["vereine"][cid]["kader"] as Array).erase(sid)
-			Transfermarkt._aufstellung_saeubern(d, cid, sid)
+			Transfermarkt.aufstellung_saeubern(d, cid, sid)
 			if d["vereine"].has(stamm):
 				(d["vereine"][stamm]["kader"] as Array).append(sid)
 				sp["verein"] = stamm
@@ -276,7 +276,7 @@ static func _vertraege_ablaufen(d: Dictionary) -> void:
 				"text": "%s verlässt den Verein ablösefrei." % Spielerfabrik.voller_name(sp),
 			})
 		(d["vereine"][cid]["kader"] as Array).erase(sid)
-		Transfermarkt._aufstellung_saeubern(d, cid, sid)
+		Transfermarkt.aufstellung_saeubern(d, cid, sid)
 		sp["verein"] = ""
 		sp["vertrag"] = {}
 
@@ -295,7 +295,7 @@ static func _karriereenden(d: Dictionary) -> void:
 		var cid: String = str(sp["verein"])
 		if cid != "" and d["vereine"].has(cid):
 			(d["vereine"][cid]["kader"] as Array).erase(sid)
-			Transfermarkt._aufstellung_saeubern(d, cid, sid)
+			Transfermarkt.aufstellung_saeubern(d, cid, sid)
 			if cid == Welt.mein_verein_id:
 				Welt.nachricht({
 					"typ": "verein", "wichtig": true,
@@ -319,7 +319,7 @@ static func _nachwuchs(d: Dictionary) -> void:
 			var pos: String = str(positionen[Namen.wuerfel(0, positionen.size() - 1)])
 			var basis: float = 22.0 + float(jugend) * 1.8 + float(v["ruf"]) * 0.14
 			var ziel: float = clampf(Namen.glocke(basis, 6.0, 14.0, 62.0), 14.0, 62.0)
-			var sid := Weltgenerator._neue_spieler_id(d)
+			var sid := Weltgenerator.neue_spieler_id(d)
 			var sp := Spielerfabrik.erzeuge(sid, Namen.kultur_zufall(str(v["nation"]), 0.8),
 				Namen.wuerfel(16, 18), ziel, pos, int(d["startjahr"]))
 			# Jugendarbeit hebt vor allem das Potenzial

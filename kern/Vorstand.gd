@@ -19,7 +19,7 @@ static func saisonziel_festlegen(d: Dictionary, cid: String) -> void:
 	rangliste.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
 	var platz: int = rangliste.find(cid) + 1
 	var teams: int = rangliste.size()
-	var ehrgeiz: float = float(v["vorstand"]["geduld"]) * 0.0 + Namen.bereich(-1.0, 1.0)
+	var ehrgeiz: float = Namen.bereich(-1.0, 1.0)
 	var ziel := "mittelfeld"
 	var ziel_platz: int = platz
 	if int(liga["stufe"]) >= 2:
@@ -107,7 +107,10 @@ static func wochenpruefung(d: Dictionary, cid: String) -> void:
 	if gespielt < 3:
 		return
 	var gewicht: float = clampf(float(gespielt) / float(maxi(int(liga["spieltage"]), 1)), 0.1, 1.0)
-	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + abweichung * 0.22 * gewicht, 0.0, 100.0)
+	# Das Vertrauen zieht langsam zur Mitte: eine Krise ist aufholbar, aber
+	# auch Rueckenwind haelt nicht ewig ohne neue Ergebnisse.
+	var neuer_wert: float = float(v["vorstand"]["vertrauen"]) + abweichung * 0.22 * gewicht
+	v["vorstand"]["vertrauen"] = clampf(lerpf(neuer_wert, 45.0, 0.02), 0.0, 100.0)
 	v["fans"]["zufriedenheit"] = clampf(float(v["fans"]["zufriedenheit"]) + abweichung * 0.3 * gewicht, 0.0, 100.0)
 	if Trainerkarriere.hat_praegung(d, "eiserne_hand"):
 		v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + 0.15, 0.0, 100.0)

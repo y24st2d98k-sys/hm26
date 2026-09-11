@@ -385,7 +385,7 @@ func _taktik_aufbauen() -> void:
 	taktik_bereich.add_child(_wahl("7 gegen 6", ["nie", "unterzahl", "rueckstand", "schluss", "immer"],
 		str(t["siebter_feldspieler"]), func(w):
 			t["siebter_feldspieler"] = w
-			sim._sieben_gegen_sechs_pruefen(mein_team)))
+			sim.sieben_gegen_sechs_pruefen(mein_team)))
 	taktik_bereich.add_child(_schieber("Tempo", int(t["tempo"]), func(w): t["tempo"] = int(w)))
 	taktik_bereich.add_child(_schieber("Risiko", int(t["risiko"]), func(w): t["risiko"] = int(w)))
 	taktik_bereich.add_child(_schieber("Härte", int(t["haerte"]), func(w): t["haerte"] = int(w)))
@@ -435,7 +435,7 @@ func _kader_auffrischen() -> void:
 		return
 	Bildschirm.leeren(kader_bereich)
 	kader_bereich.add_child(Stil.matt("Erst einen Spieler auf dem Feld wählen, dann den Ersatzmann.", Stil.S_MINI))
-	var auf_platz: Array = sim._alle_auf_platz(mein_team)
+	var auf_platz: Array = sim.alle_auf_platz(mein_team)
 	kader_bereich.add_child(Stil.text("Auf dem Feld", Stil.S_KLEIN, Stil.AKZENT))
 	for sid in auf_platz:
 		kader_bereich.add_child(_spielerzeile(sid, true))

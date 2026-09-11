@@ -473,8 +473,8 @@ func _tor(a: Dictionary, v: Dictionary, schuetze: String, pos: String, ist_7m: b
 	var text := _tortext(sp, pos, ist_7m, assist, a)
 	_warteschlange.append(_ereignis("tor", _seite(a), schuetze, text, {"position": pos, "assist": assist, "siebenmeter": ist_7m, "gegenstoss": _gegenstoss}))
 	# Nach dem Tor pruefen, ob 7-gegen-6 aktiviert wird
-	_sieben_gegen_sechs_pruefen(v)
-	_sieben_gegen_sechs_pruefen(a)
+	sieben_gegen_sechs_pruefen(v)
+	sieben_gegen_sechs_pruefen(a)
 	return {"gegenstoss": false}
 
 func _tortext(sp: Dictionary, pos: String, ist_7m: bool, assist: String, a: Dictionary) -> String:
@@ -719,7 +719,7 @@ func _bester_von_bank(t: Dictionary, pos: String) -> String:
 
 # -------------------------------------------------------- 7 gegen 6 / Zeit ---
 
-func _sieben_gegen_sechs_pruefen(t: Dictionary) -> void:
+func sieben_gegen_sechs_pruefen(t: Dictionary) -> void:
 	var modus: String = str(t["taktik"].get("siebter_feldspieler", "nie"))
 	var eigene: int = int(t["tore"])
 	var fremde: int = int(gast["tore"]) if t == heim else int(heim["tore"])
@@ -747,7 +747,7 @@ func _sieben_gegen_sechs_pruefen(t: Dictionary) -> void:
 func _kraft_verbrauchen(t: Dictionary, dauer: float, im_angriff: bool) -> void:
 	var wechselintensitaet: float = float(t["taktik"].get("wechselspiel", 50)) / 100.0
 	var tempo: float = float(t["taktik"]["tempo"]) / 100.0
-	var auf_platz := _alle_auf_platz(t)
+	var auf_platz := alle_auf_platz(t)
 	for sid in auf_platz:
 		var sp: Dictionary = daten["spieler"][sid]
 		var ausdauer: float = float(sp["attr"]["ausdauer"]) / 20.0
@@ -767,7 +767,7 @@ func _kraft_verbrauchen(t: Dictionary, dauer: float, im_angriff: bool) -> void:
 
 ## Prueft, ob sich ein Spieler auf dem Feld verletzt — mit sofortigem Ausfall.
 func _verletzungspruefung(t: Dictionary) -> void:
-	for sid in _alle_auf_platz(t):
+	for sid in alle_auf_platz(t):
 		if rng.randf() >= Medizin.risiko(daten, sid) * 2.2:
 			continue
 		var sp: Dictionary = daten["spieler"][sid]
@@ -781,7 +781,7 @@ func _verletzungspruefung(t: Dictionary) -> void:
 			"%s muss verletzt vom Feld (%s)." % [Spielerfabrik.kurz_name(sp), vl["art"]]))
 		return
 
-func _alle_auf_platz(t: Dictionary) -> Array:
+func alle_auf_platz(t: Dictionary) -> Array:
 	var liste := {}
 	for pos in t["angriff_auf"].keys():
 		var sid: String = str(t["angriff_auf"][pos])
@@ -815,7 +815,7 @@ func _puls_wirkung(t: Dictionary) -> float:
 		return clampf(1.0 + abweichung * 0.058, 0.93, 1.075)
 	var nerven := 0.0
 	var anzahl := 0
-	for sid in _alle_auf_platz(t):
+	for sid in alle_auf_platz(t):
 		nerven += float(daten["spieler"][sid]["attr"]["nervenstaerke"])
 		anzahl += 1
 	var schnitt: float = (nerven / maxf(float(anzahl), 1.0)) / 20.0
@@ -904,7 +904,7 @@ func auszeit(t: Dictionary) -> bool:
 		return false
 	t["auszeiten"] = int(t["auszeiten"]) - 1
 	t["auszeit_wirkung"] = 1.0
-	for sid in _alle_auf_platz(t):
+	for sid in alle_auf_platz(t):
 		var z: Dictionary = t["zustand"][sid]
 		z["kraft"] = clampf(float(z["kraft"]) + 6.0, 0.0, 100.0)
 	lauf["tore"] = 0
@@ -924,7 +924,7 @@ func _spieler_auf(t: Dictionary, pos: String) -> String:
 	return str((t["angriff_auf"] as Dictionary).get(pos, ""))
 
 func _ist_auf_platz(t: Dictionary, sid: String) -> bool:
-	return _alle_auf_platz(t).has(sid)
+	return alle_auf_platz(t).has(sid)
 
 func _zufaelliger_angreifer(t: Dictionary) -> String:
 	var liste: Array = []
@@ -1053,7 +1053,7 @@ func _entscheidung_erzwingen() -> void:
 func _team_gesamtstaerke(t: Dictionary) -> float:
 	var summe := 0.0
 	var n := 0
-	for sid in _alle_auf_platz(t):
+	for sid in alle_auf_platz(t):
 		summe += Spielerfabrik.gesamt(daten["spieler"][sid])
 		n += 1
 	return summe / maxf(float(n), 1.0)

@@ -107,8 +107,8 @@ func _saison_test(dauer: int) -> void:
 		var u := Welt.tag_weiter()
 		if u.has("art") and str(u["art"]) == "eigenes_spiel":
 			Welt.spieltag_abwickeln(Welt.tag())
-			Welt._wochenrhythmus(Welt.tag())
-			Welt._saison_pruefen(Welt.tag())
+			Welt.wochenrhythmus(Welt.tag())
+			Welt.saison_pruefen(Welt.tag())
 		tage += 1
 	print("Datum: %s, Saison %s" % [Welt.datum_text(), Welt.saison_text()])
 	var lid: String = str(d["vereine"][Welt.mein_verein_id]["liga"]) if Welt.mein_verein_id != "" else "l_de1"
@@ -139,8 +139,8 @@ func _langzeit_test(dauer: int) -> void:
 		if u.has("art") and str(u["art"]) == "eigenes_spiel":
 			Welt.partie_simulieren(str(u["spiel"]))
 			Welt.spieltag_abwickeln(Welt.tag())
-			Welt._wochenrhythmus(Welt.tag())
-			Welt._saison_pruefen(Welt.tag())
+			Welt.wochenrhythmus(Welt.tag())
+			Welt.saison_pruefen(Welt.tag())
 		tage += 1
 		if tage % 365 == 0:
 			printerr("  ... Tag %d, %s" % [tage, Welt.datum_text()])

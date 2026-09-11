@@ -112,33 +112,33 @@ func spiele_am_tag(t: int) -> Array:
 	return daten["plan"].get(t, [])
 
 ## Naechste Partie eines Vereins ab dem aktuellen Tag.
-func naechstes_spiel(cid: String) -> Dictionary:
-	var bester: Dictionary = {}
-	var bester_tag: int = 999999
-	for mid in daten["spiele"].keys():
-		var m: Dictionary = daten["spiele"][mid]
-		if bool(m["gespielt"]):
-			continue
-		if str(m["heim"]) != cid and str(m["gast"]) != cid:
-			continue
-		if int(m["tag"]) < tag():
-			continue
-		if int(m["tag"]) < bester_tag:
-			bester_tag = int(m["tag"])
-			bester = m
-	return bester
+## Sucht ueber den Terminplan statt ueber alle jemals angesetzten Partien —
+## das wird pro Spieltag hundertfach aufgerufen.
+func naechstes_spiel(cid: String, sichtweite: int = 120) -> Dictionary:
+	var start: int = tag()
+	for t in range(start, start + sichtweite):
+		for mid in daten["plan"].get(t, []):
+			var m: Dictionary = daten["spiele"].get(mid, {})
+			if m.is_empty() or bool(m["gespielt"]):
+				continue
+			if str(m["heim"]) == cid or str(m["gast"]) == cid:
+				return m
+	return {}
 
-func letzte_spiele(cid: String, anzahl: int = 5) -> Array:
+## Die zuletzt gespielten Partien eines Vereins, neueste zuerst.
+func letzte_spiele(cid: String, anzahl: int = 5, sichtweite: int = 200) -> Array:
 	var liste: Array = []
-	for mid in daten["spiele"].keys():
-		var m: Dictionary = daten["spiele"][mid]
-		if not bool(m["gespielt"]):
-			continue
-		if str(m["heim"]) != cid and str(m["gast"]) != cid:
-			continue
-		liste.append(m)
-	liste.sort_custom(func(a, b): return int(a["tag"]) > int(b["tag"]))
-	return liste.slice(0, anzahl)
+	var start: int = tag()
+	for t in range(start, maxi(start - sichtweite, -1), -1):
+		for mid in daten["plan"].get(t, []):
+			var m: Dictionary = daten["spiele"].get(mid, {})
+			if m.is_empty() or not bool(m["gespielt"]):
+				continue
+			if str(m["heim"]) == cid or str(m["gast"]) == cid:
+				liste.append(m)
+				if liste.size() >= anzahl:
+					return liste
+	return liste
 
 func kader(cid: String) -> Array:
 	var liste: Array = (verein(cid).get("kader", []) as Array).duplicate()
@@ -207,8 +207,8 @@ func tag_weiter() -> Dictionary:
 		return unterbrechung
 
 	spieltag_abwickeln(t)
-	_wochenrhythmus(t)
-	_saison_pruefen(t)
+	wochenrhythmus(t)
+	saison_pruefen(t)
 	tag_gewechselt.emit(t)
 	zustand_geaendert.emit()
 	return unterbrechung
@@ -300,7 +300,7 @@ func _eigener_in(liste: Array) -> bool:
 	return liste.has(mein_verein_id)
 
 ## Wochenrhythmus: Sammelereignisse statt taeglichem Kleinkram.
-func _wochenrhythmus(t: int) -> void:
+func wochenrhythmus(t: int) -> void:
 	var wt: int = Kalender.wochentag(t)
 	if wt == 0:  # Montag: Wochenbericht
 		Training.wochenwechsel(daten)
@@ -315,7 +315,7 @@ func _wochenrhythmus(t: int) -> void:
 		Kabine.wochenpuls(daten)
 		Transfermarkt.geruechtekueche(daten)
 
-func _saison_pruefen(t: int) -> void:
+func saison_pruefen(t: int) -> void:
 	var tis: int = Kalender.tag_in_saison(t)
 	if tis == Spielplan.SAISON_ABSCHLUSS and not bool(daten.get("saison_abgeschlossen", false)):
 		daten["saison_abgeschlossen"] = true
@@ -402,7 +402,7 @@ func _daten_auffrischen() -> void:
 		"rekorde": {}, "scouting": {"auftraege": [], "berichte": [], "beobachtung": []},
 		"transfermarkt": {"angebote": [], "gerüchte": [], "verlauf": [], "fenster_offen": true},
 		"medien": {"outlets": [], "fanaccounts": []},
-		"einstellungen": {"autorotation": true, "presse_filter": "alle", "sim_tempo": 2},
+		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2},
 		"plan": {}, "international": {}, "pokale": {}, "saison_abgeschlossen": false,
 	}
 	for k in vorlage.keys():

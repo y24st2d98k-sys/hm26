@@ -103,11 +103,9 @@ func _kreis_linie(x: float, radius: float, farbe: Color, s: float, gestrichelt: 
 		vorher = pm
 
 func _tor(x: float, s: float) -> void:
-	var tief: float = 1.0 if x < LAENGE / 2.0 else -1.0
-	var a := _m(Vector2(x, 8.5))
-	var b := _m(Vector2(x, 11.5))
-	draw_line(a, b, Color("#e8eef5"), maxf(s * 0.14, 2.5))
-	draw_rect(Rect2(_m(Vector2(x - (0.0 if tief > 0.0 else 1.0), 8.5)), Vector2(1.0, 3.0) * s), Color(1, 1, 1, 0.09), true)
+	var links: bool = x < LAENGE / 2.0
+	draw_line(_m(Vector2(x, 8.5)), _m(Vector2(x, 11.5)), Color("#e8eef5"), maxf(s * 0.14, 2.5))
+	draw_rect(Rect2(_m(Vector2(x - (0.0 if links else 1.0), 8.5)), Vector2(1.0, 3.0) * s), Color(1, 1, 1, 0.09), true)
 
 func _zeichne_mannschaft(seite: String, s: float) -> void:
 	var spieler: Dictionary = szene.get(seite, {})

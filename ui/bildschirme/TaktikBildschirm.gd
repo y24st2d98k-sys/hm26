@@ -9,6 +9,7 @@ var abwehr_bereich: VBoxContainer
 var taktik_bereich: VBoxContainer
 var bank_bereich: VBoxContainer
 var feld: Spielfeld
+var warnungen_bereich: VBoxContainer
 var vorschau_angriff: bool = true
 var meldung: Label
 
@@ -21,9 +22,18 @@ func aufbauen() -> void:
 	wurzel.add_child(kopf)
 	kopf.add_child(Stil.titel("Aufstellung & Taktik", 0))
 	kopf.add_child(Stil.dehner())
+	var auto_haken := CheckBox.new()
+	auto_haken.text = "Aufstellung vor jedem Spiel automatisch optimieren"
+	auto_haken.tooltip_text = "Der Trainerstab stellt vor jeder Partie die beste verfügbare Sieben auf — nach Form, Fitness und Lastkonto. Ausschalten, wenn Sie selbst aufstellen wollen."
+	auto_haken.button_pressed = bool(Welt.daten["einstellungen"].get("auto_aufstellung", true))
+	auto_haken.toggled.connect(func(an):
+		Welt.daten["einstellungen"]["auto_aufstellung"] = an
+		_melde("Automatische Aufstellung %s." % ("eingeschaltet" if an else "ausgeschaltet"))
+		aktualisieren())
+	kopf.add_child(auto_haken)
 	var auto := Stil.knopf("Beste Aufstellung vorschlagen")
 	auto.pressed.connect(func():
-		Weltgenerator._setze_standardaufstellung(Welt.daten, Welt.mein_verein_id)
+		Weltgenerator.setze_standardaufstellung(Welt.daten, Welt.mein_verein_id)
 		_melde("Aufstellung automatisch gesetzt.")
 		aktualisieren())
 	kopf.add_child(auto)
@@ -37,6 +47,9 @@ func aufbauen() -> void:
 	var inhalt := Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(inhalt)
+
+	warnungen_bereich = Stil.vbox(4)
+	inhalt.add_child(warnungen_bereich)
 
 	var oben := Stil.hbox(12)
 	inhalt.add_child(oben)
@@ -82,9 +95,11 @@ func aktualisieren() -> void:
 	leeren(abwehr_bereich)
 	leeren(taktik_bereich)
 	leeren(bank_bereich)
+	leeren(warnungen_bereich)
 	if Welt.mein_verein_id == "":
 		bank_bereich.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
 		return
+	_warnungen()
 	_angriff()
 	_abwehr()
 	_taktik()
@@ -173,7 +188,7 @@ func _setze(block: String, pos: String, sid: String) -> void:
 			if str(b[p]) == sid and p != pos:
 				b[p] = ""
 	b[pos] = sid
-	auf["bank"] = Weltgenerator._bank_aus_kader(Welt.daten, Welt.mein_verein_id, auf)
+	auf["bank"] = Weltgenerator.bank_aus_kader(Welt.daten, Welt.mein_verein_id, auf)
 	aktualisieren()
 
 func _angriff() -> void:
@@ -347,3 +362,31 @@ func _bank() -> void:
 		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
 		reihe.add_child(k)
 		zaehler += 1
+
+## Weist auf Spieler in der Aufstellung hin, die nicht in Verfassung sind.
+func _warnungen() -> void:
+	if bool(Welt.daten["einstellungen"].get("auto_aufstellung", true)):
+		return
+	var auf: Dictionary = Welt.verein(Welt.mein_verein_id)["aufstellung"]
+	var betroffen: Array = []
+	var gesehen := {}
+	for block in ["angriff", "abwehr"]:
+		for pos in (auf.get(block, {}) as Dictionary).keys():
+			var sid: String = str(auf[block][pos])
+			if sid == "" or gesehen.has(sid) or not Welt.daten["spieler"].has(sid):
+				continue
+			gesehen[sid] = true
+			var sp: Dictionary = Welt.spieler(sid)
+			var form: float = Spielerfabrik.einsatzform(sp)
+			if form < 52.0:
+				betroffen.append({"sid": sid, "form": form})
+	if betroffen.is_empty():
+		return
+	var karte := Bausteine.karte_in(warnungen_bereich, "")
+	for e in betroffen:
+		var sp2: Dictionary = Welt.spieler(str(e["sid"]))
+		var zeile := Stil.hbox(8)
+		zeile.add_child(Stil.abzeichen("ACHTUNG", Stil.GELB))
+		zeile.add_child(Stil.text("%s ist nicht in Verfassung (Einsatzform %d, Last %d)." % [
+			Spielerfabrik.voller_name(sp2), int(float(e["form"])), int(float(sp2["last"]))], Stil.S_KLEIN, Stil.GELB))
+		karte.add_child(zeile)

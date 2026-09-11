@@ -38,7 +38,6 @@ func aktualisieren() -> void:
 		lauf.add_child(Stil.text(str(Finanzen.AUSBAU_STUFEN[str(projekt["bereich"])]["name"]), Stil.S_NORMAL, Stil.AKZENT))
 		lauf.add_child(Stil.info_zeile("Fertigstellung", Kalender.text(int(projekt["fertig_tag"]), Welt.startjahr(), true)))
 		lauf.add_child(Stil.info_zeile("Kosten", Stil.geld(float(projekt["kosten"]))))
-		var gesamt: float = maxf(float(projekt["fertig_tag"]) - float(projekt.get("start", Welt.tag())), 1.0)
 		lauf.add_child(Stil.matt("Solange ein Projekt läuft, kann kein zweites begonnen werden.", Stil.S_MINI))
 
 	var halle := Bausteine.karte_in(inhalt, "Halle: %s" % str(v["halle"]["name"]))

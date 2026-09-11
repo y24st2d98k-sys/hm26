@@ -254,8 +254,8 @@ func _auf_live_ende(spiel_id: String) -> void:
 	live.visible = false
 	rahmen.visible = true
 	Welt.spieltag_abwickeln(Welt.tag())
-	Welt._wochenrhythmus(Welt.tag())
-	Welt._saison_pruefen(Welt.tag())
+	Welt.wochenrhythmus(Welt.tag())
+	Welt.saison_pruefen(Welt.tag())
 	_auffrischen()
 	if bildschirme.has("buero"):
 		zeige("buero")

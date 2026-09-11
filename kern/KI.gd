@@ -10,7 +10,11 @@ static func aufstellung_pruefen(d: Dictionary, cid: String) -> void:
 	var auf: Dictionary = v["aufstellung"]
 	var neu_aufstellen := false
 	if mensch:
-		# Beim Spielerverein nur eingreifen, wenn jemand ausfaellt.
+		if bool(d["einstellungen"].get("auto_aufstellung", true)):
+			# Der Trainerstab stellt vor jeder Partie die beste verfügbare Sieben.
+			Weltgenerator.setze_standardaufstellung(d, cid)
+			return
+		# Sonst nur eingreifen, wenn jemand ausfaellt.
 		for block in ["angriff", "abwehr"]:
 			for pos in (auf.get(block, {}) as Dictionary).keys():
 				var sid: String = str(auf[block][pos])
@@ -21,11 +25,11 @@ static func aufstellung_pruefen(d: Dictionary, cid: String) -> void:
 				if not (sp["verletzung"] as Dictionary).is_empty() or int(sp["sperre"]) > 0 or str(sp["verein"]) != cid:
 					neu_aufstellen = true
 		if not neu_aufstellen:
-			auf["bank"] = Weltgenerator._bank_aus_kader(d, cid, auf)
+			auf["bank"] = Weltgenerator.bank_aus_kader(d, cid, auf)
 			return
-		Weltgenerator._setze_standardaufstellung(d, cid)
+		Weltgenerator.setze_standardaufstellung(d, cid)
 		return
-	Weltgenerator._setze_standardaufstellung(d, cid)
+	Weltgenerator.setze_standardaufstellung(d, cid)
 	taktik_anpassen(d, cid)
 
 ## Taktik nach Gegnerstaerke und eigener Lage.
@@ -173,7 +177,7 @@ static func kader_auffuellen(d: Dictionary, cid: String) -> void:
 		if luecke == "" and kader.size() >= 18:
 			return
 		var notlage: bool = kader.size() < 15
-		var pos: String = luecke if luecke != "" else _schwaechste_position(d, cid)
+		var pos: String = luecke if luecke != "" else schwaechste_position(d, cid)
 		var kandidat := _bester_freier(d, cid, pos, notlage)
 		if kandidat == "":
 			if not notlage:
@@ -202,8 +206,8 @@ static func _fehlende_position(d: Dictionary, cid: String) -> String:
 			return p
 	return ""
 
-static func _schwaechste_position(d: Dictionary, cid: String) -> String:
-	return Transfermarkt._schwaechste_position(d, cid)
+static func schwaechste_position(d: Dictionary, cid: String) -> String:
+	return Transfermarkt.schwaechste_position(d, cid)
 
 ## Bester vereinsloser Spieler auf einer Position, den der Verein bezahlen kann.
 ## Bei Notlage (zu kleiner Kader) wird die Gehaltsgrenze deutlich gelockert.
@@ -231,7 +235,7 @@ static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: boo
 static func _notverpflichtung(d: Dictionary, cid: String, pos: String) -> String:
 	var v: Dictionary = d["vereine"][cid]
 	var ziel: float = clampf(float(v["ruf"]) * 0.5 + Namen.bereich(-6.0, 6.0), 14.0, 55.0)
-	var sid := Weltgenerator._neue_spieler_id(d)
+	var sid := Weltgenerator.neue_spieler_id(d)
 	var sp := Spielerfabrik.erzeuge(sid, Namen.kultur_zufall(str(v["nation"]), 0.85),
 		Namen.wuerfel(18, 30), ziel, pos, int(d["startjahr"]))
 	sp["kenntnis"] = 45.0
@@ -275,6 +279,6 @@ static func saisonvorbereitung(d: Dictionary) -> void:
 	for cid in d["vereine"].keys():
 		kader_auffuellen(d, cid)
 	for cid in d["vereine"].keys():
-		Weltgenerator._setze_standardaufstellung(d, cid)
+		Weltgenerator.setze_standardaufstellung(d, cid)
 		if not bool(d["vereine"][cid].get("ist_mensch", false)):
 			taktik_anpassen(d, cid)

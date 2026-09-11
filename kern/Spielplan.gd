@@ -169,7 +169,8 @@ static func _lose_pokalrunde(d: Dictionary, pid: String, teilnehmer: Array) -> v
 	var basis: int = int(pokal.get("basis", 0))
 	var termin: int = maxi(basis + POKAL_TERMINE[mini(runde, POKAL_TERMINE.size() - 1)], int(d["tag"]) + 4)
 	var liste: Array = teilnehmer.duplicate()
-	# Auf Zweierpotenz reduzieren: Freilose an die besten Vereine
+	# Auf die naechstkleinere Zweierpotenz reduzieren: die stärksten Vereine
+	# bekommen ein Freilos, der Rest spielt die restlichen Plaetze aus.
 	var ziel: int = 1
 	while ziel * 2 <= liste.size():
 		ziel *= 2
@@ -178,9 +179,8 @@ static func _lose_pokalrunde(d: Dictionary, pid: String, teilnehmer: Array) -> v
 		var ueberhang: int = liste.size() - ziel
 		var stark: Array = liste.duplicate()
 		stark.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
-		# Anzahl Freilose so waehlen, dass genau eine Zweierpotenz uebrig bleibt
-		var freilos_anzahl: int = ziel - ueberhang
-		for i in range(maxi(freilos_anzahl, 0)):
+		var freilos_anzahl: int = maxi(ziel - ueberhang, 0)
+		for i in range(freilos_anzahl):
 			freilose.append(stark[i])
 		for f in freilose:
 			liste.erase(f)

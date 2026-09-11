@@ -73,8 +73,8 @@ func _ready() -> void:
 		if u2.has("art") and str(u2["art"]) == "eigenes_spiel":
 			Welt.partie_simulieren(str(u2["spiel"]))
 			Welt.spieltag_abwickeln(Welt.tag())
-			Welt._wochenrhythmus(Welt.tag())
-			Welt._saison_pruefen(Welt.tag())
+			Welt.wochenrhythmus(Welt.tag())
+			Welt.saison_pruefen(Welt.tag())
 	for id2 in app.bildschirme.keys():
 		app.zeige(id2)
 		await get_tree().process_frame

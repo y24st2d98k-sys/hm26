@@ -82,7 +82,7 @@ static func erzeuge(startjahr: int, saat: int) -> Dictionary:
 		"chronik": {"saisons": [], "ereignisse": []},
 		"rekorde": {},
 		"zaehler": {"spieler": 0, "verein": 0, "spiel": 0, "personal": 0, "nachricht": 0, "auftrag": 0},
-		"einstellungen": {"autorotation": true, "presse_filter": "alle", "sim_tempo": 2},
+		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2},
 		"saison_abgeschlossen": false,
 	}
 
@@ -318,7 +318,7 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 			if alter_jahre <= 20:
 				ziel = clampf(ziel - Namen.bereich(4.0, 12.0), 16.0, 80.0)
 			var kultur: String = Namen.kultur_zufall(nid, 0.62 if ruf < 70.0 else 0.42)
-			var sid := _neue_spieler_id(d)
+			var sid := neue_spieler_id(d)
 			var sp := Spielerfabrik.erzeuge(sid, kultur, alter_jahre, ziel, pos, int(d["startjahr"]))
 			sp["verein"] = cid
 			sp["kenntnis"] = 100.0
@@ -335,7 +335,7 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 			d["spieler"][sid] = sp
 			(verein["kader"] as Array).append(sid)
 	_verteile_rollen(d, cid)
-	_setze_standardaufstellung(d, cid)
+	setze_standardaufstellung(d, cid)
 
 static func _zufalls_alter(rang: int, _gesamt: int) -> int:
 	var w: float = Namen.zufall()
@@ -349,7 +349,7 @@ static func _zufalls_alter(rang: int, _gesamt: int) -> int:
 		return Namen.wuerfel(26, 31)
 	return Namen.wuerfel(32, 37)
 
-static func _neue_spieler_id(d: Dictionary) -> String:
+static func neue_spieler_id(d: Dictionary) -> String:
 	d["zaehler"]["spieler"] = int(d["zaehler"]["spieler"]) + 1
 	return "s_%05d" % int(d["zaehler"]["spieler"])
 
@@ -385,12 +385,12 @@ static func _verteile_rollen(d: Dictionary, cid: String) -> void:
 	(verein["aufstellung"] as Dictionary)["kapitaen"] = kap
 
 ## Stellt Angriffs- und Abwehrsieben automatisch auf.
-static func _setze_standardaufstellung(d: Dictionary, cid: String) -> void:
+static func setze_standardaufstellung(d: Dictionary, cid: String) -> void:
 	var verein: Dictionary = d["vereine"][cid]
 	var auf: Dictionary = verein["aufstellung"]
 	auf["angriff"] = beste_angriffsformation(d, cid)
 	auf["abwehr"] = beste_abwehrformation(d, cid, auf["angriff"])
-	auf["bank"] = _bank_aus_kader(d, cid, auf)
+	auf["bank"] = bank_aus_kader(d, cid, auf)
 	if str(auf.get("siebenmeter", "")) == "":
 		auf["siebenmeter"] = _bester_siebenmeter(d, cid)
 
@@ -446,7 +446,7 @@ static func beste_abwehrformation(d: Dictionary, cid: String, angriff: Dictionar
 		auf[plaetze[i]] = frei[i]
 	return auf
 
-static func _bank_aus_kader(d: Dictionary, cid: String, auf: Dictionary) -> Array:
+static func bank_aus_kader(d: Dictionary, cid: String, auf: Dictionary) -> Array:
 	var verein: Dictionary = d["vereine"][cid]
 	var drin := {}
 	for k in auf.keys():
@@ -537,7 +537,7 @@ static func _erzeuge_freie_spieler(d: Dictionary, anzahl: int) -> void:
 		var ziel: float = Namen.glocke(43.0, 11.0, 18.0, 76.0)
 		var alter_jahre: int = Namen.wuerfel(18, 36)
 		var kultur: String = Namen.kultur_zufall("", 0.0)
-		var sid := _neue_spieler_id(d)
+		var sid := neue_spieler_id(d)
 		var sp := Spielerfabrik.erzeuge(sid, kultur, alter_jahre, ziel, pos, int(d["startjahr"]))
 		sp["kenntnis"] = Namen.bereich(25.0, 70.0)
 		d["spieler"][sid] = sp
