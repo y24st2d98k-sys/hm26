@@ -12,7 +12,9 @@ func _ready() -> void:
 		"welt":
 			_welt_test()
 		"saison":
-			_saison_test()
+			_saison_test(730)
+		"halbsaison":
+			_saison_test(300)
 		_:
 			_spiele_test()
 	print("Dauer: %d ms" % (Time.get_ticks_msec() - start))
@@ -94,12 +96,12 @@ func _spiele_test() -> void:
 	print("Heimsiegquote: %.1f %%   Unentschieden: %.1f %%" % [heimsiege / n * 100.0, unentschieden / n * 100.0])
 	print("Hoechste Torzahl einer Mannschaft: %d" % hoechstes)
 
-func _saison_test() -> void:
+func _saison_test(dauer: int) -> void:
 	Welt.neues_spiel("c_001", {"vorname": "Test", "nachname": "Trainer", "hintergrund": "taktiker"}, 2024)
 	var d := Welt.daten
 	print("Mein Verein: %s" % d["vereine"][Welt.mein_verein_id]["name"])
 	var tage := 0
-	while tage < 730:
+	while tage < dauer:
 		var u := Welt.tag_weiter()
 		if u.has("art") and str(u["art"]) == "eigenes_spiel":
 			Welt.spieltag_abwickeln(Welt.tag())

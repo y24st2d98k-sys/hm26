@@ -278,7 +278,7 @@ static func marktwert(spieler: Dictionary) -> float:
 ## Wochengehalt, das ein Spieler erwartet.
 static func gehaltsvorstellung(spieler: Dictionary, vereinsruf: float) -> float:
 	var g: float = gesamt(spieler)
-	var basis: float = pow(maxf(g - 30.0, 1.0), 1.95) * 1.35 + 240.0
+	var basis: float = pow(maxf(g - 30.0, 1.0), 2.15) * 1.6 + 300.0
 	var ehrgeiz: float = float((spieler["charakter"] as Dictionary).get("ehrgeiz", 12.0))
 	var gier: float = 0.86 + ehrgeiz / 42.0
 	var ruf_mod: float = clampf(1.25 - vereinsruf / 260.0, 0.82, 1.25)

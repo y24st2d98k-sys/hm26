@@ -173,7 +173,7 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 
 static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String, lid: String, ruf: float, reichtum: float) -> Dictionary:
 	var palette: Array = Namen.waehle(WAPPEN_PALETTEN)
-	var kap: int = int(clampf(900.0 + pow(ruf, 2.1) * 1.35 + Namen.bereich(-600.0, 900.0), 800.0, 19500.0))
+	var kap: int = int(clampf(600.0 + pow(ruf, 1.95) * 0.95 + Namen.bereich(-350.0, 600.0), 700.0, 13500.0))
 	var jahresetat: float = pow(maxf(ruf, 10.0), 2.62) * 52.0 * reichtum
 	return {
 		"id": cid,
@@ -196,7 +196,7 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"transferbudget": jahresetat * Namen.bereich(0.06, 0.16),
 		"gehaltsbudget": jahresetat * 0.62 / 52.0,
 		"jahresetat": jahresetat,
-		"sponsoren": _erzeuge_sponsoren(ruf, reichtum),
+		"sponsoren": _erzeuge_sponsoren(ruf, jahresetat),
 		"halle": {
 			"name": "%s %s" % [vn["ort"], Namen.waehle(HALLEN_WORT)],
 			"kapazitaet": kap,
@@ -268,7 +268,9 @@ static func standard_taktik() -> Dictionary:
 		"auszeit_automatik": true,
 	}
 
-static func _erzeuge_sponsoren(ruf: float, reichtum: float) -> Array:
+## Sponsoring ist die groesste Einnahmequelle eines Handballvereins —
+## zusammen decken die Partner rund ein Drittel des Jahresetats.
+static func _erzeuge_sponsoren(ruf: float, jahresetat: float) -> Array:
 	var arten := ["Trikotbrust", "Ärmel", "Hallenname", "Ausrüster", "Rückenpartner"]
 	var liste := []
 	var anzahl: int = 2 + int(ruf / 30.0)
@@ -276,7 +278,7 @@ static func _erzeuge_sponsoren(ruf: float, reichtum: float) -> Array:
 		liste.append({
 			"name": Namen.sponsor(),
 			"art": arten[i % arten.size()],
-			"wert": pow(maxf(ruf, 10.0), 2.25) * reichtum * Namen.bereich(0.25, 0.65),
+			"wert": jahresetat * Namen.bereich(0.05, 0.12),
 			"bis_saison": Namen.wuerfel(0, 3),
 			"bonus_titel": Namen.bereich(0.05, 0.2),
 		})

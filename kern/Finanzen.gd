@@ -26,13 +26,13 @@ static func buchen(d: Dictionary, cid: String, betrag: float, grund: String, kat
 static func spieltag_abrechnen(d: Dictionary, m: Dictionary) -> void:
 	var heim: Dictionary = d["vereine"][m["heim"]]
 	var zuschauer: int = int(m["zuschauer"])
-	var preis: float = 11.0 + float(heim["halle"]["komfort"]) * 2.2 + float(heim["ruf"]) * 0.18
+	var preis: float = 10.0 + float(heim["halle"]["komfort"]) * 2.0 + float(heim["ruf"]) * 0.14
 	var einnahme: float = float(zuschauer) * preis
 	if str(m["art"]) == "international":
 		einnahme *= 1.25
 	buchen(d, str(m["heim"]), einnahme, "Eintritt %s" % Welt.wettbewerb_name(str(m["wettbewerb"])), "zuschauer")
 	# Auswaertsteam: Reisekosten
-	buchen(d, str(m["gast"]), -(800.0 + float(d["vereine"][m["gast"]]["ruf"]) * 22.0), "Reisekosten", "reise")
+	buchen(d, str(m["gast"]), -(1400.0 + float(d["vereine"][m["gast"]]["ruf"]) * 60.0), "Reisekosten", "reise")
 	if str(m["art"]) == "international":
 		var wb: Dictionary = d["international"][m["wettbewerb"]]
 		var preisgeld: float = float(wb.get("preisgeld_runde", 100000.0)) * 0.25
@@ -49,15 +49,31 @@ static func wochenabrechnung(d: Dictionary) -> void:
 		for s in v["sponsoren"]:
 			sponsoring += float(s["wert"]) / 52.0
 		buchen(d, cid, sponsoring, "Sponsoring", "sponsor")
-		var tv: float = float(d["ligen"][v["liga"]]["ruf"]) * 320.0 / 52.0 * 12.0
+		var tv: float = medienerloese(d, cid) 
 		buchen(d, cid, tv, "Medienerlöse", "tv")
-		var betrieb: float = float(v["halle"]["kapazitaet"]) * 0.9 + float(v["infrastruktur"]["trainingszentrum"]) * 780.0 + float(v["infrastruktur"]["jugendarbeit"]) * 620.0
+		var betrieb: float = betriebskosten(d, cid)
 		buchen(d, cid, -betrieb, "Betriebskosten", "betrieb")
 		var merch: float = float(v["fans"]["mitglieder"]) * 0.55 * (0.6 + float(v["fans"]["zufriedenheit"]) / 150.0)
 		buchen(d, cid, merch, "Merchandising", "merch")
 		_bauprojekt_fortschritt(d, cid)
 		if float(v["kasse"]) < 0.0:
 			_finanznot(d, cid)
+
+## Medienerloese je Woche — abhaengig vom Ligaansehen und vom eigenen Ruf.
+static func medienerloese(d: Dictionary, cid: String) -> float:
+	var v: Dictionary = d["vereine"][cid]
+	var liga: Dictionary = d["ligen"][v["liga"]]
+	return float(v["jahresetat"]) * 0.15 / 52.0 * (0.6 + float(liga["ruf"]) / 150.0)
+
+## Laufende Kosten je Woche: Halle, Trainingsbetrieb, Jugend, Verwaltung.
+static func betriebskosten(d: Dictionary, cid: String) -> float:
+	var v: Dictionary = d["vereine"][cid]
+	return float(v["halle"]["kapazitaet"]) * 1.6 \
+		+ float(v["infrastruktur"]["trainingszentrum"]) * 900.0 \
+		+ float(v["infrastruktur"]["jugendarbeit"]) * 700.0 \
+		+ float(v["infrastruktur"]["medizin"]) * 520.0 \
+		+ float(v["infrastruktur"]["analyse"]) * 420.0 \
+		+ float(v["infrastruktur"]["regeneration"]) * 380.0
 
 static func spielergehaelter(d: Dictionary, cid: String) -> float:
 	var summe := 0.0
@@ -162,8 +178,8 @@ static func wochenuebersicht(d: Dictionary, cid: String) -> Dictionary:
 		"gehalt_spieler": spielergehaelter(d, cid),
 		"gehalt_personal": personalgehaelter(d, cid),
 		"sponsoring": sponsoring,
-		"tv": float(d["ligen"][v["liga"]]["ruf"]) * 320.0 / 52.0 * 12.0,
-		"betrieb": float(v["halle"]["kapazitaet"]) * 0.9 + float(v["infrastruktur"]["trainingszentrum"]) * 780.0 + float(v["infrastruktur"]["jugendarbeit"]) * 620.0,
+		"tv": medienerloese(d, cid),
+		"betrieb": betriebskosten(d, cid),
 		"merch": float(v["fans"]["mitglieder"]) * 0.55 * (0.6 + float(v["fans"]["zufriedenheit"]) / 150.0),
 		"zuschauer_schnitt": zuschauer_schnitt,
 	}

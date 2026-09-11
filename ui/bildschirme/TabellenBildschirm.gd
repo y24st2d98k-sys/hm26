@@ -1,0 +1,134 @@
+class_name TabellenBildschirm
+extends Bildschirm
+## Tabellen aller Ligen samt Torjägerliste und Formkurven.
+
+var liga_wahl: OptionButton
+var inhalt: VBoxContainer
+var gewaehlt: String = ""
+
+func aufbauen() -> void:
+	var v := Stil.vbox(10)
+	v.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(v)
+	var kopf := Stil.hbox(10)
+	v.add_child(kopf)
+	kopf.add_child(Stil.titel("Tabellen", 0))
+	kopf.add_child(Stil.dehner())
+	liga_wahl = OptionButton.new()
+	liga_wahl.custom_minimum_size = Vector2(250, 0)
+	liga_wahl.item_selected.connect(func(i):
+		gewaehlt = str(liga_wahl.get_item_metadata(i))
+		_zeichne())
+	kopf.add_child(liga_wahl)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	v.add_child(scroll)
+	inhalt = Stil.vbox(12)
+	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(inhalt)
+
+func aktualisieren() -> void:
+	if liga_wahl == null or Welt.daten.is_empty():
+		return
+	var vorher := gewaehlt
+	liga_wahl.clear()
+	var ids: Array = Welt.daten["ligen"].keys()
+	ids.sort_custom(func(a, b):
+		var la: Dictionary = Welt.daten["ligen"][a]
+		var lb: Dictionary = Welt.daten["ligen"][b]
+		if str(la["nation"]) != str(lb["nation"]):
+			return float(Welt.daten["nationen"][la["nation"]]["ruf"]) > float(Welt.daten["nationen"][lb["nation"]]["ruf"])
+		return int(la["stufe"]) < int(lb["stufe"]))
+	var i := 0
+	for lid in ids:
+		var l: Dictionary = Welt.daten["ligen"][lid]
+		liga_wahl.add_item("%s — %s" % [Namen.KULTUR_NAME.get(str(l["nation"]), ""), str(l["name"])])
+		liga_wahl.set_item_metadata(i, lid)
+		i += 1
+	if vorher == "" and Welt.mein_verein_id != "":
+		vorher = str(Welt.verein(Welt.mein_verein_id)["liga"])
+	if vorher == "":
+		vorher = str(ids[0])
+	gewaehlt = vorher
+	var idx: int = ids.find(gewaehlt)
+	if idx >= 0:
+		liga_wahl.select(idx)
+	_zeichne()
+
+func _zeichne() -> void:
+	leeren(inhalt)
+	if gewaehlt == "" or not Welt.daten["ligen"].has(gewaehlt):
+		return
+	var liga: Dictionary = Welt.daten["ligen"][gewaehlt]
+	var tabelle := Spielplan.tabelle_sortiert(Welt.daten, gewaehlt)
+	var karte := Bausteine.karte_in(inhalt, "%s — Spieltag %d von %d" % [
+		str(liga["name"]), int(liga["aktueller_spieltag"]), int(liga["spieltage"])])
+	var g := Stil.tabelle(["#", "", "Verein", "Sp", "S", "U", "N", "Tore", "Diff", "P", "Form"])
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(g)
+	var aufstieg: int = 2 if int(liga["stufe"]) > 1 else 0
+	var abstieg: int = tabelle.size() - 2 if _hat_unterbau(liga) else tabelle.size()
+	for i in range(tabelle.size()):
+		var cid: String = str(tabelle[i])
+		var z: Dictionary = liga["tabelle"].get(cid, Spielplan.leere_tabellenzeile())
+		var eigen: bool = cid == Welt.mein_verein_id
+		var farbe: Color = Stil.AKZENT if eigen else Stil.TEXT
+		var platz := Stil.text(str(i + 1), Stil.S_KLEIN, farbe)
+		if int(liga["stufe"]) == 1 and i < 3:
+			platz.add_theme_color_override("font_color", Stil.TUERKIS if not eigen else Stil.AKZENT)
+		elif i < aufstieg:
+			platz.add_theme_color_override("font_color", Stil.GRUEN if not eigen else Stil.AKZENT)
+		elif i >= abstieg:
+			platz.add_theme_color_override("font_color", Stil.ROT if not eigen else Stil.AKZENT)
+		g.add_child(platz)
+		g.add_child(Wappen.fuer_verein(cid, 18.0))
+		var name := Stil.knopf_flach(str(Welt.verein(cid).get("name", "")), farbe)
+		name.pressed.connect(func(): Vereinsfenster.oeffnen(self, cid))
+		g.add_child(name)
+		g.add_child(Stil.text(str(int(z["sp"])), Stil.S_KLEIN, farbe))
+		g.add_child(Stil.text(str(int(z["s"])), Stil.S_KLEIN, farbe))
+		g.add_child(Stil.text(str(int(z["u"])), Stil.S_KLEIN, farbe))
+		g.add_child(Stil.text(str(int(z["n"])), Stil.S_KLEIN, farbe))
+		g.add_child(Stil.text("%d:%d" % [int(z["tore"]), int(z["gegentore"])], Stil.S_KLEIN, farbe))
+		var diff: int = int(z["tore"]) - int(z["gegentore"])
+		g.add_child(Stil.text("%+d" % diff, Stil.S_KLEIN, Stil.GRUEN if diff > 0 else (Stil.ROT if diff < 0 else Stil.TEXT_MATT)))
+		g.add_child(Stil.text(str(int(z["punkte"])), Stil.S_KLEIN, farbe))
+		g.add_child(Bausteine.formkurve(z["serie"], 5))
+
+	var unten := Stil.hbox(12)
+	inhalt.add_child(unten)
+	var torjaeger := Bausteine.karte_in(unten, "Torjägerliste")
+	Stil.karte_wurzel(torjaeger).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var liste := Statistik.torjaeger(Welt.daten, gewaehlt, 12)
+	if liste.is_empty():
+		torjaeger.add_child(Stil.matt("Noch keine Tore erzielt."))
+	else:
+		var g2 := Stil.tabelle(["#", "Spieler", "Verein", "Tore"])
+		g2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		torjaeger.add_child(g2)
+		for i in range(liste.size()):
+			var sid: String = str(liste[i]["sid"])
+			if not Welt.daten["spieler"].has(sid):
+				continue
+			var sp: Dictionary = Welt.spieler(sid)
+			g2.add_child(Stil.matt(str(i + 1), Stil.S_KLEIN))
+			var k := Stil.knopf_flach(Spielerfabrik.voller_name(sp))
+			k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+			g2.add_child(k)
+			g2.add_child(Stil.matt(str(Welt.verein(str(sp["verein"])).get("kurz", "—")), Stil.S_KLEIN))
+			g2.add_child(Stil.text(str(int(liste[i]["tore"])), Stil.S_KLEIN, Stil.AKZENT))
+
+	var historie := Bausteine.karte_in(unten, "Meisterhistorie")
+	Stil.karte_wurzel(historie).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var h: Array = liga.get("meister_historie", [])
+	if h.is_empty():
+		historie.add_child(Stil.matt("Noch keine abgeschlossene Saison."))
+	else:
+		for e in h.slice(0, 10):
+			historie.add_child(Stil.info_zeile(Kalender.saison_text(Welt.startjahr(), int(e["saison"])),
+				str(Welt.verein(str(e["verein"])).get("name", ""))))
+
+func _hat_unterbau(liga: Dictionary) -> bool:
+	var nation: Dictionary = Welt.daten["nationen"][liga["nation"]]
+	return (nation["ligen"] as Array).size() > int(liga["stufe"])
