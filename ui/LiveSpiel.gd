@@ -449,8 +449,8 @@ func _kader_auffrischen() -> void:
 		kader_bereich.add_child(Stil.text("Zeitstrafen", Stil.S_KLEIN, Stil.ROT))
 		for e in strafen:
 			var sid2: String = str(e["sid"])
-			var name: String = Spielerfabrik.kurz_name(Welt.spieler(sid2)) if sid2 != "" and Welt.daten["spieler"].has(sid2) else "Disqualifikation"
-			kader_bereich.add_child(Stil.info_zeile(name, "noch %d s" % int(maxf(float(e["bis"]) - sim.zeit, 0.0)), Stil.ROT))
+			var bestrafter: String = Spielerfabrik.kurz_name(Welt.spieler(sid2)) if sid2 != "" and not Welt.spieler(sid2).is_empty() else "Disqualifikation"
+			kader_bereich.add_child(Stil.info_zeile(bestrafter, "noch %d s" % int(maxf(float(e["bis"]) - sim.zeit, 0.0)), Stil.ROT))
 
 func _spielerzeile(sid: String, auf_platz: bool) -> Control:
 	var sp: Dictionary = Welt.spieler(sid)
@@ -483,10 +483,10 @@ func _spielerzeile(sid: String, auf_platz: bool) -> Control:
 	var pos := Bausteine.positions_abzeichen(str(sp["position"]))
 	pos.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.add_child(pos)
-	var name := Stil.text(Spielerfabrik.kurz_name(sp), Stil.S_KLEIN, Stil.AKZENT if gewaehlt_raus == sid else Stil.TEXT)
-	name.custom_minimum_size = Vector2(130, 0)
-	name.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	h.add_child(name)
+	var namensfeld := Stil.text(Spielerfabrik.kurz_name(sp), Stil.S_KLEIN, Stil.AKZENT if gewaehlt_raus == sid else Stil.TEXT)
+	namensfeld.custom_minimum_size = Vector2(130, 0)
+	namensfeld.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	h.add_child(namensfeld)
 	var kraft := Stil.balken(float(z.get("kraft", 100.0)), 100.0, 70)
 	kraft.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.add_child(kraft)
@@ -528,5 +528,5 @@ func _stats_auffrischen() -> void:
 	var lauf: Dictionary = sim.lauf
 	if int(lauf.get("tore", 0)) >= 2:
 		var team: String = str(lauf["team"])
-		var name: String = str(sim.heim["kurz"]) if team == "heim" else str(sim.gast["kurz"])
-		stats_bereich.add_child(Stil.abzeichen("LAUF: %d Tore für %s" % [int(lauf["tore"]), name], Stil.AKZENT))
+		var laufteam: String = str(sim.heim["kurz"]) if team == "heim" else str(sim.gast["kurz"])
+		stats_bereich.add_child(Stil.abzeichen("LAUF: %d Tore für %s" % [int(lauf["tore"]), laufteam], Stil.AKZENT))

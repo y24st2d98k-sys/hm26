@@ -10,6 +10,11 @@ Torwart für das 7-gegen-6 herausnimmt, riskiert den Ball im leeren Tor.
 
 ## Starten
 
+Godot 4.3 oder neuer. Getestet mit **4.3** und **4.7.2**.
+
+Projektordner in Godot öffnen (oder `project.godot` anklicken) und auf Play
+drücken. Beim ersten Öffnen importiert Godot das Projekt kurz.
+
 ```bash
 godot4 --path .            # Spiel starten
 ```
@@ -17,12 +22,20 @@ godot4 --path .            # Spiel starten
 Zum Prüfen ohne Editor:
 
 ```bash
+godot4 --headless res://werkzeuge/Kaltstarttest.tscn           # Start ohne Spielstand
 godot4 --headless res://werkzeuge/Testlauf.tscn -- welt        # Weltgenerierung
 godot4 --headless res://werkzeuge/Testlauf.tscn -- spiele      # 300 Partien, Kennzahlen
 godot4 --headless res://werkzeuge/Testlauf.tscn -- halbsaison  # halbe Saison
 godot4 --headless res://werkzeuge/Testlauf.tscn -- langzeit    # drei Saisons am Stück
 godot4 --headless res://werkzeuge/Oberflaechentest.tscn        # alle Bildschirme + Live-Spiel + Speichern
 ```
+
+Der **Kaltstarttest** ist der wichtigste davon: Er startet die Anwendung so, wie
+sie ein Spieler startet — ohne geladenen Spielstand — und ruft in diesem Zustand
+jeden Bildschirm und jedes Fenster auf. Genau diese Reihenfolge hatte der frühere
+Oberflächentest nicht abgedeckt (er legte erst ein Spiel an und baute die
+Oberfläche danach), wodurch Zugriffe auf noch nicht vorhandene Weltdaten
+unentdeckt blieben.
 
 ---
 

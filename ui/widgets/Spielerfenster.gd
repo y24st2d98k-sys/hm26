@@ -446,11 +446,11 @@ func _entwicklung(sp: Dictionary) -> void:
 		Stil.wert_farbe(20.0 - float(sp["verletzungsneigung"]))))
 	if bool(sp.get("aus_eigener_jugend", false)):
 		karte.add_child(Stil.text("Aus der eigenen Jugend.", Stil.S_KLEIN, Stil.GRUEN))
-	var log: Array = sp.get("entwicklung_log", [])
-	if log.is_empty():
+	var verlaufsliste: Array = sp.get("entwicklung_log", [])
+	if verlaufsliste.is_empty():
 		karte.add_child(Stil.matt("Noch keine auffälligen Entwicklungssprünge festgehalten."))
 		return
 	var verlauf := Bausteine.karte_in(inhalt, "Entwicklungssprünge")
-	for e in log.slice(0, 12):
+	for e in verlaufsliste.slice(0, 12):
 		verlauf.add_child(Stil.info_zeile(Kalender.text(int(e["tag"]), Welt.startjahr()),
 			"+%s auf %d" % [Stil.komma(float(e["delta"]), 2), int(float(e["gesamt"]))], Stil.GRUEN))

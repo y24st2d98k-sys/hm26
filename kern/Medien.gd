@@ -55,7 +55,7 @@ static func beitrag(d: Dictionary, text: String, tonfall: String, typ_filter: Ar
 		"typ": str(a2["typ"]),
 		"text": text,
 		"tonfall": tonfall,
-		"gefaellt": Namen.wuerfel(3, int(a2["folgen"]) / 12 + 20),
+		"gefaellt": Namen.wuerfel(3, int(float(a2["folgen"]) / 12.0) + 20),
 	})
 	if (d["social"] as Array).size() > 250:
 		(d["social"] as Array).resize(250)

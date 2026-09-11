@@ -277,11 +277,11 @@ func ort(nation: String) -> String:
 	var n: String = nation if ORT_PRE.has(nation) else "de"
 	var a := str(waehle(ORT_PRE[n]))
 	var b := str(waehle(ORT_SUF[n]))
-	var name := a + b
+	var ortsname := a + b
 	# Bindestrich-Orte fuer zusaetzliche Vielfalt
 	if rng.randf() < 0.12:
-		name += "-" + str(waehle(ORT_SUF[n])).capitalize()
-	return name
+		ortsname += "-" + str(waehle(ORT_SUF[n])).capitalize()
+	return ortsname
 
 # ------------------------------------------------------------ Vereinsname ---
 ## Liefert {name, kurz, ort, beiname}
@@ -331,10 +331,10 @@ func kuerzel(voll: String) -> String:
 
 # -------------------------------------------------------------- Sponsoren ---
 func sponsor() -> String:
-	var name := str(waehle(SPONSOR_PRE)) + str(waehle(SPONSOR_BRANCHE))
+	var firma := str(waehle(SPONSOR_PRE)) + str(waehle(SPONSOR_BRANCHE))
 	if rng.randf() < 0.75:
-		name += " " + str(waehle(SPONSOR_FORM))
-	return name
+		firma += " " + str(waehle(SPONSOR_FORM))
+	return firma
 
 # ----------------------------------------------------------------- Medien ---
 func medium(nation: String) -> String:

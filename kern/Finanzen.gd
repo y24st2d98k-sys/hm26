@@ -17,10 +17,10 @@ const AUSBAU_STUFEN := {
 static func buchen(d: Dictionary, cid: String, betrag: float, grund: String, kategorie: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	v["kasse"] = float(v["kasse"]) + betrag
-	var log: Array = v["finanz_log"]
-	log.push_front({"tag": int(d["tag"]), "betrag": betrag, "grund": grund, "kategorie": kategorie})
-	if log.size() > 200:
-		log.resize(200)
+	var buchungen: Array = v["finanz_log"]
+	buchungen.push_front({"tag": int(d["tag"]), "betrag": betrag, "grund": grund, "kategorie": kategorie})
+	if buchungen.size() > 200:
+		buchungen.resize(200)
 
 ## Eintrittsgelder und Preisgelder nach einer Partie.
 static func spieltag_abrechnen(d: Dictionary, m: Dictionary) -> void:

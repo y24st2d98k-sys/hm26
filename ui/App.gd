@@ -250,7 +250,7 @@ func _starte_live(spiel_id: String) -> void:
 	live.visible = true
 	live.starte(spiel_id)
 
-func _auf_live_ende(spiel_id: String) -> void:
+func _auf_live_ende(_spiel_id: String) -> void:
 	live.visible = false
 	rahmen.visible = true
 	Welt.spieltag_abwickeln(Welt.tag())

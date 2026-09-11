@@ -25,9 +25,9 @@ func aufbauen() -> void:
 	var auto_haken := CheckBox.new()
 	auto_haken.text = "Aufstellung vor jedem Spiel automatisch optimieren"
 	auto_haken.tooltip_text = "Der Trainerstab stellt vor jeder Partie die beste verfügbare Sieben auf — nach Form, Fitness und Lastkonto. Ausschalten, wenn Sie selbst aufstellen wollen."
-	auto_haken.button_pressed = bool(Welt.daten["einstellungen"].get("auto_aufstellung", true))
+	auto_haken.button_pressed = bool(Welt.einstellung("auto_aufstellung", true))
 	auto_haken.toggled.connect(func(an):
-		Welt.daten["einstellungen"]["auto_aufstellung"] = an
+		Welt.setze_einstellung("auto_aufstellung", an)
 		_melde("Automatische Aufstellung %s." % ("eingeschaltet" if an else "ausgeschaltet"))
 		aktualisieren())
 	kopf.add_child(auto_haken)
@@ -66,16 +66,16 @@ func aufbauen() -> void:
 	var feldkarte := Bausteine.karte_in(rechts, "Vorschau")
 	var umschalter := Stil.hbox(8)
 	feldkarte.add_child(umschalter)
-	var an := Stil.knopf("Angriff")
-	an.pressed.connect(func():
+	var knopf_angriff := Stil.knopf("Angriff")
+	knopf_angriff.pressed.connect(func():
 		vorschau_angriff = true
 		_feld_auffrischen())
-	umschalter.add_child(an)
-	var ab := Stil.knopf("Abwehr")
-	ab.pressed.connect(func():
+	umschalter.add_child(knopf_angriff)
+	var knopf_abwehr := Stil.knopf("Abwehr")
+	knopf_abwehr.pressed.connect(func():
 		vorschau_angriff = false
 		_feld_auffrischen())
-	umschalter.add_child(ab)
+	umschalter.add_child(knopf_abwehr)
 	feld = Spielfeld.new()
 	feld.custom_minimum_size = Vector2(520, 262)
 	feldkarte.add_child(feld)
@@ -116,7 +116,7 @@ func _feld_auffrischen() -> void:
 	feld.setze_szene({"heim": eigene, "gast": {}})
 	feld.ball = Vector2(26.0, 10.0) if vorschau_angriff else Vector2(14.0, 10.0)
 
-func _verfuegbar(ausser: Array) -> Array:
+func _verfuegbar(_ausser: Array) -> Array:
 	var liste: Array = []
 	for sid in Welt.verein(Welt.mein_verein_id)["kader"]:
 		var sp: Dictionary = Welt.spieler(sid)
@@ -162,7 +162,7 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 		_setze(block, pos, gewaehlt))
 	h.add_child(wahl)
 
-	if aktuell != "" and Welt.daten["spieler"].has(aktuell):
+	if aktuell != "" and not Welt.spieler(aktuell).is_empty():
 		var sp2: Dictionary = Welt.spieler(aktuell)
 		h.add_child(Stil.balken(Spielerfabrik.einsatzform(sp2), 100.0, 70))
 		var e := Stil.matt("Last %d" % int(float(sp2["last"])), Stil.S_MINI)
@@ -225,7 +225,7 @@ func _formationsstaerke(block: String) -> float:
 	var n := 0
 	for pos in b.keys():
 		var sid: String = str(b[pos])
-		if sid == "" or not Welt.daten["spieler"].has(sid):
+		if sid == "" or Welt.spieler(sid).is_empty():
 			continue
 		var sp: Dictionary = Welt.spieler(sid)
 		if pos == "TW":
@@ -301,8 +301,8 @@ func _taktik() -> void:
 	taktik_bereich.add_child(haken)
 	var haken2 := CheckBox.new()
 	haken2.text = "Automatische Rotation im Spiel (Kräftehaushalt)"
-	haken2.button_pressed = bool(Welt.daten["einstellungen"].get("autorotation", true))
-	haken2.toggled.connect(func(an): Welt.daten["einstellungen"]["autorotation"] = an)
+	haken2.button_pressed = bool(Welt.einstellung("autorotation", true))
+	haken2.toggled.connect(func(gesetzt): Welt.setze_einstellung("autorotation", gesetzt))
 	taktik_bereich.add_child(haken2)
 
 func _auswahl(beschriftung: String, werte: Array, aktuell: String, rueckruf: Callable, hinweis: String) -> HBoxContainer:
@@ -365,7 +365,7 @@ func _bank() -> void:
 
 ## Weist auf Spieler in der Aufstellung hin, die nicht in Verfassung sind.
 func _warnungen() -> void:
-	if bool(Welt.daten["einstellungen"].get("auto_aufstellung", true)):
+	if bool(Welt.einstellung("auto_aufstellung", true)):
 		return
 	var auf: Dictionary = Welt.verein(Welt.mein_verein_id)["aufstellung"]
 	var betroffen: Array = []
@@ -373,7 +373,7 @@ func _warnungen() -> void:
 	for block in ["angriff", "abwehr"]:
 		for pos in (auf.get(block, {}) as Dictionary).keys():
 			var sid: String = str(auf[block][pos])
-			if sid == "" or gesehen.has(sid) or not Welt.daten["spieler"].has(sid):
+			if sid == "" or gesehen.has(sid) or Welt.spieler(sid).is_empty():
 				continue
 			gesehen[sid] = true
 			var sp: Dictionary = Welt.spieler(sid)

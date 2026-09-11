@@ -1,3 +1,7 @@
+# Godot-Arbeitsdateien
 .godot/
 *.import
 export_presets.cfg
+
+# Von Godot 4.4+ erzeugte Ressourcen-IDs; werden beim Import neu angelegt
+*.uid

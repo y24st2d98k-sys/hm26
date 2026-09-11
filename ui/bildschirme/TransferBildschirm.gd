@@ -112,6 +112,12 @@ func aufbauen() -> void:
 func aktualisieren() -> void:
 	if suchergebnis == null:
 		return
+	if not Welt.bereit():
+		leeren(suchergebnis)
+		leeren(verhandlungen)
+		kopfinfo.text = ""
+		suchergebnis.add_child(Stil.matt("Kein Spielstand geladen."))
+		return
 	_kopf()
 	_suche()
 	_verhandlungen()
@@ -131,7 +137,7 @@ func _kopf() -> void:
 			Stil.geld(float(v["transferbudget"])), Finanzen.gehaltsauslastung(Welt.daten, Welt.mein_verein_id)]
 
 func _suche() -> void:
-	if suchergebnis == null or Welt.daten.is_empty():
+	if suchergebnis == null or not Welt.bereit():
 		return
 	leeren(suchergebnis)
 	var f := filter.duplicate()
@@ -184,9 +190,11 @@ func _zeile(sid: String) -> Control:
 
 func _verhandlungen() -> void:
 	leeren(verhandlungen)
+	if not Welt.bereit():
+		return
 	var laufend := Bausteine.karte_in(verhandlungen, "Laufende Verhandlungen")
 	var eigene: Array = []
-	for a in Welt.daten["transfermarkt"]["angebote"]:
+	for a in (Welt.daten.get("transfermarkt", {}).get("angebote", []) as Array):
 		if str(a["nach"]) == Welt.mein_verein_id or str(a["von"]) == Welt.mein_verein_id:
 			eigene.append(a)
 	if eigene.is_empty():
@@ -195,7 +203,7 @@ func _verhandlungen() -> void:
 		laufend.add_child(_verhandlung(a))
 
 	var geruechte := Bausteine.karte_in(verhandlungen, "Gerüchteküche")
-	var liste: Array = Welt.daten["transfermarkt"].get("gerüchte", [])
+	var liste: Array = Welt.daten.get("transfermarkt", {}).get("gerüchte", [])
 	if liste.is_empty():
 		geruechte.add_child(Stil.matt("Derzeit ist es ruhig."))
 	for g in liste.slice(0, 8):
@@ -204,11 +212,11 @@ func _verhandlungen() -> void:
 		geruechte.add_child(t)
 
 	var verlauf := Bausteine.karte_in(verhandlungen, "Letzte Wechsel")
-	var v: Array = Welt.daten["transfermarkt"].get("verlauf", [])
+	var v: Array = Welt.daten.get("transfermarkt", {}).get("verlauf", [])
 	if v.is_empty():
 		verlauf.add_child(Stil.matt("Noch keine Transfers."))
 	for e in v.slice(0, 10):
-		if not Welt.daten["spieler"].has(str(e["spieler"])):
+		if Welt.spieler(str(e["spieler"])).is_empty():
 			continue
 		var sp: Dictionary = Welt.spieler(str(e["spieler"]))
 		verlauf.add_child(Stil.info_zeile("%s → %s" % [Spielerfabrik.kurz_name(sp),
@@ -217,7 +225,7 @@ func _verhandlungen() -> void:
 func _verhandlung(a: Dictionary) -> Control:
 	var karte := Stil.karte("", true)
 	var sid: String = str(a["spieler"])
-	if not Welt.daten["spieler"].has(sid):
+	if Welt.spieler(sid).is_empty():
 		karte.add_child(Stil.matt("Spieler nicht mehr verfügbar."))
 		return Stil.karte_wurzel(karte)
 	var sp: Dictionary = Welt.spieler(sid)

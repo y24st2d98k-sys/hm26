@@ -56,29 +56,48 @@ func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0) ->
 
 # ------------------------------------------------------------- Zugriffe ---
 
+# Alle Zugriffe vertragen einen leeren Zustand: die Anwendung startet ohne
+# geladenen Spielstand, und jeder Bildschirm muss sich auch dann aufbauen lassen.
+
 func verein(cid: String) -> Dictionary:
-	return daten["vereine"].get(cid, {})
+	return (daten.get("vereine", {}) as Dictionary).get(cid, {})
 
 func spieler(sid: String) -> Dictionary:
-	return daten["spieler"].get(sid, {})
+	return (daten.get("spieler", {}) as Dictionary).get(sid, {})
 
 func mitarbeiter(pid: String) -> Dictionary:
-	return daten["personal"].get(pid, {})
+	return (daten.get("personal", {}) as Dictionary).get(pid, {})
 
 func liga(lid: String) -> Dictionary:
-	return daten["ligen"].get(lid, {})
+	return (daten.get("ligen", {}) as Dictionary).get(lid, {})
 
 func partie(mid: String) -> Dictionary:
-	return daten["spiele"].get(mid, {})
+	return (daten.get("spiele", {}) as Dictionary).get(mid, {})
 
 func mein_verein() -> Dictionary:
-	return daten["vereine"].get(mein_verein_id, {})
+	return (daten.get("vereine", {}) as Dictionary).get(mein_verein_id, {})
 
 func trainer() -> Dictionary:
 	return daten.get("trainer", {})
 
+## Zugriff auf eine Spieleinstellung, auch wenn noch keine Welt geladen ist.
+func einstellung(schluessel: String, standard: Variant) -> Variant:
+	return (daten.get("einstellungen", {}) as Dictionary).get(schluessel, standard)
+
+func setze_einstellung(schluessel: String, wert: Variant) -> void:
+	if not daten.has("einstellungen"):
+		daten["einstellungen"] = {}
+	daten["einstellungen"][schluessel] = wert
+
+## Gibt es einen bespielbaren Zustand?
+func bereit() -> bool:
+	return laeuft and not daten.is_empty()
+
 func tag() -> int:
 	return int(daten.get("tag", 0))
+
+func datum_vorhanden() -> bool:
+	return daten.has("tag")
 
 func startjahr() -> int:
 	return int(daten.get("startjahr", 2026))
@@ -95,30 +114,32 @@ func datum_text(lang: bool = false) -> String:
 	return Kalender.text(tag(), startjahr(), lang)
 
 func wettbewerb_name(wid: String) -> String:
-	if daten["ligen"].has(wid):
+	if (daten.get("ligen", {}) as Dictionary).has(wid):
 		return str(daten["ligen"][wid]["name"])
-	if daten["pokale"].has(wid):
+	if (daten.get("pokale", {}) as Dictionary).has(wid):
 		return str(daten["pokale"][wid]["name"])
-	if daten["international"].has(wid):
+	if (daten.get("international", {}) as Dictionary).has(wid):
 		return str(daten["international"][wid]["name"])
 	if wid.begins_with("test_"):
 		return "Vorbereitungsspiel"
 	if wid.begins_with("sc_"):
 		var nid := wid.substr(3)
-		return str(daten["nationen"].get(nid, {}).get("supercup_name", "Supercup"))
+		return str((daten.get("nationen", {}) as Dictionary).get(nid, {}).get("supercup_name", "Supercup"))
 	return "Testspiel"
 
 func spiele_am_tag(t: int) -> Array:
-	return daten["plan"].get(t, [])
+	return (daten.get("plan", {}) as Dictionary).get(t, [])
 
 ## Naechste Partie eines Vereins ab dem aktuellen Tag.
 ## Sucht ueber den Terminplan statt ueber alle jemals angesetzten Partien —
 ## das wird pro Spieltag hundertfach aufgerufen.
 func naechstes_spiel(cid: String, sichtweite: int = 120) -> Dictionary:
+	if cid == "" or daten.is_empty():
+		return {}
 	var start: int = tag()
 	for t in range(start, start + sichtweite):
-		for mid in daten["plan"].get(t, []):
-			var m: Dictionary = daten["spiele"].get(mid, {})
+		for mid in spiele_am_tag(t):
+			var m: Dictionary = partie(mid)
 			if m.is_empty() or bool(m["gespielt"]):
 				continue
 			if str(m["heim"]) == cid or str(m["gast"]) == cid:
@@ -128,10 +149,12 @@ func naechstes_spiel(cid: String, sichtweite: int = 120) -> Dictionary:
 ## Die zuletzt gespielten Partien eines Vereins, neueste zuerst.
 func letzte_spiele(cid: String, anzahl: int = 5, sichtweite: int = 200) -> Array:
 	var liste: Array = []
+	if cid == "" or daten.is_empty():
+		return liste
 	var start: int = tag()
 	for t in range(start, maxi(start - sichtweite, -1), -1):
-		for mid in daten["plan"].get(t, []):
-			var m: Dictionary = daten["spiele"].get(mid, {})
+		for mid in spiele_am_tag(t):
+			var m: Dictionary = partie(mid)
 			if m.is_empty() or not bool(m["gespielt"]):
 				continue
 			if str(m["heim"]) == cid or str(m["gast"]) == cid:
@@ -142,6 +165,8 @@ func letzte_spiele(cid: String, anzahl: int = 5, sichtweite: int = 200) -> Array
 
 func kader(cid: String) -> Array:
 	var liste: Array = (verein(cid).get("kader", []) as Array).duplicate()
+	if liste.is_empty():
+		return liste
 	liste.sort_custom(func(a, b):
 		var sa: Dictionary = spieler(a)
 		var sb: Dictionary = spieler(b)
@@ -155,6 +180,8 @@ func kader(cid: String) -> Array:
 # ------------------------------------------------------------ Nachrichten ---
 
 func nachricht(inhalt: Dictionary) -> void:
+	if daten.is_empty():
+		return
 	daten["zaehler"]["nachricht"] = int(daten["zaehler"]["nachricht"]) + 1
 	var n := {
 		"id": "n_%05d" % int(daten["zaehler"]["nachricht"]),
@@ -174,7 +201,7 @@ func nachricht(inhalt: Dictionary) -> void:
 
 func ungelesene_nachrichten() -> int:
 	var z := 0
-	for n in daten.get("nachrichten", []):
+	for n in (daten.get("nachrichten", []) as Array):
 		if not bool(n["gelesen"]):
 			z += 1
 	return z
@@ -265,9 +292,9 @@ func _wettbewerbe_fortschreiben() -> void:
 			if bool(pokal.get("beendet", false)):
 				Saison.pokalsieger_feiern(daten, pid)
 			elif uebrig.size() > 0:
-				var name := Spielplan.pokalrunden_name(uebrig.size())
+				var rundenname := Spielplan.pokalrunden_name(uebrig.size())
 				if _eigener_in(uebrig):
-					nachricht({"typ": "wettbewerb", "betreff": "%s: %s erreicht" % [pokal["name"], name],
+					nachricht({"typ": "wettbewerb", "betreff": "%s: %s erreicht" % [pokal["name"], rundenname],
 						"text": "Die Auslosung ist erfolgt. Der nächste Gegner steht fest."})
 	for wid in daten["international"].keys():
 		var wb: Dictionary = daten["international"][wid]

@@ -19,11 +19,15 @@ const ROLLEN_NAME := {
 }
 
 static func fenster_offen(d: Dictionary) -> bool:
-	var tis: int = Kalender.tag_in_saison(int(d["tag"]))
+	if d.is_empty():
+		return false
+	var tis: int = Kalender.tag_in_saison(int(d.get("tag", 0)))
 	return (tis >= SOMMER_VON and tis <= SOMMER_BIS) or (tis >= WINTER_VON and tis <= WINTER_BIS)
 
 static func tage_bis_fensterschluss(d: Dictionary) -> int:
-	var tis: int = Kalender.tag_in_saison(int(d["tag"]))
+	if d.is_empty():
+		return 0
+	var tis: int = Kalender.tag_in_saison(int(d.get("tag", 0)))
 	if tis <= SOMMER_BIS:
 		return SOMMER_BIS - tis
 	if tis < WINTER_VON:
@@ -39,6 +43,8 @@ static func tage_bis_fensterschluss(d: Dictionary) -> int:
 ## nur_vertragsende, nur_vereinslos, nation, text
 static func suchen(d: Dictionary, filter: Dictionary, eigener_verein: String = "") -> Array:
 	var treffer: Array = []
+	if d.is_empty():
+		return treffer
 	var saison: int = Welt.saison_index()
 	for sid in d["spieler"].keys():
 		var sp: Dictionary = d["spieler"][sid]

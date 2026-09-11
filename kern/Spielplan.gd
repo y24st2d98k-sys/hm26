@@ -90,7 +90,7 @@ static func doppelrunde(teams: Array) -> Array:
 	var hin: Array = []
 	for r in range(n - 1):
 		var paare: Array = []
-		for i in range(n / 2):
+		for i in range(int(n / 2.0)):
 			var a = liste[i]
 			var b = liste[n - 1 - i]
 			if a == "" or b == "":
@@ -337,7 +337,7 @@ static func _plane_gruppenphase(d: Dictionary, wb: Dictionary, basis: int) -> vo
 	var gruppen: Array = [[], [], [], []]
 	# Schlangensetzung fuer ausgewogene Gruppen
 	for i in range(teams.size()):
-		var topf: int = i / 4
+		var topf: int = int(i / 4.0)
 		var g: int = (i % 4) if topf % 2 == 0 else (3 - (i % 4))
 		gruppen[g].append(teams[i])
 	wb["gruppen"] = gruppen

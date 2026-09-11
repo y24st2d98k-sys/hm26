@@ -69,14 +69,14 @@ func aktualisieren() -> void:
 		g.add_child(Stil.text("%d Jahr(e)" % maxi(rest, 0), Stil.S_KLEIN, Stil.ROT if rest <= 0 else Stil.TEXT_MATT))
 
 	var buchungen := Bausteine.karte_in(inhalt, "Letzte Buchungen")
-	var log: Array = v["finanz_log"]
-	if log.is_empty():
+	var buchungsliste: Array = v["finanz_log"]
+	if buchungsliste.is_empty():
 		buchungen.add_child(Stil.matt("Noch keine Buchungen."))
 	else:
 		var g2 := Stil.tabelle(["Datum", "Vorgang", "Kategorie", "Betrag"])
 		g2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		buchungen.add_child(g2)
-		for e in log.slice(0, 30):
+		for e in buchungsliste.slice(0, 30):
 			g2.add_child(Stil.matt(Kalender.kurz(int(e["tag"]), Welt.startjahr()), Stil.S_KLEIN))
 			g2.add_child(Stil.text(str(e["grund"]), Stil.S_KLEIN))
 			g2.add_child(Stil.matt(str(e["kategorie"]), Stil.S_KLEIN))
