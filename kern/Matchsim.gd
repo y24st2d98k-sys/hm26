@@ -1070,13 +1070,21 @@ func bericht() -> Dictionary:
 		"ticker": _ticker_kurz(),
 	}
 
+const BERICHT_FELDER := ["sekunden", "tore", "wuerfe", "assists", "paraden", "gegentore",
+	"blocks", "fehler", "zeitstrafen", "ballgewinne", "rot", "bewertung", "siebenmeter",
+	"siebenmeter_tore", "kraft"]
+
 func _team_bericht(t: Dictionary) -> Dictionary:
 	var spieler := {}
 	for sid in t["zustand"].keys():
 		var z: Dictionary = t["zustand"][sid]
 		if float(z["sekunden"]) <= 0.0:
 			continue
-		spieler[sid] = z.duplicate()
+		# Nur die Ergebnisfelder aufheben — Zwischenspeicher gehoert nicht in den Spielstand.
+		var schlank := {}
+		for feld in BERICHT_FELDER:
+			schlank[feld] = z.get(feld, 0)
+		spieler[sid] = schlank
 	return {
 		"cid": t["cid"],
 		"tore": t["tore"],

@@ -70,7 +70,11 @@ static func nach_spiel(d: Dictionary, cid: String, m: Dictionary) -> void:
 	var eigene: int = int(m["tore_heim"]) if str(m["heim"]) == cid else int(m["tore_gast"])
 	var fremde: int = int(m["tore_gast"]) if str(m["heim"]) == cid else int(m["tore_heim"])
 	var gegner: String = str(m["gast"]) if str(m["heim"]) == cid else str(m["heim"])
-	var erwartung: float = clampf(0.5 + (float(v["ruf"]) - float(d["vereine"][gegner]["ruf"])) / 90.0, 0.12, 0.88)
+	# Erwartet wird an dem gemessen, was der Kader tatsaechlich hergibt — nicht
+	# nur am Ruf, der sich langsamer bewegt als die Mannschaft.
+	var eigen: float = _staerkeindex(d, cid)
+	var fremd: float = _staerkeindex(d, gegner)
+	var erwartung: float = clampf(0.5 + (eigen - fremd) / 90.0, 0.12, 0.88)
 	var ergebnis: float = 1.0 if eigene > fremde else (0.5 if eigene == fremde else 0.0)
 	var delta: float = (ergebnis - erwartung) * 2.8
 	if str(m["art"]) == "pokal" and ergebnis == 0.0:
@@ -106,6 +110,22 @@ static func wochenpruefung(d: Dictionary, cid: String) -> void:
 	if Trainerkarriere.hat_praegung(d, "eiserne_hand"):
 		v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + 0.15, 0.0, 100.0)
 	_konsequenzen(d, cid, platz, gewicht)
+
+## Mischung aus Ruf und tatsaechlicher Kaderstaerke.
+static func _staerkeindex(d: Dictionary, cid: String) -> float:
+	var kader: Array = d["vereine"][cid]["kader"]
+	if kader.is_empty():
+		return float(d["vereine"][cid]["ruf"])
+	var werte: Array = []
+	for sid in kader:
+		werte.append(Spielerfabrik.gesamt(d["spieler"][sid]))
+	werte.sort()
+	werte.reverse()
+	var summe := 0.0
+	var n: int = mini(10, werte.size())
+	for i in range(n):
+		summe += float(werte[i])
+	return float(d["vereine"][cid]["ruf"]) * 0.45 + (summe / float(n)) * 0.55
 
 static func _konsequenzen(d: Dictionary, cid: String, platz: int, gewicht: float) -> void:
 	var v: Dictionary = d["vereine"][cid]

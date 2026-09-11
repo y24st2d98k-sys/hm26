@@ -223,6 +223,8 @@ func spieltag_abwickeln(t: int) -> void:
 
 func partie_simulieren(mid: String) -> void:
 	var m: Dictionary = daten["spiele"][mid]
+	KI.kader_auffuellen(daten, str(m["heim"]))
+	KI.kader_auffuellen(daten, str(m["gast"]))
 	KI.aufstellung_pruefen(daten, str(m["heim"]))
 	KI.aufstellung_pruefen(daten, str(m["gast"]))
 	var sim := Matchsim.new(daten, m)
@@ -305,6 +307,8 @@ func _wochenrhythmus(t: int) -> void:
 		Vorstand.wochenpruefung(daten, mein_verein_id)
 		KI.wochenlogik(daten)
 		Scouting.wochenbericht(daten, mein_verein_id)
+		if mein_verein_id == "" and (trainer().get("jobangebote", []) as Array).is_empty():
+			Saison.jobangebote_erzeugen(daten, "")
 	if wt == 3:  # Donnerstag: Kabine und Gerüchte
 		Kabine.wochenpuls(daten)
 		Transfermarkt.geruechtekueche(daten)

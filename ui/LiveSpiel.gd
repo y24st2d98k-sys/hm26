@@ -39,6 +39,9 @@ var tempo_knoepfe: Array = []
 var abschluss_knopf: Button
 var gewaehlt_raus: String = ""
 var hinweis: Label
+var anpfiff_knopf: Button
+var angepfiffen: bool = false
+var wunschtempo: int = 2
 
 func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -106,6 +109,9 @@ func _baue() -> void:
 		k.pressed.connect(func(): _setze_tempo(idx))
 		steuerung.add_child(k)
 		tempo_knoepfe.append(k)
+	anpfiff_knopf = Stil.knopf_primaer("Anpfiff")
+	anpfiff_knopf.pressed.connect(_anpfiff)
+	steuerung.add_child(anpfiff_knopf)
 	var ueberspringen := Stil.knopf("Zum Ende springen")
 	ueberspringen.pressed.connect(_ueberspringen)
 	steuerung.add_child(ueberspringen)
@@ -179,16 +185,31 @@ func starte(spiel_id: String) -> void:
 	feld.gast_kurz = str(Welt.verein(str(m["gast"])).get("kurz", ""))
 	anzeige_wettbewerb.text = "%s · %s · %s" % [Welt.wettbewerb_name(str(m["wettbewerb"])),
 		Kalender.text(int(m["tag"]), Welt.startjahr(), true), Welt.verein(str(m["heim"]))["halle"]["name"]]
-	_setze_tempo(int(Welt.daten["einstellungen"].get("sim_tempo", 2)))
+	wunschtempo = int(Welt.daten["einstellungen"].get("sim_tempo", 2))
+	angepfiffen = false
+	anpfiff_knopf.visible = true
+	_setze_tempo(0)
+	hinweis.text = "Aufstellung und Taktik prüfen — dann Anpfiff."
 	_taktik_aufbauen()
 	_kader_aufbauen()
 	_stats_aufbauen()
 	_szene_auffrischen()
 	_anzeige_auffrischen()
 
+func _anpfiff() -> void:
+	angepfiffen = true
+	anpfiff_knopf.visible = false
+	hinweis.text = ""
+	_setze_tempo(wunschtempo)
+
 func _setze_tempo(i: int) -> void:
 	tempo = i
-	Welt.daten["einstellungen"]["sim_tempo"] = i
+	if i > 0:
+		wunschtempo = i
+		Welt.daten["einstellungen"]["sim_tempo"] = i
+		if not angepfiffen:
+			angepfiffen = true
+			anpfiff_knopf.visible = false
 	for k in range(tempo_knoepfe.size()):
 		tempo_knoepfe[k].add_theme_color_override("font_color", Stil.AKZENT if k == i else Stil.TEXT)
 	var sekunden: float = float(TEMPI[i]["sekunden"])
@@ -210,12 +231,17 @@ func _schritt() -> void:
 	_ereignis_anzeigen(e)
 	_anzeige_auffrischen()
 	_szene_auffrischen(e)
+	if str(e["typ"]) == "halbzeit":
+		_setze_tempo(0)
+		hinweis.text = "Halbzeit — jetzt lassen sich Wechsel und Taktik anpassen."
 	if str(e["typ"]) == "ende":
 		_ende()
 
 func _ueberspringen() -> void:
 	if sim == null or fertig:
 		return
+	angepfiffen = true
+	anpfiff_knopf.visible = false
 	uhr.stop()
 	while not sim.beendet:
 		var e := sim.naechstes_ereignis()

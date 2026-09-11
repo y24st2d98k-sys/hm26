@@ -84,13 +84,13 @@ wird. Kennzahlen aus 300 Testpartien:
 
 | Kennzahl | Hallenherz | Realität (1. Liga) |
 |---|---|---|
-| Tore pro Spiel (gesamt) | 57,7 | ~58 |
-| Heim : Gast | 30,1 : 27,6 | ~30 : 28 |
-| Zeitstrafen pro Spiel | 7,6 | ~8 |
-| Siebenmeter pro Spiel | 7,5 | ~7 |
-| Technische Fehler | 19,1 | ~20 |
-| Paraden pro Spiel | 28,6 | ~28 |
-| Heimsiegquote | 55,7 % | ~57 % |
+| Tore pro Spiel (gesamt) | 58,1 | ~58 |
+| Heim : Gast | 29,7 : 28,4 | ~30 : 28 |
+| Zeitstrafen pro Spiel | 8,0 | ~8 |
+| Siebenmeter pro Spiel | 7,2 | ~7 |
+| Technische Fehler | 19,0 | ~20 |
+| Paraden pro Spiel | 28,0 | ~28 |
+| Heimsiegquote | 55,0 % | ~57 % |
 
 Abgebildet sind unter anderem:
 
@@ -228,6 +228,18 @@ sich mit der Kenntnis, die durch Scoutaufträge wächst.
 **Ligen ohne Unterbau steigen nicht ab.** Spanien und Polen sind im Spiel
 eingleisig; dort gibt es folgerichtig keinen Abstieg. Auf- und Abstieg findet
 in Deutschland, Dänemark und Frankreich statt.
+
+**Die Welt darf nicht ausbluten.** Ein Manager-Spiel, das KI-Vereine nur
+verwalten lässt, läuft nach wenigen Saisons leer. Deshalb verlängern KI-Vereine
+auslaufende Verträge nach nachvollziehbaren Regeln, füllen Kaderlücken aus dem
+freien Markt und verpflichten im Notfall auch kurzfristig — keine Mannschaft
+kann mit zu wenigen Spielern antreten. Ein Testlauf über drei Saisons zeigt
+stabile Kader (Ø 20 Spieler, kleinster 15) und rund 500 Transfers.
+
+**Der Vorstand misst an der Mannschaft, nicht nur am Ruf.** Die Erwartung an eine
+Partie ergibt sich aus einer Mischung von Vereinsruf und tatsächlicher Stärke der
+zehn besten Spieler. Sonst würde ein Verein mit großem Namen und dünnem Kader
+seinen Trainer für Ergebnisse bestrafen, die dem Kader entsprechen.
 
 **Taktikänderungen im Spiel gelten nur für dieses Spiel.** Die Simulation
 arbeitet auf einer Kopie der Vereinstaktik. Wer dauerhaft umstellen will, tut

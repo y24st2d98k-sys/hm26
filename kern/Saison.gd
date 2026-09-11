@@ -244,7 +244,7 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 			"text": "Die Vorbereitung ist abgeschlossen. Saisonziel: %s. Transferbudget: %s, Gehaltsbudget: %s pro Woche." % [
 				v["vorstand"]["saisonziel"], Stil.geld(float(v["transferbudget"])), Stil.geld(float(v["gehaltsbudget"]))],
 		})
-	_jobangebote(d, mein)
+	jobangebote_erzeugen(d, mein)
 
 static func _vertraege_ablaufen(d: Dictionary) -> void:
 	var saison: int = Welt.saison_index()
@@ -403,13 +403,14 @@ static func _wettbewerbe_zuruecksetzen(d: Dictionary) -> void:
 	d["spiele"] = behalten
 
 ## Jobangebote fuer den Trainer — auch dann, wenn er gerade unter Vertrag steht.
-static func _jobangebote(d: Dictionary, mein: String) -> void:
+static func jobangebote_erzeugen(d: Dictionary, mein: String) -> void:
 	var t: Dictionary = d.get("trainer", {})
 	if t.is_empty():
 		return
 	t["jobangebote"] = []
 	var ruf: float = float(t["ruf"])
 	var kandidaten: Array = []
+	var vereinslos: bool = mein == ""
 	for cid in d["vereine"].keys():
 		if cid == mein:
 			continue
@@ -417,13 +418,18 @@ static func _jobangebote(d: Dictionary, mein: String) -> void:
 		var passend: float = float(v["ruf"])
 		if passend > ruf + 14.0 or passend < ruf - 30.0:
 			continue
-		# Vereine, die ihr Ziel verfehlt haben, suchen einen neuen Trainer
+		# Vereine, die ihr Ziel verfehlt haben, suchen einen neuen Trainer.
+		# Waehrend der Saison zaehlt der aktuelle Stand, danach die Abschlusstabelle.
 		var liga: Dictionary = d["ligen"][v["liga"]]
 		var tabelle: Array = liga.get("abschlusstabelle", [])
+		if tabelle.is_empty() or vereinslos:
+			tabelle = Spielplan.tabelle_sortiert(d, str(liga["id"]))
 		var platz: int = tabelle.find(cid) + 1
 		if platz <= 0:
 			continue
 		var verfehlt: bool = platz > int(v["vorstand"]["ziel_platz"]) + 2
+		if vereinslos:
+			verfehlt = verfehlt or float(v["vorstand"]["vertrauen"]) < 40.0
 		if not verfehlt and Namen.zufall() > 0.12:
 			continue
 		kandidaten.append(cid)
