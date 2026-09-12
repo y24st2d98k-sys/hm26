@@ -208,6 +208,7 @@ static func entlassung(d: Dictionary, cid: String) -> void:
 	t["ruf"] = clampf(float(t["ruf"]) - 7.0, 1.0, 100.0)
 	t["vereinslos_seit"] = int(d["tag"])
 	Welt.mein_verein_id = ""
+	Talentsuche.aufraeumen(d)
 
 ## Einschaetzung fuer den Vorstandsbildschirm.
 static func lagebericht(d: Dictionary, cid: String) -> Dictionary:
@@ -263,6 +264,7 @@ static func vertragsangebot_pruefen(d: Dictionary, cid: String) -> void:
 			})
 			Trainerkarriere.verein_wechseln(d, "")
 			Welt.mein_verein_id = ""
+			Talentsuche.aufraeumen(d)
 		return
 	if rest > 1 or vertrauen < 55.0:
 		return

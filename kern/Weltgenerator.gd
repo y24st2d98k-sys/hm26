@@ -82,7 +82,7 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 		"social": [],
 		"medien": {"outlets": [], "fanaccounts": []},
 		"transfermarkt": {"angebote": [], "gerüchte": [], "verlauf": [], "fenster_offen": true},
-		"scouting": {"auftraege": [], "berichte": [], "beobachtung": []},
+		"scouting": {"auftraege": [], "berichte": [], "beobachtung": [], "talente": []},
 		"chronik": {"saisons": [], "ereignisse": []},
 		"rekorde": {},
 		"zaehler": {"spieler": 0, "verein": 0, "spiel": 0, "personal": 0, "nachricht": 0, "auftrag": 0},
@@ -372,7 +372,7 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"jugend": [],
 		"personal": [],
 		"taktik": standard_taktik(),
-		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": "", "anweisungen": {}},
+		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": "", "anweisungen": {}, "minuten": {}},
 		"mentoring": [],
 		"trainingslager": {},
 		"taktikprofile": [],
@@ -405,7 +405,7 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"ist_mensch": false,
 		"trainer": "",
 		"stimmung_kabine": Namen.glocke(65.0, 8.0, 40.0, 90.0),
-		"formkurve": [],
+		"formkurve": [], "siegesserie": 0, "serie_gemeldet": 0,
 	}
 
 static func leere_vereinsstats() -> Dictionary:
@@ -619,12 +619,29 @@ static func beste_abwehrformation(d: Dictionary, cid: String, angriff: Dictionar
 		var sp: Dictionary = d["spieler"][sid]
 		if sp["verletzung"].is_empty() and int(sp["sperre"]) <= 0 and not bool(sp["ist_torwart"]):
 			frei.append(sid)
-	frei.sort_custom(func(a, b): return Spielerfabrik.abwehrwert(d["spieler"][a]) > Spielerfabrik.abwehrwert(d["spieler"][b]))
 	var auf := {"TW": angriff.get("TW", "")}
-	var plaetze := ["A1", "A2", "A3", "A4", "A5", "A6"]
-	for i in range(mini(6, frei.size())):
-		auf[plaetze[i]] = frei[i]
+	# Erst die Innenblocker, dann aussen, dann die Halbpositionen: so bekommt
+	# jeder Platz den Spieler, der dort tatsaechlich hingehoert. Vorher wurde
+	# rein nach Abwehrwert von A1 bis A6 durchgereicht — dann verteidigte auch
+	# schon mal ein Kreislaeufer aussen und ein Aussen im Innenblock.
+	var reihenfolge := ["A3", "A4", "A1", "A6", "A2", "A5"]
+	for platz in reihenfolge:
+		var best := ""
+		var bw := -1.0
+		for sid in frei:
+			var sp: Dictionary = d["spieler"][sid]
+			var wert: float = Spielerfabrik.abwehrwert(sp) * Spielerfabrik.abwehr_eignung(sp, platz)
+			if wert > bw:
+				bw = wert
+				best = sid
+		if best == "":
+			break
+		auf[platz] = best
+		frei.erase(best)
 	return auf
+
+## Am Spieltag darf ein Verein hoechstens so viele Spieler aufbieten.
+const SPIELTAGSKADER := 14
 
 static func bank_aus_kader(d: Dictionary, cid: String, auf: Dictionary) -> Array:
 	var verein: Dictionary = d["vereine"][cid]
@@ -641,7 +658,8 @@ static func bank_aus_kader(d: Dictionary, cid: String, auf: Dictionary) -> Array
 			continue
 		bank.append(sid)
 	bank.sort_custom(func(a, b): return Spielerfabrik.gesamt(d["spieler"][a]) > Spielerfabrik.gesamt(d["spieler"][b]))
-	return bank.slice(0, 9)
+	# Im Handball stehen am Spieltag hoechstens 14 Spieler im Aufgebot.
+	return bank.slice(0, maxi(SPIELTAGSKADER - drin.size(), 0))
 
 static func _bester_siebenmeter(d: Dictionary, cid: String) -> String:
 	var verein: Dictionary = d["vereine"][cid]

@@ -220,6 +220,8 @@ static func verein_wechseln(d: Dictionary, neuer_verein: String) -> void:
 			"abfindung_faktor": 0.5,
 		}
 	Welt.mein_verein_id = neuer_verein
+	# Gesichtete Talente des alten Vereins bleiben dort.
+	Talentsuche.aufraeumen(d)
 
 static func voller_name(t: Dictionary) -> String:
 	return "%s %s" % [t.get("vorname", ""), t.get("nachname", "")]

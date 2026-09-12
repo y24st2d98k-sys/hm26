@@ -163,6 +163,7 @@ static func _monat_melden(d: Dictionary, e: Dictionary, mein: String) -> void:
 			"betreff": "Spieler des Monats: %s" % Spielerfabrik.voller_name(d["spieler"][sid]),
 			"text": "%s ist zum besten Spieler des Monats %s der %s gewählt worden." % [
 				Spielerfabrik.voller_name(d["spieler"][sid]), str(e["monat"]), str(d["ligen"][e["liga"]]["name"])],
+			"daten": {"spieler": sid},
 		})
 	if str(e["verein"]) == mein:
 		Welt.nachricht({
@@ -263,6 +264,7 @@ static func _saison_melden(d: Dictionary, e: Dictionary, liganame: String, mein:
 				"Neuzugang" if schluessel == "neuzugang" else "Nachwuchsspieler",
 				Spielerfabrik.voller_name(d["spieler"][sid])],
 			"text": "Die %s ehrt %s für seine Saison." % [liganame, Spielerfabrik.voller_name(d["spieler"][sid])],
+			"daten": {"spieler": sid},
 		})
 	if str(e["trainerverein"]) == mein:
 		var t: Dictionary = d.get("trainer", {})

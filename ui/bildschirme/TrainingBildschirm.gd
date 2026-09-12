@@ -126,7 +126,7 @@ func _entwicklung() -> void:
 		var sb: Dictionary = Welt.spieler(b)
 		return (float(sa["potenzial"]) - Spielerfabrik.gesamt(sa)) > (float(sb["potenzial"]) - Spielerfabrik.gesamt(sb)))
 	entwicklung_bereich.add_child(Stil.matt("Spieler mit dem größten verbleibenden Entwicklungsraum.", Stil.S_MINI))
-	var g := Stil.tabelle(["Spieler", "Alter", "Stärke", "Perspektive", "Förderung"])
+	var g := Stil.tabelle(["Spieler", "Alter", "Stärke", "Perspektive", "Entwicklung", "Förderung"])
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entwicklung_bereich.add_child(g)
 	for sid in kader.slice(0, 9):
@@ -137,6 +137,7 @@ func _entwicklung() -> void:
 		g.add_child(Stil.text(str(int(sp["alter"])), Stil.S_KLEIN))
 		g.add_child(Stil.text("%d" % int(Spielerfabrik.gesamt(sp)), Stil.S_KLEIN, Stil.wert_farbe(Spielerfabrik.gesamt(sp), 100.0)))
 		g.add_child(Stil.text(Scouting.potenzial_text(Welt.daten, sid), Stil.S_KLEIN, Stil.LILA))
+		g.add_child(Stil.matt(Scouting.tempo_text(Welt.daten, sid), Stil.S_KLEIN))
 		g.add_child(Stil.matt(str(Training.INDIVIDUALFOKUS.get(str(sp.get("trainingsfokus", "")), "—")), Stil.S_KLEIN))
 
 func _lastkonto() -> void:

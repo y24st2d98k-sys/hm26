@@ -394,6 +394,8 @@ static func aufstellung_saeubern(d: Dictionary, cid: String, sid: String) -> voi
 		auf["kapitaen"] = ""
 	if str(auf.get("siebenmeter", "")) == sid:
 		auf["siebenmeter"] = ""
+	(auf.get("anweisungen", {}) as Dictionary).erase(sid)
+	(auf.get("minuten", {}) as Dictionary).erase(sid)
 
 static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: int) -> void:
 	var sp: Dictionary = d["spieler"][sid]
@@ -468,6 +470,10 @@ static func _klausel_versuchen(d: Dictionary, sid: String, sp: Dictionary, klaus
 	var interessenten: Array = []
 	for cid in Weltgenerator.clubs(d):
 		if cid == von:
+			continue
+		# Der eigene Verein kauft niemanden hinter dem Rücken des Trainers.
+		# Eine Klausel zu ziehen ist eine Entscheidung, keine Automatik.
+		if cid == Welt.mein_verein_id:
 			continue
 		var v: Dictionary = d["vereine"][cid]
 		if float(v["transferbudget"]) < klausel or float(v["kasse"]) < klausel * 0.6:

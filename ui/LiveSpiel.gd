@@ -260,11 +260,18 @@ func _schritt() -> void:
 	if _zug.is_empty():
 		_ereignis_abschliessen(e)
 	else:
-		# Die Mannschaften nehmen ihre Positionen ein, der Ball geht zum Angriff.
-		_szene_auffrischen()
+		# Die Simulation hat den Angriff schon zu Ende gerechnet und das
+		# Angriffsrecht weitergegeben. Das Feld muss den Angriff zeigen, von dem
+		# das Ereignis handelt — sonst laufen Bild und Ticker auseinander.
+		_szene_auffrischen({}, str(e["team"]))
 
 ## Baut aus einem Ereignis die Takte eines Angriffs. Der letzte Takt traegt das
 ## Ereignis selbst — dort erscheint der Text im Ticker.
+##
+## Ein Angriff ist hier keine Abfolge von Pässen mehr, sondern hat eine Form:
+## Aufbau, ein Kreuzen oder ein Anspiel an den Kreis, dann der Abschluss. Zu
+## jedem Takt gehören Laufwege — deshalb steht im Takt auch, wer den Ball
+## abgibt und nicht nur, wer ihn bekommt.
 func _zug_bauen(e: Dictionary) -> Array:
 	var typ: String = str(e["typ"])
 	if not ANGRIFFSAUSGANG.has(typ):
@@ -274,13 +281,23 @@ func _zug_bauen(e: Dictionary) -> Array:
 		return []
 	var takte: Array = []
 	var mannschaft: Dictionary = sim.heim if seite == "heim" else sim.gast
-	var stationen := _anspielstationen(mannschaft, str(e.get("spieler", "")))
-	for sid in stationen:
-		takte.append({"art": "pass", "sid": sid})
+	var schuetze: String = str(e.get("spieler", ""))
+	var stationen := _anspielstationen(mannschaft, schuetze)
+	var vorher := ""
+	for i in range(stationen.size()):
+		var sid: String = str(stationen[i])
+		var letzter: bool = i == stationen.size() - 1
+		takte.append({"art": "pass", "sid": sid, "von": vorher, "seite": seite})
+		vorher = sid
+		# Zwischen zwei Stationen loest sich gelegentlich der Kreisläufer oder
+		# es kreuzen zwei Rückraumspieler — die Bewegung, die eine Deckung
+		# tatsächlich in Schwierigkeiten bringt.
+		if not letzter and randf() < 0.42:
+			takte.append({"art": "bewegung", "seite": seite, "traeger": sid})
 	if typ == "ballverlust":
 		takte.append({"art": "ereignis", "ereignis": e})
 		return takte
-	takte.append({"art": "wurf", "seite": seite, "typ": typ, "spieler": str(e.get("spieler", ""))})
+	takte.append({"art": "wurf", "seite": seite, "typ": typ, "spieler": schuetze})
 	takte.append({"art": "ereignis", "ereignis": e})
 	return takte
 
@@ -304,23 +321,77 @@ func _takt_ausfuehren(takt: Dictionary) -> void:
 	var dauer: float = maxf(uhr.wait_time, 0.08)
 	match str(takt["art"]):
 		"pass":
-			feld.ball_spielen(feld.spielerpunkt(str(takt["sid"])), dauer * 0.85)
+			var empfaenger: String = str(takt["sid"])
+			var seite_p: String = str(takt.get("seite", ""))
+			var ziel_p: Vector2 = feld.spielerpunkt(empfaenger)
+			# Wer den Ball erwartet, geht ihm entgegen — ein Pass wird
+			# angenommen und nicht abgewartet.
+			var tor_p: Vector2 = feld.tormitte(seite_p) if seite_p != "" else ziel_p
+			feld.vorstossen(empfaenger, (tor_p - ziel_p) * Vector2(1.0, 0.35), 1.1, 1.5)
+			feld.ball_spielen(feld.spielerpunkt(empfaenger), dauer * 0.85)
+			# Der abgebende Spieler loest sich nach dem Pass von seiner Stelle.
+			var von: String = str(takt.get("von", ""))
+			if von != "":
+				feld.vorstossen(von, Vector2(0.0, 1.0 if randf() < 0.5 else -1.0), 1.3, 1.4)
 			# Der Ring wandert mit dem Ball — so ist immer zu sehen, wer ihn hat.
-			feld.hervorgehoben = str(takt["sid"])
+			feld.hervorgehoben = empfaenger
+			if seite_p != "":
+				feld.abwehr_verschieben("gast" if seite_p == "heim" else "heim", ziel_p, 1.0)
 			Klang.spiele("ball", 0.18, 1.35)
+		"bewegung":
+			_bewegung_spielen(str(takt["seite"]), str(takt.get("traeger", "")))
 		"wurf":
 			var seite: String = str(takt["seite"])
 			var ziel: Vector2 = feld.tormitte(seite)
 			var typ: String = str(takt["typ"])
+			var schuetze: String = str(takt["spieler"])
+			# Anlauf: drei Schritte auf das Tor zu, dann der Sprung.
+			var von_s: Vector2 = feld.spielerpunkt(schuetze)
+			feld.laufweg(schuetze, von_s.lerp(ziel, 0.22), 1.6, 11.0)
 			# Ein Fehlwurf geht sichtbar daneben.
 			if typ == "fehlwurf":
 				ziel.y += 3.2 if randf() < 0.5 else -3.2
 			elif typ == "block":
-				ziel = feld.spielerpunkt(str(takt["spieler"])).lerp(ziel, 0.35)
-			feld.hervorgehoben = str(takt["spieler"])
+				ziel = von_s.lerp(ziel, 0.35)
+			feld.hervorgehoben = schuetze
+			# Die Deckung stellt sich in die Wurfbahn.
+			feld.abwehr_verschieben("gast" if seite == "heim" else "heim", von_s, 1.25)
 			feld.ball_werfen(ziel, dauer * 0.8, 1.8)
 		"ereignis":
 			_ereignis_abschliessen(takt["ereignis"])
+
+## Eine Bewegung ohne Ball: Kreuzen im Rückraum oder ein Kreisläufer, der sich
+## auf die andere Seite absetzt. Das ist der Unterschied zwischen sieben
+## Kreisen, die Bälle tauschen, und einem Angriff.
+func _bewegung_spielen(seite: String, traeger: String) -> void:
+	if sim == null or seite == "":
+		return
+	var mannschaft: Dictionary = sim.heim if seite == "heim" else sim.gast
+	var auf: Dictionary = mannschaft["angriff_auf"]
+	var tor: Vector2 = feld.tormitte(seite)
+	if randf() < 0.45:
+		# Kreisläufer setzt sich ab: er wechselt die Seite vor der Deckung.
+		var km: String = str(auf.get("KM", ""))
+		if km != "":
+			var jetzt: Vector2 = feld.spielerpunkt(km)
+			var hin: float = 4.5 if jetzt.y < 10.0 else -4.5
+			feld.laufweg(km, jetzt + Vector2((tor.x - jetzt.x) * 0.15, hin), 1.8, 8.5)
+			return
+	# Kreuzen: zwei Rückraumspieler tauschen die Wege.
+	var kandidaten: Array = []
+	for pos in ["RL", "RM", "RR"]:
+		var sid: String = str(auf.get(pos, ""))
+		if sid != "" and sid != traeger:
+			kandidaten.append(sid)
+	if kandidaten.size() < 2:
+		return
+	kandidaten.shuffle()
+	var a: String = str(kandidaten[0])
+	var b: String = str(kandidaten[1])
+	var pa: Vector2 = feld.spielerpunkt(a)
+	var pb: Vector2 = feld.spielerpunkt(b)
+	feld.laufweg(a, pb, 1.7, 9.0)
+	feld.laufweg(b, pa, 1.7, 9.0)
 
 func _ereignis_abschliessen(e: Dictionary) -> void:
 	_ereignis_anzeigen(e)
@@ -454,23 +525,38 @@ func _ereignisfarbe(e: Dictionary) -> Color:
 			return Stil.LILA
 	return Stil.TEXT_MATT
 
-func _szene_auffrischen(e: Dictionary = {}) -> void:
+## `seite` überschreibt, wer gerade angreift — nötig, weil die Engine dem
+## Ticker immer einen Angriff voraus ist.
+func _szene_auffrischen(e: Dictionary = {}, seite: String = "") -> void:
 	if sim == null:
 		return
-	feld.angreifer = sim.angriffsrecht
+	var angreift: String = seite if seite != "" else _angreifer_zu(e)
+	feld.angreifer = angreift
 	feld.setze_szene({
-		"heim": _team_szene(sim.heim, sim.angriffsrecht == "heim"),
-		"gast": _team_szene(sim.gast, sim.angriffsrecht == "gast"),
+		"heim": _team_szene(sim.heim, angreift == "heim"),
+		"gast": _team_szene(sim.gast, angreift == "gast"),
 	})
 	if not e.is_empty() and str(e.get("spieler", "")) != "":
 		feld.hervorgehoben = str(e["spieler"])
 	if e.is_empty():
-		# Neuer Angriff: der Ball geht zum Aufbauspieler der angreifenden Mannschaft.
-		var angreifer: Dictionary = sim.heim if sim.angriffsrecht == "heim" else sim.gast
+		# Neuer Angriff: beide Mannschaften stehen wieder in ihrer Formation,
+		# alte Laufwege sind erledigt.
+		feld.laufwege_loesen()
+		# Der Ball geht zum Aufbauspieler der angreifenden Mannschaft.
+		var angreifer: Dictionary = sim.heim if angreift == "heim" else sim.gast
 		var aufbau: String = str((angreifer["angriff_auf"] as Dictionary).get("RM", ""))
 		if aufbau != "":
 			feld.ball_spielen(feld.spielerpunkt(aufbau), maxf(uhr.wait_time, 0.1) * 0.8)
 	feld.queue_redraw()
+
+## Wer greift im gezeigten Bild an? Bei einem Angriffsereignis die Mannschaft
+## des Ereignisses, sonst das aktuelle Angriffsrecht der Engine.
+func _angreifer_zu(e: Dictionary) -> String:
+	if not e.is_empty() and ANGRIFFSAUSGANG.has(str(e.get("typ", ""))):
+		var seite: String = str(e.get("team", ""))
+		if seite == "heim" or seite == "gast":
+			return seite
+	return sim.angriffsrecht
 
 func _team_szene(t: Dictionary, greift_an: bool) -> Dictionary:
 	var block: Dictionary = t["angriff_auf"] if greift_an else t["abwehr_auf"]
@@ -687,12 +773,23 @@ func _kader_auffrischen() -> void:
 		return
 	Bildschirm.leeren(kader_bereich)
 	kader_bereich.add_child(Stil.matt("Erst einen Spieler auf dem Feld wählen, dann den Ersatzmann.", Stil.S_MINI))
-	var auf_platz: Array = sim.alle_auf_platz(mein_team)
-	kader_bereich.add_child(Stil.text("Auf dem Feld", Stil.S_KLEIN, Stil.AKZENT))
+	# Auf der Platte stehen sieben. Wer nur in der anderen Formation steht,
+	# gehört zur Rotation und wechselt beim Ballwechsel ein.
+	var auf_platz: Array = sim.aktuell_auf_platz(mein_team)
+	var rotation: Array = []
+	for sid_r in sim.alle_auf_platz(mein_team):
+		if not auf_platz.has(sid_r):
+			rotation.append(sid_r)
+	kader_bereich.add_child(Stil.text("Auf der Platte (%d)" % auf_platz.size(), Stil.S_KLEIN, Stil.AKZENT))
 	for sid in auf_platz:
 		kader_bereich.add_child(_spielerzeile(sid, true))
+	if not rotation.is_empty():
+		kader_bereich.add_child(Stil.trenner())
+		kader_bereich.add_child(Stil.text("In der Rotation (%d)" % rotation.size(), Stil.S_KLEIN, Stil.TUERKIS))
+		for sid_r2 in rotation:
+			kader_bereich.add_child(_spielerzeile(sid_r2, true))
 	kader_bereich.add_child(Stil.trenner())
-	kader_bereich.add_child(Stil.text("Bank", Stil.S_KLEIN, Stil.AKZENT))
+	kader_bereich.add_child(Stil.text("Bank (%d)" % (mein_team["bank"] as Array).size(), Stil.S_KLEIN, Stil.AKZENT))
 	for sid in mein_team["bank"]:
 		kader_bereich.add_child(_spielerzeile(sid, false))
 	var strafen: Array = mein_team["gesperrt"]

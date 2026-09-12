@@ -87,12 +87,6 @@ static func status_zeichen(sid: String) -> HBoxContainer:
 		h.add_child(v)
 	return h
 
-## Wertdarstellung mit Farbe (fuer Attribute 1..20).
-static func attributwert(text: String, wert: float) -> Label:
-	var l := Stil.text(text, Stil.S_KLEIN, Stil.wert_farbe(wert))
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	return l
-
 ## Ergebniszeile einer Partie.
 static func spielzeile(mid: String, eigener: String = "") -> HBoxContainer:
 	var m: Dictionary = Welt.partie(mid)
@@ -129,6 +123,52 @@ static func karte_in(eltern: Node, ueberschrift: String, hoch: bool = false) -> 
 	var inhalt := Stil.karte(ueberschrift, hoch)
 	eltern.add_child(Stil.karte_wurzel(inhalt))
 	return inhalt
+
+## Eine Karte, die als Ganzes zu einem Bildschirm führt.
+##
+## Ein Übersichtswidget, das nur anschaut werden kann, ist eine Sackgasse: man
+## sieht das Problem und muss sich dann selbst durch die Navigation suchen.
+## Diese Karte trägt oben rechts einen Pfeil und reagiert auf jeden Klick in
+## ihre Fläche — Knöpfe darin behalten Vorrang, weil sie ihre Eingaben selbst
+## verbrauchen.
+static func karte_zu(eltern: Node, ueberschrift: String, ziel: String,
+		hinweis: String = "", hoch: bool = false) -> VBoxContainer:
+	var inhalt := Stil.karte(ueberschrift, hoch)
+	var wurzel := Stil.karte_wurzel(inhalt)
+	eltern.add_child(wurzel)
+	if ziel == "":
+		return inhalt
+	var pfeil := Stil.knopf_flach("Öffnen ›", Stil.AKZENT)
+	pfeil.tooltip_text = hinweis if hinweis != "" else "Zum vollständigen Bildschirm"
+	pfeil.pressed.connect(func(): _springe(eltern, ziel))
+	Stil.karte_aktion(inhalt, pfeil)
+	wurzel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	wurzel.tooltip_text = hinweis if hinweis != "" else "Zum vollständigen Bildschirm"
+	wurzel.gui_input.connect(func(e):
+		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+			_springe(eltern, ziel))
+	return inhalt
+
+## Eine Kennzahlenkachel, die zu einem Bildschirm führt.
+static func kachel_zu(beschriftung: String, wert: String, ziel: String,
+		hinweis: String = "", farbe: Variant = null) -> PanelContainer:
+	var k := Stil.kachel(beschriftung, wert, hinweis, farbe)
+	if ziel == "":
+		return k
+	k.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	k.tooltip_text = "Öffnen"
+	k.gui_input.connect(func(e):
+		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+			_springe(k, ziel))
+	return k
+
+static func _springe(von: Node, ziel: String) -> void:
+	var baum := von.get_tree()
+	if baum == null:
+		return
+	var app := baum.get_first_node_in_group("app")
+	if app != null:
+		app.zeige(ziel)
 
 ## Balken mit Beschriftung (z. B. "Form 72").
 static func wertzeile(beschriftung: String, wert: float, maximum: float = 100.0, hinweis: String = "") -> HBoxContainer:

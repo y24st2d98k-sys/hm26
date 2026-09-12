@@ -271,6 +271,10 @@ static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: boo
 		var sp: Dictionary = d["spieler"][sid]
 		if str(sp["verein"]) != "" or str(sp["position"]) != pos:
 			continue
+		# Ein gesichtetes Nachwuchstalent ist kein vereinsloser Profi: es
+		# gehoert in eine Akademie und nicht in einen Profikader.
+		if bool(sp.get("jugendspieler", false)):
+			continue
 		var w: float = Spielerfabrik.gesamt(sp)
 		if w <= bw:
 			continue

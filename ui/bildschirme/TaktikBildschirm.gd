@@ -12,6 +12,7 @@ var feld: Spielfeld
 var warnungen_bereich: VBoxContainer
 var anweisungs_bereich: VBoxContainer
 var profil_bereich: VBoxContainer
+var minuten_bereich: VBoxContainer
 var vorschau_angriff: bool = true
 var meldung: Label
 
@@ -85,6 +86,7 @@ func aufbauen() -> void:
 
 	profil_bereich = Bausteine.karte_in(inhalt, "Spielideen")
 	anweisungs_bereich = Bausteine.karte_in(inhalt, "Spieleranweisungen")
+	minuten_bereich = Bausteine.karte_in(inhalt, "Einsatzzeiten")
 	bank_bereich = Bausteine.karte_in(inhalt, "Restlicher Kader")
 
 func _melde(text: String, gut: bool = true) -> void:
@@ -101,6 +103,7 @@ func aktualisieren() -> void:
 	leeren(bank_bereich)
 	leeren(anweisungs_bereich)
 	leeren(profil_bereich)
+	leeren(minuten_bereich)
 	leeren(warnungen_bereich)
 	if Welt.mein_verein_id == "":
 		bank_bereich.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
@@ -111,6 +114,7 @@ func aktualisieren() -> void:
 	_taktik()
 	_profile()
 	_anweisungen()
+	_einsatzzeiten()
 	_bank()
 	_feld_auffrischen()
 
@@ -284,14 +288,21 @@ func _taktik() -> void:
 		str(t["siebter_feldspieler"]), func(w): t["siebter_feldspieler"] = w,
 		"Torwart raus, ein Feldspieler mehr. Stärkt den Angriff — ein Ballverlust landet aber leicht im leeren Tor."))
 	taktik_bereich.add_child(Stil.trenner())
+	# Jeder Regler zeigt, was er in Zahlen bewirkt. Die Werte kommen aus
+	# denselben Formeln wie die Simulation — siehe kern/Matchsim.gd.
 	taktik_bereich.add_child(_schieber("Tempo", int(t["tempo"]), func(w): t["tempo"] = int(w),
-		"Hohes Tempo bedeutet mehr Angriffe für beide Mannschaften."))
+		"Hohes Tempo verkürzt jeden Angriff und bringt beiden Mannschaften mehr Ballbesitze. Kostet Kraft.",
+		func(w): return "≈ %d Angriffe je Mannschaft" % Matchsim.angriffe_bei_tempo(w, str(t["mentalitaet"]))))
 	taktik_bereich.add_child(_schieber("Risiko", int(t["risiko"]), func(w): t["risiko"] = int(w),
-		"Mehr Risiko im Aufbau: bessere Abschlüsse, aber mehr technische Fehler."))
+		"Mehr Risiko im Aufbau: bessere Abschlüsse, aber mehr technische Fehler.",
+		func(w): return "≈ %d %% Ballverluste" % int(round(Matchsim.fehlerquote_bei_risiko(w, str(t["mentalitaet"])) * 100.0))))
 	taktik_bereich.add_child(_schieber("Härte in der Abwehr", int(t["haerte"]), func(w): t["haerte"] = int(w),
-		"Harte Deckung bremst den Gegner — und produziert Zeitstrafen."))
+		"Harte Deckung bremst den Gegner — und produziert Zeitstrafen und Siebenmeter.",
+		func(w): return "≈ %.1f %% Zeitstrafen, %.1f %% Siebenmeter" % [
+			Matchsim.zeitstrafenquote_bei_haerte(w) * 100.0, Matchsim.siebenmeterquote_bei_haerte(w) * 100.0]))
 	taktik_bereich.add_child(_schieber("Wechselintensität", int(t.get("wechselspiel", 55)), func(w): t["wechselspiel"] = int(w),
-		"Wie konsequent zwischen Angriffs- und Abwehrformation rotiert wird. Kostet Kraft, erhöht das Risiko von Wechselfehlern."))
+		"Wie konsequent zwischen Angriffs- und Abwehrformation rotiert wird. Kostet Kraft, erhöht das Risiko von Wechselfehlern.",
+		func(w): return "+%d %% Kraftverbrauch" % int(round(Matchsim.kraftaufschlag_bei_wechselspiel(w)))))
 
 	var schuetze := Stil.hbox(8)
 	taktik_bereich.add_child(schuetze)
@@ -304,7 +315,7 @@ func _taktik() -> void:
 		var sp: Dictionary = Welt.spieler(sid)
 		if bool(sp["ist_torwart"]):
 			continue
-		wahl.add_item("%s (%d)" % [Spielerfabrik.voller_name(sp), int(float(sp["attr"]["siebenmeter"]))])
+		wahl.add_item("%s (%d)" % [Spielerfabrik.voller_name(sp), Spielerfabrik.anzeige(float(sp["attr"]["siebenmeter"]))])
 		wahl.set_item_metadata(i, sid)
 		if str(auf.get("siebenmeter", "")) == sid:
 			wahl.select(i)
@@ -340,7 +351,9 @@ func _auswahl(beschriftung: String, werte: Array, aktuell: String, rueckruf: Cal
 	h.tooltip_text = hinweis
 	return h
 
-func _schieber(beschriftung: String, wert: int, rueckruf: Callable, hinweis: String) -> HBoxContainer:
+## Ein Regler mit Zahlenwert und, wenn vorhanden, der Wirkung im Klartext.
+func _schieber(beschriftung: String, wert: int, rueckruf: Callable, hinweis: String,
+		wirkung: Variant = null) -> HBoxContainer:
 	var h := Stil.hbox(8)
 	var l := Stil.matt(beschriftung, Stil.S_KLEIN)
 	l.custom_minimum_size = Vector2(150, 0)
@@ -349,13 +362,22 @@ func _schieber(beschriftung: String, wert: int, rueckruf: Callable, hinweis: Str
 	s.min_value = 0
 	s.max_value = 100
 	s.value = wert
-	s.custom_minimum_size = Vector2(160, 0)
+	s.custom_minimum_size = Vector2(140, 0)
 	h.add_child(s)
 	var anzeige := Stil.text(str(wert), Stil.S_KLEIN, Stil.AKZENT)
-	anzeige.custom_minimum_size = Vector2(34, 0)
+	anzeige.custom_minimum_size = Vector2(30, 0)
+	anzeige.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	h.add_child(anzeige)
+	var folge := Stil.matt("", Stil.S_MINI)
+	folge.custom_minimum_size = Vector2(210, 0)
+	folge.clip_text = true
+	h.add_child(folge)
+	if wirkung != null:
+		folge.text = str((wirkung as Callable).call(float(wert)))
 	s.value_changed.connect(func(w):
 		anzeige.text = str(int(w))
+		if wirkung != null:
+			folge.text = str((wirkung as Callable).call(w))
 		rueckruf.call(w))
 	h.tooltip_text = hinweis
 	return h
@@ -536,6 +558,81 @@ func _anweisungen() -> void:
 		var txt := Stil.matt(beschreibung, Stil.S_MINI)
 		txt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		zeile.add_child(txt)
+
+## Zielminuten je Spieler. Das ist die Antwort auf die Frage, die sich jeder
+## Trainer stellt, der einen jungen Spieler aufbauen will: wie kommt er zu
+## Spielzeit, ohne dass ich jeden Wechsel von Hand mache?
+func _einsatzzeiten() -> void:
+	var cid: String = Welt.mein_verein_id
+	var kopf := Stil.hbox(10)
+	minuten_bereich.add_child(kopf)
+	kopf.add_child(Stil.matt("Zielminuten pro Spiel. Wer sein Pensum hat, macht Platz für den, der hinterherhängt — auch wenn er noch frisch ist.", Stil.S_MINI))
+	kopf.add_child(Stil.dehner())
+	var bilanz := Einsatzzeit.bilanz(Welt.daten, cid)
+	var farbe: Color = Stil.GRUEN if bool(bilanz["passt"]) else (Stil.GELB if int(bilanz["anzahl"]) > 0 else Stil.TEXT_MATT)
+	var abz := Stil.abzeichen("%d VERGEBEN · %d VON %d MIN" % [
+		int(bilanz["anzahl"]), int(bilanz["summe"]), int(bilanz["machbar"])], farbe)
+	abz.tooltip_text = "Sechs Feldpositionen mal sechzig Minuten sind %d Minuten, die zu verteilen sind. Deutlich mehr zu versprechen, geht nicht auf." % int(bilanz["machbar"])
+	kopf.add_child(abz)
+	var uebernehmen := Stil.knopf("Aus Vertragsrollen ableiten")
+	uebernehmen.tooltip_text = "Setzt für jeden Feldspieler die Minuten, die seine Vertragsrolle erwarten lässt."
+	uebernehmen.pressed.connect(func():
+		Einsatzzeit.aus_vertraegen(Welt.daten, cid)
+		_melde("Zielminuten aus den Vertragsrollen übernommen.")
+		aktualisieren())
+	kopf.add_child(uebernehmen)
+	var frei := Stil.knopf_flach("Alle aufheben", Stil.TEXT_MATT)
+	frei.tooltip_text = "Ohne Ziele entscheidet allein der Kraftstand — wie vorher."
+	frei.pressed.connect(func():
+		Einsatzzeit.loeschen(Welt.daten, cid)
+		_melde("Alle Zielminuten aufgehoben.")
+		aktualisieren())
+	kopf.add_child(frei)
+	if not bool(bilanz["passt"]) and int(bilanz["anzahl"]) > 0:
+		var ueber: bool = float(bilanz["summe"]) > float(bilanz["machbar"])
+		minuten_bereich.add_child(Stil.text(
+			"Sie versprechen %s Spielzeit, als es gibt. Die Ziele lassen sich nicht alle einhalten." % ("mehr" if ueber else "weniger"),
+			Stil.S_MINI, Stil.GELB))
+	minuten_bereich.add_child(Stil.trenner())
+
+	var kader: Array = (Welt.verein(cid)["kader"] as Array).duplicate()
+	kader.sort_custom(func(a, b):
+		return Einsatzzeit.ziel(Welt.daten, cid, str(a)) > Einsatzzeit.ziel(Welt.daten, cid, str(b)))
+	var g := Stil.tabelle(["Spieler", "Rolle", "Ziel", "Zielminuten", "Bisher", "Stand"])
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	minuten_bereich.add_child(g)
+	for sid_roh in kader:
+		var sid: String = str(sid_roh)
+		var sp: Dictionary = Welt.spieler(sid)
+		if sp.is_empty() or bool(sp["ist_torwart"]):
+			continue
+		var k := Stil.knopf_flach("%s %s" % [Trikot.text(sp), Spielerfabrik.kurz_name(sp)])
+		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		g.add_child(k)
+		var rolle: String = str((sp.get("vertrag", {}) as Dictionary).get("rolle", "rotation"))
+		g.add_child(Stil.matt(rolle.capitalize(), Stil.S_KLEIN))
+		var soll: float = Einsatzzeit.ziel(Welt.daten, cid, sid)
+		g.add_child(Stil.text("%d min" % int(soll) if soll > 0.0 else "—", Stil.S_KLEIN,
+			Stil.AKZENT if soll > 0.0 else Stil.TEXT_SCHWACH))
+		var schieber := HSlider.new()
+		schieber.min_value = 0
+		schieber.max_value = Einsatzzeit.SPIELDAUER
+		schieber.step = 2
+		schieber.value = soll
+		schieber.custom_minimum_size = Vector2(180, 0)
+		schieber.tooltip_text = "0 heißt: kein Ziel, es entscheidet die Kraft. Vorschlag nach Vertragsrolle: %d Minuten." % int(Einsatzzeit.vorschlag(sp))
+		schieber.drag_ended.connect(func(_geaendert):
+			Einsatzzeit.setzen(Welt.daten, cid, sid, schieber.value)
+			aktualisieren())
+		g.add_child(schieber)
+		var e := Einsatzzeit.erfuellung(Welt.daten, cid, sid)
+		var spiele: int = int(sp["stats"]["saison"]["spiele"])
+		g.add_child(Stil.matt("%d min in %d Spielen" % [int(e["ist"]), spiele] if spiele > 0 else "noch kein Spiel", Stil.S_KLEIN))
+		var stand: String = Einsatzzeit.erfuellungstext(e)
+		var standfarbe: Color = Stil.TEXT_MATT
+		if bool(e["gilt"]):
+			standfarbe = Stil.GRUEN if absf(float(e["abweichung"])) < 4.0 else Stil.GELB
+		g.add_child(Stil.text(stand, Stil.S_KLEIN, standfarbe))
 
 ## Ein Auswahlfeld ueber einen Anweisungskatalog.
 func _rollenwahl(katalog: Dictionary, aktuell: String, aktiv: bool, rueckruf: Callable) -> OptionButton:

@@ -152,6 +152,7 @@ func _live(app: Node, ordner: String) -> void:
 	for i in range(140):
 		app.live._schritt()
 		app.live.feld._process(0.2)
+	app.live.feld.laufwege_loesen()
 	await get_tree().process_frame
 	await _foto("%s/live.png" % ordner)
 	# Mehrere Aufnahmen mitten im Angriff: nur so ist zu sehen, ob sich das
@@ -159,8 +160,11 @@ func _live(app: Node, ordner: String) -> void:
 	for n in range(4):
 		app.live._schritt()
 		# Der Bildschirmfoto-Lauf hat keine laufende Zeit: das Feld muss von
-		# Hand weitergedreht werden, sonst verharren Ball und Blitze.
-		for _f in range(3):
+		# Hand weitergedreht werden, sonst verharren Ball und Blitze. Eine
+		# Sekunde in kleinen Schritten — so viel Zeit hat die Ansicht im Spiel
+		# zwischen zwei Takten auch, sonst zeigt das Bild nur Spieler auf
+		# halbem Weg.
+		for _f in range(20):
 			app.live.feld._process(0.05)
 		await get_tree().process_frame
 		await _foto("%s/live_zug%d.png" % [ordner, n + 1])

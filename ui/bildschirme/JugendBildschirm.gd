@@ -52,7 +52,11 @@ func aktualisieren() -> void:
 
 	var wirkung := Bausteine.karte_in(oben, "Was hier entschieden wird")
 	Stil.karte_wurzel(wirkung).size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	wirkung.add_child(Stil.matt("Talente entwickeln sich im Nachwuchs schneller als im Profikader — aber ohne Spielpraxis irgendwann nicht mehr weiter. Wer zu früh befördert wird, blockiert einen Kaderplatz; wer zu spät kommt, ist weg.", Stil.S_KLEIN))
+	# Ohne Umbruch schiebt dieser Satz die Karte über den Bildschirmrand hinaus.
+	var wirkungstext := Stil.matt("Talente entwickeln sich im Nachwuchs schneller als im Profikader — aber ohne Spielpraxis irgendwann nicht mehr weiter. Wer zu früh befördert wird, blockiert einen Kaderplatz; wer zu spät kommt, ist weg.", Stil.S_KLEIN)
+	wirkungstext.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	wirkungstext.custom_minimum_size = Vector2(360, 0)
+	wirkung.add_child(wirkungstext)
 	wirkung.add_child(Stil.info_zeile("Profikader", "%d von %d Plätzen belegt" % [
 		(v["kader"] as Array).size(), Jugend.KADER_GRENZE]))
 	var jugendfokus: float = float(v["vorstand"].get("jugendfokus", 50.0))
@@ -60,7 +64,14 @@ func aktualisieren() -> void:
 		"Je höher, desto mehr Anerkennung bringt eine Beförderung."))
 
 	var talente := Welt.jugend(cid)
-	var karte := Bausteine.karte_in(inhalt, "Talente")
+	var karte := Bausteine.karte_zu(inhalt, "Talente", "scouting",
+		"Zum Scouting — dort holt man Nachwuchs von außerhalb in die Akademie")
+	var platz := Stil.hbox(8)
+	karte.add_child(platz)
+	platz.add_child(Stil.matt("Neben dem eigenen Jahrgang kann ein Scout Talente aus sechs Regionen sichten.", Stil.S_MINI))
+	platz.add_child(Stil.dehner())
+	platz.add_child(Stil.abzeichen("AKADEMIE %d / %d" % [talente.size(), Talentsuche.AKADEMIE_GRENZE],
+		Stil.GRUEN if talente.size() < Talentsuche.AKADEMIE_GRENZE else Stil.GELB))
 	if talente.is_empty():
 		karte.add_child(Stil.matt("Derzeit ist kein Talent im Nachwuchszentrum. Der nächste Jahrgang kommt zum Saisonwechsel."))
 		return
@@ -70,9 +81,16 @@ func aktualisieren() -> void:
 	for sid in talente:
 		var sp: Dictionary = Welt.spieler(sid)
 		g.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
+		var namenszeile := Stil.hbox(4)
 		var k := Stil.knopf_flach(Spielerfabrik.voller_name(sp))
 		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
-		g.add_child(k)
+		namenszeile.add_child(k)
+		# Woher er kommt: eigene Jugend oder aus der Sichtung geholt.
+		if not bool(sp.get("aus_eigener_jugend", false)):
+			var her := Stil.abzeichen("GESICHTET", Stil.BLAU)
+			her.tooltip_text = "Über die Nachwuchssichtung aus %s geholt." % Namen.KULTUR_NAME.get(str(sp["nation"]), "dem Ausland")
+			namenszeile.add_child(her)
+		g.add_child(namenszeile)
 		g.add_child(Stil.text(str(int(sp["alter"])), Stil.S_KLEIN,
 			Stil.GELB if int(sp["alter"]) >= Jugend.HOECHSTALTER - 1 else Stil.TEXT))
 		g.add_child(Stil.text(Scouting.gesamt_text(Welt.daten, sid), Stil.S_KLEIN,

@@ -208,4 +208,4 @@ static func einschaetzung(d: Dictionary, sid: String) -> String:
 		return "%s — fast am Limit" % text
 	if abstand > 30.0:
 		return "%s — noch weit entfernt" % text
-	return text
+	return "%s, %s" % [text, Scouting.tempo_text(d, sid)]

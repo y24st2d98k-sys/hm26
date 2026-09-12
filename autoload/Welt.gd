@@ -509,7 +509,7 @@ func slot_loeschen(slot: int) -> void:
 func _daten_auffrischen() -> void:
 	var vorlage := {
 		"nachrichten": [], "presse": [], "social": [], "chronik": {"saisons": [], "ereignisse": []},
-		"rekorde": {}, "scouting": {"auftraege": [], "berichte": [], "beobachtung": []},
+		"rekorde": {}, "scouting": {"auftraege": [], "berichte": [], "beobachtung": [], "talente": []},
 		"transfermarkt": {"angebote": [], "gerüchte": [], "verlauf": [], "fenster_offen": true},
 		"medien": {"outlets": [], "fanaccounts": []},
 		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "auto_taktik": true,
@@ -531,6 +531,9 @@ func _daten_auffrischen() -> void:
 			trainer_dict["nationalteam"] = ""
 		if not trainer_dict.has("verbandsangebote"):
 			trainer_dict["verbandsangebote"] = []
+	var scouting_dict: Dictionary = daten.get("scouting", {})
+	if not scouting_dict.is_empty() and not scouting_dict.has("talente"):
+		scouting_dict["talente"] = []
 	if not daten.has("echte_welt"):
 		daten["echte_welt"] = false
 	if not daten.has("datenstand"):
@@ -545,6 +548,9 @@ func _daten_auffrischen() -> void:
 				"legenden": []}
 		if not verein_dict.has("formkurve"):
 			verein_dict["formkurve"] = []
+		if not verein_dict.has("siegesserie"):
+			verein_dict["siegesserie"] = 0
+			verein_dict["serie_gemeldet"] = 0
 		if not verein_dict.has("jugend"):
 			verein_dict["jugend"] = []
 		if not verein_dict.has("mentoring"):
@@ -562,6 +568,8 @@ func _daten_auffrischen() -> void:
 		var auf_dict: Dictionary = verein_dict.get("aufstellung", {})
 		if not auf_dict.is_empty() and not auf_dict.has("anweisungen"):
 			auf_dict["anweisungen"] = {}
+		if not auf_dict.is_empty() and not auf_dict.has("minuten"):
+			auf_dict["minuten"] = {}
 		Trikot.kader_nummerieren(daten, str(verein_cid))
 	for sp in daten.get("spieler", {}).values():
 		if not sp.has("entwicklung_log"):
@@ -570,6 +578,8 @@ func _daten_auffrischen() -> void:
 			sp["laufbahn"] = []
 		if not sp.has("beziehung"):
 			sp["beziehung"] = 50.0
+		if not sp.has("lernkurve"):
+			sp["lernkurve"] = Namen.glocke(1.0, 0.21, Spielerfabrik.LERNKURVE_MIN, Spielerfabrik.LERNKURVE_MAX)
 		var vertrag: Dictionary = sp.get("vertrag", {})
 		if not vertrag.is_empty():
 			if not vertrag.has("praemie_tor"):

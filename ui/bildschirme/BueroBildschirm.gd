@@ -90,7 +90,7 @@ func aktualisieren() -> void:
 func _cotrainer() -> void:
 	var cid: String = Welt.mein_verein_id
 	var befunde: Array = Cotrainer.befunde(Welt.daten, cid)
-	var karte := Bausteine.karte_in(bereich, "Der Co-Trainer")
+	var karte := Bausteine.karte_zu(bereich, "Der Co-Trainer", "")
 	if befunde.is_empty():
 		karte.add_child(Stil.leerzustand("Nichts zu beanstanden — der Stab sieht die Mannschaft gut aufgestellt."))
 		return
@@ -130,10 +130,10 @@ func _kennzahlen(v: Dictionary) -> void:
 	var zeile: Dictionary = (Welt.daten["ligen"][lid]["tabelle"] as Dictionary).get(
 		Welt.mein_verein_id, Spielplan.leere_tabellenzeile())
 	var ziel: int = int(v["vorstand"]["ziel_platz"])
-	reihe.add_child(Stil.kachel("Tabellenplatz", "%d." % platz if platz > 0 else "—",
+	reihe.add_child(Bausteine.kachel_zu("Tabellenplatz", "%d." % platz if platz > 0 else "—", "tabellen",
 		"Ziel: Platz %d" % ziel,
 		Stil.GRUEN if platz > 0 and platz <= ziel else (Stil.GELB if platz <= ziel + 2 else Stil.ROT)))
-	reihe.add_child(Stil.kachel("Punkte", str(int(zeile["punkte"])),
+	reihe.add_child(Bausteine.kachel_zu("Punkte", str(int(zeile["punkte"])), "tabellen",
 		"%d Spiele · %+d Tore" % [int(zeile["sp"]), int(zeile["tore"]) - int(zeile["gegentore"])]))
 
 	var serie: Array = v["formkurve"]
@@ -145,8 +145,8 @@ func _kennzahlen(v: Dictionary) -> void:
 			siege += 1
 		elif str(e) == "U":
 			remis += 1
-	var formkachel := Stil.kachel("Form (5 Spiele)",
-		"%dS %dU %dN" % [siege, remis, letzte.size() - siege - remis], "")
+	var formkachel := Bausteine.kachel_zu("Form (5 Spiele)",
+		"%dS %dU %dN" % [siege, remis, letzte.size() - siege - remis], "spielplan", "")
 	(formkachel.get_child(0) as Node).add_child(Bausteine.formkurve(serie, 5))
 	reihe.add_child(formkachel)
 
@@ -155,13 +155,13 @@ func _kennzahlen(v: Dictionary) -> void:
 	for sid in v["kader"]:
 		summe += Spielerfabrik.gesamt(Welt.spieler(sid))
 		anzahl += 1
-	reihe.add_child(Stil.kachel("Kaderstärke", "%d" % int(round(summe / maxf(float(anzahl), 1.0))),
+	reihe.add_child(Bausteine.kachel_zu("Kaderstärke", "%d" % int(round(summe / maxf(float(anzahl), 1.0))), "kader",
 		"%d Spieler · Ruf %d" % [anzahl, int(float(v["ruf"]))]))
-	reihe.add_child(Stil.kachel("Kasse", Stil.geld(float(v["kasse"])),
+	reihe.add_child(Bausteine.kachel_zu("Kasse", Stil.geld(float(v["kasse"])), "finanzen",
 		"Transferbudget %s" % Stil.geld(float(v["transferbudget"])),
 		Stil.TEXT if float(v["kasse"]) >= 0.0 else Stil.ROT))
 	var vertrauen: float = float(v["vorstand"]["vertrauen"])
-	reihe.add_child(Stil.kachel("Vorstand", "%d" % int(vertrauen),
+	reihe.add_child(Bausteine.kachel_zu("Vorstand", "%d" % int(vertrauen), "vorstand",
 		str(v["vorstand"]["saisonziel"]), Stil.prozent_farbe(vertrauen)))
 
 func _ohne_verein() -> void:
@@ -172,7 +172,7 @@ func _ohne_verein() -> void:
 	karte.add_child(Stil.info_zeile("Angebote", str((t.get("jobangebote", []) as Array).size())))
 
 func _naechstes_spiel(eltern: Node) -> void:
-	var karte := Bausteine.karte_in(eltern, "Nächstes Spiel")
+	var karte := Bausteine.karte_zu(eltern, "Nächstes Spiel", "spielplan", "Zum vollständigen Spielplan")
 	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var m: Dictionary = Welt.naechstes_spiel(Welt.mein_verein_id)
 	if m.is_empty():
@@ -205,7 +205,7 @@ func _naechstes_spiel(eltern: Node) -> void:
 	karte.add_child(vorbereitung)
 
 func _tabellenlage(eltern: Node) -> void:
-	var karte := Bausteine.karte_in(eltern, "Tabellenlage")
+	var karte := Bausteine.karte_zu(eltern, "Tabellenlage", "tabellen", "Zur vollständigen Tabelle")
 	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var v: Dictionary = Welt.mein_verein()
 	var lid: String = str(v["liga"])
@@ -229,7 +229,7 @@ func _tabellenlage(eltern: Node) -> void:
 		g.add_child(Stil.text("%+d" % diff, Stil.S_KLEIN, Stil.GRUEN if diff > 0 else (Stil.ROT if diff < 0 else Stil.TEXT_MATT)))
 
 func _vorstand(eltern: Node) -> void:
-	var karte := Bausteine.karte_in(eltern, "Vorstand & Umfeld")
+	var karte := Bausteine.karte_zu(eltern, "Vorstand & Umfeld", "vorstand", "Zu Zielen, Versprechen und Vertrauen")
 	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var lage := Vorstand.lagebericht(Welt.daten, Welt.mein_verein_id)
 	karte.add_child(Stil.info_zeile("Saisonziel", str(lage["saisonziel"])))
@@ -241,7 +241,7 @@ func _vorstand(eltern: Node) -> void:
 		karte.add_child(Stil.abzeichen("WARNUNG DES VORSTANDS", Stil.ROT, true))
 
 func _kaderlage(eltern: Node) -> void:
-	var karte := Bausteine.karte_in(eltern, "Kaderlage")
+	var karte := Bausteine.karte_zu(eltern, "Kaderlage", "kader", "Zum vollständigen Kader")
 	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var lazarett := Medizin.lazarett(Welt.daten, Welt.mein_verein_id)
 	if lazarett.is_empty():
@@ -279,7 +279,7 @@ func _kaderlage(eltern: Node) -> void:
 			karte.add_child(k3)
 
 func _letzte_spiele(eltern: Node) -> void:
-	var karte := Bausteine.karte_in(eltern, "Zuletzt gespielt")
+	var karte := Bausteine.karte_zu(eltern, "Zuletzt gespielt", "spielplan", "Zu allen Ergebnissen")
 	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var liste := Welt.letzte_spiele(Welt.mein_verein_id, 6)
 	if liste.is_empty():
@@ -289,7 +289,7 @@ func _letzte_spiele(eltern: Node) -> void:
 		karte.add_child(Bausteine.spielzeile(str(m["id"]), Welt.mein_verein_id))
 
 func _presse(eltern: Node) -> void:
-	var karte := Bausteine.karte_in(eltern, "Aus der Presse")
+	var karte := Bausteine.karte_zu(eltern, "Aus der Presse", "medien", "Zur Medienlage")
 	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var presse: Array = Welt.daten.get("presse", [])
 	if presse.is_empty():
@@ -312,7 +312,7 @@ func _tonfarbe(tonfall: String) -> Color:
 	return Stil.TEXT
 
 func _finanzen(eltern: Node) -> void:
-	var karte := Bausteine.karte_in(eltern, "Finanzen")
+	var karte := Bausteine.karte_zu(eltern, "Finanzen", "finanzen", "Zu Etat, Sponsoren und Buchungen")
 	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var v: Dictionary = Welt.mein_verein()
 	var u := Finanzen.wochenuebersicht(Welt.daten, Welt.mein_verein_id)

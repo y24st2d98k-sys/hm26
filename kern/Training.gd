@@ -135,6 +135,7 @@ static func _verein_trainieren(d: Dictionary, cid: String) -> void:
 						"betreff": "Trainingsverletzung: %s" % Spielerfabrik.voller_name(sp),
 						"text": "%s hat sich im Training verletzt (%s). Ausfall: etwa %d Tage." % [
 							Spielerfabrik.kurz_name(sp), vl["art"], int(vl["tage"])],
+						"daten": {"spieler": sid},
 					})
 				continue
 		_entwickeln(d, sp, cid, intensitaet, qualitaet, sp_daten, regeneriert, verletzt)
@@ -165,7 +166,11 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 		alters_tempo = 0.0
 
 	var spielzeit: float = clampf(float(sp["stats"]["saison"]["minuten"]) / maxf(float(sp["stats"]["saison"]["spiele"]) * 42.0, 1.0), 0.0, 1.3)
-	var zuwachs: float = 0.052 * alters_tempo * (0.4 + 1.1 * luft) * (0.45 + 0.75 * qualitaet) \
+	# Die persoenliche Lernkurve entscheidet, wie schnell das Potenzial
+	# tatsaechlich abgerufen wird — sie ist der Unterschied zwischen einem
+	# Talent, das mit 21 spielt, und einem, das mit 26 erst so weit ist.
+	var lernkurve: float = clampf(float(sp.get("lernkurve", 1.0)), Spielerfabrik.LERNKURVE_MIN, Spielerfabrik.LERNKURVE_MAX)
+	var zuwachs: float = 0.052 * alters_tempo * lernkurve * (0.4 + 1.1 * luft) * (0.45 + 0.75 * qualitaet) \
 		* (0.5 + 0.9 * intensitaet) * (0.6 + 0.5 * arbeitseinsatz) * (0.75 + 0.45 * ehrgeiz) \
 		* (0.7 + 0.45 * spielzeit)
 	if regeneriert:
@@ -279,4 +284,5 @@ static func _sprung_festhalten(d: Dictionary, sp: Dictionary, delta: float, gesa
 			"typ": "training", "betreff": "Entwicklungssprung: %s" % Spielerfabrik.voller_name(sp),
 			"text": "%s hat in den letzten Wochen deutlich zugelegt (%s auf %d). Der Trainerstab ist beeindruckt." % [
 				Spielerfabrik.kurz_name(sp), Stil.komma(delta, 1), int(gesamt)],
+			"daten": {"spieler": str(sp["id"])},
 		})

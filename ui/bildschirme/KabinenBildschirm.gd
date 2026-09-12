@@ -69,7 +69,7 @@ func aktualisieren() -> void:
 	var i := 0
 	for sid2 in Welt.kader(cid):
 		var sp2: Dictionary = Welt.spieler(sid2)
-		wahl.add_item("%s (Führung %d)" % [Spielerfabrik.voller_name(sp2), int(float(sp2["attr"]["fuehrung"]))])
+		wahl.add_item("%s (Führung %d)" % [Spielerfabrik.voller_name(sp2), Spielerfabrik.anzeige(float(sp2["attr"]["fuehrung"]))])
 		wahl.set_item_metadata(i, sid2)
 		if sid2 == kapitaen:
 			wahl.select(i)

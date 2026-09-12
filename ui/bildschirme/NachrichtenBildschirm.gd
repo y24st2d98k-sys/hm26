@@ -62,6 +62,8 @@ func aktualisieren() -> void:
 	if gezeigt == 0:
 		liste.add_child(Stil.matt("Keine Nachrichten in dieser Kategorie."))
 
+## Eine Nachricht in der Liste: Schlagzeile, Anreisser, ein Klick aufs Ganze.
+## Gelesen wird sie erst im Artikel — vorher hat sie niemand gelesen.
 func _eintrag(n: Dictionary) -> Control:
 	var karte := Stil.karte("", not bool(n["gelesen"]))
 	var kopf := Stil.hbox(8)
@@ -74,27 +76,53 @@ func _eintrag(n: Dictionary) -> Control:
 	kopf.add_child(Stil.matt(Kalender.text(int(n["tag"]), Welt.startjahr()), Stil.S_MINI))
 	if not bool(n["gelesen"]):
 		kopf.add_child(Stil.abzeichen("NEU", Stil.AKZENT, true))
-	var text := Stil.text(str(n["text"]), Stil.S_KLEIN, Stil.TEXT_MATT)
-	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	karte.add_child(text)
-	if str(n.get("aktion", "")) == "anliegen":
-		var asid: String = str((n.get("daten", {}) as Dictionary).get("spieler", ""))
-		if not Anliegen.fuer_spieler(Welt.daten, asid).is_empty():
-			var ak := Stil.knopf_primaer("Anhören")
-			ak.pressed.connect(func(): Anliegenfenster.oeffnen(self, asid))
-			karte.add_child(ak)
-	if str(n.get("aktion", "")) == "pressekonferenz" and Presse.offen(Welt.daten):
-		var pk := Stil.knopf_primaer("Zur Pressekonferenz")
-		pk.pressed.connect(func(): Pressefenster.oeffnen(self))
-		karte.add_child(pk)
+	karte.add_child(Stil.matt(_anreisser(str(n["text"])), Stil.S_KLEIN))
+	var fuss := Stil.hbox(8)
+	karte.add_child(fuss)
+	var hinweise: Array = _wegweiser(n)
+	for hw in hinweise:
+		fuss.add_child(Stil.abzeichen(str(hw), Stil.TEXT_SCHWACH))
+	fuss.add_child(Stil.dehner())
+	var lesen := Stil.knopf_flach("Lesen ›", Stil.AKZENT)
+	lesen.pressed.connect(func():
+		Nachrichtenfenster.oeffnen(self, n)
+		aktualisieren())
+	fuss.add_child(lesen)
+	# Die ganze Karte ist anklickbar: wer eine Schlagzeile liest, will den
+	# Artikel und nicht erst den passenden Knopf suchen.
+	var wurzel := Stil.karte_wurzel(karte)
+	wurzel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	wurzel.gui_input.connect(func(e):
+		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+			Nachrichtenfenster.oeffnen(self, n)
+			aktualisieren())
+	return wurzel
+
+## Erster Satz als Anreisser — der ganze Text steht im Artikel.
+func _anreisser(text: String) -> String:
+	var eine_zeile: String = text.replace("\n", " ").strip_edges()
+	if eine_zeile.length() <= 170:
+		return eine_zeile
+	var schnitt: int = eine_zeile.rfind(" ", 170)
+	return eine_zeile.substr(0, maxi(schnitt, 120)) + " …"
+
+## Was aus dieser Meldung herausführt — als Vorschau, damit man vor dem
+## Klick weiß, ob sich das Öffnen lohnt.
+func _wegweiser(n: Dictionary) -> Array:
+	var aus: Array = []
 	var daten: Dictionary = n.get("daten", {})
-	if daten.has("spieler") and Welt.daten["spieler"].has(str(daten["spieler"])):
-		var k := Stil.knopf_flach("Spielerprofil öffnen")
-		var sid: String = str(daten["spieler"])
-		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
-		karte.add_child(k)
-	n["gelesen"] = true
-	return Stil.karte_wurzel(karte)
+	var aktion: String = str(n.get("aktion", ""))
+	if aktion == "anliegen":
+		aus.append("GESPRÄCH")
+	if aktion == "pressekonferenz":
+		aus.append("PRESSEKONFERENZ")
+	if str(daten.get("spieler", "")) != "" and Welt.daten["spieler"].has(str(daten["spieler"])):
+		aus.append("SPIELER")
+	if str(daten.get("verein", "")) != "" and Welt.daten["vereine"].has(str(daten["verein"])):
+		aus.append("VEREIN")
+	if str(daten.get("spiel", "")) != "":
+		aus.append("SPIELBERICHT")
+	return aus
 
 func _farbe(typ: String) -> Color:
 	match typ:

@@ -3,7 +3,8 @@ extends RefCounted
 ## Erzeugt Spieler und rechnet alles aus, was sich direkt aus ihren Attributen ergibt:
 ## Angriffs- und Abwehrwert, Positionseignung, Marktwert, Gehaltsvorstellung, Alterskurve.
 ##
-## Attributskala ist 1..20 (intern float, damit Entwicklung in kleinen Schritten laufen kann).
+## Attributskala ist intern 1..20 (float, damit Entwicklung in kleinen Schritten laufen kann);
+## angezeigt wird sie mal fünf als 5..100 — siehe `anzeige()`.
 ## Der "Gesamtwert" eines Spielers ist eine 0..100-Zahl, damit Vergleiche schnell lesbar sind.
 
 const POSITIONEN := ["TW", "LA", "RL", "RM", "RR", "RA", "KM"]
@@ -67,6 +68,52 @@ const POSITION_NAEHE := {
 	"KM": {"KM": 1.0, "RL": 0.4, "RR": 0.4, "RM": 0.38, "LA": 0.3, "RA": 0.3},
 }
 
+## Wie gut eine Position in einen Abwehrplatz passt. A1 und A6 sind die
+## Aussenpositionen, A3 und A4 die Innenblocker. Ein Aussenspieler verteidigt
+## aussen, ein Kreislaeufer innen — wer am falschen Platz steht, verliert.
+const ABWEHR_EIGNUNG := {
+	"A1": {"LA": 1.0, "RA": 0.86, "RL": 0.72, "RR": 0.64, "RM": 0.58, "KM": 0.5},
+	"A2": {"RL": 1.0, "LA": 0.84, "RM": 0.78, "KM": 0.74, "RR": 0.74, "RA": 0.62},
+	"A3": {"KM": 1.0, "RL": 0.84, "RM": 0.82, "RR": 0.8, "LA": 0.54, "RA": 0.54},
+	"A4": {"KM": 1.0, "RR": 0.84, "RM": 0.82, "RL": 0.8, "RA": 0.54, "LA": 0.54},
+	"A5": {"RR": 1.0, "RA": 0.84, "RM": 0.78, "KM": 0.74, "RL": 0.74, "LA": 0.62},
+	"A6": {"RA": 1.0, "LA": 0.86, "RR": 0.72, "RL": 0.64, "RM": 0.58, "KM": 0.5},
+}
+
+## Spannweite der Lernkurve: 1.0 ist der Normalfall, 0.55 ein echter
+## Spaetzuender, 1.6 ein Spieler, der zwei Jahre ueberspringt.
+const LERNKURVE_MIN := 0.55
+const LERNKURVE_MAX := 1.6
+
+## Klartext zur Lernkurve — die nackte Zahl saehe nach Tabellenkalkulation aus.
+static func lernkurve_text(wert: float) -> String:
+	if wert >= 1.34:
+		return "reift im Zeitraffer"
+	if wert >= 1.14:
+		return "lernt schnell"
+	if wert >= 0.9:
+		return "entwickelt sich stetig"
+	if wert >= 0.72:
+		return "braucht Geduld"
+	return "Spätzünder"
+
+## Anzeigeskala für Attribute. Intern läuft ein Attribut von 1..20 in
+## Fließkomma, damit Entwicklung in winzigen Schritten stattfinden kann.
+## Angezeigt wird 5..100: eine Zwanzigerskala verschluckt Unterschiede, die
+## im Spiel sehr wohl zählen — zwischen 14 und 15 liegt eine halbe Liga.
+const ANZEIGE_FAKTOR := 5.0
+
+## Ein internes Attribut als Zahl, wie sie in der Oberfläche steht.
+static func anzeige(wert: float) -> int:
+	return int(round(clampf(wert, 1.0, 20.0) * ANZEIGE_FAKTOR))
+
+## Wie gut dieser Spieler auf diesen Abwehrplatz passt (0.5..1.0).
+static func abwehr_eignung(spieler: Dictionary, platz: String) -> float:
+	var tabelle: Dictionary = ABWEHR_EIGNUNG.get(platz, {})
+	if tabelle.is_empty():
+		return 1.0
+	return float(tabelle.get(str(spieler["position"]), 0.6))
+
 ## Verteilung der Positionen in einem normalen Kader.
 const KADER_SOLL := {"TW": 3, "LA": 2, "RL": 3, "RM": 3, "RR": 3, "RA": 2, "KM": 3}
 
@@ -82,6 +129,10 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 	var rest_jahre: float = maxf(0.0, 27.0 - float(alter_jahre))
 	var potenzial_bonus: float = Namen.glocke(rest_jahre * 1.55, 7.0, -3.0, 34.0)
 	var potenzial: float = clampf(ziel_gesamt + potenzial_bonus, ziel_gesamt, 97.0)
+	# Die Lernkurve sagt, wie schnell er diese Luft nutzt. Zwei Talente mit
+	# demselben Potenzial sind nicht dasselbe: der eine steht mit 21 oben, der
+	# andere braucht bis 26 — und einer von beiden ist ein Transfer wert.
+	var lernkurve: float = Namen.glocke(1.0, 0.21, LERNKURVE_MIN, LERNKURVE_MAX)
 
 	_auf_zielstaerke(attr, position, ziel_gesamt)
 
@@ -112,6 +163,7 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 		"ist_torwart": ist_tw,
 		"attr": attr,
 		"potenzial": potenzial,
+		"lernkurve": lernkurve,
 		"form": Namen.glocke(58.0, 14.0, 20.0, 95.0),
 		"moral": Namen.glocke(66.0, 12.0, 25.0, 98.0),
 		"fitness": Namen.glocke(93.0, 5.0, 70.0, 100.0),

@@ -12,6 +12,7 @@ const AUFTRAGSARTEN := {
 	"liga": {"name": "Ligascreening", "dauer": 24, "beschreibung": "Der Scout sichtet eine komplette Liga nach Talenten."},
 	"position": {"name": "Positionssuche", "dauer": 18, "beschreibung": "Gezielte Suche nach Spielern einer Position."},
 	"gegner": {"name": "Gegnerbeobachtung", "dauer": 5, "beschreibung": "Analyse des nächsten Gegners für einen Taktikvorteil."},
+	"nachwuchs": {"name": "Nachwuchssichtung", "dauer": 18, "beschreibung": "Der Scout sichtet eine Region nach Talenten für die eigene Akademie."},
 }
 
 static func scouts(d: Dictionary, cid: String) -> Array:
@@ -55,7 +56,11 @@ static func auftrag_erteilen(d: Dictionary, pid: String, art: String, ziel: Stri
 			return {"ok": false, "grund": "Dieser Scout ist bereits unterwegs."}
 	var s: Dictionary = d["personal"][pid]
 	var reise: float = float(s["attr"].get("ausdauer_reise", 10.0)) / 20.0
-	var dauer: int = int(float(AUFTRAGSARTEN[art]["dauer"]) * (1.35 - 0.5 * reise))
+	var grunddauer: float = float(AUFTRAGSARTEN[art]["dauer"])
+	# Eine Sichtungsreise dauert so lange, wie die Region weit weg ist.
+	if art == "nachwuchs":
+		grunddauer = float((Talentsuche.REGIONEN.get(ziel, Talentsuche.REGIONEN["heimat"]) as Dictionary)["dauer"])
+	var dauer: int = int(grunddauer * (1.35 - 0.5 * reise))
 	d["zaehler"]["auftrag"] = int(d["zaehler"]["auftrag"]) + 1
 	(d["scouting"]["auftraege"] as Array).append({
 		"id": "sc_%05d" % int(d["zaehler"]["auftrag"]),
@@ -80,6 +85,7 @@ static func _name(s: Dictionary) -> String:
 	return "%s %s" % [s.get("vorname", ""), s.get("nachname", "")]
 
 static func tageswechsel(d: Dictionary) -> void:
+	Talentsuche.tageswechsel(d)
 	for a in d["scouting"]["auftraege"]:
 		if bool(a.get("fertig", false)):
 			continue
@@ -103,6 +109,9 @@ static func _bericht_erstellen(d: Dictionary, a: Dictionary) -> void:
 			gefunden = _talente_auf_position(d, str(a["ziel"]), qualitaet)
 		"gegner":
 			_gegnerbericht(d, a, qualitaet)
+			return
+		"nachwuchs":
+			_nachwuchsbericht(d, a, qualitaet)
 			return
 	for sid in gefunden:
 		if not d["spieler"].has(sid):
@@ -192,6 +201,7 @@ static func einschaetzung(d: Dictionary, sid: String) -> String:
 	teile.append("%d Jahre, %s" % [int(sp["alter"]), Spielerfabrik.POSITION_NAME[str(sp["position"])]])
 	teile.append("Stärke %s" % gesamt_text(d, sid))
 	teile.append("Perspektive: %s" % potenzial_text(d, sid))
+	teile.append(tempo_text(d, sid))
 	# Auffaelligste Staerke und Schwaeche
 	var beste := ""
 	var bester_wert := -1.0
@@ -227,6 +237,37 @@ static func _zusatz(qualitaet: float) -> String:
 	return "Die Angaben sind mit Vorsicht zu genießen."
 
 # ------------------------------------------------------- Gegnerbeobachtung ---
+
+## Nachwuchssichtung: der Scout kommt mit Namen zurueck, nicht mit Werten.
+## Der Verein muss entscheiden, ob er zugreift — und das schnell.
+static func _nachwuchsbericht(d: Dictionary, a: Dictionary, qualitaet: float) -> void:
+	var cid: String = str(a["verein"])
+	var s: Dictionary = d["personal"][str(a["scout"])]
+	s["berichte"] = int(s.get("berichte", 0)) + 1
+	var gefunden: Array = Talentsuche.bericht(d, a, qualitaet)
+	var region: String = str((Talentsuche.REGIONEN.get(str(a["ziel"]), Talentsuche.REGIONEN["heimat"]) as Dictionary)["name"])
+	if gefunden.is_empty():
+		if cid == Welt.mein_verein_id:
+			Welt.nachricht({
+				"typ": "scouting", "betreff": "Sichtungsreise ohne Ergebnis",
+				"text": "%s ist aus %s zurück, ohne jemanden zu empfehlen." % [_name(s), region],
+			})
+		return
+	var zeilen: Array = []
+	for sid in gefunden:
+		var sp: Dictionary = d["spieler"][sid]
+		zeilen.append("%s (%d, %s, %s) — %s" % [
+			Spielerfabrik.voller_name(sp), int(sp["alter"]),
+			Spielerfabrik.POSITION_NAME.get(str(sp["position"]), str(sp["position"])),
+			Namen.KULTUR_NAME.get(str(sp["nation"]), str(sp["nation"])),
+			potenzial_text(d, sid)])
+	if cid == Welt.mein_verein_id:
+		Welt.nachricht({
+			"typ": "scouting", "wichtig": true,
+			"betreff": "Sichtungsbericht %s: %d Talente" % [region, gefunden.size()],
+			"text": "%s empfiehlt aus %s:\n\n%s\n\nDie Empfehlungen stehen %d Tage im Scoutingbereich zur Verfügung. Andere Vereine sichten dieselben Hallen." % [
+				_name(s), region, "\n".join(zeilen), Talentsuche.FRIST_TAGE],
+		})
 
 static func _gegnerbericht(d: Dictionary, a: Dictionary, qualitaet: float) -> void:
 	var cid: String = str(a["verein"])
@@ -274,11 +315,12 @@ static func schaetzung(d: Dictionary, sid: String, attribut: String) -> Dictiona
 		"sicher": false,
 	}
 
+## Attributwerte gehen nach aussen immer ueber die Anzeigeskala 5..100.
 static func attributtext(d: Dictionary, sid: String, attribut: String) -> String:
 	var s := schaetzung(d, sid, attribut)
 	if bool(s["sicher"]):
-		return str(int(round(float(s["min"]))))
-	return "%d–%d" % [int(round(float(s["min"]))), int(round(float(s["max"])))]
+		return str(Spielerfabrik.anzeige(float(s["min"])))
+	return "%d–%d" % [Spielerfabrik.anzeige(float(s["min"])), Spielerfabrik.anzeige(float(s["max"]))]
 
 static func gesamt_text(d: Dictionary, sid: String) -> String:
 	var sp: Dictionary = d["spieler"][sid]
@@ -309,6 +351,22 @@ static func potenzial_text(d: Dictionary, sid: String) -> String:
 	elif geschaetzt >= 44.0:
 		return "Zweitliganiveau"
 	return "begrenzt"
+
+## Wie schnell er sein Potenzial abruft. Ohne Beobachtung sagt darueber
+## niemand etwas — genau das ist der Zweck eines Scoutauftrags.
+static func tempo_text(d: Dictionary, sid: String) -> String:
+	var sp: Dictionary = d["spieler"][sid]
+	var kenntnis: float = float(sp["kenntnis"])
+	if kenntnis < 45.0:
+		return "Entwicklungstempo unklar"
+	var wert: float = float(sp.get("lernkurve", 1.0))
+	var unschaerfe: float = (100.0 - kenntnis) / 100.0 * 0.30
+	return Spielerfabrik.lernkurve_text(wert + Namen.bereich(-unschaerfe, unschaerfe))
+
+## Wie weit ein Spieler von seiner Decke entfernt ist (0..1).
+static func ausschoepfung(sp: Dictionary) -> float:
+	var pot: float = maxf(float(sp["potenzial"]), 1.0)
+	return clampf(Spielerfabrik.gesamt(sp) / pot, 0.0, 1.0)
 
 static func kenntnis_text(kenntnis: float) -> String:
 	if kenntnis >= 97.0:

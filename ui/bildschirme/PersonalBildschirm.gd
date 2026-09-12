@@ -49,7 +49,7 @@ func aktualisieren() -> void:
 		var werte := Stil.hbox(6)
 		for a in (p["attr"] as Dictionary).keys():
 			var w: float = float(p["attr"][a])
-			var abz := Stil.abzeichen("%s %d" % [str(a).substr(0, 5), int(w)], Stil.wert_farbe(w))
+			var abz := Stil.abzeichen("%s %d" % [str(a).substr(0, 5), Spielerfabrik.anzeige(w)], Stil.wert_farbe(w))
 			abz.tooltip_text = str(a).capitalize()
 			werte.add_child(abz)
 		g.add_child(werte)
@@ -89,7 +89,7 @@ func aktualisieren() -> void:
 			g2.add_child(Stil.text(str(int(b["alter"])), Stil.S_KLEIN))
 			var werte := Stil.hbox(6)
 			for a in (b["attr"] as Dictionary).keys():
-				werte.add_child(Stil.abzeichen("%s %d" % [str(a).substr(0, 5), int(float(b["attr"][a]))], Stil.wert_farbe(float(b["attr"][a]))))
+				werte.add_child(Stil.abzeichen("%s %d" % [str(a).substr(0, 5), Spielerfabrik.anzeige(float(b["attr"][a]))], Stil.wert_farbe(float(b["attr"][a]))))
 			g2.add_child(werte)
 			g2.add_child(Stil.text(Stil.geld(float(b["gehalt"])), Stil.S_KLEIN))
 			var holen := Stil.knopf_primaer("Verpflichten")

@@ -126,6 +126,18 @@ Projekt, keine Symbolschrift, kein fremdes Theme.
 * **Anzeigetafel im Spiel.** Heimseite, Spielstand mit Uhr, Gastseite — mit
   Wappen und Vereinsnamen beider Mannschaften, darunter Wettbewerb und
   Hallenpuls.
+* **Übersichten sind Wege, keine Sackgassen.** Jede Karte im Büro trägt oben
+  rechts ein „Öffnen ›" und reagiert auf einen Klick in ihre Fläche; dasselbe
+  gilt für die sechs Kennzahlenkacheln. Wer im Büro sieht, dass die Kasse eng
+  ist, ist einen Klick von den Finanzen entfernt und muss sich nicht durch die
+  Navigation suchen. Knöpfe innerhalb einer Karte behalten dabei Vorrang.
+* **Nachrichten sind Artikel.** Der Posteingang zeigt Schlagzeile, Anreißer und
+  kleine Wegweiser („SPIELER", „VEREIN", „GESPRÄCH"). Erst der Klick öffnet den
+  vollständigen Artikel — mit dem Portrait des Betroffenen, dem ganzen Text und
+  genau den Wegen, die aus dieser Meldung herausführen: zum Spielerprofil, zum
+  Verein, zum Spielbericht, zur Pressekonferenz oder zum zuständigen Bildschirm.
+  Als gelesen gilt eine Nachricht erst, wenn man sie geöffnet hat, und nicht
+  schon, wenn man am Posteingang vorbeigelaufen ist.
 
 ### Spielergesichter
 
@@ -307,14 +319,37 @@ godot4 --headless res://werkzeuge/Klangtest.tscn   # Länge, Spitze, RMS, Nulldu
 ## Der Spieltag
 
 Die Live-Ansicht zeigt das Spiel, sie erzählt es nicht nur. Das Feld ist keine
-Momentaufnahme mehr: Jeder Spieler hat eine tatsächliche und eine angestrebte
+Momentaufnahme: Jeder Spieler hat eine tatsächliche und eine angestrebte
 Position und läuft dazwischen; beim Wechsel zwischen Angriff und Abwehr sieht
-man die Mannschaft die Seite wechseln. Ein Angriff besteht aus mehreren Takten
-— der Ball läuft über zwei bis drei Stationen, ein Ring wandert mit ihm mit,
-und erst am Ende steht der Abschluss. Der Wurf fliegt in hohem Bogen aufs Tor,
-ein Fehlwurf sichtbar daneben, ein Block bleibt auf halbem Weg stecken. Tor,
-Parade, Block und Zeitstrafe setzen einen kurzen Ring an die Stelle, an der es
-passiert ist. Stehende Spieler wippen leicht, damit das Bild lebt.
+man die Mannschaft die Seite wechseln — wer weit zurück muss, sprintet, damit
+die Deckung steht, bevor der Gegner abschließt.
+
+**Der Ball ist verfolgbar.** Hinter ihm liegt eine kurze, verblassende Spur, so
+dass auch ein schneller Pass mit dem Auge zu greifen ist. Ein Angriff besteht
+aus Takten mit einer erkennbaren Form: Aufbau über zwei bis drei Stationen,
+dazwischen eine Bewegung ohne Ball — zwei Rückraumspieler kreuzen, oder der
+Kreisläufer setzt sich vor der Deckung auf die andere Seite ab — und am Ende der
+Abschluss mit sichtbarem Anlauf.
+
+**Laufwege sind zu sehen, nicht zu erraten.** Wer sich von seinem Platz löst,
+zieht eine dünne gestrichelte Linie hinter sich her, die mit dem Laufweg
+verblasst. Wer einen Pass erwartet, geht ihm entgegen; wer abgespielt hat, löst
+sich; der ballnahe Verteidiger geht heraus und seine Nachbarn rücken zur
+Ballseite nach. Jeder Laufweg hängt dabei an einer Leine zum Formationsplatz
+(höchstens 6,5 Meter) und endet von selbst — sonst stünde die Deckung nach fünf
+Pässen im gegnerischen Kreis.
+
+Der Wurf fliegt in hohem Bogen aufs Tor, ein Fehlwurf sichtbar daneben, ein
+Block bleibt auf halbem Weg stecken. Tor, Parade, Block und Zeitstrafe setzen
+einen kurzen Ring an die Stelle, an der es passiert ist. Der Ticker zeigt dabei
+denselben Angriff wie das Feld: die Engine rechnet einen Angriff zu Ende, bevor
+das Ereignis ausgegeben wird, deshalb setzt die Ansicht die Seiten ausdrücklich
+nach dem Ereignis und nicht nach dem Angriffsrecht der Engine. Stehende Spieler
+wippen leicht, damit das Bild lebt.
+
+Auf der Platte stehen immer genau sieben Spieler je Mannschaft, und der
+Spieltagskader ist auf 14 begrenzt — die Seitenleiste trennt entsprechend
+„Auf der Platte", „In der Rotation" und „Bank".
 
 Die Geschwindigkeitsstufen steuern weiterhin alles: bei *Langsam* sieht man
 jeden Pass, bei *Schnell* läuft ein Angriff in einem Wimpernschlag durch. Die
@@ -480,6 +515,106 @@ Jahre. Der Reiter *Planung* im Kader beantwortet vier Fragen:
   kommenden Saisons kosten, gemessen am Budget.
 * **Verträge und Perspektive** — alle Spieler nach Vertragsende sortiert, mit
   einer Stärkeprognose über drei Jahre aus Alterskurve und Potenzial.
+
+---
+
+## Einsatzzeiten
+
+Rotation nach Kraftstand allein beantwortet die Frage nicht, die sich jeder
+Trainer stellt, der ein Talent aufbauen will: *wie kommt er zu Spielzeit, ohne
+dass ich jeden Wechsel von Hand mache?* Solange der Stammspieler bei 70 Prozent
+Kraft steht, wechselt nämlich niemand.
+
+Im Taktikbildschirm bekommt darum jeder Feldspieler ein **Minutenziel**. Die
+Simulation vergleicht während der Partie anteilig: nach zwanzig Minuten zählt
+ein Drittel des Ziels. Wer sein Pensum erreicht hat, macht Platz für den, der am
+weitesten dahinter liegt — vorausgesetzt, der kann die Position auch spielen.
+
+* **0 heißt: kein Ziel.** Dann entscheidet allein die Kraft, also genau das
+  Verhalten von vorher. Ziele sind eine bewusste Ansage, keine Voreinstellung.
+* **„Aus Vertragsrollen ableiten"** verteilt die Minuten nach dem, was ein
+  Leistungsträger, ein Rotationsspieler oder ein Talent erwarten darf — und
+  rechnet die Summe auf die 360 Minuten herunter, die sechs Feldpositionen
+  tatsächlich hergeben.
+* Die Karte zeigt, ob die Summe aufgeht. Wer allen viel verspricht, sieht das
+  sofort und nicht erst in der Kabine.
+* Der Minutenplan gilt auch dann, wenn die automatische Rotation aus ist: er ist
+  eine Anweisung des Trainers und keine Automatik, die man abschalten wollte.
+
+---
+
+## Nachwuchssichtung
+
+Nachwuchs entstand bisher nur im eigenen Verein: einmal im Jahr kam ein
+Jahrgang, damit war die Frage beantwortet. Ein Verein mit gutem Scouting
+arbeitet anders — er schickt Leute in eine Region, lässt Jahrgänge sichten und
+holt die zwei, drei Jungen, die herausstechen, in die eigene Akademie.
+
+Ein Scout kann deshalb auf **Nachwuchssichtung** geschickt werden. Sechs
+Regionen mit eigener Handballkultur stehen zur Wahl:
+
+| Region | Dauer | Charakter |
+| --- | --- | --- |
+| Eigene Region | 12 Tage | günstig, verlässlich, selten spektakulär |
+| Skandinavien | 20 Tage | ausgebildete Rückraumspieler, teuer |
+| Balkan | 22 Tage | große Streuung — wer trifft, findet Weltklasse für nichts |
+| Westeuropa | 18 Tage | dichte Strukturen, starke Konkurrenz |
+| Osteuropa | 24 Tage | wenig beobachtet, niedrige Entschädigungen |
+| Übersee | 30 Tage | Athleten mit wenig Handballschule, hohe Decke |
+
+Der Scout bringt zwei bis vier Namen zurück — wie viele und wie gut, hängt an
+seinem Gespür. Jedes Talent kostet eine **Ausbildungsentschädigung** an den
+Heimatverein und steht dreißig Tage zur Verfügung. Danach ist es weg: andere
+Vereine sichten dieselben Hallen, und je größer das Talent, desto eher greift
+jemand anders zu. Wer zögert, verliert — genau deshalb ist das eine Entscheidung
+und keine Liste zum Abarbeiten.
+
+---
+
+## Potenzial, Decke und Lernkurve
+
+Zwei Talente mit demselben Potenzial sind nicht dasselbe: der eine steht mit 21
+oben, der andere braucht bis 26 — und einer von beiden ist einen Transfer wert.
+Deshalb hat jeder Spieler neben dem Potenzial eine **Lernkurve** zwischen 0,55
+und 1,6, die direkt in die Entwicklungsformel eingeht.
+
+Im Spielerfenster steht sie als Klartext („reift im Zeitraffer", „lernt
+schnell", „entwickelt sich stetig", „braucht Geduld", „Spätzünder") — und, wie
+jede Einschätzung, nur so genau, wie der Spieler beobachtet wurde. Unter 45
+Prozent Kenntnis heißt es schlicht „Entwicklungstempo unklar". Daneben steht ein
+Balken **Ausgeschöpft**: wie viel der eigenen Decke bereits abgerufen ist. Ein
+Spieler bei 99 Prozent ist fertig, einer bei 62 Prozent mit 19 Jahren ist ein
+Projekt.
+
+---
+
+## Die Attributskala
+
+Attribute werden auf **5 bis 100** angezeigt. Intern laufen sie weiter von 1 bis
+20 in Fließkomma, damit Entwicklung in winzigen Schritten stattfinden kann —
+angezeigt wird das Fünffache. Der Grund ist Auflösung: auf einer Zwanzigerskala
+verschwinden Unterschiede, die im Spiel sehr wohl zählen, weil zwischen 14 und
+15 in Wahrheit eine halbe Liga liegt. Die Umrechnung sitzt an einer Stelle
+(`Spielerfabrik.anzeige()`), damit Anzeige und Rechnung nie auseinanderlaufen.
+
+---
+
+## Was die Regler bewirken
+
+Ein Regler, dessen Wirkung man nur glauben kann, ist Zierrat. Im Taktikbildschirm
+steht deshalb neben jedem Schieber, was er in Zahlen bedeutet — und diese Zahlen
+kommen aus denselben Formeln, mit denen die Simulation rechnet:
+
+* **Tempo** verkürzt jeden Angriff (`40,5 − 0,19 × Tempo` Sekunden). Von 0 auf
+  100 sind das 44 statt 84 Angriffe je Mannschaft. Hohes Tempo kostet zusätzlich
+  Kraft.
+* **Risiko** verschiebt die Ballverlustquote je Angriff von 14 auf 23 Prozent.
+* **Härte** hebt Zeitstrafen von 5,0 auf 10,8 Prozent je Abwehraktion und
+  Siebenmeter von 3,4 auf 6,0 Prozent.
+* **Wechselintensität** kostet bis zu 28 Prozent mehr Kraft und erhöht das
+  Risiko eines Wechselfehlers.
+* Die **Mentalität** verschiebt Tempo und Risiko zusätzlich (defensiv −18/−18,
+  all-in +26/+32) — die Anzeige rechnet das mit ein.
 
 ---
 
@@ -788,6 +923,8 @@ kern/
   Laufbahn.gd        Chronik eines Spielerlebens: Debüt, Wechsel, Titel, Marken
   Trikot.gd          Rückennummern: Vergabe nach Position, Eindeutigkeit im Kader
   Mentoring.gd       Patenschaften: Passung, Reifung, Charakterübertragung
+  Einsatzzeit.gd     Zielminuten je Spieler und ihre Umsetzung im Spiel
+  Talentsuche.gd     Nachwuchssichtung in sechs Regionen für die eigene Akademie
   KI.gd              Aufstellung, Taktik, Training, Verträge, Ausbau der KI-Vereine
 ui/
   App.gd/.tscn       Rahmen: Kopfzeile, Navigation, Bildschirmwechsel
@@ -796,8 +933,8 @@ ui/
   widgets/           Wappen, Portraet (Gesichter), Flagge, Symbol (Icon-Satz),
                      NavKnopf, Spielfeld, Wurfkarte, Radar, Pokal3D,
                      Verhandlungsraum (3D), Bausteine, Spieler-, Vereins-,
-                     Bericht-, Presse-, Vorbericht-, Anliegen-, Verhandlungs-
-                     und Vorspulfenster
+                     Bericht-, Presse-, Vorbericht-, Anliegen-, Verhandlungs-,
+                     Nachrichten- und Vorspulfenster
   bildschirme/       24 Bildschirme
 daten/               ligen.json und kader.json — die echten Vereine und Kader
 werkzeuge/           Test- und Kalibrierungsszenen

@@ -150,6 +150,7 @@ func _kopf(sp: Dictionary) -> void:
 	h.add_child(rechts)
 	rechts.add_child(Stil.info_zeile("Gesamtstärke", Scouting.gesamt_text(Welt.daten, sid), Stil.wert_farbe(Spielerfabrik.gesamt(sp), 100.0)))
 	rechts.add_child(Stil.info_zeile("Perspektive", Scouting.potenzial_text(Welt.daten, sid), Stil.LILA))
+	rechts.add_child(Stil.info_zeile("Entwicklung", Scouting.tempo_text(Welt.daten, sid), Stil.TEXT_MATT))
 	rechts.add_child(Stil.info_zeile("Marktwert", Stil.geld(float(sp["wert"]))))
 	rechts.add_child(Stil.info_zeile("Kenntnis", Scouting.kenntnis_text(float(sp["kenntnis"])), Stil.TEXT_MATT))
 	kopfbereich.add_child(Stil.trenner())
@@ -301,9 +302,9 @@ func _attribute(sp: Dictionary) -> void:
 			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			z.add_child(l)
 			var wert: float = float(sp["attr"].get(a, 1.0))
-			z.add_child(Stil.balken(wert, 20.0, 64))
+			z.add_child(Stil.balken(wert, 20.0, 58))
 			var t := Stil.text(Scouting.attributtext(Welt.daten, sid, str(a)), Stil.S_KLEIN, Stil.wert_farbe(wert))
-			t.custom_minimum_size = Vector2(44, 0)
+			t.custom_minimum_size = Vector2(58, 0)
 			t.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			z.add_child(t)
 			karte.add_child(z)
@@ -548,10 +549,12 @@ func _entwicklung(sp: Dictionary) -> void:
 	var karte := Bausteine.karte_in(inhalt, "Entwicklung")
 	karte.add_child(Stil.info_zeile("Aktuelle Stärke", "%d" % int(Spielerfabrik.gesamt(sp))))
 	karte.add_child(Stil.info_zeile("Einschätzung", Scouting.potenzial_text(Welt.daten, sid), Stil.LILA))
+	karte.add_child(Stil.info_zeile("Entwicklungstempo", Scouting.tempo_text(Welt.daten, sid), Stil.LILA))
+	_deckenbalken(karte, sp)
 	karte.add_child(Stil.info_zeile("Förderprogramm", str(Training.INDIVIDUALFOKUS.get(str(sp.get("trainingsfokus", "")), "—"))))
-	karte.add_child(Stil.info_zeile("Arbeitseinsatz", "%d" % int(float(sp["attr"]["arbeitseinsatz"])),
+	karte.add_child(Stil.info_zeile("Arbeitseinsatz", "%d" % Spielerfabrik.anzeige(float(sp["attr"]["arbeitseinsatz"])),
 		Stil.wert_farbe(float(sp["attr"]["arbeitseinsatz"]))))
-	karte.add_child(Stil.info_zeile("Verletzungsanfälligkeit", "%d" % int(float(sp["verletzungsneigung"])),
+	karte.add_child(Stil.info_zeile("Verletzungsanfälligkeit", "%d" % Spielerfabrik.anzeige(float(sp["verletzungsneigung"])),
 		Stil.wert_farbe(20.0 - float(sp["verletzungsneigung"]))))
 	if bool(sp.get("aus_eigener_jugend", false)):
 		karte.add_child(Stil.text("Aus der eigenen Jugend.", Stil.S_KLEIN, Stil.GRUEN))
@@ -586,6 +589,28 @@ func _entwicklung(sp: Dictionary) -> void:
 	for e in verlaufsliste.slice(0, 12):
 		verlauf.add_child(Stil.info_zeile(Kalender.text(int(e["tag"]), Welt.startjahr()),
 			"+%s auf %d" % [Stil.komma(float(e["delta"]), 2), int(float(e["gesamt"]))], Stil.GRUEN))
+
+## Wie viel von der eigenen Decke schon abgerufen ist. Ein Balken sagt das in
+## einem Blick, was zwei Zahlen erst nach Nachdenken verraten: ob dieser
+## Spieler fertig ist oder ob da noch etwas kommt.
+func _deckenbalken(eltern: Node, sp: Dictionary) -> void:
+	var jetzt: float = Spielerfabrik.gesamt(sp)
+	var pot: float = maxf(float(sp["potenzial"]), jetzt)
+	var anteil: float = Scouting.ausschoepfung(sp)
+	var zeile := Stil.hbox(8)
+	eltern.add_child(zeile)
+	var l := Stil.matt("Ausgeschöpft", Stil.S_KLEIN)
+	l.custom_minimum_size = Vector2(150, 0)
+	zeile.add_child(l)
+	zeile.add_child(Stil.balken(anteil * 100.0, 100.0, 120, Stil.LILA))
+	var text := "%d %%" % int(round(anteil * 100.0))
+	if float(sp["kenntnis"]) < 60.0:
+		text = "grob geschätzt"
+	zeile.add_child(Stil.text(text, Stil.S_KLEIN, Stil.LILA))
+	if anteil >= 0.985:
+		eltern.add_child(Stil.matt("Er hat seine Decke erreicht — mehr kommt über Training nicht mehr.", Stil.S_MINI))
+	elif int(sp["alter"]) <= 23:
+		eltern.add_child(Stil.matt("Noch %d Punkte Luft nach oben." % int(round(pot - jetzt)), Stil.S_MINI))
 
 ## Die Laufbahn: was in diesem Sportlerleben passiert ist.
 func _laufbahn(sp: Dictionary) -> void:
@@ -759,12 +784,12 @@ func _staerken_schwaechen(eltern: Node, sp: Dictionary) -> void:
 	for e in liste.slice(0, 3):
 		eltern.add_child(Stil.info_zeile(
 			str(Spielerfabrik.ATTR_LABEL.get(str(e["id"]), str(e["id"]))),
-			"%d" % int(float(e["wert"])), Stil.wert_farbe(float(e["wert"]))))
+			"%d" % Spielerfabrik.anzeige(float(e["wert"])), Stil.wert_farbe(float(e["wert"]))))
 	eltern.add_child(Stil.etikett("Schwächen"))
 	for e2 in liste.slice(maxi(liste.size() - 3, 0)):
 		eltern.add_child(Stil.info_zeile(
 			str(Spielerfabrik.ATTR_LABEL.get(str(e2["id"]), str(e2["id"]))),
-			"%d" % int(float(e2["wert"])), Stil.wert_farbe(float(e2["wert"]))))
+			"%d" % Spielerfabrik.anzeige(float(e2["wert"])), Stil.wert_farbe(float(e2["wert"]))))
 
 ## Eingabefeld für die Ablöseklausel samt Wirkungshinweis.
 func _klauselzeile(eltern: Node, sp: Dictionary, start: float) -> SpinBox:

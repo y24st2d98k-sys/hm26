@@ -46,25 +46,31 @@ static func _rekorde_pruefen(d: Dictionary, m: Dictionary) -> void:
 					"wert": int(z["tore"]), "spieler": sid, "tag": int(d["tag"]),
 					"text": "%s, %d Tore" % [Spielerfabrik.voller_name(d["spieler"][sid]), int(z["tore"])],
 				}
-	# Siegesserien
+	# Siegesserien. Die Formkurve taugt dafuer nicht: sie ist gedeckelt, und
+	# eine Serie von fuenfzehn Siegen laese sich daraus als zehn ab — bei jedem
+	# weiteren Sieg erneut, samt derselben Meldung. Deshalb ein echter Zaehler
+	# je Verein, der sich merkt, was schon gemeldet wurde.
 	for cid in [str(m["heim"]), str(m["gast"])]:
 		var v: Dictionary = d["vereine"][cid]
-		var kurve: Array = v["formkurve"]
-		var serie := 0
-		for i in range(kurve.size() - 1, -1, -1):
-			if str(kurve[i]) == "S":
-				serie += 1
-			else:
-				break
+		var gewonnen: bool = (cid == str(m["heim"]) and int(m["tore_heim"]) > int(m["tore_gast"])) \
+			or (cid == str(m["gast"]) and int(m["tore_gast"]) > int(m["tore_heim"]))
+		var serie: int = int(v.get("siegesserie", 0)) + 1 if gewonnen else 0
+		v["siegesserie"] = serie
+		if not gewonnen:
+			v["serie_gemeldet"] = 0
+			continue
 		if serie > int(rekorde.get("laengste_siegesserie", {}).get("wert", 0)):
 			rekorde["laengste_siegesserie"] = {
 				"wert": serie, "verein": cid, "tag": int(d["tag"]),
 				"text": "%s, %d Siege in Folge" % [v["name"], serie],
 			}
-		if serie >= 5 and cid == Welt.mein_verein_id and serie % 5 == 0:
+		var gemeldet: int = int(v.get("serie_gemeldet", 0))
+		if serie >= 5 and serie % 5 == 0 and serie > gemeldet and cid == Welt.mein_verein_id:
+			v["serie_gemeldet"] = serie
 			Welt.nachricht({
 				"typ": "chronik", "betreff": "%d Siege in Serie" % serie,
 				"text": "Ihre Mannschaft hat %d Pflichtspiele nacheinander gewonnen. So etwas bleibt im Verein in Erinnerung." % serie,
+				"daten": {"verein": cid, "spiel": str(m["id"])},
 			})
 
 static func _rivalitaet_pflegen(d: Dictionary, m: Dictionary) -> void:

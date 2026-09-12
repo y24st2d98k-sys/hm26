@@ -183,6 +183,30 @@ func _verweise(d: Dictionary) -> void:
 	for eintrag in d.get("anliegen", []):
 		_pruefe(d["spieler"].has(str(eintrag.get("spieler", ""))),
 			"Anliegen eines unbekannten Spielers")
+	# Zielminuten und Anweisungen haengen am Spieler: wer den Verein verlaesst,
+	# darf keine Karteileiche hinterlassen.
+	for cid_z in Weltgenerator.clubs(d):
+		var v_z: Dictionary = d["vereine"][cid_z]
+		var auf_z: Dictionary = v_z.get("aufstellung", {})
+		for sid_z in (auf_z.get("minuten", {}) as Dictionary).keys():
+			if not (v_z["kader"] as Array).has(str(sid_z)):
+				_fehler("%s hat ein Minutenziel für %s, der nicht im Kader ist" % [str(v_z["name"]), sid_z])
+		for sid_a in (auf_z.get("anweisungen", {}) as Dictionary).keys():
+			if not d["spieler"].has(str(sid_a)):
+				_fehler("%s hat eine Anweisung für den unbekannten Spieler %s" % [str(v_z["name"]), sid_a])
+	# Gesichtete Talente: jeder Kandidat gehoert in die Liste, und jeder
+	# Listeneintrag zeigt auf einen Spieler, den es noch gibt.
+	var in_liste := {}
+	for e_t in d.get("scouting", {}).get("talente", []):
+		var tsid: String = str((e_t as Dictionary).get("spieler", ""))
+		in_liste[tsid] = true
+		if not d["spieler"].has(tsid):
+			_fehler("Sichtungsliste nennt den unbekannten Spieler %s" % tsid)
+		elif str(d["spieler"][tsid]["verein"]) != "":
+			_fehler("Gesichtetes Talent %s steht schon bei einem Verein" % tsid)
+	for sid_k in d["spieler"].keys():
+		if bool(d["spieler"][sid_k].get("nachwuchskandidat", false)) and not in_liste.has(str(sid_k)):
+			_fehler("Nachwuchskandidat %s steht in keiner Sichtungsliste" % sid_k)
 
 ## Kein Verein rutscht dauerhaft ins Bodenlose.
 func _finanzen(d: Dictionary) -> void:

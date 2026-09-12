@@ -47,6 +47,14 @@ const TEMPO := 7.5
 var _ist: Dictionary = {}        # sid -> Vector2, wo der Spieler gerade steht
 var _ziel: Dictionary = {}       # sid -> Vector2, wohin er unterwegs ist
 var _zittern: Dictionary = {}    # sid -> float, Phase der kleinen Standbewegung
+## Laufwege: sid -> {"punkt": Vector2, "rest": float, "dauer": float, "tempo": float}
+## Ein Laufweg zieht einen Spieler zeitweise von seinem Formationsplatz weg —
+## der Kreislaeufer loest sich, der Aussen zieht in die Luecke, der
+## Abwehrspieler geht heraus. Laeuft die Zeit ab, geht er zurueck auf Position.
+var _laufwege: Dictionary = {}
+## Wie lange die Spur hinter dem Ball nachleuchtet.
+const SPUR_LAENGE := 14
+var _spur: Array = []            # [{"punkt": Vector2, "rest": float}]
 var _ball_von: Vector2 = Vector2(20.0, 10.0)
 var _ball_nach: Vector2 = Vector2(20.0, 10.0)
 var _ball_t: float = 1.0
@@ -64,13 +72,27 @@ func _process(delta: float) -> void:
 		return
 	_zeit += delta
 	var bewegt := false
+	for sid in _laufwege.keys():
+		var l: Dictionary = _laufwege[sid]
+		l["rest"] = float(l["rest"]) - delta
+	for sid_weg in _laufwege.keys():
+		if float((_laufwege[sid_weg] as Dictionary)["rest"]) <= 0.0:
+			_laufwege.erase(sid_weg)
 	for sid in _ziel.keys():
-		var ziel: Vector2 = _ziel[sid]
+		var ziel: Vector2 = _laufziel(str(sid))
 		var ist: Vector2 = _ist.get(sid, ziel)
 		var weg: Vector2 = ziel - ist
 		var laenge: float = weg.length()
 		if laenge > 0.02:
-			var schritt: float = minf(TEMPO * delta, laenge)
+			var tempo: float = TEMPO
+			if _laufwege.has(sid):
+				tempo = float((_laufwege[sid] as Dictionary).get("tempo", TEMPO))
+			elif laenge > 7.0:
+				# Umschaltspiel: wer die ganze Feldlaenge zurueck muss, geht
+				# nicht spazieren. Sonst steht die Abwehr noch im Mittelkreis,
+				# wenn der Gegner schon wirft.
+				tempo = TEMPO * clampf(laenge / 7.0, 1.0, 3.2)
+			var schritt: float = minf(tempo * delta, laenge)
 			_ist[sid] = ist + weg / laenge * schritt
 			bewegt = true
 		else:
@@ -78,6 +100,20 @@ func _process(delta: float) -> void:
 	if _ball_t < 1.0:
 		_ball_t = minf(_ball_t + delta / maxf(_ball_dauer, 0.05), 1.0)
 		bewegt = true
+	# Ballspur: eine kurze Kette der letzten Positionen. Ohne sie verliert man
+	# den Ball bei jedem schnellen Pass aus den Augen. Nur bei echter Bewegung
+	# eintragen — ein liegender Ball soll die Spur nicht mit sich selbst
+	# auffuellen.
+	var bp_jetzt: Vector2 = _ballpunkt()
+	if _spur.is_empty() or bp_jetzt.distance_to((_spur[0] as Dictionary)["punkt"]) > 0.05:
+		_spur.push_front({"punkt": bp_jetzt, "rest": 0.42})
+	while _spur.size() > SPUR_LAENGE:
+		_spur.pop_back()
+	for i in range(_spur.size() - 1, -1, -1):
+		var sp_e: Dictionary = _spur[i]
+		sp_e["rest"] = float(sp_e["rest"]) - delta
+		if float(sp_e["rest"]) <= 0.0:
+			_spur.remove_at(i)
 	for i in range(_blitze.size() - 1, -1, -1):
 		var b: Dictionary = _blitze[i]
 		b["rest"] = float(b["rest"]) - delta
@@ -126,10 +162,87 @@ func _ziele_berechnen() -> void:
 			_ziel.erase(sid2)
 			_ist.erase(sid2)
 			_zittern.erase(sid2)
+			_laufwege.erase(sid2)
 
 ## Wo steht dieser Spieler gerade? Faellt auf seinen Sollplatz zurueck.
 func spielerpunkt(sid: String) -> Vector2:
 	return _ist.get(sid, _ziel.get(sid, Vector2(20.0, 10.0)))
+
+## Wohin dieser Spieler gerade unterwegs ist — Laufweg vor Formationsplatz.
+func _laufziel(sid: String) -> Vector2:
+	if _laufwege.has(sid):
+		return (_laufwege[sid] as Dictionary)["punkt"]
+	return _ziel.get(sid, Vector2(20.0, 10.0))
+
+## Der Formationsplatz eines Spielers. Alle Laufwege rechnen von hier aus —
+## sonst schaukeln sie sich auf: jeder Pass zoege den Verteidiger ein Stueck
+## weiter zum Ball, bis er nach fuenf Stationen im gegnerischen Kreis steht.
+func grundpunkt(sid: String) -> Vector2:
+	return _ziel.get(sid, spielerpunkt(sid))
+
+## Wie weit sich ein Spieler von seinem Platz loesen darf.
+const LAUF_MAX := 6.5
+
+## Ein Spieler loest sich fuer eine Weile von seinem Platz. Danach geht er
+## automatisch zurueck — genau so, wie eine Kreuzbewegung im Handball endet.
+func laufweg(sid: String, nach: Vector2, dauer: float = 1.4, tempo: float = 0.0) -> void:
+	if sid == "":
+		return
+	# Am Formationsplatz haengt eine Leine: ein Laufweg ist eine Bewegung im
+	# System und kein Ausflug.
+	var basis: Vector2 = grundpunkt(sid)
+	var weg: Vector2 = nach - basis
+	if weg.length() > LAUF_MAX:
+		nach = basis + weg.normalized() * LAUF_MAX
+	var punkt := Vector2(clampf(nach.x, 0.6, LAENGE - 0.6), clampf(nach.y, 0.7, BREITE - 0.7))
+	_laufwege[sid] = {"punkt": punkt, "rest": maxf(dauer, 0.1),
+		"dauer": maxf(dauer, 0.1), "tempo": tempo if tempo > 0.0 else TEMPO * 1.35}
+
+## Er stoesst von seinem Platz aus ein Stueck in eine Richtung vor.
+func vorstossen(sid: String, richtung: Vector2, weite: float, dauer: float = 1.2) -> void:
+	if sid == "" or richtung.length() < 0.01:
+		return
+	laufweg(sid, grundpunkt(sid) + richtung.normalized() * weite, dauer)
+
+## Die verteidigende Mannschaft schiebt zum Ball. Der naechste Abwehrspieler
+## geht heraus, seine Nachbarn ruecken nach — das ist die Bewegung, die man
+## in einer Halle tatsaechlich sieht.
+func abwehr_verschieben(verteidiger: String, ballpunkt: Vector2, staerke: float = 1.0) -> void:
+	var spieler: Dictionary = szene.get(verteidiger, {})
+	if spieler.is_empty():
+		return
+	var naechster := ""
+	var abstand := 999.0
+	for pos in spieler.keys():
+		if str(pos) == "TW":
+			continue
+		var sid: String = str((spieler[pos] as Dictionary).get("sid", ""))
+		if sid == "":
+			continue
+		var d: float = spielerpunkt(sid).distance_to(ballpunkt)
+		if d < abstand:
+			abstand = d
+			naechster = sid
+	if naechster == "":
+		return
+	# Der ballnahe Verteidiger geht heraus, aber nicht bis zum Ball: er stellt
+	# sich in die Wurfbahn.
+	var eigen: Vector2 = grundpunkt(naechster)
+	laufweg(naechster, eigen.lerp(ballpunkt, clampf(0.30 * staerke, 0.1, 0.5)), 1.5)
+	for pos2 in spieler.keys():
+		if str(pos2) == "TW":
+			continue
+		var sid2: String = str((spieler[pos2] as Dictionary).get("sid", ""))
+		if sid2 == "" or sid2 == naechster:
+			continue
+		var p2: Vector2 = grundpunkt(sid2)
+		# Nachbarn ruecken zur Ballseite, ohne ihren Block zu verlassen.
+		var schub: float = clampf((ballpunkt.y - p2.y) * 0.22, -1.3, 1.3) * staerke
+		laufweg(sid2, p2 + Vector2(0.0, schub), 1.4, TEMPO * 0.8)
+
+## Alle Laufwege beenden — die Mannschaften gehen zurueck in die Formation.
+func laufwege_loesen() -> void:
+	_laufwege.clear()
 
 ## Der Ball wandert flach zu einem Punkt (Pass, Dribbling, Anspiel).
 func ball_spielen(nach: Vector2, dauer: float = 0.32) -> void:
@@ -255,12 +368,46 @@ func _draw() -> void:
 		var radius: float = s * (0.7 + (1.0 - anteil) * 1.5)
 		draw_arc(_m(b["punkt"]), radius, 0.0, TAU, 22, f, maxf(s * 0.11, 1.6), true)
 
+	# Ballspur: je aelter, desto blasser. Damit bleibt der Ball auch bei
+	# schnellen Pässen mit dem Auge verfolgbar.
+	if lebendig and _spur.size() >= 2:
+		for i in range(_spur.size() - 1):
+			var a: Dictionary = _spur[i]
+			var b2: Dictionary = _spur[i + 1]
+			var alter: float = clampf(float(a["rest"]) / 0.42, 0.0, 1.0)
+			if alter <= 0.02:
+				continue
+			draw_line(_m(a["punkt"]), _m(b2["punkt"]),
+				Color(1.0, 0.93, 0.72, alter * 0.42), maxf(s * 0.14 * alter, 1.0), true)
+
+	# Laufwege: eine dünne Linie zeigt, wohin sich ein Spieler gerade löst.
+	if lebendig:
+		for sid_l in _laufwege.keys():
+			var l2: Dictionary = _laufwege[sid_l]
+			var von: Vector2 = spielerpunkt(str(sid_l))
+			var nach: Vector2 = l2["punkt"]
+			if von.distance_to(nach) < 0.5:
+				continue
+			var kraft: float = clampf(float(l2["rest"]) / maxf(float(l2["dauer"]), 0.01), 0.0, 1.0)
+			_gestrichelt(von, nach, Color(1, 1, 1, 0.26 * kraft), s)
+
 	# Ball mit weichem Schein
 	var bp := _m(_ballpunkt() if lebendig else ball)
 	var br: float = maxf(s * 0.3, 3.0)
 	draw_circle(bp, br * 2.1, Color(1, 0.95, 0.8, 0.10))
 	draw_circle(bp, br, Color("#f7f2e4"))
 	draw_arc(bp, br, 0.0, TAU, 12, Color("#2a2118"), maxf(s * 0.05, 1.0))
+
+## Eine gestrichelte Linie zwischen zwei Meterpunkten — fuer Laufwege.
+func _gestrichelt(von: Vector2, nach: Vector2, farbe: Color, s: float) -> void:
+	var strecke: float = von.distance_to(nach)
+	var stuecke: int = clampi(int(strecke / 0.6), 2, 24)
+	for i in range(stuecke):
+		if i % 2 == 1:
+			continue
+		var t0: float = float(i) / float(stuecke)
+		var t1: float = float(i + 1) / float(stuecke)
+		draw_line(_m(von.lerp(nach, t0)), _m(von.lerp(nach, t1)), farbe, maxf(s * 0.07, 1.0), true)
 
 ## Der Torraum ist der Halbkreis mit 6 m Radius um die Tormitte.
 func _torraum(links: bool, s: float, farbe: Color) -> void:
@@ -357,10 +504,18 @@ func _zeichne_mannschaft(seite: String, s: float) -> void:
 			continue
 		var groesse: int = maxi(int(s * 0.40), 8)
 		var breite: float = schrift.get_string_size(beschriftung, HORIZONTAL_ALIGNMENT_LEFT, -1, groesse).x
-		# Namen der verteidigenden Mannschaft nach oben, die der angreifenden nach
-		# unten — sonst kollidiert die Beschriftung des Kreislaeufers mit der Abwehr.
-		var versatz_y: float = (r + groesse * 1.15) if greift_an else -(r + groesse * 0.55)
-		var stelle: Vector2 = p + Vector2(-breite * 0.5, versatz_y)
+		var stelle: Vector2
+		if greift_an or ist_tw:
+			# Angreifer stehen breit verteilt: der Name passt unter den Kreis.
+			stelle = p + Vector2(-breite * 0.5, r + groesse * 1.15)
+		else:
+			# Sechs Abwehrspieler stehen auf elf Metern uebereinander — dort
+			# stapeln sich Namen ueber den Kreisen zu einem Block. Zur eigenen
+			# Torseite hin ist dagegen Platz, und jeder Name steht auf der Hoehe
+			# seines Spielers.
+			var zum_tor: float = -1.0 if nach_rechts else 1.0
+			var seitlich: float = (r + 4.0) * zum_tor
+			stelle = p + Vector2(seitlich - (breite if zum_tor < 0.0 else 0.0), groesse * 0.34)
 		stelle.x = clampf(stelle.x, 2.0, maxf(size.x - breite - 2.0, 2.0))
 		stelle = _freie_stelle(stelle, breite, float(groesse), greift_an)
 		draw_string(schrift, stelle + Vector2(0, 1), beschriftung,

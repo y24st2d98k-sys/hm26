@@ -144,6 +144,9 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		"ansprachen": [],
 		# Individuelle Spieleranweisungen (siehe kern/Anweisungen.gd)
 		"anweisungen": (auf.get("anweisungen", {}) as Dictionary).duplicate(true),
+		# Zielminuten je Spieler (siehe kern/Einsatzzeit.gd). Leer heisst:
+		# es rotiert allein die Kraft.
+		"minutenziele": (auf.get("minuten", {}) as Dictionary).duplicate(true),
 	}
 	var angriff: Dictionary = auf.get("angriff", {})
 	var abwehr: Dictionary = auf.get("abwehr", {})
@@ -171,9 +174,30 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 			t["abwehr_auf"][pos] = sid
 	if not t["abwehr_auf"].has("TW"):
 		t["abwehr_auf"]["TW"] = t["angriff_auf"].get("TW", "")
-	for sid in ersatz_pool:
-		if not (t["angriff_auf"] as Dictionary).values().has(sid) and not (t["abwehr_auf"] as Dictionary).values().has(sid):
+	# Spieltagskader: sieben auf der Platte, der Rest auf der Bank — zusammen
+	# hoechstens 14. Wer darueber hinaus im Kader steht, sitzt an diesem Tag
+	# auf der Tribuene und taucht in der Partie gar nicht auf.
+	var im_aufgebot := {}
+	for pos_a in (t["angriff_auf"] as Dictionary).values():
+		if str(pos_a) != "":
+			im_aufgebot[str(pos_a)] = true
+	for pos_b in (t["abwehr_auf"] as Dictionary).values():
+		if str(pos_b) != "":
+			im_aufgebot[str(pos_b)] = true
+	var vorgabe: Array = auf.get("bank", [])
+	for sid in vorgabe:
+		if im_aufgebot.size() >= Weltgenerator.SPIELTAGSKADER:
+			break
+		if ersatz_pool.has(sid) and not im_aufgebot.has(sid):
+			im_aufgebot[sid] = true
 			t["bank"].append(sid)
+	for sid in ersatz_pool:
+		if im_aufgebot.size() >= Weltgenerator.SPIELTAGSKADER:
+			break
+		if not im_aufgebot.has(sid):
+			im_aufgebot[sid] = true
+			t["bank"].append(sid)
+	ersatz_pool = im_aufgebot.keys()
 	for sid in ersatz_pool:
 		var sp_cache: Dictionary = daten["spieler"][sid]
 		t["zustand"][sid] = {
@@ -319,6 +343,37 @@ func _angriffsdauer(a: Dictionary) -> float:
 	var bereitschaft: float = _anweisungsmittel(a, "angriff_auf", "angriff", "wurfanteil")
 	basis += clampf((1.0 - bereitschaft) * 18.0, -3.0, 10.5)
 	return clampf(basis + rng.randf_range(-6.0, 6.0), 9.0, 52.0)
+
+# --------------------------------------------- Wirkung der Regler (Anzeige) ---
+#
+# Die Oberflaeche soll nicht behaupten, was ein Regler tut, sondern es aus
+# denselben Formeln ableiten, mit denen hier gerechnet wird. Wer im
+# Taktikbildschirm am Tempo zieht, sieht sofort, wie viele Angriffe daraus
+# werden — sonst bleibt jeder Regler eine Glaubensfrage.
+
+## Ungefaehre Zahl der Angriffe je Mannschaft bei diesem Tempo.
+static func angriffe_bei_tempo(tempo: float, mentalitaet: String = "ausgeglichen") -> int:
+	var wirksam: float = clampf(tempo + float((MENTALITAET.get(mentalitaet, MENTALITAET["ausgeglichen"]) as Dictionary)["tempo"]), 0.0, 100.0)
+	var dauer: float = 40.5 - 0.19 * wirksam
+	# Beide Mannschaften teilen sich die Spielzeit, jeder Angriff gehoert einer.
+	return int(round(SPIELZEIT / maxf(dauer, 9.0) / 2.0))
+
+## Anteil der Angriffe, die im technischen Fehler enden.
+static func fehlerquote_bei_risiko(risiko: float, mentalitaet: String = "ausgeglichen") -> float:
+	var wirksam: float = clampf(risiko + float((MENTALITAET.get(mentalitaet, MENTALITAET["ausgeglichen"]) as Dictionary)["risiko"]), 0.0, 100.0)
+	return clampf(0.185 + (wirksam - 50.0) * 0.0009, 0.09, 0.26)
+
+## Wie oft eine Abwehraktion in zwei Minuten endet.
+static func zeitstrafenquote_bei_haerte(haerte: float) -> float:
+	return clampf(0.050 + haerte * 0.00058, 0.02, 0.12)
+
+## Wie oft eine Abwehraktion einen Siebenmeter kostet.
+static func siebenmeterquote_bei_haerte(haerte: float) -> float:
+	return clampf(0.034 + haerte * 0.00026, 0.015, 0.09)
+
+## Zusaetzlicher Kraftverbrauch durch die Wechselintensitaet, in Prozent.
+static func kraftaufschlag_bei_wechselspiel(wechselspiel: float) -> float:
+	return clampf(wechselspiel, 0.0, 100.0) / 100.0 * 28.0
 
 # ---------------------------------------------------------- Angriffslogik ---
 
@@ -891,6 +946,21 @@ func _verletzungspruefung(t: Dictionary) -> void:
 			"%s muss verletzt vom Feld (%s)." % [Spielerfabrik.kurz_name(sp), vl["art"]]))
 		return
 
+## Die Sieben, die in dieser Phase tatsächlich auf der Platte steht.
+## `alle_auf_platz` liefert dagegen alle, die in der Rotation stehen — das sind
+## je nach Aufstellung deutlich mehr, aber eben nicht gleichzeitig im Spiel.
+func aktuell_auf_platz(t: Dictionary) -> Array:
+	var greift_an: bool = angriffsrecht == _seite(t)
+	var block: Dictionary = t["angriff_auf"] if greift_an else t["abwehr_auf"]
+	var liste: Array = []
+	for pos in block.keys():
+		if pos == "TW" and bool(t["sieben_gegen_sechs"]) and greift_an:
+			continue
+		var sid: String = str(block[pos])
+		if sid != "":
+			liste.append(sid)
+	return liste
+
 func alle_auf_platz(t: Dictionary) -> Array:
 	var liste := {}
 	for pos in t["angriff_auf"].keys():
@@ -962,6 +1032,10 @@ func _wechsel_pruefen(t: Dictionary) -> void:
 	if zeit - float(t["letzte_wechselpruefung"]) < 120.0:
 		return
 	t["letzte_wechselpruefung"] = zeit
+	# Der Minutenplan gilt immer: er ist eine ausdrueckliche Ansage des
+	# Trainers und keine Automatik, die man abschalten wollen wuerde. Wer
+	# keine Ziele setzt, merkt davon nichts.
+	_minutenplan_pruefen(t)
 	var ist_mensch: bool = bool(daten["vereine"][t["cid"]].get("ist_mensch", false))
 	if ist_mensch and not bool(daten["einstellungen"].get("autorotation", true)):
 		return
@@ -978,6 +1052,49 @@ func _wechsel_pruefen(t: Dictionary) -> void:
 		if float(t["zustand"][ersatz]["kraft"]) < float(z["kraft"]) + 18.0:
 			continue
 		wechsel(t, sid, ersatz, pos)
+
+## Zielminuten umsetzen: wer sein Pensum fuer den bisherigen Spielverlauf
+## erfuellt hat, macht Platz fuer den, der am weitesten hinterherhaengt. Der
+## Vergleich laeuft anteilig — nach zwanzig Minuten zaehlt ein Drittel des
+## Ziels, sonst sperrte man einen Leistungstraeger nach der ersten Viertel-
+## stunde aus.
+func _minutenplan_pruefen(t: Dictionary) -> void:
+	var ziele: Dictionary = t["minutenziele"]
+	if ziele.is_empty():
+		return
+	var anteil: float = clampf(zeit / (Einsatzzeit.SPIELDAUER * 60.0), 0.0, 1.0)
+	# In den ersten Minuten sagt der Vergleich nichts aus.
+	if anteil < 0.12:
+		return
+	for pos in (t["angriff_auf"] as Dictionary).keys():
+		if pos == "TW":
+			continue
+		var sid: String = str(t["angriff_auf"][pos])
+		if sid == "" or not ziele.has(sid):
+			continue
+		var soll: float = float(ziele[sid]) * anteil
+		var ist: float = float(t["zustand"][sid]["sekunden"]) / 60.0
+		if ist < soll + 2.0:
+			continue
+		var kandidat := ""
+		var groesster := 1.5
+		for ersatz in t["bank"]:
+			var z_e: Dictionary = t["zustand"][ersatz]
+			if bool(z_e["rot"]):
+				continue
+			var sp_e: Dictionary = daten["spieler"][ersatz]
+			if bool(sp_e["ist_torwart"]):
+				continue
+			# Auf eine Position, die er gar nicht spielen kann, hilft auch das
+			# schoenste Minutenziel nicht.
+			if Spielerfabrik.eignung(sp_e, pos) < 0.42:
+				continue
+			var rueckstand: float = float(ziele.get(ersatz, 0.0)) * anteil - float(z_e["sekunden"]) / 60.0
+			if rueckstand > groesster:
+				groesster = rueckstand
+				kandidat = ersatz
+		if kandidat != "":
+			wechsel(t, sid, kandidat, pos)
 
 ## Fuehrt einen Wechsel durch. Gibt false zurueck, wenn er nicht moeglich ist.
 func wechsel(t: Dictionary, raus: String, rein: String, pos: String = "") -> bool:
@@ -1188,7 +1305,9 @@ func _abwehrkraft(v: Dictionary, a: Dictionary) -> float:
 			continue
 		var z: Dictionary = v["zustand"][sid]
 		var kraft: float = float(z["kraft"]) / 100.0
-		summe += float(z["basis_abwehr"]) * (0.68 + 0.32 * kraft) * float(z["tagesform"])
+		# Wer auf einem fremden Abwehrplatz steht, bringt dort weniger.
+		var passt: float = 0.82 + 0.18 * Spielerfabrik.abwehr_eignung(daten["spieler"][sid], str(pos))
+		summe += float(z["basis_abwehr"]) * (0.68 + 0.32 * kraft) * float(z["tagesform"]) * passt
 		gewicht += 1.0
 	var basis: float = summe / maxf(gewicht, 1.0)
 	basis *= float(MENTALITAET[str(v["taktik"]["mentalitaet"])]["abwehr"])

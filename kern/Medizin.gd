@@ -91,6 +91,7 @@ static func tageswechsel(d: Dictionary) -> void:
 						"typ": "medizin", "betreff": "%s ist wieder fit" % Spielerfabrik.voller_name(sp),
 						"text": "Die medizinische Abteilung gibt %s nach überstandener Verletzung (%s) wieder frei." % [
 							Spielerfabrik.kurz_name(sp), verletzung["art"]],
+						"daten": {"spieler": sid},
 					})
 			continue
 		# Lastabbau und Fitnessaufbau
@@ -133,6 +134,7 @@ static func spiel_nachwirkung(d: Dictionary, m: Dictionary) -> void:
 						"betreff": "Verletzung: %s" % Spielerfabrik.voller_name(sp),
 						"text": "%s hat sich eine Verletzung zugezogen (%s). Ausfall: etwa %d Tage." % [
 							Spielerfabrik.kurz_name(sp), v["art"], int(v["tage"])],
+						"daten": {"spieler": sid},
 					})
 
 static func verletzungstext(sp: Dictionary) -> String:

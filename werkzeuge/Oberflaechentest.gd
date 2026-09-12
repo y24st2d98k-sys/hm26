@@ -462,6 +462,92 @@ func _ready() -> void:
 	Welt.verein(cid_c)["kader"] = sicherung
 	_log("   mit leerem Kader: %d Befunde, kein Absturz" % notbefunde.size())
 
+	_log("— Anzeigeskala 5..100 —")
+	var skala_sid: String = str(Welt.mein_verein()["kader"][0])
+	var skala_sp: Dictionary = Welt.spieler(skala_sid)
+	var roh: float = float(skala_sp["attr"]["arbeitseinsatz"])
+	_log("   Arbeitseinsatz intern %.2f → angezeigt %d" % [roh, Spielerfabrik.anzeige(roh)])
+	if Spielerfabrik.anzeige(20.0) != 100 or Spielerfabrik.anzeige(1.0) != 5:
+		_log("   FEHLER: Anzeigeskala trifft die Grenzen nicht")
+	skala_sp["kenntnis"] = 100.0
+	_log("   Attributtext (voll bekannt): %s" % Scouting.attributtext(Welt.daten, skala_sid, "arbeitseinsatz"))
+
+	_log("— Potenzial und Lernkurve —")
+	var lern_fehlt := 0
+	for sid_l in Welt.daten["spieler"].keys():
+		if not Welt.spieler(str(sid_l)).has("lernkurve"):
+			lern_fehlt += 1
+	_log("   Spieler ohne Lernkurve: %d" % lern_fehlt)
+	_log("   %s: %s, ausgeschöpft %d %%" % [Spielerfabrik.kurz_name(skala_sp),
+		Scouting.tempo_text(Welt.daten, skala_sid), int(Scouting.ausschoepfung(skala_sp) * 100.0)])
+
+	_log("— Einsatzzeiten —")
+	var ez_cid: String = Welt.mein_verein_id
+	Einsatzzeit.aus_vertraegen(Welt.daten, ez_cid)
+	var ez_bilanz := Einsatzzeit.bilanz(Welt.daten, ez_cid)
+	_log("   %d Ziele, %d von %d Minuten vergeben (%s)" % [int(ez_bilanz["anzahl"]),
+		int(ez_bilanz["summe"]), int(ez_bilanz["machbar"]),
+		"passt" if bool(ez_bilanz["passt"]) else "geht nicht auf"])
+	var ez_sid: String = ""
+	for sid_e in Welt.mein_verein()["kader"]:
+		if not bool(Welt.spieler(str(sid_e))["ist_torwart"]):
+			ez_sid = str(sid_e)
+			break
+	if ez_sid != "":
+		Einsatzzeit.setzen(Welt.daten, ez_cid, ez_sid, 34.0)
+		var ez_e := Einsatzzeit.erfuellung(Welt.daten, ez_cid, ez_sid)
+		_log("   %s: Ziel %d min, bisher %d min — %s" % [Spielerfabrik.kurz_name(Welt.spieler(ez_sid)),
+			int(ez_e["soll"]), int(ez_e["ist"]), Einsatzzeit.erfuellungstext(ez_e)])
+	# Eine Partie mit Minutenzielen: kommt der Plan im Spiel tatsächlich an?
+	var ez_partie := Welt.naechstes_spiel(ez_cid)
+	if not ez_partie.is_empty():
+		Welt.partie_simulieren(str(ez_partie["id"]))
+		var ez_bericht: Dictionary = Welt.partie(str(ez_partie["id"])).get("bericht", {})
+		_log("   Partie mit Minutenplan gerechnet: %s" % ("ja" if not ez_bericht.is_empty() else "nein"))
+	Einsatzzeit.loeschen(Welt.daten, ez_cid)
+
+	_log("— Nachwuchssichtung —")
+	var scouts_liste := Scouting.scouts(Welt.daten, Welt.mein_verein_id)
+	if scouts_liste.is_empty():
+		_log("   kein Scout unter Vertrag — übersprungen")
+	else:
+		var ts_pid: String = str(scouts_liste[0])
+		var ts_erg := Talentsuche.sichtung_beauftragen(Welt.daten, ts_pid, "balkan")
+		_log("   Auftrag: %s" % str(ts_erg["grund"]))
+		# Bericht direkt erzeugen, statt zwanzig Tage zu simulieren.
+		var ts_auftrag := {"verein": Welt.mein_verein_id, "ziel": "balkan", "scout": ts_pid}
+		var ts_gefunden := Talentsuche.bericht(Welt.daten, ts_auftrag, 70.0)
+		_log("   gefunden: %d Talente" % ts_gefunden.size())
+		var vor_akademie: int = (Welt.mein_verein()["jugend"] as Array).size()
+		if not ts_gefunden.is_empty():
+			var ts_sid: String = str(ts_gefunden[0])
+			var ts_sp: Dictionary = Welt.spieler(ts_sid)
+			_log("   %s (%d, %s) — %s" % [Spielerfabrik.voller_name(ts_sp), int(ts_sp["alter"]),
+				Namen.KULTUR_NAME.get(str(ts_sp["nation"]), "?"), Scouting.potenzial_text(Welt.daten, ts_sid)])
+			var ts_hol := Talentsuche.verpflichten(Welt.daten, ts_sid)
+			_log("   Verpflichtung: %s" % str(ts_hol["grund"]))
+			if bool(ts_hol["ok"]):
+				var nachher: int = (Welt.mein_verein()["jugend"] as Array).size()
+				if nachher != vor_akademie + 1:
+					_log("   FEHLER: Talent ist nicht in der Akademie gelandet")
+		# Der Rest wird abgelehnt und muss danach spurlos verschwunden sein.
+		for ts_rest in Talentsuche.verfuegbar(Welt.daten, Welt.mein_verein_id).duplicate():
+			Talentsuche.ablehnen(Welt.daten, str((ts_rest as Dictionary)["spieler"]))
+		var uebrig := 0
+		for sid_kand in Welt.daten["spieler"].keys():
+			if bool(Welt.spieler(str(sid_kand)).get("nachwuchskandidat", false)):
+				uebrig += 1
+		_log("   nach dem Aufräumen offene Kandidaten: %d" % uebrig)
+
+	_log("— Wirkung der Regler —")
+	for tempo_wert in [0, 50, 100]:
+		_log("   Tempo %3d → %d Angriffe je Mannschaft" % [tempo_wert,
+			Matchsim.angriffe_bei_tempo(float(tempo_wert))])
+	_log("   Risiko 0/100 → %d %% / %d %% Ballverluste" % [
+		int(Matchsim.fehlerquote_bei_risiko(0.0) * 100.0), int(Matchsim.fehlerquote_bei_risiko(100.0) * 100.0)])
+	_log("   Härte 0/100 → %.1f %% / %.1f %% Zeitstrafen" % [
+		Matchsim.zeitstrafenquote_bei_haerte(0.0) * 100.0, Matchsim.zeitstrafenquote_bei_haerte(100.0) * 100.0])
+
 	_log("— Alter Spielstand (fehlende Felder ergänzen) —")
 	# Einen Spielstand aus einer früheren Fassung nachstellen: alles, was neu
 	# dazugekommen ist, wieder entfernen und die Welt reparieren lassen.
@@ -471,17 +557,23 @@ func _ready() -> void:
 		v_alt.erase("sponsorangebote")
 		(v_alt["saison"] as Dictionary).erase("finanzen")
 		(v_alt["aufstellung"] as Dictionary).erase("anweisungen")
+		(v_alt["aufstellung"] as Dictionary).erase("minuten")
 		for sid_alt in v_alt["kader"]:
 			Welt.spieler(sid_alt).erase("nummer")
 			Welt.spieler(sid_alt).erase("laufbahn")
+			Welt.spieler(sid_alt).erase("lernkurve")
 	Welt._daten_auffrischen()
 	var fehlt := 0
 	for cid_p in Weltgenerator.clubs(Welt.daten):
 		var v_p: Dictionary = Welt.verein(cid_p)
 		if not v_p.has("mentoring") or not v_p.has("sponsorangebote"):
 			fehlt += 1
+		if not (v_p.get("aufstellung", {}) as Dictionary).has("minuten"):
+			fehlt += 1
 		for sid_p in v_p["kader"]:
 			if int(Welt.spieler(sid_p).get("nummer", 0)) <= 0:
+				fehlt += 1
+			if not Welt.spieler(sid_p).has("lernkurve"):
 				fehlt += 1
 	_log("   nach der Ergänzung fehlende Felder: %d" % fehlt)
 	for id_alt in app.bildschirme.keys():

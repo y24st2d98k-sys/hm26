@@ -400,6 +400,8 @@ static func spieler_entfernen(d: Dictionary, sid: String) -> void:
 		(v.get("jugend", []) as Array).erase(sid)
 		var anweisungen: Dictionary = (v.get("aufstellung", {}) as Dictionary).get("anweisungen", {})
 		anweisungen.erase(sid)
+		var minutenziele: Dictionary = (v.get("aufstellung", {}) as Dictionary).get("minuten", {})
+		minutenziele.erase(sid)
 		var paare: Array = v.get("mentoring", [])
 		for i4 in range(paare.size() - 1, -1, -1):
 			var paar: Dictionary = paare[i4]
