@@ -63,6 +63,8 @@ static func neu(eingabe: Dictionary, verein_id: String, d: Dictionary) -> Dictio
 		"hintergrund": hintergrund,
 		"hintergrund_name": hg["name"],
 		"ruf": float(hg["ruf"]),
+		"nationalteam": "",
+		"verbandsangebote": [],
 		"verein": verein_id,
 		"vertrag": {
 			"bis_saison": 2,

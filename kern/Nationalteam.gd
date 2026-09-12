@@ -137,11 +137,21 @@ static func nominieren(d: Dictionary) -> void:
 		var cid := team_id(nid)
 		if not d["vereine"].has(cid):
 			continue
-		var kader := kader_vorschlag(d, nid)
+		var selbst: bool = str(nid) == Nationaltrainer.nation(d)
+		# Wer selbst Nationaltrainer ist, stellt seinen Kader von Hand zusammen.
+		# Der Verbandsstab legt dazu einen Vorschlag vor, den er ändern kann.
+		var kader: Array = kader_vorschlag(d, str(nid))
 		d["vereine"][cid]["kader"] = kader
-		d["vereine"][cid]["ruf"] = nationalstaerke(d, nid)
+		d["vereine"][cid]["ruf"] = nationalstaerke(d, str(nid))
 		Weltgenerator.setze_standardaufstellung(d, cid)
-		KI.taktik_anpassen(d, cid)
+		if not selbst:
+			KI.taktik_anpassen(d, cid)
+		else:
+			Welt.nachricht({
+				"typ": "karriere", "wichtig": true,
+				"betreff": "Nominierung für %s" % str(t["name"]),
+				"text": "Ihr Verbandsstab hat einen Kader vorgeschlagen. Bis zum ersten Gruppenspiel können Sie ihn im Bildschirm Nationalteams ändern.",
+			})
 		for sid in kader:
 			var sp: Dictionary = d["spieler"][sid]
 			sp["bei_nationalmannschaft"] = true
@@ -329,6 +339,7 @@ static func _ko_weiter(d: Dictionary, t: Dictionary) -> void:
 static func _abschluss(d: Dictionary, t: Dictionary) -> void:
 	t["phase"] = "beendet"
 	t["aktiv"] = false
+	Nationaltrainer.turnier_abrechnen(d)
 	var sieger_nid: String = str(t["sieger"])
 	var zweiter_nid: String = str(t["zweiter"])
 	(t["historie"] as Array).push_front({

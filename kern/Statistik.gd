@@ -102,7 +102,9 @@ static func _spielerstats(d: Dictionary, m: Dictionary) -> void:
 				"tore": int(sp["stats"]["karriere"]["tore"]),
 				"paraden": int(sp["stats"]["karriere"]["paraden"]),
 			}
-			for ziel in [sp["stats"]["saison"], sp["stats"]["karriere"]]:
+			if not (sp["stats"] as Dictionary).has("monat"):
+				sp["stats"]["monat"] = Spielerfabrik.leere_saisonstats()
+			for ziel in [sp["stats"]["saison"], sp["stats"]["monat"], sp["stats"]["karriere"]]:
 				ziel["spiele"] = int(ziel["spiele"]) + 1
 				ziel["minuten"] = float(ziel["minuten"]) + float(z["sekunden"]) / 60.0
 				ziel["tore"] = int(ziel["tore"]) + int(z["tore"])
@@ -126,6 +128,9 @@ static func _spielerstats(d: Dictionary, m: Dictionary) -> void:
 				sp["sperre"] = 1
 			Laufbahn.debuet_pruefen(d, sid)
 			Laufbahn.marken_pruefen(d, sid, vorher)
+			if str(m["art"]) == "liga" and float(z["sekunden"]) >= 900.0:
+				Auszeichnungen.leistung_merken(d, str(m["wettbewerb"]), sid,
+					float(z["bewertung"]), int(z["tore"]))
 			# Torschuetzenliste der Liga
 			if str(m["art"]) == "liga" and int(z["tore"]) > 0:
 				var liste: Dictionary = d["ligen"][m["wettbewerb"]]["torschuetzen"]

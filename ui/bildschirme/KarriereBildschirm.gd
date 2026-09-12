@@ -133,6 +133,8 @@ func aktualisieren() -> void:
 			aktualisieren())
 		vz.add_child(nein)
 
+	_verbandsangebote(t)
+
 	var angebote: Array = t.get("jobangebote", [])
 	var jobs := Bausteine.karte_in(inhalt, "Angebote anderer Vereine")
 	if angebote.is_empty():
@@ -160,6 +162,52 @@ func aktualisieren() -> void:
 			Welt.zustand_geaendert.emit()
 			aktualisieren())
 		zeile3.add_child(annehmen)
+
+## Anfragen von Nationalverbänden — ein zweiter Karrierestrang neben dem Verein.
+func _verbandsangebote(t: Dictionary) -> void:
+	if Nationaltrainer.ist_nationaltrainer(Welt.daten):
+		var nid: String = Nationaltrainer.nation(Welt.daten)
+		var karte := Bausteine.karte_in(inhalt, "Verbandsamt")
+		var zeile := Stil.hbox(10)
+		karte.add_child(zeile)
+		zeile.add_child(Flagge.fuer(nid, 24.0))
+		zeile.add_child(Stil.text("Nationaltrainer von %s" % str(Namen.KULTUR_NAME.get(nid, nid.to_upper())),
+			Stil.S_NORMAL, Stil.AKZENT))
+		zeile.add_child(Stil.matt("Erwartung: %s" % Nationaltrainer.zieltext(Welt.daten), Stil.S_KLEIN))
+		var b: Dictionary = t.get("national_bilanz", {})
+		if not b.is_empty():
+			zeile.add_child(Stil.matt("%d Spiele, %d Siege" % [int(b["spiele"]), int(b["siege"])], Stil.S_KLEIN))
+		return
+	var liste: Array = Nationaltrainer.angebote(Welt.daten)
+	if liste.is_empty():
+		return
+	var karte2 := Bausteine.karte_in(inhalt, "Anfragen von Nationalverbänden")
+	karte2.add_child(Stil.matt("Ein Verbandsamt lässt sich neben dem Vereinsjob führen. Sie nominieren dann selbst und werden am Turnierziel gemessen.", Stil.S_MINI))
+	for a in liste:
+		var nid2: String = str(a["nation"])
+		var zeile2 := Stil.hbox(10)
+		karte2.add_child(zeile2)
+		zeile2.add_child(Flagge.fuer(nid2, 24.0))
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile2.add_child(spalte)
+		spalte.add_child(Stil.text(str(a["name"]), Stil.S_KLEIN))
+		spalte.add_child(Stil.matt("Auswahlstärke %d · Ziel: %s · %s pro Woche" % [
+			int(float(a["staerke"])), str(Nationaltrainer.ZIELE[str(a["ziel"])]["name"]),
+			Stil.geld(float(a["gehalt"]))], Stil.S_MINI))
+		var ja := Stil.knopf_primaer("Annehmen")
+		ja.pressed.connect(func():
+			var erg := Nationaltrainer.annehmen(Welt.daten, nid2)
+			_melde(str(erg["grund"]), bool(erg["ok"]))
+			Welt.zustand_geaendert.emit()
+			aktualisieren())
+		zeile2.add_child(ja)
+		var nein := Stil.knopf("Ablehnen")
+		nein.pressed.connect(func():
+			Nationaltrainer.ablehnen(Welt.daten, nid2)
+			_melde("Anfrage abgelehnt.")
+			aktualisieren())
+		zeile2.add_child(nein)
 
 func _melde(text: String, gut: bool = true) -> void:
 	meldung.text = text

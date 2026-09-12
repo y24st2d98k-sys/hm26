@@ -158,6 +158,9 @@ static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String,
 static func leere_statistik() -> Dictionary:
 	return {
 		"saison": leere_saisonstats(),
+		# Eigenes Becken für die Monatswahl: Saisonwerte taugen dafür nicht,
+		# weil ein starker September einen schwachen März überdeckt.
+		"monat": leere_saisonstats(),
 		"karriere": leere_saisonstats(),
 		"verlauf": [],
 	}

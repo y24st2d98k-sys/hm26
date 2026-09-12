@@ -7,7 +7,11 @@ extends RefCounted
 static func aufstellung_pruefen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	if bool(v.get("ist_nationalteam", false)):
-		Weltgenerator.setze_standardaufstellung(d, cid)
+		# Betreut der Spieler diese Auswahl, bleibt seine Aufstellung stehen.
+		if not bool(v.get("ist_mensch", false)):
+			Weltgenerator.setze_standardaufstellung(d, cid)
+		elif not (v["aufstellung"].get("angriff", {}) as Dictionary).has("TW"):
+			Weltgenerator.setze_standardaufstellung(d, cid)
 		return
 	# Vor jeder Partie: jeder im Kader traegt eine eindeutige Rueckennummer.
 	Trikot.kader_nummerieren(d, cid)

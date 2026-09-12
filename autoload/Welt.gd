@@ -243,6 +243,8 @@ func tag_weiter() -> Dictionary:
 			continue
 		if str(m["heim"]) == mein_verein_id or str(m["gast"]) == mein_verein_id:
 			eigenes = mid
+		elif Nationaltrainer.ist_nationalteam_spiel(daten, m):
+			eigenes = mid
 	if eigenes != "":
 		unterbrechung = {"art": "eigenes_spiel", "spiel": eigenes}
 		live_spiel_faellig.emit(eigenes)
@@ -297,6 +299,7 @@ func spieltag_abwickeln(t: int) -> void:
 		if m.is_empty() or bool(m["gespielt"]):
 			continue
 		partie_simulieren(mid)
+	Auszeichnungen.woche_auswerten(daten, mein_verein_id)
 	_wettbewerbe_fortschreiben()
 
 func partie_simulieren(mid: String) -> void:
@@ -317,6 +320,10 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 	if str(m["art"]) == "turnier":
 		Nationalteam.spiel_verbuchen(daten, m)
 		Medizin.spiel_nachwirkung(daten, m)
+		if Nationaltrainer.ist_nationalteam_spiel(daten, m):
+			Nationaltrainer.spiel_verbuchen(daten, m)
+		else:
+			m["bericht"] = Matchsim.bericht_schlank(m["bericht"])
 		spiel_ausgetragen.emit(mid)
 		return
 	Statistik.spiel_verbuchen(daten, m)
@@ -397,6 +404,9 @@ func wochenrhythmus(t: int) -> void:
 		Scouting.wochenbericht(daten, mein_verein_id)
 		if mein_verein_id == "" and (trainer().get("jobangebote", []) as Array).is_empty():
 			Saison.jobangebote_erzeugen(daten, "")
+	if Kalender.datum(t, startjahr())["tag"] == 1:
+		Auszeichnungen.monatswahl(daten, mein_verein_id)
+		Auszeichnungen.monat_zuruecksetzen(daten)
 	if wt == 3:  # Donnerstag: Kabine und Gerüchte
 		Kabine.wochenpuls(daten)
 		Transfermarkt.geruechtekueche(daten)
@@ -508,10 +518,17 @@ func _daten_auffrischen() -> void:
 		"plan": {}, "international": {}, "pokale": {}, "saison_abgeschlossen": false,
 		"nationalteams": [], "turnier": Nationalteam.leeres_turnier(),
 		"pressekonferenz": {}, "versprechen": [], "anliegen": [],
+		"auszeichnungen": Auszeichnungen.leer(),
 	}
 	for k in vorlage.keys():
 		if not daten.has(k):
 			daten[k] = vorlage[k]
+	var trainer_dict: Dictionary = daten.get("trainer", {})
+	if not trainer_dict.is_empty():
+		if not trainer_dict.has("nationalteam"):
+			trainer_dict["nationalteam"] = ""
+		if not trainer_dict.has("verbandsangebote"):
+			trainer_dict["verbandsangebote"] = []
 	if not daten.has("echte_welt"):
 		daten["echte_welt"] = false
 	if not daten.has("datenstand"):
@@ -551,6 +568,8 @@ func _daten_auffrischen() -> void:
 				vertrag["praemie_tor"] = 0.0
 			if not vertrag.has("praemie_sieg"):
 				vertrag["praemie_sieg"] = 0.0
+		if not (sp.get("stats", {}) as Dictionary).has("monat"):
+			(sp.get("stats", {}) as Dictionary)["monat"] = Spielerfabrik.leere_saisonstats()
 		for zeitraum in ["saison", "karriere"]:
 			var st: Dictionary = (sp.get("stats", {}) as Dictionary).get(zeitraum, {})
 			if not st.is_empty() and not st.has("praemien"):

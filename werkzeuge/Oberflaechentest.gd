@@ -294,6 +294,62 @@ func _ready() -> void:
 	await get_tree().process_frame
 	vf.visible = false
 
+	_log("— Nationaltrainer —")
+	# Ein Verbandsangebot erzwingen und annehmen
+	Welt.daten["trainer"]["ruf"] = 62.0
+	Nationaltrainer.angebote_pruefen(Welt.daten)
+	var anfragen := Nationaltrainer.angebote(Welt.daten)
+	if anfragen.is_empty():
+		# Der Zufall wollte nicht — dann eben von Hand ein Angebot bauen
+		Welt.daten["trainer"]["verbandsangebote"] = [{
+			"nation": "de", "name": "Deutschland", "staerke": 80.0,
+			"ziel": "halbfinale", "gehalt": 4000.0}]
+		anfragen = Nationaltrainer.angebote(Welt.daten)
+	_log("   Anfragen: %d" % anfragen.size())
+	var erg_n := Nationaltrainer.annehmen(Welt.daten, str(anfragen[0]["nation"]))
+	_log("   %s" % str(erg_n["grund"]))
+	_log("   Amt: %s, Ziel: %s" % [Nationaltrainer.nation(Welt.daten), Nationaltrainer.zieltext(Welt.daten)])
+	var vorgeschlagen := Nationaltrainer.vorschlag_uebernehmen(Welt.daten)
+	_log("   Vorschlag des Stabs: %d Spieler" % vorgeschlagen)
+	var kand := Nationaltrainer.kandidaten(Welt.daten, Nationaltrainer.nation(Welt.daten))
+	_log("   spielberechtigt: %d" % kand.size())
+	var vorher_n := Nationaltrainer.nominiert(Welt.daten).size()
+	Nationaltrainer.streichen(Welt.daten, str(Nationaltrainer.nominiert(Welt.daten)[0]))
+	for sid_n in kand:
+		if not Nationaltrainer.nominiert(Welt.daten).has(sid_n):
+			var erg_h := Nationaltrainer.hinzufuegen(Welt.daten, sid_n)
+			_log("   %s" % str(erg_h["grund"]))
+			break
+	_log("   Kader %d → %d, Prüfung: %s" % [vorher_n, Nationaltrainer.nominiert(Welt.daten).size(),
+		str(Nationaltrainer.kaderpruefung(Welt.daten)["grund"])])
+	app.zeige("national")
+	await get_tree().process_frame
+	app.zeige("karriere")
+	await get_tree().process_frame
+	Nationaltrainer.niederlegen(Welt.daten)
+	_log("   nach Niederlegung Amt: %s" % ("keins" if Nationaltrainer.nation(Welt.daten) == "" else "noch da"))
+
+	_log("— Auszeichnungen —")
+	var lid_a: String = str(Welt.mein_verein()["liga"])
+	var tdw := Auszeichnungen.team_der_woche(Welt.daten, lid_a)
+	_log("   Team der Woche: %d Positionen besetzt" % (tdw.get("spieler", {}) as Dictionary).size())
+	# Monatswahl erzwingen, damit sie im Test wirklich läuft
+	Auszeichnungen.daten(Welt.daten)["monat_beginn"] = int(Welt.daten["tag"]) - 30
+	Auszeichnungen.monatswahl(Welt.daten, Welt.mein_verein_id)
+	for e_a in Auszeichnungen.monatsliste(Welt.daten).slice(0, 3):
+		var sid_a: String = str(e_a["spieler"])
+		_log("   %s %s: %s (%s)" % [str(e_a["monat"]), str(Welt.daten["ligen"][e_a["liga"]]["name"]),
+			Spielerfabrik.voller_name(Welt.spieler(sid_a)) if sid_a != "" else "—",
+			str(Welt.verein(str(e_a["verein"])).get("kurz", "—"))])
+	Auszeichnungen.monat_zuruecksetzen(Welt.daten)
+	Auszeichnungen.saisonehrungen(Welt.daten, lid_a, Welt.mein_verein_id)
+	var se := Auszeichnungen.saisonliste(Welt.daten, lid_a)
+	if not se.is_empty():
+		_log("   Saisonehrung eingetragen: Neuzugang %s, Talent %s" % [
+			str(se[0]["neuzugang"]), str(se[0]["talent"])])
+	app.zeige("statistik")
+	await get_tree().process_frame
+
 	_log("— Kaderplanung —")
 	var cid_p2: String = Welt.mein_verein_id
 	_log("   %s" % Kaderplanung.altersurteil(Welt.daten, cid_p2))

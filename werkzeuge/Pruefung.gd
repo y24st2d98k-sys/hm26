@@ -27,7 +27,11 @@ func _ready() -> void:
 	var start := Time.get_ticks_msec()
 	Welt.neues_spiel(_erster_verein(), {"vorname": "Prüf", "nachname": "Trainer", "hintergrund": "taktiker"}, 20260)
 	var d: Dictionary = Welt.daten
-	_log("— Ausgangswelt —")
+	# Verbandsamt erzwingen: nur so läuft der Turnierstrang durch die Prüfung.
+	d["trainer"]["verbandsangebote"] = [{"nation": "de", "name": "Deutschland",
+		"staerke": 80.0, "ziel": "halbfinale", "gehalt": 4000.0}]
+	Nationaltrainer.annehmen(d, "de")
+	_log("— Ausgangswelt (Nationaltrainer: %s) —" % Nationaltrainer.nation(d))
 	var soll_ligagroessen := _ligagroessen(d)
 	_alles_pruefen(d, soll_ligagroessen)
 
@@ -51,6 +55,7 @@ func _ready() -> void:
 	_groessenbericht(d)
 	_finanzbericht(d)
 	_trainerbericht(d)
+	_ehrungsbericht(d)
 	_log("")
 	_log("%d Prüfungen, %d Fehler. Dauer: %d ms" % [geprueft, fehler, Time.get_ticks_msec() - start])
 	get_tree().quit(1 if fehler > 0 else 0)
@@ -224,6 +229,42 @@ func _trikotnummern(d: Dictionary) -> void:
 				_fehler("Nummer %d bei %s doppelt vergeben" % [n, str(d["vereine"][cid]["name"])])
 			gesehen[n] = true
 
+## Wurden Auszeichnungen tatsächlich vergeben — und an plausible Spieler?
+func _ehrungsbericht(d: Dictionary) -> void:
+	_log("")
+	_log("Auszeichnungen:")
+	var monate: Array = Auszeichnungen.monatsliste(d)
+	var ohne := 0
+	for e in monate:
+		if str(e["spieler"]) == "":
+			ohne += 1
+	_log("  Monatsehrungen: %d, davon ohne Spieler: %d" % [monate.size(), ohne])
+	for e2 in monate.slice(0, 3):
+		var sid: String = str(e2["spieler"])
+		_log("    %s %s: %s (Note %s) · Mannschaft: %s" % [str(e2["monat"]),
+			str(d["ligen"][e2["liga"]]["name"]),
+			Spielerfabrik.voller_name(d["spieler"][sid]) if d["spieler"].has(sid) else "—",
+			Stil.komma(Spielerfabrik.note(d["spieler"][sid]), 2) if d["spieler"].has(sid) else "—",
+			str(d["vereine"].get(str(e2["verein"]), {}).get("kurz", "—"))])
+	var saisons: Array = Auszeichnungen.saisonliste(d)
+	_log("  Saisonehrungen: %d" % saisons.size())
+	for e3 in saisons.slice(0, 3):
+		var teile: Array = []
+		for schluessel in ["neuzugang", "talent"]:
+			var s2: String = str(e3[schluessel])
+			teile.append("%s: %s" % [schluessel,
+				Spielerfabrik.voller_name(d["spieler"][s2]) if d["spieler"].has(s2) else "—"])
+		teile.append("Trainer: %s" % str(d["vereine"].get(str(e3["trainerverein"]), {}).get("kurz", "—")))
+		_log("    %s %s — %s" % [Kalender.saison_text(int(d["startjahr"]), int(e3["saison"])),
+			str(d["ligen"][e3["liga"]]["name"]), ", ".join(teile)])
+	var mit_ehrung := 0
+	for sid2 in d["spieler"].keys():
+		for eintrag in Laufbahn.liste(d["spieler"][sid2]):
+			if str(eintrag.get("art", "")) == "allstar":
+				mit_ehrung += 1
+				break
+	_log("  Spieler mit mindestens einer Ehrung in der Laufbahn: %d" % mit_ehrung)
+
 ## Wie es dem Trainer ergangen ist. Viele Stationen bei ordentlicher Siegquote
 ## heisst: der Vorstand feuert schneller, als jemand arbeiten kann.
 func _trainerbericht(d: Dictionary) -> void:
@@ -240,6 +281,10 @@ func _trainerbericht(d: Dictionary) -> void:
 		float(s["siege"]) / maxf(float(spiele), 1.0) * 100.0, (t["titel"] as Array).size()])
 	_log("  Stationen: %d, derzeit: %s" % [(t["stationen"] as Array).size(),
 		str(d["vereine"].get(str(t["verein"]), {}).get("name", "vereinslos"))])
+	var b: Dictionary = t.get("national_bilanz", {})
+	_log("  Verbandsamt: %s, Turnierspiele: %d, Siege: %d" % [
+		Nationaltrainer.nation(d) if Nationaltrainer.ist_nationaltrainer(d) else "keins",
+		int(b.get("spiele", 0)), int(b.get("siege", 0))])
 
 ## Einnahmen und Ausgaben je Saison, hochgerechnet aus der Wochenübersicht.
 ## Zeigt, ob das Wirtschaftsmodell überhaupt aufgehen kann.

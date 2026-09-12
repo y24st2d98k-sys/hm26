@@ -95,6 +95,7 @@ static func _ehrungen(d: Dictionary, mein: String) -> void:
 				"betreff": "Spieler der Saison: %s" % Spielerfabrik.voller_name(d["spieler"][mvp]),
 				"text": "Die Trainer der Liga haben %s zum wertvollsten Spieler gewählt." % Spielerfabrik.voller_name(d["spieler"][mvp])})
 		_allstar(d, lid, mein)
+		Auszeichnungen.saisonehrungen(d, lid, mein)
 
 ## Die beste Sieben einer Liga: je Position der Spieler mit der besten
 ## Durchschnittsnote, der genug gespielt hat.
@@ -281,6 +282,7 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 			"betreff": "Der Kader ist zu klein",
 			"text": "Nur noch %d Spieler stehen unter Vertrag. Auf dem Transfermarkt finden Sie vereinslose Spieler, die ablösefrei zu haben sind." % (d["vereine"][mein]["kader"] as Array).size(),
 		})
+	Nationaltrainer.angebote_pruefen(d)
 	if mein != "":
 		Vorstand.vertragsangebot_pruefen(d, mein)
 		Medien.saisonauftakt(d, mein)
@@ -438,6 +440,7 @@ static func _statistiken_umlegen(d: Dictionary) -> void:
 				"note": Spielerfabrik.note(sp),
 			})
 		sp["stats"]["saison"] = Spielerfabrik.leere_saisonstats()
+		sp["stats"]["monat"] = Spielerfabrik.leere_saisonstats()
 		sp["unzufriedenheit"] = clampf(float(sp["unzufriedenheit"]) * 0.6, 0.0, 100.0)
 		sp["last"] = clampf(float(sp["last"]) * 0.35, 0.0, 100.0)
 		sp["fitness"] = clampf(float(sp["fitness"]) + 14.0, 40.0, 100.0)

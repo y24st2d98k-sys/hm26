@@ -6,6 +6,7 @@ extends Bildschirm
 var inhalt: VBoxContainer
 var nation_wahl: OptionButton
 var gewaehlte_nation: String = ""
+var meldung: Label
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -15,6 +16,8 @@ func aufbauen() -> void:
 	v.add_child(kopf)
 	kopf.add_child(Stil.titel("Nationalmannschaften", 0))
 	kopf.add_child(Stil.dehner())
+	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
+	kopf.add_child(meldung)
 	kopf.add_child(Stil.matt("Auswahl"))
 	nation_wahl = OptionButton.new()
 	nation_wahl.custom_minimum_size = Vector2(200, 0)
@@ -60,6 +63,7 @@ func _zeichne() -> void:
 		_historie(t)
 		return
 
+	_verbandsamt(t)
 	var kopf := Bausteine.karte_in(inhalt, str(t["name"]))
 	var phasen := {"vorbereitung": "Nominierung steht aus", "gruppe": "Gruppenphase",
 		"ko": "K.-o.-Runde", "beendet": "beendet"}
@@ -78,6 +82,107 @@ func _zeichne() -> void:
 		_kader(t)
 		_torjaeger()
 	_historie(t)
+
+## Der eigene Verbandsjob: Ziel, Bilanz und die Kaderwahl vor dem Turnier.
+func _verbandsamt(t: Dictionary) -> void:
+	if not Nationaltrainer.ist_nationaltrainer(Welt.daten):
+		return
+	var nid: String = Nationaltrainer.nation(Welt.daten)
+	var name: String = str(Namen.KULTUR_NAME.get(nid, nid.to_upper()))
+	var karte := Bausteine.karte_in(inhalt, "Ihr Verbandsamt — %s" % name)
+	var kopf := Stil.hbox(10)
+	karte.add_child(kopf)
+	kopf.add_child(Flagge.fuer(nid, 28.0))
+	var spalte := Stil.vbox(1)
+	spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	kopf.add_child(spalte)
+	spalte.add_child(Stil.text("Nationaltrainer von %s" % name, Stil.S_NORMAL, Stil.AKZENT))
+	spalte.add_child(Stil.matt("Erwartung des Verbands: %s" % Nationaltrainer.zieltext(Welt.daten), Stil.S_MINI))
+	var b: Dictionary = Welt.daten["trainer"].get("national_bilanz", {})
+	if not b.is_empty():
+		spalte.add_child(Stil.matt("%d Turnierspiele · %d Siege, %d Unentschieden, %d Niederlagen" % [
+			int(b["spiele"]), int(b["siege"]), int(b["unentschieden"]), int(b["niederlagen"])], Stil.S_MINI))
+	var weg := Stil.knopf_flach("Amt niederlegen", Stil.ROT)
+	weg.pressed.connect(func():
+		Nationaltrainer.niederlegen(Welt.daten)
+		Welt.zustand_geaendert.emit()
+		aktualisieren())
+	kopf.add_child(weg)
+
+	# Kaderwahl nur, solange das Turnier noch nicht läuft
+	var kader: Array = Nationaltrainer.nominiert(Welt.daten)
+	var phase: String = str(t.get("phase", "keins"))
+	if phase == "beendet" or phase == "keins":
+		return
+	karte.add_child(Stil.trenner())
+	var pruefung := Nationaltrainer.kaderpruefung(Welt.daten)
+	var zeile := Stil.hbox(10)
+	karte.add_child(zeile)
+	zeile.add_child(Stil.text("Aufgebot: %d von %d" % [kader.size(), Nationaltrainer.KADER_MAX],
+		Stil.S_KLEIN, Stil.GRUEN if bool(pruefung["ok"]) else Stil.ROT))
+	zeile.add_child(Stil.matt(str(pruefung["grund"]), Stil.S_MINI))
+	zeile.add_child(Stil.dehner())
+	var auto := Stil.knopf("Vorschlag des Stabs")
+	auto.pressed.connect(func():
+		var n := Nationaltrainer.vorschlag_uebernehmen(Welt.daten)
+		_melde("Der Stab hat %d Spieler nominiert." % n)
+		Welt.zustand_geaendert.emit()
+		aktualisieren())
+	zeile.add_child(auto)
+
+	var spalten := Stil.hbox(12)
+	karte.add_child(spalten)
+	var links := Bausteine.karte_in(spalten, "Nominiert", true)
+	Stil.karte_wurzel(links).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if kader.is_empty():
+		links.add_child(Stil.matt("Noch niemand nominiert."))
+	for sid in kader:
+		var sp: Dictionary = Welt.spieler(sid)
+		if sp.is_empty():
+			continue
+		var z := Stil.hbox(6)
+		links.add_child(z)
+		z.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
+		var knopf := Stil.knopf_flach(Spielerfabrik.voller_name(sp))
+		knopf.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		z.add_child(knopf)
+		z.add_child(Stil.text("%d" % int(Spielerfabrik.gesamt(sp)), Stil.S_KLEIN,
+			Stil.wert_farbe(Spielerfabrik.gesamt(sp), 100.0)))
+		var raus := Stil.knopf_flach("Streichen", Stil.ROT)
+		raus.pressed.connect(func():
+			Nationaltrainer.streichen(Welt.daten, sid)
+			aktualisieren())
+		z.add_child(raus)
+
+	var rechts := Bausteine.karte_in(spalten, "Spielberechtigt", true)
+	Stil.karte_wurzel(rechts).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var offen := 0
+	for sid2 in Nationaltrainer.kandidaten(Welt.daten, nid):
+		if kader.has(sid2):
+			continue
+		offen += 1
+		if offen > 14:
+			break
+		var sp2: Dictionary = Welt.spieler(sid2)
+		var z2 := Stil.hbox(6)
+		rechts.add_child(z2)
+		z2.add_child(Bausteine.positions_abzeichen(str(sp2["position"])))
+		var knopf2 := Stil.knopf_flach(Spielerfabrik.voller_name(sp2))
+		knopf2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		knopf2.pressed.connect(func(): Spielerfenster.oeffnen(self, sid2))
+		z2.add_child(knopf2)
+		z2.add_child(Stil.matt("Form %d" % int(float(sp2["form"])), Stil.S_MINI))
+		z2.add_child(Stil.text("%d" % int(Spielerfabrik.gesamt(sp2)), Stil.S_KLEIN,
+			Stil.wert_farbe(Spielerfabrik.gesamt(sp2), 100.0)))
+		var rein := Stil.knopf_flach("Nominieren", Stil.GRUEN)
+		rein.pressed.connect(func():
+			var erg := Nationaltrainer.hinzufuegen(Welt.daten, sid2)
+			_melde(str(erg["grund"]), bool(erg["ok"]))
+			aktualisieren())
+		z2.add_child(rein)
+	if offen == 0:
+		rechts.add_child(Stil.matt("Alle verfügbaren Spieler sind nominiert."))
 
 func _eigene_spieler() -> void:
 	if Welt.mein_verein_id == "":
@@ -206,3 +311,8 @@ func _historie(t: Dictionary) -> void:
 		karte.add_child(Stil.info_zeile(str(e["name"]),
 			"%s (vor %s)" % [Namen.KULTUR_NAME.get(str(e["sieger"]), ""),
 				Namen.KULTUR_NAME.get(str(e["zweiter"]), "")], Stil.AKZENT))
+
+func _melde(text: String, gut: bool = true) -> void:
+	if meldung != null:
+		meldung.text = text
+		meldung.add_theme_color_override("font_color", Stil.GRUEN if gut else Stil.ROT)

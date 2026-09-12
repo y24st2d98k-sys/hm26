@@ -325,6 +325,50 @@ dauerhaft gespeichert.
 
 ---
 
+## Auszeichnungen
+
+Eine Saison ohne Ehrungen ist eine Tabelle. Hallenherz vergibt vier Arten:
+
+* **Team der Woche** — nach jedem Spieltag je erster Liga die beste Sieben nach
+  Note, eine je Position, mindestens 15 Einsatzminuten. Steht jemand aus dem
+  eigenen Kader darin, kommt eine Meldung.
+* **Spieler des Monats** — jeden Monatsersten je erster Liga, nach
+  Durchschnittsnote aus einem **eigenen Monatsbecken** in der Statistik: ein
+  starker September darf einen schwachen März nicht überdecken.
+* **Mannschaft des Monats** — die beste Punktausbeute seit der letzten Wahl.
+  Trifft es den eigenen Verein, steigt der Ruf des Trainers.
+* **Zur Saison** — zusätzlich zu Torschützenkönig, wertvollstem Spieler und
+  Team der Saison: bester Neuzugang, Nachwuchsspieler des Jahres und
+  **Trainer der Saison**, gemessen daran, wer die Erwartung seines Vorstands am
+  deutlichsten übertroffen hat.
+
+Alles Gewählte steht anschließend in der Laufbahn des Spielers und im
+Statistikzentrum, dort auch die Historie der letzten Monate und Saisons.
+
+---
+
+## Die Nationaltrainer-Karriere
+
+Nationalmannschaften, Europa- und Weltmeisterschaft liefen bisher neben dem
+Spieler her. Jetzt sind sie ein zweiter Karrierestrang, der sich **neben dem
+Vereinsjob** führen lässt.
+
+Ab einem Ruf von 38 fragen Verbände an — der eigene Heimatverband deutlich
+lieber und deutlich früher als fremde. Wer annimmt, bekommt ein Turnierziel
+(vom Titel bis zu einer ordentlichen Vorrunde, abhängig von der Stärke der
+Auswahl) und **nominiert vor dem Turnier selbst**: Der Verbandsstab legt einen
+Vorschlag vor, ändern kann man ihn bis zum ersten Gruppenspiel — 14 bis 18
+Spieler, mindestens zwei Torhüter. Spielberechtigt ist, wer die Nationalität
+hat, bei einem Verein unter Vertrag steht und fit ist.
+
+Die Turnierspiele der eigenen Auswahl laufen danach in der Live-Ansicht wie
+Vereinsspiele, mit Wechseln, Auszeiten, Ansprachen und Anweisungen. Nach dem
+Turnier rechnet der Verband ab: Ein Titel zählt in der Titelsammlung und hebt
+den Ruf deutlich, ein verfehltes Ziel kostet Ruf — und mit einiger
+Wahrscheinlichkeit das Amt.
+
+---
+
 ## Der Co-Trainer
 
 Vor der Partie gibt es den Vorbericht, danach den Spielbericht — dazwischen
@@ -605,7 +649,7 @@ in eine sehr lange Schleife schickt.
 | **3 Kader** | 29 Attribute, Form, Moral, Fitness, Lastkonto, Verletzungsanfälligkeit, Persönlichkeit, Potenzial, Alterskurve, individuelle Förderprogramme, Rückennummern, Patenschaften, eigene Nachwuchsakademie |
 | **4 Transfer & Scouting** | Aktive Suche mit acht Filtern, zweistufige Verhandlung (Verein, dann Spieler), Gegenangebote, Leihen, Erfolgsprämien im Vertrag, Transferfenster mit Fristmeldungen, Scoutaufträge mit Unschärfe, gestufte Spielvorbereitung |
 | **5 Vereinsführung** | Einnahmen aus Zuschauern, einem eigenen Sponsorenmarkt mit auslaufenden Verträgen, Medien, Merchandising und Preisgeldern; sechs Ausbaubereiche; sieben Personalrollen mit messbarer Wirkung; Vorstand mit Ziel, Vertrauen, Warnstufen und Entlassung |
-| **6 Trainerkarriere** | Eigener Vertrag, Ruf, Stationen, Titelsammlung, Jobangebote, Handschrift mit Prägungen — alles vereinsübergreifend |
+| **6 Trainerkarriere** | Eigener Vertrag, Ruf, Stationen, Titelsammlung, Jobangebote, Handschrift mit Prägungen, dazu das Verbandsamt als zweiter Strang — alles vereinsübergreifend |
 | **7 Zeitablauf** | Tageskalender mit Vorbereitung, Trainingsalltag und Wochenrhythmus (Montag: Abrechnung, Training, Presse, Vorstand; Donnerstag: Kabine, Gerüchte), Winterpause, Transferfenster; eine Drei-Wochen-Vorschau zeigt Spiele, Fristen, Scoutberichte und Bauabschlüsse |
 | **8 Immersion** | Presse und „Hallenfunk" reagieren auf Ergebnis, Derbycharakter, Serien, Einzelleistungen und Vereinslage; Pressekonferenzen vor Pflichtspielen; Rivalitäten wachsen aus Duellen; Chronik mit Titeln, Legenden, Rekorden und Saisonverlauf |
 | **9 Persistenz** | 5 Speicherplätze plus automatische Sicherung (jeden Montag und zu jedem Saisonwechsel), vollständiger Zustand in einer Datei, Klartext-Beschreibung daneben, automatische Ergänzung fehlender Felder beim Laden |
@@ -656,6 +700,8 @@ kern/
   Anweisungen.gd     Individuelle Spieleranweisungen für Angriff und Abwehr
   Sponsoren.gd       Sponsorenmarkt: Plätze, Marktwert, Auslauf, Angebote, Prämien
   Cotrainer.gd       Befunde des Trainerstabs, begrenzt durch dessen Qualität
+  Auszeichnungen.gd  Team der Woche, Spieler und Trainer des Monats, Saisonpreise
+  Nationaltrainer.gd Verbandsamt: Berufung, Nominierung, Turnierziel, Abrechnung
   Kaderplanung.gd    Altersstruktur, Kadertiefe über Jahre, Gehaltslast, Prognose
   Laufbahn.gd        Chronik eines Spielerlebens: Debüt, Wechsel, Titel, Marken
   Trikot.gd          Rückennummern: Vergabe nach Position, Eindeutigkeit im Kader

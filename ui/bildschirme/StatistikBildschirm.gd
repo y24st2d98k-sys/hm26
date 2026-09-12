@@ -92,12 +92,85 @@ func _zeichne() -> void:
 	_bestenliste(oben, liga, info)
 	_eigene_karte(oben, liga, info)
 
+	_team_der_woche(liga)
 	_allstar(liga)
+	_ehrungen(liga)
 
 	var unten := Stil.hbox(12)
 	inhalt.add_child(unten)
 	for schluessel in TEAM_KATEGORIEN.keys():
 		_teamkarte(unten, str(schluessel))
+
+## Die beste Sieben des letzten Spieltags.
+func _team_der_woche(liga: Dictionary) -> void:
+	var w: Dictionary = Auszeichnungen.team_der_woche(Welt.daten, str(liga["id"]))
+	if w.is_empty():
+		return
+	var karte := Bausteine.karte_in(inhalt, "Team der Woche — Spieltag vom %s" % Kalender.text(int(w["tag"]), Welt.startjahr()))
+	var zeile := Stil.hbox(10)
+	karte.add_child(zeile)
+	var noten: Dictionary = w.get("noten", {})
+	for pos in Spielerfabrik.POSITIONEN:
+		if not (w["spieler"] as Dictionary).has(pos):
+			continue
+		var sid: String = str(w["spieler"][pos])
+		if not Welt.daten["spieler"].has(sid):
+			continue
+		var sp: Dictionary = Welt.spieler(sid)
+		var spalte := Stil.vbox(3)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(spalte)
+		spalte.add_child(Bausteine.positions_abzeichen(pos))
+		var knopf := Stil.knopf_flach(Spielerfabrik.kurz_name(sp))
+		knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		spalte.add_child(knopf)
+		spalte.add_child(Stil.matt(str(Welt.verein(str(sp["verein"])).get("kurz", "")), Stil.S_MINI))
+		var note: float = float(noten.get(sid, 0.0))
+		spalte.add_child(Stil.text(Stil.komma(note, 2) if note > 0.0 else "—", Stil.S_MINI,
+			Stil.wert_farbe(6.0 - note, 5.0)))
+
+## Monats- und Saisonehrungen dieser Liga.
+func _ehrungen(liga: Dictionary) -> void:
+	var lid: String = str(liga["id"])
+	var monate: Array = Auszeichnungen.monatsliste(Welt.daten, lid)
+	var saisons: Array = Auszeichnungen.saisonliste(Welt.daten, lid)
+	if monate.is_empty() and saisons.is_empty():
+		return
+	var karte := Bausteine.karte_in(inhalt, "Auszeichnungen")
+	if not monate.is_empty():
+		karte.add_child(Stil.text("Monatsehrungen", Stil.S_KLEIN, Stil.AKZENT))
+		var g := Stil.tabelle(["Monat", "Spieler des Monats", "Verein", "Mannschaft des Monats"])
+		g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		karte.add_child(g)
+		for e in monate.slice(0, 10):
+			g.add_child(Stil.matt(str(e["monat"]), Stil.S_KLEIN))
+			var sid: String = str(e["spieler"])
+			if sid != "" and Welt.daten["spieler"].has(sid):
+				var k := Stil.knopf_flach(Spielerfabrik.voller_name(Welt.spieler(sid)))
+				k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+				g.add_child(k)
+				g.add_child(Stil.matt(str(Welt.verein(str(Welt.spieler(sid)["verein"])).get("kurz", "")), Stil.S_KLEIN))
+			else:
+				g.add_child(Stil.matt("—", Stil.S_KLEIN))
+				g.add_child(Stil.matt("—", Stil.S_KLEIN))
+			g.add_child(Stil.text(str(Welt.verein(str(e["verein"])).get("name", "—")), Stil.S_KLEIN, Stil.GRUEN))
+	if saisons.is_empty():
+		return
+	karte.add_child(Stil.trenner())
+	karte.add_child(Stil.text("Saisonehrungen", Stil.S_KLEIN, Stil.AKZENT))
+	for e2 in saisons.slice(0, 4):
+		var zeile := Stil.hbox(10)
+		karte.add_child(zeile)
+		zeile.add_child(Stil.abzeichen(Kalender.saison_text(Welt.startjahr(), int(e2["saison"])), Stil.TEXT_SCHWACH))
+		var teile: Array = []
+		for paar in [["neuzugang", "Neuzugang"], ["talent", "Nachwuchsspieler"]]:
+			var sid2: String = str(e2[str(paar[0])])
+			if sid2 != "" and Welt.daten["spieler"].has(sid2):
+				teile.append("%s der Saison: %s" % [str(paar[1]), Spielerfabrik.voller_name(Welt.spieler(sid2))])
+		var tv: String = str(e2.get("trainerverein", ""))
+		if tv != "" and Welt.daten["vereine"].has(tv):
+			teile.append("Trainer der Saison: %s" % str(Welt.verein(tv)["name"]))
+		zeile.add_child(Stil.matt(" · ".join(teile) if not teile.is_empty() else "keine Ehrung vergeben", Stil.S_KLEIN))
 
 ## Die beste Sieben der zuletzt abgeschlossenen Saison.
 func _allstar(liga: Dictionary) -> void:

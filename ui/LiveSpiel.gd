@@ -186,7 +186,11 @@ func starte(spiel_id: String) -> void:
 	sim = Matchsim.new(Welt.daten, m)
 	sim.live = true
 	sim.vorbereiten()
-	var heim_ist_mein: bool = str(m["heim"]) == Welt.mein_verein_id
+	# Bei einem Turnierspiel der eigenen Auswahl ist nicht der Verein gemeint.
+	var meine_cid: String = Welt.mein_verein_id
+	if Nationaltrainer.ist_nationalteam_spiel(Welt.daten, m):
+		meine_cid = Nationalteam.team_id(Nationaltrainer.nation(Welt.daten))
+	var heim_ist_mein: bool = str(m["heim"]) == meine_cid
 	mein_team = sim.heim if heim_ist_mein else sim.gast
 	gegner_team = sim.gast if heim_ist_mein else sim.heim
 	feld.lebendig = true
