@@ -21,8 +21,35 @@ const STANDARD := {
 var wappen: Dictionary = STANDARD.duplicate()
 var mit_rand: bool = true
 
+## Ordner fuer eigene Vereinslogos. Liegt dort eine Datei mit dem Kuerzel des
+## Vereins (etwa "SCM.png"), wird sie statt des gezeichneten Wappens angezeigt.
+## So lassen sich echte Logos einsetzen, ohne dass welche im Projekt liegen.
+const LOGOORDNER := "res://assets/wappen"
+const LOGO_ENDUNGEN := ["png", "svg", "jpg", "webp"]
+
+static var _logo_zwischenspeicher: Dictionary = {}
+
+var logo: Texture2D = null
+
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+## Sucht ein hinterlegtes Logo. Ergebnis wird gemerkt, auch das Nichtvorhandensein.
+static func logo_fuer(kuerzel: String) -> Texture2D:
+	if kuerzel == "":
+		return null
+	if _logo_zwischenspeicher.has(kuerzel):
+		return _logo_zwischenspeicher[kuerzel]
+	var gefunden: Texture2D = null
+	for endung in LOGO_ENDUNGEN:
+		var pfad := "%s/%s.%s" % [LOGOORDNER, kuerzel, endung]
+		if ResourceLoader.exists(pfad):
+			var res := ResourceLoader.load(pfad)
+			if res is Texture2D:
+				gefunden = res
+				break
+	_logo_zwischenspeicher[kuerzel] = gefunden
+	return gefunden
 
 func setze(w: Dictionary) -> void:
 	if w != null and not w.is_empty():
@@ -34,7 +61,9 @@ static func fuer_verein(cid: String, groesse: float = 34.0) -> Wappen:
 	w.custom_minimum_size = Vector2(groesse, groesse)
 	w.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	w.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	w.setze(Welt.verein(cid).get("wappen", {}))
+	var v: Dictionary = Welt.verein(cid)
+	w.logo = logo_fuer(str(v.get("kurz", "")))
+	w.setze(v.get("wappen", {}))
 	return w
 
 ## Wappen frei aus Farben und Kuerzel — fuer Vorschauen ohne Vereinsdatensatz.
@@ -52,6 +81,10 @@ func _draw() -> void:
 	if s <= 6.0:
 		return
 	var versatz := Vector2((size.x - s) * 0.5, (size.y - s) * 0.5)
+	# Ein hinterlegtes Logo hat Vorrang vor dem gezeichneten Wappen.
+	if logo != null:
+		draw_texture_rect(logo, Rect2(versatz, Vector2(s, s)), false)
+		return
 	var a: Color = wappen.get("a", STANDARD["a"])
 	var b: Color = wappen.get("b", STANDARD["b"])
 	var muster := int(wappen.get("muster", 0))

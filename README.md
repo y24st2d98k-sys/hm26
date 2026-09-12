@@ -229,8 +229,38 @@ jeden Klang als PCM-Puffer und legt ihn als `AudioStreamWAV` in den Speicher:
   (mehrere leicht verstimmte Sinusanteile), einem weichen Bass und einer
   sparsamen Melodie.
 
+Alles läuft über zwei zur Laufzeit angelegte Audiobusse: **Halle** trägt einen
+Nachhall und eine leichte Höhenabsenkung, sodass jedes Spielgeräusch nach
+Sporthalle klingt statt nach Kopfhörer; **Musik** bekommt wenig Raum und eine
+Kompression. Jubel und Hallengemurmel bestehen nicht aus schlichtem Rauschen,
+sondern aus mehreren Resonanzbändern im Stimmbereich plus eingestreuten
+Klatschtransienten und vereinzelten Rufen — das ist der Unterschied zwischen
+„Wind" und „Menschen". Die Pfeife hat einen Anblas-Chirp und das Rasseln der
+Erbse als schnelles Vibrato.
+
 Hauptschalter und drei Regler (Musik, Effekte, Atmosphäre) stehen unter
 *Spielstand*. Die Werte gehören zum Spielstand und werden mitgespeichert.
+
+### Eigene Bilder und Klänge
+
+Wem das Gezeichnete oder Synthetisierte nicht gefällt, legt eigene Dateien in
+`assets/` ab — ohne eine Zeile Code zu ändern:
+
+* `assets/wappen/<Kürzel>.png` ersetzt das gezeichnete Wappen eines Vereins
+  (`SCM.png`, `THW.png`, …; auch `svg`, `jpg`, `webp`).
+* `assets/klang/<Name>.ogg` ersetzt einen Klang (`tor`, `pfiff`, `atmo`,
+  `musik`, …; auch `wav`, `mp3`).
+
+Wo nichts liegt, bleibt es bei der eingebauten Variante — ein Datensatz aus
+zehn Logos und zwei Klängen funktioniert genauso wie ein vollständiger. Welche
+Klänge aus Dateien stammen, steht im Spielstandsbildschirm. Die Einzelheiten
+stehen in [`assets/README.md`](assets/README.md).
+
+Zum Anhören ohne Spiel schreibt der Klangtest alle Klänge als WAV:
+
+```bash
+godot4 --headless res://werkzeuge/Klangtest.tscn -- /tmp/klang
+```
 
 Zum Prüfen ohne Lautsprecher:
 

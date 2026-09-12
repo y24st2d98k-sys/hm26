@@ -4,8 +4,16 @@ extends Node
 ## einzige Moeglichkeit, Stille oder Uebersteuerung zu bemerken.
 
 func _ready() -> void:
+	var args := OS.get_cmdline_user_args()
+	var ordner: String = str(args[0]) if args.size() > 0 else ""
 	var namen := ["pfiff", "anpfiff", "tor", "tor_gegen", "parade", "raunen",
 		"ball", "sirene", "klick", "blaettern", "atmo"]
+	if ordner != "":
+		DirAccess.make_dir_recursive_absolute(ordner)
+		for n in namen:
+			_schreiben(ordner, n, Klang._effekte.get(n))
+		_schreiben(ordner, "musik", Klang._musik)
+		printerr("WAV-Dateien geschrieben nach %s" % ordner)
 	printerr("%-12s %8s %8s %8s %10s" % ["Klang", "Sek", "Spitze", "RMS", "Nulldg/s"])
 	for n in namen:
 		_bericht(n, Klang._effekte.get(n))
@@ -36,3 +44,9 @@ func _bericht(name: String, stream) -> void:
 	var sek: float = float(n) / float(s.mix_rate)
 	printerr("%-12s %8.2f %8.3f %8.3f %10.0f" % [name, sek, spitze, sqrt(summe / float(n)),
 		float(wechsel) / maxf(sek, 0.001) * 0.5])
+
+## Klang als WAV ablegen, damit man ihn ausserhalb des Spiels anhoeren kann.
+func _schreiben(ordner: String, name: String, stream) -> void:
+	if stream == null or not (stream is AudioStreamWAV):
+		return
+	(stream as AudioStreamWAV).save_to_wav("%s/%s.wav" % [ordner, name])

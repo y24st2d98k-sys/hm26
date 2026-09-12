@@ -53,6 +53,11 @@ func _ton() -> Control:
 	for regler in [["lautstaerke_musik", "Musik", 55.0], ["lautstaerke_effekte", "Effekte", 75.0],
 			["lautstaerke_atmo", "Hallenatmosphäre", 65.0]]:
 		karte.add_child(_regler(str(regler[0]), str(regler[1]), float(regler[2])))
+	var eigene: Array = Klang.eigene_klaenge()
+	if eigene.is_empty():
+		karte.add_child(Stil.matt("Eigene Dateien in assets/klang/ ersetzen einzelne Klänge — siehe assets/README.md.", Stil.S_MINI))
+	else:
+		karte.add_child(Stil.banner("Aus eigenen Dateien: %s" % ", ".join(eigene), "erfolg"))
 	var probe := Stil.knopf_geist("Klangprobe")
 	probe.disabled = Welt.daten.is_empty()
 	probe.pressed.connect(func():
