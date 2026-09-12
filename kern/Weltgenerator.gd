@@ -465,6 +465,8 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 		}
 		_startpraemien_setzen(sp_e, ruf)
 		sp_e["wert"] = Spielerfabrik.marktwert(sp_e)
+		# Erst nach dem Marktwert — die Klausel rechnet damit.
+		_klausel_setzen(sp_e)
 		d["spieler"][sid_e] = sp_e
 		(verein["kader"] as Array).append(sid_e)
 		belegt[pos_e] = int(belegt[pos_e]) + 1
@@ -498,6 +500,7 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 			}
 			_startpraemien_setzen(sp, ruf)
 			sp["wert"] = Spielerfabrik.marktwert(sp)
+			_klausel_setzen(sp)
 			d["spieler"][sid] = sp
 			(verein["kader"] as Array).append(sid)
 	_verteile_rollen(d, cid)
@@ -808,3 +811,13 @@ static func _startpraemien_setzen(sp: Dictionary, ruf: float) -> void:
 	var ersatz: float = Praemien.erwartete_wochenkosten(sp, float(vertrag["praemie_tor"]),
 		float(vertrag["praemie_sieg"]), clampf(ruf / 130.0, 0.25, 0.78)) * Praemien.anrechnungsfaktor(sp)
 	vertrag["gehalt"] = maxf(float(vertrag["gehalt"]) - ersatz, float(vertrag["gehalt"]) * 0.5)
+
+## Ein Teil der Startverträge trägt eine Ablöseklausel — vor allem bei jungen
+## Spielern, die sie sich bei der Unterschrift haben zusichern lassen.
+static func _klausel_setzen(sp: Dictionary) -> void:
+	sp["vertrag"]["ablöseklausel"] = 0.0
+	var jung: bool = int(sp["alter"]) <= 24
+	if Namen.zufall() > (0.16 if jung else 0.07):
+		return
+	var faktor: float = Namen.bereich(1.2, 3.4) if not jung else Namen.bereich(1.4, 4.5)
+	sp["vertrag"]["ablöseklausel"] = roundf(maxf(float(sp["wert"]), 1000.0) * faktor / 25000.0) * 25000.0

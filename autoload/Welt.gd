@@ -231,6 +231,7 @@ func tag_weiter() -> Dictionary:
 	Nationalteam.tageswechsel(daten)
 	Presse.tageswechsel(daten)
 	Gespraech.tageswechsel(daten)
+	Transfermarkt.klauseln_pruefen(daten)
 
 	# Anstehende Partien
 	var heute: Array = (spiele_am_tag(t) as Array).duplicate()

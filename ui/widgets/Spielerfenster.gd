@@ -351,6 +351,12 @@ func _vertrag(sp: Dictionary) -> void:
 				Stil.geld(float((sp["stats"]["saison"] as Dictionary).get("praemien", 0.0)))))
 		else:
 			karte.add_child(Stil.info_zeile("Erfolgsprämien", "keine"))
+		var klausel: float = float(vertrag.get("ablöseklausel", 0.0))
+		if klausel > 0.0:
+			karte.add_child(Stil.info_zeile("Ablöseklausel", Stil.geld(klausel), Stil.ROT))
+			karte.add_child(Stil.matt("Jeder Verein, der diese Summe zahlt, kann ihn verpflichten — ohne Verhandlung.", Stil.S_MINI))
+		else:
+			karte.add_child(Stil.info_zeile("Ablöseklausel", "keine"))
 		karte.add_child(Stil.info_zeile("Unzufriedenheit", "%d" % int(sp["unzufriedenheit"]),
 			Stil.ROT if float(sp["unzufriedenheit"]) > 55.0 else Stil.TEXT))
 
@@ -384,11 +390,13 @@ func _vertrag(sp: Dictionary) -> void:
 		zeile.add_child(rolle)
 		var praemien := _praemienzeile(neu, sp,
 			float(sp["vertrag"].get("praemie_tor", 0.0)), float(sp["vertrag"].get("praemie_sieg", 0.0)))
+		var klauselfeld := _klauselzeile(neu, sp, float(sp["vertrag"].get("ablöseklausel", 0.0)))
 		var anbieten := Stil.knopf_primaer("Angebot machen")
 		anbieten.pressed.connect(func():
 			var erg := Transfermarkt.vertrag_verlaengern(Welt.daten, sid, gehalt.value, int(jahre.value),
 				str(rolle.get_item_metadata(rolle.selected)),
-				(praemien["tor"] as SpinBox).value, (praemien["sieg"] as SpinBox).value)
+				(praemien["tor"] as SpinBox).value, (praemien["sieg"] as SpinBox).value,
+				klauselfeld.value)
 			_melde(str(erg["grund"]), bool(erg["ok"]))
 			_zeichne())
 		neu.add_child(anbieten)
@@ -672,3 +680,33 @@ func _staerken_schwaechen(eltern: Node, sp: Dictionary) -> void:
 		eltern.add_child(Stil.info_zeile(
 			str(Spielerfabrik.ATTR_LABEL.get(str(e2["id"]), str(e2["id"]))),
 			"%d" % int(float(e2["wert"])), Stil.wert_farbe(float(e2["wert"]))))
+
+## Eingabefeld für die Ablöseklausel samt Wirkungshinweis.
+func _klauselzeile(eltern: Node, sp: Dictionary, start: float) -> SpinBox:
+	var untergrenze: float = Transfermarkt.klausel_untergrenze(sp)
+	var zeile := Stil.hbox(8)
+	eltern.add_child(zeile)
+	zeile.add_child(Stil.matt("Ablöseklausel"))
+	var feld := SpinBox.new()
+	feld.min_value = 0
+	feld.max_value = 90000000
+	feld.step = 25000
+	feld.value = start
+	feld.custom_minimum_size = Vector2(170, 0)
+	zeile.add_child(feld)
+	var aus := Stil.knopf_geist("Keine")
+	aus.pressed.connect(func(): feld.value = 0)
+	zeile.add_child(aus)
+	var hinweis := Stil.matt("", Stil.S_MINI)
+	eltern.add_child(hinweis)
+	var auffrischen := func():
+		if feld.value <= 0.0:
+			hinweis.text = "Ohne Klausel bestimmen Sie allein, ob und für wie viel er geht."
+			return
+		var wirksam: float = maxf(feld.value, untergrenze)
+		var rabatt: float = Transfermarkt.klausel_rabatt(Welt.daten, sp, wirksam)
+		hinweis.text = "Mindestens %s. Senkt die Gehaltsforderung um rund %d %%, gibt aber jedem Verein das Recht, ihn für diese Summe zu holen." % [
+			Stil.geld(untergrenze), int(rabatt * 100.0)]
+	auffrischen.call()
+	feld.value_changed.connect(func(_w): auffrischen.call())
+	return feld

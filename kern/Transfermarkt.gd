@@ -396,9 +396,92 @@ static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: 
 	})
 	Weltgenerator.setze_standardaufstellung(d, nach)
 
+# ------------------------------------------------------- Ablöseklausel ---
+
+## Eine Ablöseklausel ist ein Zugestaendnis: Der Spieler weiss, dass er den
+## Verein zu einem festen Preis verlassen kann, und laesst sich das mit einem
+## Abschlag beim Gehalt bezahlen. Je niedriger die Klausel, desto mehr ist sie
+## ihm wert — und desto groesser das Risiko fuer den Verein.
+const KLAUSEL_MINDESTFAKTOR := 0.8
+
+## Was eine Klausel dem Spieler wert ist, ausgedrueckt als Rabatt aufs
+## Wochengehalt (0..1 des Gehaltswunsches).
+static func klausel_rabatt(d: Dictionary, sp: Dictionary, klausel: float) -> float:
+	if klausel <= 0.0:
+		return 0.0
+	var wert: float = maxf(float(sp["wert"]), 1000.0)
+	# Bei Klausel = Marktwert ist der Rabatt am groessten, bei sehr hohen
+	# Klauseln laeuft er gegen null: eine Klausel, die nie greift, zaehlt nicht.
+	var verhaeltnis: float = clampf(klausel / wert, KLAUSEL_MINDESTFAKTOR, 6.0)
+	var ehrgeiz: float = float(sp["charakter"].get("ehrgeiz", 12.0)) / 20.0
+	return clampf(0.20 / verhaeltnis * (0.6 + ehrgeiz * 0.8), 0.0, 0.22)
+
+## Die niedrigste Klausel, die ein Spieler ueberhaupt akzeptiert bekommt —
+## darunter wuerde der Verein sich selbst verkaufen.
+static func klausel_untergrenze(sp: Dictionary) -> float:
+	return maxf(float(sp["wert"]), 1000.0) * KLAUSEL_MINDESTFAKTOR
+
+## Taeglich pruefen, ob ein fremder Verein eine Klausel zieht.
+static func klauseln_pruefen(d: Dictionary) -> void:
+	if not fenster_offen(d):
+		return
+	for cid in Weltgenerator.clubs(d):
+		if cid == Welt.mein_verein_id:
+			continue
+		var kader: Array = (d["vereine"][cid]["kader"] as Array).duplicate()
+		for sid in kader:
+			var sp: Dictionary = d["spieler"][sid]
+			var klausel: float = float(sp["vertrag"].get("ablöseklausel", 0.0))
+			if klausel <= 0.0:
+				continue
+			_klausel_versuchen(d, sid, sp, klausel)
+	# Auch die eigenen Spieler koennen weggekauft werden.
+	if Welt.mein_verein_id == "" or not d["vereine"].has(Welt.mein_verein_id):
+		return
+	for sid2 in (d["vereine"][Welt.mein_verein_id]["kader"] as Array).duplicate():
+		var sp2: Dictionary = d["spieler"][sid2]
+		var k2: float = float(sp2["vertrag"].get("ablöseklausel", 0.0))
+		if k2 > 0.0:
+			_klausel_versuchen(d, sid2, sp2, k2)
+
+static func _klausel_versuchen(d: Dictionary, sid: String, sp: Dictionary, klausel: float) -> void:
+	# Nur selten, damit nicht jeder Klauselspieler sofort weg ist.
+	if Namen.zufall() > 0.02:
+		return
+	var von: String = str(sp["verein"])
+	var staerke: float = Spielerfabrik.gesamt(sp)
+	var interessenten: Array = []
+	for cid in Weltgenerator.clubs(d):
+		if cid == von:
+			continue
+		var v: Dictionary = d["vereine"][cid]
+		if float(v["transferbudget"]) < klausel or float(v["kasse"]) < klausel * 0.6:
+			continue
+		if _kaderstaerke(d, cid) + 2.0 > staerke:
+			continue
+		if (v["kader"] as Array).size() >= 26:
+			continue
+		interessenten.append(cid)
+	if interessenten.is_empty():
+		return
+	var nach: String = str(Namen.waehle(interessenten))
+	if _attraktivitaet(d, sp, nach, "stammspieler") < 0.45:
+		return
+	var gehalt: float = Spielerfabrik.gehaltsvorstellung(sp, float(d["vereine"][nach]["ruf"])) * 1.1
+	var name: String = Spielerfabrik.voller_name(sp)
+	transfer_durchfuehren(d, sid, nach, klausel, gehalt, Namen.wuerfel(3, 5), "leistungstraeger")
+	if von == Welt.mein_verein_id:
+		Welt.nachricht({
+			"typ": "transfer", "wichtig": true,
+			"betreff": "Ablöseklausel gezogen: %s" % name,
+			"text": "%s hat die Ablöseklausel von %s in Höhe von %s bezahlt. Der Wechsel war nicht zu verhindern — die Klausel stand so im Vertrag." % [
+				str(d["vereine"][nach]["name"]), name, Stil.geld(klausel)],
+			"daten": {"spieler": sid},
+		})
+
 ## Vertragsverlaengerung eines eigenen Spielers.
 static func vertrag_verlaengern(d: Dictionary, sid: String, gehalt: float, laufzeit: int, rolle: String,
-		praemie_tor: float = 0.0, praemie_sieg: float = 0.0) -> Dictionary:
+		praemie_tor: float = 0.0, praemie_sieg: float = 0.0, klausel: float = 0.0) -> Dictionary:
 	var sp: Dictionary = d["spieler"][sid]
 	var cid: String = str(sp["verein"])
 	var wunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(d["vereine"][cid]["ruf"]))
@@ -407,12 +490,18 @@ static func vertrag_verlaengern(d: Dictionary, sid: String, gehalt: float, laufz
 	var grenzen := Praemien.begrenzen(praemie_tor, praemie_sieg)
 	schwelle = maxf(schwelle - Praemien.gehaltsersatz(d, sp, grenzen["praemie_tor"], grenzen["praemie_sieg"]),
 		wunsch * 0.5)
+	# Eine Ablöseklausel senkt die Gehaltsforderung — sie ist dem Spieler etwas wert.
+	var gueltige_klausel: float = 0.0
+	if klausel > 0.0:
+		gueltige_klausel = maxf(klausel, klausel_untergrenze(sp))
+		schwelle *= 1.0 - klausel_rabatt(d, sp, gueltige_klausel)
 	if gehalt >= schwelle:
 		sp["vertrag"]["gehalt"] = gehalt
 		sp["vertrag"]["bis_saison"] = Welt.saison_index() + maxi(laufzeit, 1)
 		sp["vertrag"]["rolle"] = rolle
 		sp["vertrag"]["praemie_tor"] = grenzen["praemie_tor"]
 		sp["vertrag"]["praemie_sieg"] = grenzen["praemie_sieg"]
+		sp["vertrag"]["ablöseklausel"] = gueltige_klausel
 		sp["unzufriedenheit"] = clampf(float(sp["unzufriedenheit"]) - 25.0, 0.0, 100.0)
 		sp["moral"] = clampf(float(sp["moral"]) + 8.0, 5.0, 100.0)
 		return {"ok": true, "grund": "%s hat unterschrieben." % Spielerfabrik.voller_name(sp)}
