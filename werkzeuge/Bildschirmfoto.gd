@@ -45,6 +45,19 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "bericht":
+			var gespielt := ""
+			for mid2 in Welt.daten["spiele"].keys():
+				var m: Dictionary = Welt.partie(str(mid2))
+				if bool(m["gespielt"]) and not (m.get("bericht", {}) as Dictionary).is_empty() \
+						and (str(m["heim"]) == Welt.mein_verein_id or str(m["gast"]) == Welt.mein_verein_id):
+					gespielt = str(mid2)
+			if gespielt != "":
+				var sb: Node = get_tree().get_first_node_in_group("spielbericht")
+				sb.zeige(gespielt)
+				await _foto("%s/bericht.png" % ordner)
+				sb.visible = false
+			continue
 		if str(id) == "spieler":
 			var sid: String = str(Welt.mein_verein()["kader"][0])
 			var f: Node = get_tree().get_first_node_in_group("spielerfenster")

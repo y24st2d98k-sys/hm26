@@ -32,11 +32,18 @@ func aktualisieren() -> void:
 		return
 	var kopf := Stil.hbox(14)
 	inhalt.add_child(kopf)
+	kopf.add_child(Portraet.fuer_trainer(t, 84.0))
+	if str(t.get("verein", "")) != "":
+		kopf.add_child(Wappen.fuer_verein(str(t["verein"]), 52.0))
 	var box := Stil.vbox(2)
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	kopf.add_child(box)
 	box.add_child(Stil.titel(Trainerkarriere.voller_name(t), 0))
-	box.add_child(Stil.matt("%d Jahre · %s · %s" % [int(t["alter"]),
+	var herkunft := Stil.hbox(7)
+	box.add_child(herkunft)
+	herkunft.add_child(Flagge.fuer(str(t["nation"]), 20.0))
+	herkunft.add_child(Stil.matt("%d Jahre · %s · %s" % [int(t["alter"]),
 		Namen.KULTUR_NAME.get(str(t["nation"]), ""), str(t.get("hintergrund_name", ""))]))
 	box.add_child(Stil.matt("%s — Ruf %d" % [Trainerkarriere.ruf_stufe(float(t["ruf"])), int(float(t["ruf"]))]))
 

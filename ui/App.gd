@@ -44,6 +44,7 @@ var kopf_datum: Label
 var kopf_saison: Label
 var kopf_glocke: Button
 var seitenfuss: Label
+var trainerbild: Control
 var seitenfuss_ruf: Label
 var weiter_knopf: Button
 var nav_knoepfe: Dictionary = {}
@@ -156,8 +157,14 @@ func _baue_seitenleiste() -> void:
 	fbox.content_margin_bottom = 11
 	fuss.add_theme_stylebox_override("panel", fbox)
 	spalte.add_child(fuss)
+	var fzeile := Stil.hbox(9)
+	fuss.add_child(fzeile)
+	trainerbild = Stil.hbox(0)
+	trainerbild.custom_minimum_size = Vector2(34, 34)
+	fzeile.add_child(trainerbild)
 	var fspalte := Stil.vbox(1)
-	fuss.add_child(fspalte)
+	fspalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	fzeile.add_child(fspalte)
 	seitenfuss = Stil.text("", Stil.S_KLEIN, Stil.TEXT)
 	fspalte.add_child(seitenfuss)
 	seitenfuss_ruf = Stil.matt("", Stil.S_MINI)
@@ -314,6 +321,9 @@ func _kopf_auffrischen() -> void:
 	var t: Dictionary = Welt.trainer()
 	seitenfuss.text = Trainerkarriere.voller_name(t)
 	seitenfuss_ruf.text = Trainerkarriere.ruf_stufe(float(t.get("ruf", 0.0)))
+	for k in trainerbild.get_children():
+		k.queue_free()
+	trainerbild.add_child(Portraet.fuer_trainer(t, 32.0))
 
 	var v: Dictionary = Welt.mein_verein()
 	if kopf_wappen != null:

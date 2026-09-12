@@ -29,7 +29,7 @@ func _ready() -> void:
 	mitte.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(mitte)
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(940, 640)
+	panel.custom_minimum_size = Vector2(1180, 800)
 	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
 	mitte.add_child(panel)
 	var m := MarginContainer.new()
@@ -93,6 +93,8 @@ func _zeichne() -> void:
 		inhalt.add_child(Stil.matt("Zu dieser Partie liegt kein ausführlicher Bericht vor."))
 		return
 
+	_torverlauf(m, bericht)
+
 	var spalten := Stil.hbox(12)
 	inhalt.add_child(spalten)
 	var werte := Bausteine.karte_in(spalten, "Mannschaftswerte")
@@ -123,8 +125,28 @@ func _zeichne() -> void:
 	if bester != "" and Welt.daten["spieler"].has(bester):
 		werte.add_child(Stil.info_zeile("Spieler des Spiels", Spielerfabrik.voller_name(Welt.spieler(bester)), Stil.AKZENT))
 
-	var ticker := Bausteine.karte_in(spalten, "Spielverlauf")
-	Stil.karte_wurzel(ticker).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for seite2 in ["heim", "gast"]:
+		var cid2: String = str(bericht[seite2]["cid"])
+		var wk: Dictionary = bericht[seite2].get("wurfkarte", {})
+		var kk := Bausteine.karte_in(spalten, "Würfe — %s" % Welt.verein(cid2).get("kurz", ""))
+		Stil.karte_wurzel(kk).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if wk.is_empty():
+			kk.add_child(Stil.leerzustand("Keine Wurfkarte aufgezeichnet."))
+			continue
+		var w := Wurfkarte.neu(wk, Welt.verein(cid2).get("wappen", {}).get("a", Stil.AKZENT), 300.0)
+		w.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		kk.add_child(w)
+		kk.add_child(Stil.matt("Kreisgröße: Würfe · Füllung: Trefferquote", Stil.S_MINI))
+
+	var ticker := Bausteine.karte_in(inhalt, "Spielverlauf")
+	var tickerscroll := ScrollContainer.new()
+	tickerscroll.custom_minimum_size = Vector2(0, 260)
+	tickerscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	ticker.add_child(tickerscroll)
+	var tickerliste := Stil.vbox(2)
+	tickerliste.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tickerscroll.add_child(tickerliste)
+	ticker = tickerliste
 	for e in bericht.get("ticker", []):
 		var h2 := Stil.hbox(8)
 		ticker.add_child(h2)
@@ -181,3 +203,91 @@ func _farbe(typ: String) -> Color:
 		"halbzeit", "ende":
 			return Stil.BLAU
 	return Stil.TEXT
+
+## Der Torverlauf über der Nulllinie, direkt unter dem Ergebnis.
+func _torverlauf(m: Dictionary, bericht: Dictionary) -> void:
+	var verlauf := Bausteine.karte_in(inhalt, "Torverlauf")
+	var heim_f: Color = Welt.verein(str(m["heim"])).get("wappen", {}).get("a", Stil.AKZENT)
+	var gast_f: Color = Welt.verein(str(m["gast"])).get("wappen", {}).get("a", Stil.BLAU)
+	var kurve := Torverlauf.new()
+	kurve.punkte = _verlaufspunkte(bericht)
+	kurve.heim_farbe = heim_f
+	kurve.gast_farbe = gast_f
+	kurve.custom_minimum_size = Vector2(0, 104)
+	kurve.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	verlauf.add_child(kurve)
+	var legende := Stil.hbox(10)
+	verlauf.add_child(legende)
+	legende.add_child(Stil.abzeichen(str(Welt.verein(str(m["heim"])).get("kurz", "")), heim_f))
+	legende.add_child(Stil.matt("oben in Führung", Stil.S_MINI))
+	legende.add_child(Stil.dehner())
+	legende.add_child(Stil.matt("Mittellinie: Halbzeit", Stil.S_MINI))
+	legende.add_child(Stil.dehner())
+	legende.add_child(Stil.matt("unten in Führung", Stil.S_MINI))
+	legende.add_child(Stil.abzeichen(str(Welt.verein(str(m["gast"])).get("kurz", "")), gast_f))
+
+## Aus dem Kurzticker die Tordifferenz über die Zeit ableiten.
+func _verlaufspunkte(bericht: Dictionary) -> Array:
+	var punkte: Array = [Vector2(0.0, 0.0)]
+	for e in bericht.get("ticker", []):
+		var eintrag: Dictionary = e
+		if not eintrag.has("stand"):
+			continue
+		var stand: Array = eintrag["stand"]
+		punkte.append(Vector2(float(eintrag.get("zeit", 0.0)),
+			float(int(stand[0]) - int(stand[1]))))
+	return punkte
+
+## Die Tordifferenz als Fläche um die Nulllinie — wer oben liegt, führt.
+class Torverlauf extends Control:
+	var punkte: Array = []
+	var heim_farbe: Color = Color.WHITE
+	var gast_farbe: Color = Color.WHITE
+
+	func _draw() -> void:
+		if size.x < 20.0 or size.y < 20.0:
+			return
+		var null_y: float = size.y * 0.5
+		draw_rect(Rect2(Vector2.ZERO, size), Stil.FLAECHE_TIEF, true)
+		draw_line(Vector2(0, null_y), Vector2(size.x, null_y), Stil.RAND_HELL, 1.0)
+		if punkte.size() < 2:
+			return
+		var groesste := 1.0
+		for p in punkte:
+			groesste = maxf(groesste, absf((p as Vector2).y))
+		var dauer: float = maxf(float((punkte[punkte.size() - 1] as Vector2).x), 1.0)
+		# Halbzeitmarke
+		draw_line(Vector2(size.x * 0.5, 0), Vector2(size.x * 0.5, size.y),
+			Color(1, 1, 1, 0.06), 1.0)
+		var vorher := Vector2(0.0, null_y)
+		var letzte_diff := 0.0
+		for p in punkte:
+			var punkt: Vector2 = p
+			var x: float = punkt.x / dauer * size.x
+			var y: float = null_y - punkt.y / groesste * (size.y * 0.44)
+			# Treppenform: der Stand haelt bis zum naechsten Tor und springt dann.
+			var ecke := Vector2(x, vorher.y)
+			if letzte_diff != 0.0 and x > vorher.x:
+				var vorfarbe: Color = heim_farbe if letzte_diff > 0.0 else gast_farbe
+				draw_colored_polygon(PackedVector2Array([
+					Vector2(vorher.x, null_y), vorher, ecke, Vector2(x, null_y)]),
+					Color(vorfarbe.r, vorfarbe.g, vorfarbe.b, 0.22))
+			var farbe: Color = heim_farbe if letzte_diff > 0.0 else (
+				gast_farbe if letzte_diff < 0.0 else Stil.TEXT_MATT)
+			draw_line(vorher, ecke, farbe, 1.8, true)
+			var neufarbe: Color = heim_farbe if punkt.y > 0.0 else (
+				gast_farbe if punkt.y < 0.0 else Stil.TEXT_MATT)
+			draw_line(ecke, Vector2(x, y), neufarbe, 1.8, true)
+			vorher = Vector2(x, y)
+			letzte_diff = punkt.y
+		# Bis zum Schlusspfiff ausziehen
+		if vorher.x < size.x - 1.0:
+			if letzte_diff != 0.0:
+				var endfarbe: Color = heim_farbe if letzte_diff > 0.0 else gast_farbe
+				draw_colored_polygon(PackedVector2Array([
+					Vector2(vorher.x, null_y), vorher, Vector2(size.x, vorher.y),
+					Vector2(size.x, null_y)]),
+					Color(endfarbe.r, endfarbe.g, endfarbe.b, 0.22))
+			draw_line(vorher, Vector2(size.x, vorher.y),
+				heim_farbe if letzte_diff > 0.0 else (gast_farbe if letzte_diff < 0.0 else Stil.TEXT_MATT),
+				1.8, true)

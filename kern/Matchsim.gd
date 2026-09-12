@@ -132,6 +132,9 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		"stats": {"wuerfe": 0, "tore": 0, "technische_fehler": 0, "zeitstrafen": 0, "rote": 0,
 			"siebenmeter": 0, "siebenmeter_tore": 0, "paraden": 0, "blocks": 0, "gegenstoss_tore": 0,
 			"ballgewinne": 0, "wechsel": 0, "puls_hoch": 0.0},
+		# Wurfkarte: je Abschlussposition gezaehlt, was daraus geworden ist.
+		# Nur Summen, keine Einzelwuerfe — der Spielstand soll schlank bleiben.
+		"wurfkarte": {},
 		"siebenmeter_schuetze": str(auf.get("siebenmeter", "")),
 		"sieben_gegen_sechs": false,
 		"letzte_wechselpruefung": -999.0,
@@ -368,6 +371,7 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 	if pos == "KM" or pos == "LA" or pos == "RA":
 		p_block *= 0.45
 	if rng.randf() < p_block:
+		_wurf_notieren(a, pos, "block")
 		return _block(a, v, schuetze, pos)
 
 	var wurfguete: float = _wurfguete(sp, pos, a, diff)
@@ -378,6 +382,7 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 	var p_vorbei: float = clampf(0.115 - (wurfguete - paradenwert) * 0.0009, 0.05, 0.17)
 	var w: float = rng.randf()
 	if w < p_vorbei:
+		_wurf_notieren(a, pos, "vorbei")
 		zst["bewertung"] += 0.16
 		_bewertung_dampfen(zst)
 		var t1 := "%s setzt den Ball an den Pfosten." % Spielerfabrik.kurz_name(sp) if rng.randf() < 0.4 else "%s wirft vorbei." % Spielerfabrik.kurz_name(sp)
@@ -385,9 +390,19 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 		_puls_aendern(a, -2.0)
 		return {"gegenstoss": rng.randf() < 0.24}
 	elif w < p_vorbei + (1.0 - p_vorbei) * p_tor:
+		_wurf_notieren(a, pos, "tor")
 		return _tor(a, v, schuetze, pos, false)
 	else:
+		_wurf_notieren(a, pos, "parade")
 		return _parade(a, v, schuetze, tw, pos)
+
+## Haelt fest, was aus einem Abschluss von dieser Position geworden ist.
+func _wurf_notieren(a: Dictionary, pos: String, ergebnis: String) -> void:
+	var karte: Dictionary = a["wurfkarte"]
+	if not karte.has(pos):
+		karte[pos] = {"tor": 0, "parade": 0, "vorbei": 0, "block": 0}
+	var eintrag: Dictionary = karte[pos]
+	eintrag[ergebnis] = int(eintrag.get(ergebnis, 0)) + 1
 
 func _wurfposition(a: Dictionary) -> String:
 	var stil: String = str(a["taktik"]["angriff"])
@@ -618,7 +633,9 @@ func _siebenmeter(a: Dictionary, v: Dictionary) -> Dictionary:
 	var p: float = clampf(0.76 + (guete - halten) * 0.0055, 0.45, 0.95)
 	_warteschlange.append(_ereignis("siebenmeter", _seite(a), schuetze, "Siebenmeter für %s — %s legt sich den Ball zurecht." % [a["kurz"], Spielerfabrik.kurz_name(sp)], {"position": "RM"}))
 	if rng.randf() < p:
+		_wurf_notieren(a, "7M", "tor")
 		return _tor(a, v, schuetze, "RM", true)
+	_wurf_notieren(a, "7M", "parade")
 	if tw != "":
 		v["stats"]["paraden"] += 1
 		v["zustand"][tw]["paraden"] += 1
@@ -1186,6 +1203,7 @@ func _team_bericht(t: Dictionary) -> Dictionary:
 		"cid": t["cid"],
 		"tore": t["tore"],
 		"stats": (t["stats"] as Dictionary).duplicate(),
+		"wurfkarte": (t["wurfkarte"] as Dictionary).duplicate(true),
 		"spieler": spieler,
 		"taktik": (t["taktik"] as Dictionary).duplicate(),
 	}

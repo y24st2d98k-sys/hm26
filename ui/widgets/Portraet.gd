@@ -66,6 +66,22 @@ static func fuer_spieler(spieler_id: String, groesse: float = 46.0) -> Portraet:
 		p.setze(sp)
 	return p
 
+## Portrait des Trainers. Er hat keinen Spielerdatensatz, aber Name, Alter und
+## Herkunft reichen — die ID bildet sich aus dem Namen, damit das Gesicht bleibt.
+static func fuer_trainer(t: Dictionary, groesse: float = 42.0) -> Portraet:
+	var p := Portraet.new()
+	p.custom_minimum_size = Vector2(groesse, groesse)
+	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	p.setze({
+		"id": "trainer:%s %s" % [str(t.get("vorname", "")), str(t.get("nachname", ""))],
+		"alter": int(t.get("alter", 40)),
+		"nation": str(t.get("nation", "de")),
+		"ist_torwart": false,
+		"verein": str(t.get("verein", "")),
+	})
+	return p
+
 func setze(sp: Dictionary) -> void:
 	sid = str(sp.get("id", ""))
 	alter = int(sp.get("alter", 26))
