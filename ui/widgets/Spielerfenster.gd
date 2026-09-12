@@ -135,6 +135,10 @@ func _kopf(sp: Dictionary) -> void:
 		int(sp["alter"]), Namen.KULTUR_NAME.get(str(sp["nation"]), str(sp["nation"])),
 		str(Welt.verein(str(sp["verein"])).get("name", "vereinslos"))]))
 	zeile.add_child(Bausteine.status_zeichen(sid))
+	if bool(Welt.daten.get("echte_welt", false)) and not bool(sp.get("echt", false)):
+		var platzhalter := Stil.abzeichen("ERFUNDEN", Stil.TEXT_SCHWACH)
+		platzhalter.tooltip_text = "Für diesen Kaderplatz liegt kein echter Spieler im Datensatz — das Spiel hat einen erfunden. In daten/kader.json ergänzbar."
+		zeile.add_child(platzhalter)
 
 	var rechts := Stil.vbox(2)
 	rechts.custom_minimum_size = Vector2(230, 0)

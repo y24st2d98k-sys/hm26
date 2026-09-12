@@ -324,7 +324,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 
 	# Technischer Fehler / Ballgewinn der Abwehr
 	var risiko: float = clampf(float(a["taktik"]["risiko"]) + float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["risiko"]), 0.0, 100.0)
-	var p_fehler: float = clampf(0.185 - diff * 0.0020 + (risiko - 50.0) * 0.0009, 0.06, 0.28) * float(td["ballgewinn"])
+	var p_fehler: float = clampf(0.185 - diff * 0.0008 + (risiko - 50.0) * 0.0009, 0.09, 0.26) * float(td["ballgewinn"])
 	if a["sieben_gegen_sechs"]:
 		p_fehler *= 1.35
 	if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "kontrolleur"):
@@ -360,7 +360,7 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 
 	var tw := _spieler_auf(v, "TW")
 	var block_mod: float = float(td["block"])
-	var p_block: float = clampf(0.140 - diff * 0.0014, 0.04, 0.20) * block_mod
+	var p_block: float = clampf(0.140 - diff * 0.0008, 0.06, 0.19) * block_mod
 	if pos == "KM" or pos == "LA" or pos == "RA":
 		p_block *= 0.45
 	if rng.randf() < p_block:
@@ -368,7 +368,9 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 
 	var wurfguete: float = _wurfguete(sp, pos, a, diff)
 	var paradenwert: float = _paradenwert(v, tw, pos)
-	var p_tor: float = clampf(0.815 + (wurfguete - paradenwert) * 0.0098, 0.36, 0.86)
+	# Der Hallenpuls wirkt direkt auf den Abschluss, nicht nur ueber den
+	# Staerkevergleich — sonst verschwindet der Heimvorteil.
+	var p_tor: float = clampf(0.735 + (wurfguete - paradenwert) * 0.0035 + _puls_abschluss(a), 0.42, 0.79)
 	var p_vorbei: float = clampf(0.115 - (wurfguete - paradenwert) * 0.0009, 0.05, 0.17)
 	var w: float = rng.randf()
 	if w < p_vorbei:
@@ -432,7 +434,7 @@ func _wurfguete(sp: Dictionary, pos: String, a: Dictionary, diff: float) -> floa
 		if abstand <= 2:
 			druck = 0.9 + 0.2 * nerven
 	var puls_bonus: float = _puls_wirkung(a)
-	return basis * 5.0 * (0.70 + 0.30 * kraft) * float(z_sch["tagesform"]) * druck * puls_bonus + clampf(diff, -30.0, 30.0) * 0.22
+	return basis * 5.0 * (0.70 + 0.30 * kraft) * float(z_sch["tagesform"]) * druck * puls_bonus + clampf(diff, -30.0, 30.0) * 0.12
 
 func _paradenwert(v: Dictionary, tw: String, pos: String) -> float:
 	if tw == "":
@@ -469,7 +471,7 @@ func _tor(a: Dictionary, v: Dictionary, schuetze: String, pos: String, ist_7m: b
 			a["zustand"][assist]["assists"] += 1
 			a["zustand"][assist]["bewertung"] -= 0.1
 	_lauf_aktualisieren(_seite(a))
-	_puls_aendern(a, 5.0 if a["ist_heim"] else -3.5)
+	_puls_aendern(a, 3.0 if a["ist_heim"] else -2.0)
 	var text := _tortext(sp, pos, ist_7m, assist, a)
 	_warteschlange.append(_ereignis("tor", _seite(a), schuetze, text, {"position": pos, "assist": assist, "siebenmeter": ist_7m, "gegenstoss": _gegenstoss}))
 	# Nach dem Tor pruefen, ob 7-gegen-6 aktiviert wird
@@ -811,20 +813,33 @@ func _puls_aendern(t: Dictionary, wert: float) -> void:
 
 func _puls_abklingen() -> void:
 	var ruhe: float = float(daten["vereine"][spiel["heim"]]["hallenpuls_basis"])
-	hallenpuls = lerpf(hallenpuls, ruhe, 0.05)
+	hallenpuls = lerpf(hallenpuls, ruhe, 0.10)
 
-## Wirkung des Hallenpulses auf ein Team (Heim profitiert, Gast leidet je nach Nerven).
-func _puls_wirkung(t: Dictionary) -> float:
+## Direkter Zuschlag auf die Trefferwahrscheinlichkeit durch die Hallenatmosphaere.
+func _puls_abschluss(t: Dictionary) -> float:
 	var abweichung: float = (hallenpuls - 50.0) / 50.0
 	if bool(t["ist_heim"]):
-		return clampf(1.0 + abweichung * 0.058, 0.93, 1.075)
+		return clampf(abweichung * 0.045, -0.05, 0.05)
 	var nerven := 0.0
 	var anzahl := 0
 	for sid in alle_auf_platz(t):
 		nerven += float(daten["spieler"][sid]["attr"]["nervenstaerke"])
 		anzahl += 1
 	var schnitt: float = (nerven / maxf(float(anzahl), 1.0)) / 20.0
-	return clampf(1.0 - abweichung * 0.038 * (1.3 - schnitt), 0.94, 1.04)
+	return clampf(-abweichung * 0.030 * (1.3 - schnitt), -0.05, 0.04)
+
+## Wirkung des Hallenpulses auf ein Team (Heim profitiert, Gast leidet je nach Nerven).
+func _puls_wirkung(t: Dictionary) -> float:
+	var abweichung: float = (hallenpuls - 50.0) / 50.0
+	if bool(t["ist_heim"]):
+		return clampf(1.0 + abweichung * 0.075, 0.92, 1.09)
+	var nerven := 0.0
+	var anzahl := 0
+	for sid in alle_auf_platz(t):
+		nerven += float(daten["spieler"][sid]["attr"]["nervenstaerke"])
+		anzahl += 1
+	var schnitt: float = (nerven / maxf(float(anzahl), 1.0)) / 20.0
+	return clampf(1.0 - abweichung * 0.048 * (1.3 - schnitt), 0.92, 1.05)
 
 func _lauf_aktualisieren(seite: String) -> void:
 	if str(lauf["team"]) == seite:
@@ -834,7 +849,7 @@ func _lauf_aktualisieren(seite: String) -> void:
 		lauf["tore"] = 1
 	if int(lauf["tore"]) >= 3:
 		var t: Dictionary = heim if seite == "heim" else gast
-		_puls_aendern(t, 5.0 if t["ist_heim"] else -4.0)
+		_puls_aendern(t, 3.0 if t["ist_heim"] else -2.5)
 		if int(lauf["tore"]) == 3 or int(lauf["tore"]) == 5:
 			_warteschlange.append(_ereignis("lauf", seite, "", "%d Tore in Folge für %s!" % [int(lauf["tore"]), t["name"]]))
 

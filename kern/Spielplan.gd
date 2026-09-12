@@ -115,30 +115,43 @@ static func doppelrunde(teams: Array) -> Array:
 	return alles
 
 ## Verteilt Spieltage auf Wochenenden und laesst die Winterpause aus.
+## Grosse Ligen (18 Vereine = 34 Spieltage) passen nicht allein auf Wochenenden —
+## dann werden zusaetzlich Mittwochstermine belegt, also englische Wochen gespielt.
 static func _spieltag_termine(anzahl: int, basis: int, stufe: int) -> Array:
-	var slots: Array = []
-	var t: int = LIGA_START
+	var wochenende: Array = []
+	var mittwoch: Array = []
 	var wunsch: int = 5 if stufe == 1 else 6  # Samstag / Sonntag
-	while t <= LIGA_ENDE and slots.size() < anzahl * 3:
+	for t in range(LIGA_START, LIGA_ENDE + 1):
 		if t >= WINTERPAUSE_VON and t <= WINTERPAUSE_BIS:
-			t += 1
 			continue
-		if Kalender.wochentag(t) == wunsch:
-			slots.append(t)
-		t += 1
-	var termine: Array = []
+		var wt: int = Kalender.wochentag(t)
+		if wt == wunsch:
+			wochenende.append(t)
+		elif wt == 2:
+			mittwoch.append(t)
+	var slots: Array = wochenende.duplicate()
+	if slots.size() < anzahl:
+		slots.append_array(mittwoch)
+		slots.sort()
 	if slots.is_empty():
+		var ersatz: Array = []
 		for i in range(anzahl):
-			termine.append(basis + LIGA_START + i * 7)
-		return termine
+			ersatz.append(basis + LIGA_START + i * 7)
+		return ersatz
+	# Gleichmaessig ueber die Saison verteilen
+	var termine: Array = []
 	var schritt: float = float(slots.size()) / float(maxi(anzahl, 1))
+	var zuletzt: int = -1
 	for i in range(anzahl):
 		var idx: int = clampi(int(round(float(i) * schritt)), 0, slots.size() - 1)
-		termine.append(basis + int(slots[idx]))
-	# Doppelbelegungen aufloesen
+		if int(slots[idx]) <= zuletzt:
+			idx = clampi(slots.bsearch(zuletzt + 1), 0, slots.size() - 1)
+		zuletzt = int(slots[idx])
+		termine.append(basis + zuletzt)
+	# Falls die Liga laenger ist als die Slots reichen: hinten anhaengen
 	for i in range(1, termine.size()):
 		if termine[i] <= termine[i - 1]:
-			termine[i] = termine[i - 1] + 7
+			termine[i] = termine[i - 1] + 3
 	return termine
 
 # ----------------------------------------------------------------- Pokal ---

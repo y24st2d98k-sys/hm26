@@ -23,6 +23,7 @@ Zum Prüfen ohne Editor:
 
 ```bash
 godot4 --headless res://werkzeuge/Kaltstarttest.tscn           # Start ohne Spielstand
+godot4 --headless res://werkzeuge/Datenbericht.tscn            # Abdeckung der echten Daten
 godot4 --headless res://werkzeuge/Testlauf.tscn -- welt        # Weltgenerierung
 godot4 --headless res://werkzeuge/Testlauf.tscn -- spiele      # 300 Partien, Kennzahlen
 godot4 --headless res://werkzeuge/Testlauf.tscn -- halbsaison  # halbe Saison
@@ -36,6 +37,46 @@ jeden Bildschirm und jedes Fenster auf. Genau diese Reihenfolge hatte der frühe
 Oberflächentest nicht abgedeckt (er legte erst ein Spiel an und baute die
 Oberfläche danach), wodurch Zugriffe auf noch nicht vorhandene Weltdaten
 unentdeckt blieben.
+
+---
+
+## Echte Vereine oder erfundene Welt
+
+Beim Anlegen einer Karriere entscheidet ein Häkchen, in welcher Welt Sie
+arbeiten:
+
+* **Echte Vereine** (Voreinstellung): fünf echte Ligastrukturen der Saison
+  2026/27 — Handball-Bundesliga und 2. Bundesliga (je 18 Vereine), Herre
+  Håndbold Ligaen, Liqui Moly Starligue, Liga ASOBAL und Orlen Superliga.
+  96 echte Vereine mit Ort, Halle und Vereinsfarben, dazu echte Spieler,
+  soweit im Datensatz hinterlegt.
+* **Erfundene Welt**: wie bisher alles prozedural — eigene Vereine, eigene
+  Spieler, eigene Namen.
+
+Beides läuft über dieselbe Mechanik. Der Unterschied liegt nur in der
+Datenquelle: `daten/ligen.json` und `daten/kader.json`. **Alles, was dort
+fehlt, erfindet das Spiel** — Vereine ohne hinterlegte Spieler bekommen einen
+vollständigen erfundenen Kader, Nationen ohne echtes Unterhaus bekommen eine
+erfundene zweite Liga, damit Auf- und Abstieg überall funktioniert.
+
+Wie weit die echten Daten reichen, zeigt
+
+```bash
+godot4 --headless res://werkzeuge/Datenbericht.tscn
+```
+
+Aktueller Stand: **96 von 136 Vereinen** echt, **94 echte Spieler** bei zehn
+Vereinen; alle übrigen Kaderplätze sind gefüllt. Im Spielerfenster ist jeder
+erfundene Spieler mit **ERFUNDEN** gekennzeichnet, der Kaderbildschirm zeigt
+das Verhältnis für den eigenen Verein.
+
+Kader veralten mit jedem Transferfenster. Das Format ist in
+[`daten/README.md`](daten/README.md) beschrieben und bewusst so einfach
+gehalten, dass es sich ohne Programmierkenntnisse pflegen lässt.
+
+> Vereins- und Spielernamen sind für den privaten Gebrauch erfasst. Für eine
+> Veröffentlichung des Spiels wären Namens- und Markenrechte zu klären — dafür
+> gibt es das Häkchen „Erfundene Welt".
 
 ---
 
@@ -97,13 +138,15 @@ wird. Kennzahlen aus 300 Testpartien:
 
 | Kennzahl | Hallenherz | Realität (1. Liga) |
 |---|---|---|
-| Tore pro Spiel (gesamt) | 58,1 | ~58 |
-| Heim : Gast | 29,7 : 28,4 | ~30 : 28 |
-| Zeitstrafen pro Spiel | 8,0 | ~8 |
-| Siebenmeter pro Spiel | 7,2 | ~7 |
-| Technische Fehler | 19,0 | ~20 |
-| Paraden pro Spiel | 28,0 | ~28 |
-| Heimsiegquote | 55,0 % | ~57 % |
+| Tore pro Spiel (gesamt) | 59,8 | ~58 |
+| Heim : Gast | 30,7 : 29,1 | ~30 : 28 |
+| Zeitstrafen pro Spiel | 7,8 | ~8 |
+| Siebenmeter pro Spiel | 7,1 | ~7 |
+| Technische Fehler | 19,5 | ~20 |
+| Paraden pro Spiel | 25,0 | ~28 |
+| Heimsiegquote | 57,0 % | ~57 % |
+| Ø Torabstand | 5,9 | ~6 |
+| Partien mit 10+ Toren Unterschied | 19,0 % | ~20 % |
 
 Abgebildet sind unter anderem:
 
@@ -134,9 +177,10 @@ herausnehmen.
 
 ## Die Spielwelt
 
-* **5 Nationen, 8 Ligen, 96 Vereine, ~1.900 Spieler.** Deutschland, Dänemark
-  und Frankreich mit zwei Spielklassen und echtem Auf- und Abstieg (je zwei
-  Vereine pro Saison), Spanien und Polen eingleisig.
+* **5 Nationen, 10 Ligen, 136 Vereine, ~2.700 Spieler.** Jede Nation hat zwei
+  Spielklassen mit echtem Auf- und Abstieg (je zwei Vereine pro Saison).
+  In Deutschland sind beide Ligen echt besetzt, in den übrigen Nationen die
+  oberste; die Unterhäuser dort sind erfunden.
 * **5 nationale Pokale** im K.-o.-System mit Freilosen für die stärksten
   Vereine und Heimrecht für den unterklassigen Verein.
 * **Zwei internationale Wettbewerbe:** die *Kontinentalkrone* (16 Teams, vier
@@ -244,6 +288,29 @@ sich mit der Kenntnis, die durch Scoutaufträge wächst.
 **Ligen ohne Unterbau steigen nicht ab.** Spanien und Polen sind im Spiel
 eingleisig; dort gibt es folgerichtig keinen Abstieg. Auf- und Abstieg findet
 in Deutschland, Dänemark und Frankreich statt.
+
+**Echte Daten gehören nicht in den Code.** Vereine und Spieler stehen in JSON
+und werden geladen, nicht einprogrammiert. Dadurch lässt sich der Datenbestand
+pflegen, ohne GDScript anzufassen — und weil der Generator jede Lücke füllt,
+kann ein unvollständiger Datensatz die Welt nicht kaputt machen. Genau deshalb
+sind auch nur belegbare Spieler hinterlegt statt aus dem Gedächtnis
+zusammengeschriebener Kader.
+
+**Die Zielstärke muss auch ankommen.** Die Attribute eines Spielers werden
+gestreut ausgewürfelt; der daraus zurückgerechnete Gesamtwert lag dadurch
+systematisch unter der Vorgabe. Ein mit 90 hinterlegter Weltklassetorwart kam
+als 77er im Spiel an. Seit der Nachkalibrierung trifft der Gesamtwert die
+Vorgabe auf etwa einen Punkt genau — das gilt für echte wie erfundene Spieler
+und macht den Ruf eines Vereins erst zu einer verlässlichen Stellschraube.
+
+**Stärkeunterschiede dürfen nicht durchschlagen.** Mit den echten Ligen wurde
+sichtbar, was vorher in gemittelten Zahlen unterging: 55 % aller Partien gingen
+mit zehn oder mehr Toren Unterschied aus, der Schnitt lag bei 11,4. Handball
+ist nicht so. Die Wirkung von Stärkeunterschieden pro Angriff wurde mehr als
+halbiert und die Ruf-Spanne der Ligen gestaucht — jetzt liegt der Schnitt bei
+5,9 Toren und 19 % der Partien enden zweistellig, bei unveränderter
+Tabellenordnung: die starken Vereine stehen weiterhin oben, sie gewinnen nur
+nicht mehr jedes Spiel zweistellig.
 
 **Die Welt darf nicht ausbluten.** Ein Manager-Spiel, das KI-Vereine nur
 verwalten lässt, läuft nach wenigen Saisons leer. Deshalb verlängern KI-Vereine

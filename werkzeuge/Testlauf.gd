@@ -71,6 +71,9 @@ func _spiele_test() -> void:
 	var hoechstes := 0
 	var unentschieden := 0
 	var heimsiege := 0
+	var abstand_summe := 0
+	var deutlich := 0
+	var knapp := 0
 	for mid in partien:
 		var m: Dictionary = d["spiele"][mid]
 		var sim := Matchsim.new(d, m, 0)
@@ -84,6 +87,12 @@ func _spiele_test() -> void:
 		fehler += int(b["heim"]["stats"]["technische_fehler"]) + int(b["gast"]["stats"]["technische_fehler"])
 		paraden += int(b["heim"]["stats"]["paraden"]) + int(b["gast"]["stats"]["paraden"])
 		hoechstes = maxi(hoechstes, maxi(int(m["tore_heim"]), int(m["tore_gast"])))
+		var abstand: int = absi(int(m["tore_heim"]) - int(m["tore_gast"]))
+		abstand_summe += abstand
+		if abstand >= 10:
+			deutlich += 1
+		if abstand <= 2:
+			knapp += 1
 		if int(m["tore_heim"]) == int(m["tore_gast"]):
 			unentschieden += 1
 		elif int(m["tore_heim"]) > int(m["tore_gast"]):
@@ -97,6 +106,9 @@ func _spiele_test() -> void:
 	print("Paraden pro Spiel: %.1f" % (paraden / n))
 	print("Heimsiegquote: %.1f %%   Unentschieden: %.1f %%" % [heimsiege / n * 100.0, unentschieden / n * 100.0])
 	print("Hoechste Torzahl einer Mannschaft: %d" % hoechstes)
+	print("Durchschnittlicher Torabstand: %.1f" % (abstand_summe / n))
+	print("Partien mit 10+ Toren Unterschied: %.1f %%" % (deutlich / n * 100.0))
+	print("Partien mit hoechstens 2 Toren Unterschied: %.1f %%" % (knapp / n * 100.0))
 
 func _saison_test(dauer: int) -> void:
 	Welt.neues_spiel("c_001", {"vorname": "Test", "nachname": "Trainer", "hintergrund": "taktiker"}, 2024)

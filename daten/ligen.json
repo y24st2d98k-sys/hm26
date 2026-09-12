@@ -1,0 +1,1399 @@
+{
+ "version": 1,
+ "stand": "September 2026",
+ "hinweis": "Vereinsnamen, Ligazugehörigkeit und Ligagrößen entsprechen der Saison 2026/27. Hallennamen, Zuschauerkapazitäten, Gründungsjahre, Vereinsfarben und die Ruf-Werte sind Näherungen und dürfen frei angepasst werden. Alles in dieser Datei ist editierbar; das Spiel erzeugt fehlende Angaben automatisch. Ligen mit \"erzeugt\": true haben keine hinterlegten Vereine — das Spiel erfindet sie, damit Auf- und Abstieg in jeder Nation funktioniert.",
+ "nationen": [
+  {
+   "id": "de",
+   "name": "Deutschland",
+   "ruf": 94,
+   "reichtum": 1.0,
+   "pokal": "DHB-Pokal",
+   "supercup": "Super Cup",
+   "ligen": [
+    {
+     "id": "l_de1",
+     "name": "Handball-Bundesliga",
+     "kurz": "HBL",
+     "stufe": 1,
+     "ruf": 90,
+     "vereine": [
+      {
+       "name": "SC Magdeburg",
+       "kurz": "SCM",
+       "ort": "Magdeburg",
+       "gegruendet": 1955,
+       "halle": "GETEC Arena",
+       "kapazitaet": 7300,
+       "farben": [
+        "#009640",
+        "#e30613"
+       ],
+       "ruf": 91
+      },
+      {
+       "name": "Füchse Berlin",
+       "kurz": "FBE",
+       "ort": "Berlin",
+       "gegruendet": 1891,
+       "halle": "Max-Schmeling-Halle",
+       "kapazitaet": 9000,
+       "farben": [
+        "#c8102e",
+        "#003da5"
+       ],
+       "ruf": 89
+      },
+      {
+       "name": "THW Kiel",
+       "kurz": "THW",
+       "ort": "Kiel",
+       "gegruendet": 1904,
+       "halle": "Wunderino Arena",
+       "kapazitaet": 10285,
+       "farben": [
+        "#000000",
+        "#ffffff"
+       ],
+       "ruf": 90
+      },
+      {
+       "name": "SG Flensburg-Handewitt",
+       "kurz": "SGF",
+       "ort": "Flensburg",
+       "gegruendet": 1990,
+       "halle": "Flens-Arena",
+       "kapazitaet": 6300,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 87
+      },
+      {
+       "name": "MT Melsungen",
+       "kurz": "MTM",
+       "ort": "Melsungen",
+       "gegruendet": 1861,
+       "halle": "Rothenbach-Halle",
+       "kapazitaet": 4300,
+       "farben": [
+        "#e2001a",
+        "#2b2f38"
+       ],
+       "ruf": 84
+      },
+      {
+       "name": "Rhein-Neckar Löwen",
+       "kurz": "RNL",
+       "ort": "Mannheim",
+       "gegruendet": 2002,
+       "halle": "SAP Arena",
+       "kapazitaet": 13200,
+       "farben": [
+        "#ffcc00",
+        "#003da5"
+       ],
+       "ruf": 83
+      },
+      {
+       "name": "VfL Gummersbach",
+       "kurz": "VfL",
+       "ort": "Gummersbach",
+       "gegruendet": 1861,
+       "halle": "Schwalbe Arena",
+       "kapazitaet": 4132,
+       "farben": [
+        "#e2001a",
+        "#000000"
+       ],
+       "ruf": 81
+      },
+      {
+       "name": "TBV Lemgo Lippe",
+       "kurz": "TBV",
+       "ort": "Lemgo",
+       "gegruendet": 1911,
+       "halle": "Phoenix Contact Arena",
+       "kapazitaet": 4861,
+       "farben": [
+        "#000000",
+        "#ffd500"
+       ],
+       "ruf": 80
+      },
+      {
+       "name": "TSV Hannover-Burgdorf",
+       "kurz": "TSV",
+       "ort": "Hannover",
+       "gegruendet": 2007,
+       "halle": "ZAG Arena",
+       "kapazitaet": 10767,
+       "farben": [
+        "#e2001a",
+        "#2b2f38"
+       ],
+       "ruf": 80
+      },
+      {
+       "name": "Handball Sport Verein Hamburg",
+       "kurz": "HSV",
+       "ort": "Hamburg",
+       "gegruendet": 2016,
+       "halle": "Barclays Arena",
+       "kapazitaet": 13300,
+       "farben": [
+        "#003da5",
+        "#000000"
+       ],
+       "ruf": 78
+      },
+      {
+       "name": "Frisch Auf Göppingen",
+       "kurz": "FAG",
+       "ort": "Göppingen",
+       "gegruendet": 1894,
+       "halle": "EWS Arena",
+       "kapazitaet": 5600,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 77
+      },
+      {
+       "name": "TVB Stuttgart",
+       "kurz": "TVB",
+       "ort": "Stuttgart",
+       "gegruendet": 1899,
+       "halle": "Porsche-Arena",
+       "kapazitaet": 6211,
+       "farben": [
+        "#ffffff",
+        "#e2001a"
+       ],
+       "ruf": 75
+      },
+      {
+       "name": "HC Erlangen",
+       "kurz": "HCE",
+       "ort": "Erlangen",
+       "gegruendet": 2006,
+       "halle": "ARENA Nürnberger Versicherung",
+       "kapazitaet": 7850,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 75
+      },
+      {
+       "name": "HSG Wetzlar",
+       "kurz": "HSG",
+       "ort": "Wetzlar",
+       "gegruendet": 1994,
+       "halle": "Buderus-Arena",
+       "kapazitaet": 4412,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 74
+      },
+      {
+       "name": "Bergischer HC",
+       "kurz": "BHC",
+       "ort": "Wuppertal",
+       "gegruendet": 2006,
+       "halle": "Uni-Halle Wuppertal",
+       "kapazitaet": 3200,
+       "farben": [
+        "#e2001a",
+        "#2b2f38"
+       ],
+       "ruf": 73
+      },
+      {
+       "name": "ThSV Eisenach",
+       "kurz": "THE",
+       "ort": "Eisenach",
+       "gegruendet": 1990,
+       "halle": "Werner-Assmann-Halle",
+       "kapazitaet": 2000,
+       "farben": [
+        "#0057a6",
+        "#ffd500"
+       ],
+       "ruf": 71
+      },
+      {
+       "name": "HBW Balingen-Weilstetten",
+       "kurz": "HBW",
+       "ort": "Balingen",
+       "gegruendet": 2002,
+       "halle": "SparkassenArena",
+       "kapazitaet": 2300,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 68
+      },
+      {
+       "name": "SG BBM Bietigheim",
+       "kurz": "BBM",
+       "ort": "Bietigheim-Bissingen",
+       "gegruendet": 2005,
+       "halle": "EgeTrans Arena",
+       "kapazitaet": 3100,
+       "farben": [
+        "#003da5",
+        "#ffd500"
+       ],
+       "ruf": 67
+      }
+     ]
+    },
+    {
+     "id": "l_de2",
+     "name": "2. Handball-Bundesliga",
+     "kurz": "2HBL",
+     "stufe": 2,
+     "ruf": 58,
+     "vereine": [
+      {
+       "name": "TuS N-Lübbecke",
+       "kurz": "TUS",
+       "ort": "Lübbecke",
+       "gegruendet": 1928,
+       "halle": "Merkur Arena",
+       "kapazitaet": 3000,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 55
+      },
+      {
+       "name": "GWD Minden",
+       "kurz": "GWD",
+       "ort": "Minden",
+       "gegruendet": 1919,
+       "halle": "Kampa-Halle",
+       "kapazitaet": 4000,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 55
+      },
+      {
+       "name": "HSG Nordhorn-Lingen",
+       "kurz": "NOL",
+       "ort": "Nordhorn",
+       "gegruendet": 2007,
+       "halle": "Euregium",
+       "kapazitaet": 3200,
+       "farben": [
+        "#000000",
+        "#ffd500"
+       ],
+       "ruf": 54
+      },
+      {
+       "name": "1. VfL Potsdam",
+       "kurz": "POT",
+       "ort": "Potsdam",
+       "gegruendet": 1990,
+       "halle": "MBS Arena",
+       "kapazitaet": 2000,
+       "farben": [
+        "#0057a6",
+        "#e2001a"
+       ],
+       "ruf": 53
+      },
+      {
+       "name": "SC DHfK Leipzig",
+       "kurz": "DHF",
+       "ort": "Leipzig",
+       "gegruendet": 1954,
+       "halle": "Quarterback Immobilien Arena",
+       "kapazitaet": 6300,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 56
+      },
+      {
+       "name": "HC Empor Rostock",
+       "kurz": "EMP",
+       "ort": "Rostock",
+       "gegruendet": 1954,
+       "halle": "Stadthalle Rostock",
+       "kapazitaet": 4800,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 54
+      },
+      {
+       "name": "EHV Aue",
+       "kurz": "AUE",
+       "ort": "Aue",
+       "gegruendet": 1990,
+       "halle": "Erzgebirgshalle",
+       "kapazitaet": 2400,
+       "farben": [
+        "#7a1f3d",
+        "#ffffff"
+       ],
+       "ruf": 52
+      },
+      {
+       "name": "TuSEM Essen",
+       "kurz": "ESS",
+       "ort": "Essen",
+       "gegruendet": 1898,
+       "halle": "Sporthalle Am Hallo",
+       "kapazitaet": 1900,
+       "farben": [
+        "#e2001a",
+        "#000000"
+       ],
+       "ruf": 53
+      },
+      {
+       "name": "HSG Konstanz",
+       "kurz": "KON",
+       "ort": "Konstanz",
+       "gegruendet": 1996,
+       "halle": "Schänzle-Sporthalle",
+       "kapazitaet": 2100,
+       "farben": [
+        "#ffd500",
+        "#0057a6"
+       ],
+       "ruf": 51
+      },
+      {
+       "name": "Dessau-Roßlauer HV",
+       "kurz": "DRH",
+       "ort": "Dessau",
+       "gegruendet": 2005,
+       "halle": "Anhalt-Arena",
+       "kapazitaet": 3000,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 50
+      },
+      {
+       "name": "TV Großwallstadt",
+       "kurz": "TVG",
+       "ort": "Großwallstadt",
+       "gegruendet": 1892,
+       "halle": "Untermainhalle",
+       "kapazitaet": 2700,
+       "farben": [
+        "#0057a6",
+        "#ffd500"
+       ],
+       "ruf": 50
+      },
+      {
+       "name": "VfL Lübeck-Schwartau",
+       "kurz": "LUE",
+       "ort": "Bad Schwartau",
+       "gegruendet": 2002,
+       "halle": "Hansehalle",
+       "kapazitaet": 2100,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 50
+      },
+      {
+       "name": "Die Eulen Ludwigshafen",
+       "kurz": "EUL",
+       "ort": "Ludwigshafen",
+       "gegruendet": 1976,
+       "halle": "Friedrich-Ebert-Halle",
+       "kapazitaet": 2200,
+       "farben": [
+        "#ffd500",
+        "#000000"
+       ],
+       "ruf": 49
+      },
+      {
+       "name": "TSV Bayer Dormagen",
+       "kurz": "DOR",
+       "ort": "Dormagen",
+       "gegruendet": 1965,
+       "halle": "TSV-Sportcenter",
+       "kapazitaet": 1700,
+       "farben": [
+        "#e2001a",
+        "#000000"
+       ],
+       "ruf": 48
+      },
+      {
+       "name": "HSC 2000 Coburg",
+       "kurz": "COB",
+       "ort": "Coburg",
+       "gegruendet": 2000,
+       "halle": "HUK-COBURG arena",
+       "kapazitaet": 3500,
+       "farben": [
+        "#ffd500",
+        "#000000"
+       ],
+       "ruf": 52
+      },
+      {
+       "name": "ASV Hamm-Westfalen",
+       "kurz": "HAM",
+       "ort": "Hamm",
+       "gegruendet": 2010,
+       "halle": "Maximare Arena",
+       "kapazitaet": 2700,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 50
+      },
+      {
+       "name": "DJK Rimpar Wölfe",
+       "kurz": "RIM",
+       "ort": "Rimpar",
+       "gegruendet": 1948,
+       "halle": "s.Oliver Arena",
+       "kapazitaet": 3140,
+       "farben": [
+        "#009640",
+        "#000000"
+       ],
+       "ruf": 48
+      },
+      {
+       "name": "TuS Ferndorf",
+       "kurz": "FER",
+       "ort": "Kreuztal",
+       "gegruendet": 1888,
+       "halle": "Stählerwiese",
+       "kapazitaet": 1800,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 47
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dk",
+   "name": "Dänemark",
+   "ruf": 90,
+   "reichtum": 0.82,
+   "pokal": "Santander Cup",
+   "supercup": "Dänischer Supercup",
+   "ligen": [
+    {
+     "id": "l_dk1",
+     "name": "Herre Håndbold Ligaen",
+     "kurz": "HHL",
+     "stufe": 1,
+     "ruf": 84,
+     "vereine": [
+      {
+       "name": "Aalborg Håndbold",
+       "kurz": "AAL",
+       "ort": "Aalborg",
+       "gegruendet": 2001,
+       "halle": "Jutlander Bank Arena",
+       "kapazitaet": 5000,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 83
+      },
+      {
+       "name": "GOG",
+       "kurz": "GOG",
+       "ort": "Gudme",
+       "gegruendet": 1973,
+       "halle": "Sydbank Arena",
+       "kapazitaet": 3000,
+       "farben": [
+        "#0057a6",
+        "#ffd500"
+       ],
+       "ruf": 81
+      },
+      {
+       "name": "Skjern Håndbold",
+       "kurz": "SKJ",
+       "ort": "Skjern",
+       "gegruendet": 1970,
+       "halle": "Skjern Bank Arena",
+       "kapazitaet": 3100,
+       "farben": [
+        "#000000",
+        "#ffd500"
+       ],
+       "ruf": 77
+      },
+      {
+       "name": "Bjerringbro-Silkeborg",
+       "kurz": "BSV",
+       "ort": "Bjerringbro",
+       "gegruendet": 2004,
+       "halle": "Jysk Arena",
+       "kapazitaet": 3000,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 75
+      },
+      {
+       "name": "KIF Kolding",
+       "kurz": "KIF",
+       "ort": "Kolding",
+       "gegruendet": 1895,
+       "halle": "Sydbank Arena Kolding",
+       "kapazitaet": 3500,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 73
+      },
+      {
+       "name": "Fredericia HK",
+       "kurz": "FRE",
+       "ort": "Fredericia",
+       "gegruendet": 1994,
+       "halle": "Messe C",
+       "kapazitaet": 2500,
+       "farben": [
+        "#e2001a",
+        "#000000"
+       ],
+       "ruf": 70
+      },
+      {
+       "name": "TTH Holstebro",
+       "kurz": "TTH",
+       "ort": "Holstebro",
+       "gegruendet": 1991,
+       "halle": "Gråkjær Arena",
+       "kapazitaet": 3000,
+       "farben": [
+        "#000000",
+        "#ffd500"
+       ],
+       "ruf": 72
+      },
+      {
+       "name": "Mors-Thy Håndbold",
+       "kurz": "MTH",
+       "ort": "Nykøbing Mors",
+       "gegruendet": 2009,
+       "halle": "Jyske Bank Mors Arena",
+       "kapazitaet": 1800,
+       "farben": [
+        "#0057a6",
+        "#e2001a"
+       ],
+       "ruf": 67
+      },
+      {
+       "name": "Ribe-Esbjerg HH",
+       "kurz": "REH",
+       "ort": "Esbjerg",
+       "gegruendet": 2008,
+       "halle": "Blue Water Dokken",
+       "kapazitaet": 3200,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 69
+      },
+      {
+       "name": "SAH - Skanderborg AGF",
+       "kurz": "SAH",
+       "ort": "Skanderborg",
+       "gegruendet": 2020,
+       "halle": "Fælleden",
+       "kapazitaet": 2200,
+       "farben": [
+        "#ffffff",
+        "#0057a6"
+       ],
+       "ruf": 70
+      },
+      {
+       "name": "SønderjyskE",
+       "kurz": "SJE",
+       "ort": "Sønderborg",
+       "gegruendet": 2004,
+       "halle": "Skansen",
+       "kapazitaet": 2000,
+       "farben": [
+        "#0057a6",
+        "#ffd500"
+       ],
+       "ruf": 67
+      },
+      {
+       "name": "Nordsjælland Håndbold",
+       "kurz": "NOR",
+       "ort": "Helsinge",
+       "gegruendet": 2009,
+       "halle": "Helsinge Hallerne",
+       "kapazitaet": 1600,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 64
+      },
+      {
+       "name": "Lemvig-Thyborøn Håndbold",
+       "kurz": "LEM",
+       "ort": "Lemvig",
+       "gegruendet": 2005,
+       "halle": "Lemvig Idrætscenter",
+       "kapazitaet": 1500,
+       "farben": [
+        "#e2001a",
+        "#000000"
+       ],
+       "ruf": 63
+      },
+      {
+       "name": "TMS Ringsted",
+       "kurz": "TMS",
+       "ort": "Ringsted",
+       "gegruendet": 1918,
+       "halle": "Ringsted Sportcenter",
+       "kapazitaet": 1400,
+       "farben": [
+        "#ffd500",
+        "#0057a6"
+       ],
+       "ruf": 62
+      }
+     ]
+    },
+    {
+     "id": "l_dk2",
+     "name": "1. division",
+     "kurz": "1DK",
+     "stufe": 2,
+     "ruf": 52,
+     "vereine": [],
+     "teams": 10,
+     "erzeugt": true
+    }
+   ]
+  },
+  {
+   "id": "fr",
+   "name": "Frankreich",
+   "ruf": 88,
+   "reichtum": 0.88,
+   "pokal": "Coupe de France",
+   "supercup": "Trophée des Champions",
+   "ligen": [
+    {
+     "id": "l_fr1",
+     "name": "Liqui Moly Starligue",
+     "kurz": "SLG",
+     "stufe": 1,
+     "ruf": 83,
+     "vereine": [
+      {
+       "name": "Paris Saint-Germain Handball",
+       "kurz": "PSG",
+       "ort": "Paris",
+       "gegruendet": 1941,
+       "halle": "Halle Georges Carpentier",
+       "kapazitaet": 4000,
+       "farben": [
+        "#003da5",
+        "#e2001a"
+       ],
+       "ruf": 86
+      },
+      {
+       "name": "HBC Nantes",
+       "kurz": "NAN",
+       "ort": "Nantes",
+       "gegruendet": 1953,
+       "halle": "H Arena",
+       "kapazitaet": 10000,
+       "farben": [
+        "#ffd500",
+        "#000000"
+       ],
+       "ruf": 80
+      },
+      {
+       "name": "Montpellier Handball",
+       "kurz": "MHB",
+       "ort": "Montpellier",
+       "gegruendet": 1982,
+       "halle": "FDI Stadium",
+       "kapazitaet": 8200,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 80
+      },
+      {
+       "name": "USAM Nîmes Gard",
+       "kurz": "NIM",
+       "ort": "Nîmes",
+       "gegruendet": 1965,
+       "halle": "Parnasse",
+       "kapazitaet": 3200,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 75
+      },
+      {
+       "name": "Chambéry Savoie Mont Blanc",
+       "kurz": "CHA",
+       "ort": "Chambéry",
+       "gegruendet": 1948,
+       "halle": "Le Phare",
+       "kapazitaet": 4200,
+       "farben": [
+        "#0057a6",
+        "#ffd500"
+       ],
+       "ruf": 73
+      },
+      {
+       "name": "Saint-Raphaël Var Handball",
+       "kurz": "SRV",
+       "ort": "Saint-Raphaël",
+       "gegruendet": 1966,
+       "halle": "Palais des Sports",
+       "kapazitaet": 2800,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 73
+      },
+      {
+       "name": "Limoges Handball",
+       "kurz": "LIM",
+       "ort": "Limoges",
+       "gegruendet": 1990,
+       "halle": "Palais des Sports Beaublanc",
+       "kapazitaet": 5000,
+       "farben": [
+        "#e2001a",
+        "#000000"
+       ],
+       "ruf": 70
+      },
+      {
+       "name": "Fenix Toulouse Handball",
+       "kurz": "TOU",
+       "ort": "Toulouse",
+       "gegruendet": 1966,
+       "halle": "Palais des Sports André Brouat",
+       "kapazitaet": 3500,
+       "farben": [
+        "#7a1f3d",
+        "#ffffff"
+       ],
+       "ruf": 72
+      },
+      {
+       "name": "Dijon Métropole Handball",
+       "kurz": "DIJ",
+       "ort": "Dijon",
+       "gegruendet": 1966,
+       "halle": "Palais des Sports Jean-Michel Geoffroy",
+       "kapazitaet": 4000,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 69
+      },
+      {
+       "name": "Cesson-Rennes Métropole HB",
+       "kurz": "CES",
+       "ort": "Cesson-Sévigné",
+       "gegruendet": 1965,
+       "halle": "Glaz Arena",
+       "kapazitaet": 4500,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 70
+      },
+      {
+       "name": "Istres Provence Handball",
+       "kurz": "IST",
+       "ort": "Istres",
+       "gegruendet": 1968,
+       "halle": "Halle Polyvalente",
+       "kapazitaet": 2500,
+       "farben": [
+        "#009640",
+        "#ffd500"
+       ],
+       "ruf": 68
+      },
+      {
+       "name": "US Créteil Handball",
+       "kurz": "CRE",
+       "ort": "Créteil",
+       "gegruendet": 1961,
+       "halle": "Palais des Sports Robert Oubron",
+       "kapazitaet": 2600,
+       "farben": [
+        "#0057a6",
+        "#e2001a"
+       ],
+       "ruf": 67
+      },
+      {
+       "name": "Sélestat Alsace Handball",
+       "kurz": "SEL",
+       "ort": "Sélestat",
+       "gegruendet": 1967,
+       "halle": "Centre Sportif Intercommunal",
+       "kapazitaet": 2000,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 65
+      },
+      {
+       "name": "Massy Essonne Handball",
+       "kurz": "MAS",
+       "ort": "Massy",
+       "gegruendet": 1968,
+       "halle": "Gymnase Pierre de Coubertin",
+       "kapazitaet": 1800,
+       "farben": [
+        "#0057a6",
+        "#ffd500"
+       ],
+       "ruf": 63
+      },
+      {
+       "name": "Pays d'Aix Université Club HB",
+       "kurz": "AIX",
+       "ort": "Aix-en-Provence",
+       "gegruendet": 1966,
+       "halle": "Arena du Pays d'Aix",
+       "kapazitaet": 3500,
+       "farben": [
+        "#ffd500",
+        "#000000"
+       ],
+       "ruf": 68
+      },
+      {
+       "name": "C'Chartres Métropole Handball",
+       "kurz": "CHM",
+       "ort": "Chartres",
+       "gegruendet": 1961,
+       "halle": "Halle Jean Cochet",
+       "kapazitaet": 1700,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 65
+      }
+     ]
+    },
+    {
+     "id": "l_fr2",
+     "name": "Proligue",
+     "kurz": "PRO",
+     "stufe": 2,
+     "ruf": 52,
+     "vereine": [],
+     "teams": 10,
+     "erzeugt": true
+    }
+   ]
+  },
+  {
+   "id": "es",
+   "name": "Spanien",
+   "ruf": 85,
+   "reichtum": 0.74,
+   "pokal": "Copa del Rey",
+   "supercup": "Supercopa",
+   "ligen": [
+    {
+     "id": "l_es1",
+     "name": "Liga ASOBAL",
+     "kurz": "ASO",
+     "stufe": 1,
+     "ruf": 80,
+     "vereine": [
+      {
+       "name": "FC Barcelona",
+       "kurz": "BAR",
+       "ort": "Barcelona",
+       "gegruendet": 1942,
+       "halle": "Palau Blaugrana",
+       "kapazitaet": 7585,
+       "farben": [
+        "#004d98",
+        "#a50044"
+       ],
+       "ruf": 88
+      },
+      {
+       "name": "Bidasoa Irún",
+       "kurz": "IRU",
+       "ort": "Irún",
+       "gegruendet": 1965,
+       "halle": "Artaleku",
+       "kapazitaet": 2500,
+       "farben": [
+        "#ffd500",
+        "#000000"
+       ],
+       "ruf": 72
+      },
+      {
+       "name": "Ademar León",
+       "kurz": "ADE",
+       "ort": "León",
+       "gegruendet": 1956,
+       "halle": "Palacio de los Deportes",
+       "kapazitaet": 5000,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 74
+      },
+      {
+       "name": "Fraikin BM Granollers",
+       "kurz": "GRA",
+       "ort": "Granollers",
+       "gegruendet": 1944,
+       "halle": "Palau d'Esports",
+       "kapazitaet": 5500,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 73
+      },
+      {
+       "name": "BM Logroño La Rioja",
+       "kurz": "LOG",
+       "ort": "Logroño",
+       "gegruendet": 1989,
+       "halle": "Palacio de los Deportes",
+       "kapazitaet": 3500,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 71
+      },
+      {
+       "name": "Bathco BM Torrelavega",
+       "kurz": "TOR",
+       "ort": "Torrelavega",
+       "gegruendet": 1977,
+       "halle": "Vicente Trueba",
+       "kapazitaet": 2200,
+       "farben": [
+        "#003da5",
+        "#ffd500"
+       ],
+       "ruf": 68
+      },
+      {
+       "name": "BM Benidorm",
+       "kurz": "BEN",
+       "ort": "Benidorm",
+       "gegruendet": 1990,
+       "halle": "Palau d'Esports L'Illa",
+       "kapazitaet": 2000,
+       "farben": [
+        "#e2001a",
+        "#0057a6"
+       ],
+       "ruf": 67
+      },
+      {
+       "name": "Recoletas Atlético Valladolid",
+       "kurz": "VAL",
+       "ort": "Valladolid",
+       "gegruendet": 1953,
+       "halle": "Polideportivo Huerta del Rey",
+       "kapazitaet": 5000,
+       "farben": [
+        "#7a1f3d",
+        "#ffffff"
+       ],
+       "ruf": 69
+      },
+      {
+       "name": "Ángel Ximénez Puente Genil",
+       "kurz": "PGE",
+       "ort": "Puente Genil",
+       "gegruendet": 1980,
+       "halle": "Alcalde Miguel Salas",
+       "kapazitaet": 1800,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 66
+      },
+      {
+       "name": "BM Nava",
+       "kurz": "NAV",
+       "ort": "Nava",
+       "gegruendet": 1985,
+       "halle": "El Sotón",
+       "kapazitaet": 1200,
+       "farben": [
+        "#0057a6",
+        "#e2001a"
+       ],
+       "ruf": 62
+      },
+      {
+       "name": "Frigoríficos Morrazo Cangas",
+       "kurz": "CAN",
+       "ort": "Cangas",
+       "gegruendet": 1976,
+       "halle": "O Gatañal",
+       "kapazitaet": 1500,
+       "farben": [
+        "#e2001a",
+        "#000000"
+       ],
+       "ruf": 64
+      },
+      {
+       "name": "Villa de Aranda",
+       "kurz": "ARA",
+       "ort": "Aranda de Duero",
+       "gegruendet": 1975,
+       "halle": "Príncipe de Asturias",
+       "kapazitaet": 1400,
+       "farben": [
+        "#ffd500",
+        "#0057a6"
+       ],
+       "ruf": 61
+      },
+      {
+       "name": "Helvetia Anaitasuna",
+       "kurz": "ANA",
+       "ort": "Pamplona",
+       "gegruendet": 1940,
+       "halle": "Anaitasuna",
+       "kapazitaet": 2800,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 66
+      },
+      {
+       "name": "Puerto Sagunto",
+       "kurz": "SAG",
+       "ort": "Sagunto",
+       "gegruendet": 1974,
+       "halle": "Pabellón Municipal",
+       "kapazitaet": 1600,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 63
+      },
+      {
+       "name": "BM Guadalajara",
+       "kurz": "GUA",
+       "ort": "Guadalajara",
+       "gegruendet": 1985,
+       "halle": "David Santamaría",
+       "kapazitaet": 1500,
+       "farben": [
+        "#e2001a",
+        "#ffd500"
+       ],
+       "ruf": 61
+      },
+      {
+       "name": "Bathco Torrelavega B",
+       "kurz": "TRB",
+       "ort": "Torrelavega",
+       "gegruendet": 1990,
+       "halle": "La Habana Vieja",
+       "kapazitaet": 1000,
+       "farben": [
+        "#003da5",
+        "#ffffff"
+       ],
+       "ruf": 59
+      }
+     ]
+    },
+    {
+     "id": "l_es2",
+     "name": "División de Honor Plata",
+     "kurz": "DHP",
+     "stufe": 2,
+     "ruf": 50,
+     "vereine": [],
+     "teams": 10,
+     "erzeugt": true
+    }
+   ]
+  },
+  {
+   "id": "pl",
+   "name": "Polen",
+   "ruf": 78,
+   "reichtum": 0.6,
+   "pokal": "Puchar Polski",
+   "supercup": "Superpuchar",
+   "ligen": [
+    {
+     "id": "l_pl1",
+     "name": "Orlen Superliga",
+     "kurz": "SUP",
+     "stufe": 1,
+     "ruf": 72,
+     "vereine": [
+      {
+       "name": "Industria Kielce",
+       "kurz": "KIE",
+       "ort": "Kielce",
+       "gegruendet": 1965,
+       "halle": "Hala Legionów",
+       "kapazitaet": 4200,
+       "farben": [
+        "#ffd500",
+        "#0057a6"
+       ],
+       "ruf": 84
+      },
+      {
+       "name": "Orlen Wisła Płock",
+       "kurz": "PLO",
+       "ort": "Płock",
+       "gegruendet": 1964,
+       "halle": "Orlen Arena",
+       "kapazitaet": 5492,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 80
+      },
+      {
+       "name": "Zagłębie Lubin",
+       "kurz": "LUB",
+       "ort": "Lubin",
+       "gegruendet": 1946,
+       "halle": "RCS Lubin",
+       "kapazitaet": 3000,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 71
+      },
+      {
+       "name": "Górnik Zabrze",
+       "kurz": "ZAB",
+       "ort": "Zabrze",
+       "gegruendet": 1948,
+       "halle": "Arena Zabrze",
+       "kapazitaet": 2000,
+       "farben": [
+        "#0057a6",
+        "#ffd500"
+       ],
+       "ruf": 68
+      },
+      {
+       "name": "Azoty-Puławy",
+       "kurz": "PUL",
+       "ort": "Puławy",
+       "gegruendet": 1959,
+       "halle": "Hala MOSiR",
+       "kapazitaet": 2200,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 69
+      },
+      {
+       "name": "Piotrkowianin Piotrków Trybunalski",
+       "kurz": "PIO",
+       "ort": "Piotrków Trybunalski",
+       "gegruendet": 1946,
+       "halle": "Hala Relax",
+       "kapazitaet": 1800,
+       "farben": [
+        "#e2001a",
+        "#ffffff"
+       ],
+       "ruf": 65
+      },
+      {
+       "name": "Chrobry Głogów",
+       "kurz": "GLO",
+       "ort": "Głogów",
+       "gegruendet": 1946,
+       "halle": "Hala Chrobry",
+       "kapazitaet": 1500,
+       "farben": [
+        "#0057a6",
+        "#e2001a"
+       ],
+       "ruf": 66
+      },
+      {
+       "name": "Gwardia Opole",
+       "kurz": "OPO",
+       "ort": "Opole",
+       "gegruendet": 1946,
+       "halle": "Hala Okrąglak",
+       "kapazitaet": 1700,
+       "farben": [
+        "#009640",
+        "#ffd500"
+       ],
+       "ruf": 66
+      },
+      {
+       "name": "MMTS Kwidzyn",
+       "kurz": "KWI",
+       "ort": "Kwidzyn",
+       "gegruendet": 1957,
+       "halle": "Hala Sportowa",
+       "kapazitaet": 1600,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 64
+      },
+      {
+       "name": "Energa Wybrzeże Gdańsk",
+       "kurz": "GDA",
+       "ort": "Gdańsk",
+       "gegruendet": 1945,
+       "halle": "Hala Olivia",
+       "kapazitaet": 3500,
+       "farben": [
+        "#ffd500",
+        "#000000"
+       ],
+       "ruf": 67
+      },
+      {
+       "name": "Sandra SPA Pogoń Szczecin",
+       "kurz": "SZC",
+       "ort": "Szczecin",
+       "gegruendet": 1948,
+       "halle": "Hala Netto Arena",
+       "kapazitaet": 5000,
+       "farben": [
+        "#0057a6",
+        "#e2001a"
+       ],
+       "ruf": 64
+      },
+      {
+       "name": "Stal Mielec",
+       "kurz": "MIE",
+       "ort": "Mielec",
+       "gegruendet": 1939,
+       "halle": "Hala MOSiR",
+       "kapazitaet": 1400,
+       "farben": [
+        "#0057a6",
+        "#ffffff"
+       ],
+       "ruf": 62
+      },
+      {
+       "name": "KPR Legionowo",
+       "kurz": "LEG",
+       "ort": "Legionowo",
+       "gegruendet": 1996,
+       "halle": "Arena Legionowo",
+       "kapazitaet": 1500,
+       "farben": [
+        "#e2001a",
+        "#ffd500"
+       ],
+       "ruf": 61
+      },
+      {
+       "name": "Anilana Łódź",
+       "kurz": "LOD",
+       "ort": "Łódź",
+       "gegruendet": 1948,
+       "halle": "Hala MOSiR",
+       "kapazitaet": 1300,
+       "farben": [
+        "#009640",
+        "#ffffff"
+       ],
+       "ruf": 59
+      }
+     ]
+    },
+    {
+     "id": "l_pl2",
+     "name": "I liga",
+     "kurz": "1PL",
+     "stufe": 2,
+     "ruf": 46,
+     "vereine": [],
+     "teams": 10,
+     "erzeugt": true
+    }
+   ]
+  }
+ ]
+}

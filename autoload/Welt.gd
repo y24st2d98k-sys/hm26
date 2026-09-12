@@ -28,9 +28,9 @@ func _ready() -> void:
 
 # ------------------------------------------------------------ Neues Spiel ---
 
-func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0) -> void:
+func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0, echte_welt: bool = true) -> void:
 	var s: int = saat if saat != 0 else int(Time.get_unix_time_from_system()) % 2147483647
-	daten = Weltgenerator.erzeuge(2026, s)
+	daten = Weltgenerator.erzeuge(2026, s, echte_welt)
 	mein_verein_id = verein_id
 	var v: Dictionary = daten["vereine"][verein_id]
 	v["ist_mensch"] = true
@@ -437,6 +437,10 @@ func _daten_auffrischen() -> void:
 	for k in vorlage.keys():
 		if not daten.has(k):
 			daten[k] = vorlage[k]
+	if not daten.has("echte_welt"):
+		daten["echte_welt"] = false
+	if not daten.has("datenstand"):
+		daten["datenstand"] = ""
 	if not daten.has("zaehler"):
 		daten["zaehler"] = {"spieler": 0, "verein": 0, "spiel": 0, "personal": 0, "nachricht": 0, "auftrag": 0}
 	for verein_dict in daten.get("vereine", {}).values():

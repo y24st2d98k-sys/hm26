@@ -83,6 +83,8 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 	var potenzial_bonus: float = Namen.glocke(rest_jahre * 1.55, 7.0, -3.0, 34.0)
 	var potenzial: float = clampf(ziel_gesamt + potenzial_bonus, ziel_gesamt, 97.0)
 
+	_auf_zielstaerke(attr, position, ziel_gesamt)
+
 	var pers: String = Namen.persoenlichkeit()
 	var charakter: Dictionary = (Namen.PERSOENLICHKEITEN[pers] as Dictionary).duplicate()
 	for k in charakter.keys():
@@ -133,6 +135,24 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 	spieler["wert"] = marktwert(spieler)
 	return spieler
 
+## Erzeugt einen Spieler mit vorgegebener Identität (echte Daten).
+## Attribute entstehen wie bei jedem anderen Spieler aus Position und Zielstärke —
+## Alter und Stärke im Datensatz sind Schätzwerte für die Simulation.
+static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String, startjahr: int) -> Dictionary:
+	var nation: String = str(eintrag.get("nation", "de"))
+	var alter_jahre: int = int(eintrag.get("alter", 26))
+	var ziel: float = float(eintrag.get("staerke", 60.0))
+	var sp := erzeuge(id, nation, alter_jahre, ziel, position, startjahr)
+	sp["vorname"] = str(eintrag.get("vorname", sp["vorname"]))
+	sp["nachname"] = str(eintrag.get("nachname", sp["nachname"]))
+	sp["nation"] = nation
+	sp["echt"] = true
+	# Bei echten Spielern ist die Zielstärke gesetzt, nicht gewürfelt: Potenzial
+	# darf sie nur bei jungen Spielern deutlich übersteigen.
+	if alter_jahre >= 28:
+		sp["potenzial"] = clampf(ziel + 1.0, ziel, 99.0)
+	return sp
+
 static func leere_statistik() -> Dictionary:
 	return {
 		"saison": leere_saisonstats(),
@@ -147,6 +167,55 @@ static func leere_saisonstats() -> Dictionary:
 		"paraden": 0, "gegentore": 0, "blocks": 0, "ballgewinne": 0,
 		"note_summe": 0.0, "noten": 0, "spieler_des_spiels": 0, "titel": 0,
 	}
+
+## Zieht die leistungsrelevanten Attribute so zurecht, dass der Gesamtwert die
+## vorgegebene Zielstärke trifft. Ohne diesen Schritt liegt das Ergebnis der
+## Streuung systematisch unter dem Ziel — ein hinterlegter Weltklassetorwart
+## käme dann als solider Zweitligist im Spiel an.
+static func _auf_zielstaerke(attr: Dictionary, position: String, ziel: float) -> void:
+	var relevant: Array = (ANGRIFF_GEWICHTE.get(position, ANGRIFF_GEWICHTE["RM"]) as Dictionary).keys()
+	if position != "TW":
+		for a in ABWEHR_GEWICHTE.keys():
+			if not relevant.has(a):
+				relevant.append(a)
+	for _durchlauf in range(8):
+		var ist: float = _gesamt_aus(attr, position)
+		if absf(ist - ziel) < 0.6:
+			return
+		var faktor: float = clampf(ziel / maxf(ist, 1.0), 0.75, 1.35)
+		var veraendert := false
+		for a in relevant:
+			var alt_wert: float = float(attr[a])
+			var neu_wert: float = clampf(alt_wert * faktor, 1.0, 20.0)
+			if not is_equal_approx(alt_wert, neu_wert):
+				veraendert = true
+			attr[a] = neu_wert
+		if not veraendert:
+			return
+
+## Gesamtwert direkt aus einer Attributtabelle (ohne fertigen Spieler).
+static func _gesamt_aus(attr: Dictionary, position: String) -> float:
+	var gew: Dictionary = ANGRIFF_GEWICHTE.get(position, ANGRIFF_GEWICHTE["RM"])
+	var summe := 0.0
+	var gewicht := 0.0
+	for a in gew.keys():
+		summe += float(attr.get(a, 1.0)) * float(gew[a])
+		gewicht += float(gew[a])
+	var angriff: float = summe / maxf(gewicht, 0.01) * 5.0
+	if position == "TW":
+		return angriff
+	var d_summe := 0.0
+	var d_gewicht := 0.0
+	for a in ABWEHR_GEWICHTE.keys():
+		d_summe += float(attr.get(a, 1.0)) * float(ABWEHR_GEWICHTE[a])
+		d_gewicht += float(ABWEHR_GEWICHTE[a])
+	var abwehr: float = d_summe / maxf(d_gewicht, 0.01) * 5.0
+	var abwehr_anteil: float = 0.34
+	if position == "KM":
+		abwehr_anteil = 0.44
+	elif position == "LA" or position == "RA":
+		abwehr_anteil = 0.24
+	return angriff * (1.0 - abwehr_anteil) + abwehr * abwehr_anteil
 
 static func _attribute_fuer(position: String, ziel: float) -> Dictionary:
 	var attr := {}

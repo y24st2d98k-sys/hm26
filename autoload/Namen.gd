@@ -16,12 +16,21 @@ const KULTUR_NAME := {
 	"pl": "Polen", "se": "Schweden", "no": "Norwegen", "is": "Island",
 	"hr": "Kroatien", "hu": "Ungarn", "rs": "Serbien", "pt": "Portugal",
 	"eg": "Ägypten", "br": "Brasilien", "si": "Slowenien", "mk": "Nordmazedonien",
+	"at": "Österreich", "ch": "Schweiz", "nl": "Niederlande", "be": "Belgien",
+	"it": "Italien", "fo": "Färöer", "ba": "Bosnien-Herzegowina", "me": "Montenegro",
+	"lv": "Lettland", "by": "Belarus", "ro": "Rumänien", "cz": "Tschechien",
+	"sk": "Slowakei", "ua": "Ukraine", "tn": "Tunesien", "qa": "Katar",
+	"jp": "Japan", "kr": "Südkorea", "gr": "Griechenland", "fi": "Finnland",
 }
 
 const KULTUR_KUERZEL := {
 	"de": "GER", "dk": "DEN", "fr": "FRA", "es": "ESP", "pl": "POL", "se": "SWE",
 	"no": "NOR", "is": "ISL", "hr": "CRO", "hu": "HUN", "rs": "SRB", "pt": "POR",
 	"eg": "EGY", "br": "BRA", "si": "SLO", "mk": "MKD",
+	"at": "AUT", "ch": "SUI", "nl": "NED", "be": "BEL", "it": "ITA", "fo": "FRO",
+	"ba": "BIH", "me": "MNE", "lv": "LAT", "by": "BLR", "ro": "ROU", "cz": "CZE",
+	"sk": "SVK", "ua": "UKR", "tn": "TUN", "qa": "QAT", "jp": "JPN", "kr": "KOR",
+	"gr": "GRE", "fi": "FIN",
 }
 
 # ------------------------------------------------------------- Vornamen ---

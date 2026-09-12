@@ -18,6 +18,7 @@ var hintergrund_text: Label
 var wahl_alter: HSlider
 var alter_label: Label
 var vorschau_welt: Dictionary = {}
+var echte_welt: bool = true
 
 func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -84,6 +85,16 @@ func _baue_menue() -> void:
 	ende.pressed.connect(func(): get_tree().quit())
 	box.add_child(ende)
 	v.add_child(Stil.abstand(24))
+	if Echtdaten.verfuegbar():
+		var quelle := Stil.karte("Datenbestand")
+		v.add_child(Stil.karte_wurzel(quelle))
+		quelle.add_child(Stil.info_zeile("Ligen und Vereine", "Stand %s" % Echtdaten.stand(), Stil.GRUEN))
+		quelle.add_child(Stil.info_zeile("Echte Spieler hinterlegt", "%d bei %d Vereinen" % [
+			Echtdaten.echte_spieler_gesamt(), Echtdaten.vereine_mit_kader()]))
+		var h := Stil.text(Echtdaten.hinweis(), Stil.S_MINI, Stil.TEXT_MATT)
+		h.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		h.custom_minimum_size = Vector2(700, 0)
+		quelle.add_child(h)
 	var info := Stil.karte("Was Sie erwartet")
 	v.add_child(Stil.karte_wurzel(info))
 	for zeile in [
@@ -186,6 +197,15 @@ func _baue_vereinswahl() -> void:
 		gewaehlte_liga = str(liga_wahl.get_item_metadata(i))
 		_vereine_fuellen())
 	filterzeile.add_child(Stil.dehner())
+	var welt_haken := CheckBox.new()
+	welt_haken.text = "Echte Vereine"
+	welt_haken.button_pressed = true
+	welt_haken.tooltip_text = "Angehakt: echte Ligen, Vereine und — soweit hinterlegt — echte Spieler aus daten/ligen.json und daten/kader.json.\nAbgehakt: eine vollständig erfundene Welt."
+	welt_haken.toggled.connect(func(an):
+		echte_welt = an
+		vorschau_welt = {}
+		_zur_vereinswahl())
+	filterzeile.add_child(welt_haken)
 	var neu_wuerfeln := Stil.knopf("Andere Welt erzeugen")
 	neu_wuerfeln.pressed.connect(func():
 		vorschau_welt = {}
@@ -206,7 +226,7 @@ func _baue_vereinswahl() -> void:
 
 func _zur_vereinswahl() -> void:
 	if vorschau_welt.is_empty():
-		vorschau_welt = Weltgenerator.erzeuge(2026, int(Time.get_unix_time_from_system()) % 2147483647)
+		vorschau_welt = Weltgenerator.erzeuge(2026, int(Time.get_unix_time_from_system()) % 2147483647, echte_welt)
 	var liga_wahl: OptionButton = get_meta("liga_wahl")
 	liga_wahl.clear()
 	var ids: Array = vorschau_welt["ligen"].keys()
@@ -287,7 +307,7 @@ func _starte(cid: String) -> void:
 		"nation": nation,
 		"alter": int(wahl_alter.value),
 		"hintergrund": hintergrund,
-	}, int(vorschau_welt.get("saat", 0)))
+	}, int(vorschau_welt.get("saat", 0)), echte_welt)
 	spiel_gestartet.emit()
 
 # ------------------------------------------------------------------ Laden ---

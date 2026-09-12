@@ -56,7 +56,11 @@ const WAPPEN_PALETTEN := [
 
 # --------------------------------------------------------------- Aufbau ---
 
-static func erzeuge(startjahr: int, saat: int) -> Dictionary:
+## Baut die Welt auf. Mit echte_welt=true werden Nationen, Ligen, Vereine und
+## — soweit hinterlegt — Kader aus dem Datensatz in "daten/" übernommen; alles,
+## was dort fehlt, wird erfunden. Mit echte_welt=false entsteht eine rein
+## erfundene Welt wie bisher.
+static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dictionary:
 	Namen.setze_saat(saat)
 	var d := {
 		"version": Welt.DATENVERSION,
@@ -85,8 +89,14 @@ static func erzeuge(startjahr: int, saat: int) -> Dictionary:
 		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2},
 		"saison_abgeschlossen": false,
 	}
+	var echt: bool = echte_welt and Echtdaten.verfuegbar()
+	d["echte_welt"] = echt
+	d["datenstand"] = Echtdaten.stand() if echt else ""
 
-	_erzeuge_nationen(d)
+	if echt:
+		_nationen_aus_datensatz(d)
+	else:
+		_erzeuge_nationen(d)
 	_erzeuge_vereine(d)
 	_erzeuge_wettbewerbe(d)
 	_erzeuge_medien(d)
@@ -141,6 +151,58 @@ static func _erzeuge_nationen(d: Dictionary) -> void:
 		}
 		d["nationen"][nid]["pokal"] = pid
 
+## Übernimmt Nationen, Ligen und Pokale aus dem Datensatz.
+static func _nationen_aus_datensatz(d: Dictionary) -> void:
+	for n in Echtdaten.nationen():
+		var nid: String = str(n["id"])
+		d["nationen"][nid] = {
+			"id": nid,
+			"name": str(n["name"]),
+			"ruf": float(n["ruf"]),
+			"reichtum": float(n["reichtum"]),
+			"ligen": [],
+			"pokal": "",
+			"supercup_name": str(n.get("supercup", "Supercup")),
+			"meister_historie": [],
+		}
+		for l in (n["ligen"] as Array):
+			var lid: String = str(l["id"])
+			var vereine: Array = l.get("vereine", [])
+			var anzahl: int = vereine.size() if not vereine.is_empty() else int(l.get("teams", 12))
+			d["ligen"][lid] = {
+				"id": lid,
+				"name": str(l["name"]),
+				"kurz": str(l.get("kurz", lid)),
+				"nation": nid,
+				"stufe": int(l["stufe"]),
+				"ruf": float(l["ruf"]),
+				"teams": anzahl,
+				"vereine": [],
+				"tabelle": {},
+				"spieltage": 0,
+				"aktueller_spieltag": 0,
+				"meister_historie": [],
+				"aufsteiger": [],
+				"absteiger": [],
+				"torschuetzen": {},
+				"datensatz": vereine,
+			}
+			(d["nationen"][nid]["ligen"] as Array).append(lid)
+		var pid: String = "p_%s" % nid
+		d["pokale"][pid] = {
+			"id": pid,
+			"name": str(n.get("pokal", "Pokal")),
+			"nation": nid,
+			"typ": "pokal",
+			"teilnehmer": [],
+			"runde": 0,
+			"runden_namen": [],
+			"paarungen": [],
+			"sieger_historie": [],
+			"beendet": false,
+		}
+		d["nationen"][nid]["pokal"] = pid
+
 static func _erzeuge_vereine(d: Dictionary) -> void:
 	var vergeben := {}
 	var index := 0
@@ -148,18 +210,24 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 		var liga: Dictionary = d["ligen"][lid]
 		var nid: String = liga["nation"]
 		var nation: Dictionary = d["nationen"][nid]
+		var datensatz: Array = liga.get("datensatz", [])
 		for i in range(int(liga["teams"])):
 			index += 1
 			var cid := "c_%03d" % index
-			var vn: Dictionary = Namen.verein(nid, vergeben)
-			vergeben[vn["name"]] = true
-			vn["kurz"] = _eindeutiges_kuerzel(str(vn["kurz"]), vergeben)
-			# Rufverteilung: Spitze der Liga deutlich staerker als Schlusslicht.
-			var spanne: float = 18.0 if int(liga["stufe"]) == 1 else 13.0
-			var ruf: float = clampf(float(liga["ruf"]) + spanne * (1.0 - float(i) / maxf(float(liga["teams"]) - 1.0, 1.0)) - spanne * 0.45 + Namen.bereich(-4.0, 4.0), 12.0, 99.0)
-			var verein := _baue_verein(d, cid, vn, nid, lid, ruf, float(nation["reichtum"]))
+			var verein: Dictionary
+			if i < datensatz.size():
+				verein = _verein_aus_datensatz(d, cid, datensatz[i], nid, lid, vergeben)
+			else:
+				var vn: Dictionary = Namen.verein(nid, vergeben)
+				vergeben[vn["name"]] = true
+				vn["kurz"] = _eindeutiges_kuerzel(str(vn["kurz"]), vergeben)
+				# Rufverteilung: Spitze der Liga deutlich staerker als Schlusslicht.
+				var spanne: float = 18.0 if int(liga["stufe"]) == 1 else 13.0
+				var ruf: float = clampf(float(liga["ruf"]) + spanne * (1.0 - float(i) / maxf(float(liga["teams"]) - 1.0, 1.0)) - spanne * 0.45 + Namen.bereich(-4.0, 4.0), 12.0, 99.0)
+				verein = _baue_verein(d, cid, vn, nid, lid, ruf, float(nation["reichtum"]))
 			d["vereine"][cid] = verein
 			(liga["vereine"] as Array).append(cid)
+		liga.erase("datensatz")
 		liga["spieltage"] = (int(liga["teams"]) - 1) * 2
 	d["zaehler"]["verein"] = index
 
@@ -171,6 +239,33 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 	_erzeuge_rivalitaeten(d)
 	# Ein Grundstock an vereinslosen Spielern
 	_erzeuge_freie_spieler(d, 90)
+
+## Baut einen Verein aus einem Eintrag des Datensatzes. Fehlende Angaben
+## werden wie bei einem erfundenen Verein ergänzt.
+static func _verein_aus_datensatz(d: Dictionary, cid: String, eintrag: Dictionary,
+		nid: String, lid: String, vergeben: Dictionary) -> Dictionary:
+	var nation: Dictionary = d["nationen"][nid]
+	var liga: Dictionary = d["ligen"][lid]
+	var name: String = str(eintrag["name"])
+	var ort: String = str(eintrag.get("ort", Namen.ort(nid)))
+	var ruf: float = float(eintrag.get("ruf", liga["ruf"]))
+	var vn := {
+		"name": name,
+		"kurz": _eindeutiges_kuerzel(str(eintrag.get("kurz", Namen.kuerzel(name))), vergeben),
+		"ort": ort,
+		"beiname": "",
+	}
+	vergeben[name] = true
+	var verein := _baue_verein(d, cid, vn, nid, lid, ruf, float(nation["reichtum"]))
+	verein["echt"] = true
+	verein["gegruendet"] = int(eintrag.get("gegruendet", verein["gegruendet"]))
+	verein["halle"]["name"] = str(eintrag.get("halle", verein["halle"]["name"]))
+	verein["halle"]["kapazitaet"] = int(eintrag.get("kapazitaet", verein["halle"]["kapazitaet"]))
+	var farben: Array = eintrag.get("farben", [])
+	if farben.size() >= 2:
+		verein["wappen"]["a"] = Color(str(farben[0]))
+		verein["wappen"]["b"] = Color(str(farben[1]))
+	return verein
 
 ## Sorgt dafuer, dass kein Kuerzel doppelt vergeben wird.
 static func _eindeutiges_kuerzel(vorschlag: String, vergeben: Dictionary) -> String:
@@ -308,13 +403,46 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 	var verein: Dictionary = d["vereine"][cid]
 	var ruf: float = float(verein["ruf"])
 	var nid: String = verein["nation"]
+	# Zuerst die hinterlegten echten Spieler, danach wird auf Sollstärke ergänzt.
+	var belegt := {}
+	for pos in Spielerfabrik.POSITIONEN:
+		belegt[pos] = 0
+	var echt_spitze := 0.0
+	for eintrag in Echtdaten.kader_fuer(str(verein["name"])):
+		var pos_e: String = str(eintrag.get("position", "RM"))
+		if not belegt.has(pos_e):
+			pos_e = "RM"
+		var sid_e := neue_spieler_id(d)
+		var sp_e := Spielerfabrik.erzeuge_mit_namen(sid_e, eintrag, pos_e, int(d["startjahr"]))
+		sp_e["verein"] = cid
+		sp_e["kenntnis"] = 100.0
+		sp_e["vertrag"] = {
+			"bis_saison": Namen.wuerfel(1, 4),
+			"gehalt": Spielerfabrik.gehaltsvorstellung(sp_e, ruf) * Namen.bereich(0.9, 1.15),
+			"rolle": "rotation",
+			"ablöseklausel": 0.0,
+			"unterschrieben_saison": -Namen.wuerfel(0, 3),
+			"praemie_tor": 0.0,
+			"praemie_sieg": 0.0,
+		}
+		sp_e["wert"] = Spielerfabrik.marktwert(sp_e)
+		d["spieler"][sid_e] = sp_e
+		(verein["kader"] as Array).append(sid_e)
+		belegt[pos_e] = int(belegt[pos_e]) + 1
+		echt_spitze = maxf(echt_spitze, Spielerfabrik.gesamt(sp_e))
 	for pos in Spielerfabrik.KADER_SOLL.keys():
-		var anzahl: int = int(Spielerfabrik.KADER_SOLL[pos])
+		var anzahl: int = maxi(int(Spielerfabrik.KADER_SOLL[pos]) - int(belegt.get(pos, 0)), 0)
 		for i in range(anzahl):
-			# Stammspieler stark, Ersatz schwaecher, dazu ein Talent.
-			var rang_abzug: float = float(i) * (7.0 if pos != "TW" else 9.0)
-			var ziel: float = clampf(ruf * 0.72 + 22.0 - rang_abzug + Namen.bereich(-5.0, 5.0), 18.0, 95.0)
-			var alter_jahre: int = _zufalls_alter(i, anzahl)
+			# Stammspieler stark, Ersatz schwaecher, dazu ein Talent. Echte Spieler
+			# besetzen bereits die vorderen Ränge, Ergänzungen rücken dahinter.
+			var rang: int = int(belegt.get(pos, 0)) + i
+			var rang_abzug: float = float(rang) * (7.0 if pos != "TW" else 9.0)
+			var ziel: float = clampf(ruf * 0.70 + 21.0 - rang_abzug + Namen.bereich(-5.0, 5.0), 18.0, 95.0)
+			# Wo echte Spieler hinterlegt sind, ergaenzen erfundene den Kader —
+			# sie sollen die Leistungstraeger nicht ueberstrahlen.
+			if echt_spitze > 0.0:
+				ziel = minf(ziel, echt_spitze - 3.0)
+			var alter_jahre: int = _zufalls_alter(rang, anzahl)
 			if alter_jahre <= 20:
 				ziel = clampf(ziel - Namen.bereich(4.0, 12.0), 16.0, 80.0)
 			var kultur: String = Namen.kultur_zufall(nid, 0.62 if ruf < 70.0 else 0.42)
