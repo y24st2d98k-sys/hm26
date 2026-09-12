@@ -338,6 +338,9 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 		praemie_tor: float = 0.0, praemie_sieg: float = 0.0) -> void:
 	var sp: Dictionary = d["spieler"][sid]
 	var von: String = str(sp["verein"])
+	# Die Zusatzklauseln des alten Vertrags müssen abgerechnet werden, bevor
+	# der neue Vertrag sie überschreibt.
+	var alte_beteiligung: float = float(sp.get("vertrag", {}).get("weiterverkauf", 0.0))
 	if von != "" and d["vereine"].has(von):
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		Finanzen.buchen(d, von, ablöse, "Transfererlös %s" % Spielerfabrik.voller_name(sp), "transfer")
@@ -366,6 +369,7 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 		"tag": int(d["tag"]), "spieler": sid, "von": von, "nach": nach, "ablöse": ablöse, "art": "kauf",
 	})
 	Laufbahn.wechsel(d, sid, von, nach, ablöse)
+	Klauseln.verkauf_abrechnen(d, sid, von, ablöse, alte_beteiligung)
 	Medien.transfer_meldung(d, sid, von, nach, ablöse)
 	Chronik.transfer_pruefen(d, sid, ablöse)
 	if nach != "":
@@ -492,7 +496,8 @@ static func _klausel_versuchen(d: Dictionary, sid: String, sp: Dictionary, klaus
 
 ## Vertragsverlaengerung eines eigenen Spielers.
 static func vertrag_verlaengern(d: Dictionary, sid: String, gehalt: float, laufzeit: int, rolle: String,
-		praemie_tor: float = 0.0, praemie_sieg: float = 0.0, klausel: float = 0.0) -> Dictionary:
+		praemie_tor: float = 0.0, praemie_sieg: float = 0.0, klausel: float = 0.0,
+		zusatz: Dictionary = {}) -> Dictionary:
 	var sp: Dictionary = d["spieler"][sid]
 	var cid: String = str(sp["verein"])
 	var wunsch: float = Finanzen.gehaltswunsch(d, cid, sp)
@@ -506,7 +511,12 @@ static func vertrag_verlaengern(d: Dictionary, sid: String, gehalt: float, laufz
 	if klausel > 0.0:
 		gueltige_klausel = maxf(klausel, klausel_untergrenze(sp))
 		schwelle *= 1.0 - klausel_rabatt(d, sp, gueltige_klausel)
+	# Zusatzklauseln senken die Forderung ebenfalls.
+	if not zusatz.is_empty():
+		schwelle *= 1.0 - Klauseln.gehaltsersatz(d, sp, zusatz)
 	if gehalt >= schwelle:
+		if not zusatz.is_empty():
+			Klauseln.schreiben(sp, zusatz)
 		sp["vertrag"]["gehalt"] = gehalt
 		sp["vertrag"]["bis_saison"] = Welt.saison_index() + maxi(laufzeit, 1)
 		sp["vertrag"]["rolle"] = rolle

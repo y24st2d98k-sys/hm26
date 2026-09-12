@@ -16,6 +16,21 @@ static func aufstellung_pruefen(d: Dictionary, cid: String) -> void:
 	# Vor jeder Partie: jeder im Kader traegt eine eindeutige Rueckennummer.
 	Trikot.kader_nummerieren(d, cid)
 	var mensch: bool = bool(v.get("ist_mensch", false))
+	if mensch:
+		# Gespeicherte Spielidee zur Lage gegen diesen Gegner ziehen.
+		var naechstes: Dictionary = Welt.naechstes_spiel(cid)
+		if not naechstes.is_empty():
+			var gegner: String = str(naechstes["gast"]) if str(naechstes["heim"]) == cid else str(naechstes["heim"])
+			var gezogen := Taktikprofile.automatisch_anwenden(d, cid, gegner)
+			if gezogen != "" and str(v.get("letztes_profil", "")) != gezogen:
+				v["letztes_profil"] = gezogen
+				Welt.nachricht({
+					"typ": "taktik",
+					"betreff": "Spielidee gewechselt: %s" % gezogen,
+					"text": "Gegen %s greift Ihre hinterlegte Regel für die Lage „%s“." % [
+						str(d["vereine"].get(gegner, {}).get("name", "den Gegner")),
+						str(Taktikprofile.LAGEN[Taktikprofile.lage_gegen(d, cid, gegner)]["name"])],
+				})
 	var auf: Dictionary = v["aufstellung"]
 	var neu_aufstellen := false
 	if mensch:

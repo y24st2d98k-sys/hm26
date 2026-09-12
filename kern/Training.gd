@@ -102,6 +102,7 @@ static func wochenwechsel(d: Dictionary) -> void:
 		_verein_trainieren(d, cid)
 	Jugend.wochenwechsel(d)
 	Mentoring.wochenwechsel(d)
+	Trainingslager.umschulung_wochenwechsel(d)
 	_alterung_pruefen(d)
 	_staerke_protokollieren(d)
 static func _verein_trainieren(d: Dictionary, cid: String) -> void:

@@ -1331,5 +1331,8 @@ func _ticker_kurz() -> Array:
 	var wichtig: Array = []
 	for e in ereignisse:
 		if str(e["typ"]) in ["tor", "zeitstrafe", "rot", "auszeit", "halbzeit", "ende", "lauf", "siebenmeterwerfen"]:
-			wichtig.append({"zeit": e["zeit"], "typ": e["typ"], "text": e["text"], "stand": e["stand"]})
+			# Die Seite gehoert dazu: ohne sie laesst sich spaeter nicht sagen,
+			# wer das Tor geworfen hat.
+			wichtig.append({"zeit": e["zeit"], "typ": e["typ"], "text": e["text"],
+				"stand": e["stand"], "team": e.get("team", "")})
 	return wichtig

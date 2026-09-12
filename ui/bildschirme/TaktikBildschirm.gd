@@ -11,6 +11,7 @@ var bank_bereich: VBoxContainer
 var feld: Spielfeld
 var warnungen_bereich: VBoxContainer
 var anweisungs_bereich: VBoxContainer
+var profil_bereich: VBoxContainer
 var vorschau_angriff: bool = true
 var meldung: Label
 
@@ -82,6 +83,7 @@ func aufbauen() -> void:
 	feldkarte.add_child(feld)
 	taktik_bereich = Bausteine.karte_in(rechts, "Spielidee")
 
+	profil_bereich = Bausteine.karte_in(inhalt, "Spielideen")
 	anweisungs_bereich = Bausteine.karte_in(inhalt, "Spieleranweisungen")
 	bank_bereich = Bausteine.karte_in(inhalt, "Restlicher Kader")
 
@@ -98,6 +100,7 @@ func aktualisieren() -> void:
 	leeren(taktik_bereich)
 	leeren(bank_bereich)
 	leeren(anweisungs_bereich)
+	leeren(profil_bereich)
 	leeren(warnungen_bereich)
 	if Welt.mein_verein_id == "":
 		bank_bereich.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
@@ -106,6 +109,7 @@ func aktualisieren() -> void:
 	_angriff()
 	_abwehr()
 	_taktik()
+	_profile()
 	_anweisungen()
 	_bank()
 	_feld_auffrischen()
@@ -355,6 +359,98 @@ func _schieber(beschriftung: String, wert: int, rueckruf: Callable, hinweis: Str
 		rueckruf.call(w))
 	h.tooltip_text = hinweis
 	return h
+
+## Gespeicherte Spielideen und die Regeln, wann sie gezogen werden.
+func _profile() -> void:
+	var cid: String = Welt.mein_verein_id
+	var kopf := Stil.hbox(10)
+	profil_bereich.add_child(kopf)
+	kopf.add_child(Stil.matt("Eine Spielidee hält die komplette Einstellung fest — Deckung, Ausrichtung, Mentalität und alle Regler. Hinterlegen Sie je Lage eine, wird sie vor der Partie automatisch gezogen.", Stil.S_MINI))
+	kopf.add_child(Stil.dehner())
+	var haken := Stil.schalter("")
+	haken.text = "Automatisch nach Lage ziehen"
+	haken.button_pressed = bool(Welt.einstellung("auto_taktik", true))
+	haken.toggled.connect(func(an):
+		Welt.setze_einstellung("auto_taktik", an)
+		_melde("Automatische Spielidee %s." % ("eingeschaltet" if an else "ausgeschaltet"))
+		aktualisieren())
+	kopf.add_child(haken)
+
+	var neu := Stil.hbox(8)
+	profil_bereich.add_child(neu)
+	neu.add_child(Stil.matt("Aktuelle Einstellung sichern als", Stil.S_KLEIN))
+	var feld := LineEdit.new()
+	feld.placeholder_text = "z. B. Bollwerk auswärts"
+	feld.custom_minimum_size = Vector2(220, 0)
+	neu.add_child(feld)
+	var sichern := Stil.knopf_primaer("Speichern")
+	sichern.pressed.connect(func():
+		var erg := Taktikprofile.speichern(Welt.daten, cid, feld.text)
+		_melde(str(erg["grund"]), bool(erg["ok"]))
+		aktualisieren())
+	neu.add_child(sichern)
+
+	var liste: Array = Taktikprofile.profile(Welt.daten, cid)
+	if liste.is_empty():
+		profil_bereich.add_child(Stil.leerzustand("Noch keine Spielidee gespeichert."))
+		return
+	for p in liste:
+		var name: String = str(p["name"])
+		var zeile := Stil.hbox(10)
+		profil_bereich.add_child(zeile)
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(spalte)
+		spalte.add_child(Stil.text(name, Stil.S_KLEIN, Stil.AKZENT))
+		spalte.add_child(Stil.matt(Taktikprofile.beschreibung(p["taktik"]), Stil.S_MINI))
+		var laden := Stil.knopf("Übernehmen")
+		laden.pressed.connect(func():
+			var erg2 := Taktikprofile.anwenden(Welt.daten, cid, name)
+			_melde(str(erg2["grund"]), bool(erg2["ok"]))
+			Welt.zustand_geaendert.emit()
+			aktualisieren())
+		zeile.add_child(laden)
+		var weg := Stil.knopf_flach("Löschen", Stil.ROT)
+		weg.pressed.connect(func():
+			Taktikprofile.loeschen(Welt.daten, cid, name)
+			_melde("Profil gelöscht.")
+			aktualisieren())
+		zeile.add_child(weg)
+
+	profil_bereich.add_child(Stil.trenner())
+	profil_bereich.add_child(Stil.text("Welche Idee gegen wen?", Stil.S_KLEIN))
+	var regeln: Dictionary = Taktikprofile.regeln(Welt.daten, cid)
+	for lage in Taktikprofile.LAGEN_REIHE:
+		var info: Dictionary = Taktikprofile.LAGEN[lage]
+		var z := Stil.hbox(8)
+		profil_bereich.add_child(z)
+		var l := Stil.matt(str(info["name"]), Stil.S_KLEIN)
+		l.custom_minimum_size = Vector2(210, 0)
+		z.add_child(l)
+		var wahl := OptionButton.new()
+		wahl.custom_minimum_size = Vector2(230, 0)
+		wahl.add_item("— keine Regel —")
+		wahl.set_item_metadata(0, "")
+		var i := 1
+		for name2 in Taktikprofile.namen(Welt.daten, cid):
+			wahl.add_item(str(name2))
+			wahl.set_item_metadata(i, name2)
+			if str(regeln.get(lage, "")) == str(name2):
+				wahl.select(i)
+			i += 1
+		var lage_id := str(lage)
+		wahl.item_selected.connect(func(idx):
+			Taktikprofile.regel_setzen(Welt.daten, cid, lage_id, str(wahl.get_item_metadata(idx)))
+			_melde("Regel gesetzt.")
+			aktualisieren())
+		z.add_child(wahl)
+		z.add_child(Stil.matt(str(info["text"]), Stil.S_MINI))
+	var naechstes: Dictionary = Welt.naechstes_spiel(cid)
+	if not naechstes.is_empty():
+		var gegner: String = str(naechstes["gast"]) if str(naechstes["heim"]) == cid else str(naechstes["heim"])
+		var lage2 := Taktikprofile.lage_gegen(Welt.daten, cid, gegner)
+		profil_bereich.add_child(Stil.info_zeile("Nächster Gegner: %s" % str(Welt.verein(gegner).get("name", "")),
+			str(Taktikprofile.LAGEN[lage2]["name"]), Stil.AKZENT))
 
 ## Individuelle Rollen fuer die Spieler auf dem Feld. Die Mannschaftstaktik
 ## oben gibt den Rahmen vor — hier steht, was der Einzelne darin tun soll.

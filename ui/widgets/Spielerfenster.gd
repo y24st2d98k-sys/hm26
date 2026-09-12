@@ -383,11 +383,20 @@ func _vertrag(sp: Dictionary) -> void:
 		else:
 			karte.add_child(Stil.info_zeile("Erfolgsprämien", "keine"))
 		var klausel: float = float(vertrag.get("ablöseklausel", 0.0))
-		if klausel > 0.0:
+		if klausel > 0.0 and klausel <= 1.0:
+			karte.add_child(Stil.info_zeile("Ablöseklausel", "ablösefrei (Ausstiegsklausel)", Stil.ROT))
+		elif klausel > 0.0:
 			karte.add_child(Stil.info_zeile("Ablöseklausel", Stil.geld(klausel), Stil.ROT))
 			karte.add_child(Stil.matt("Jeder Verein, der diese Summe zahlt, kann ihn verpflichten — ohne Verhandlung.", Stil.S_MINI))
 		else:
 			karte.add_child(Stil.info_zeile("Ablöseklausel", "keine"))
+		karte.add_child(Stil.info_zeile("Zusatzklauseln", Klauseln.beschreibung(Klauseln.lesen(sp)),
+			Stil.AKZENT if Klauseln.beschreibung(Klauseln.lesen(sp)) != "keine Zusatzklauseln" else Stil.TEXT_MATT))
+		var beteiligt: Array = Klauseln.beteiligte(sp)
+		for b in beteiligt:
+			karte.add_child(Stil.info_zeile("Beteiligt am Weiterverkauf",
+				"%s (%d %%)" % [str(Welt.verein(str(b["verein"])).get("name", "?")), int(float(b["anteil"]) * 100.0)],
+				Stil.GELB))
 		karte.add_child(Stil.info_zeile("Unzufriedenheit", "%d" % int(sp["unzufriedenheit"]),
 			Stil.ROT if float(sp["unzufriedenheit"]) > 55.0 else Stil.TEXT))
 
@@ -422,6 +431,7 @@ func _vertrag(sp: Dictionary) -> void:
 		var praemien := _praemienzeile(neu, sp,
 			float(sp["vertrag"].get("praemie_tor", 0.0)), float(sp["vertrag"].get("praemie_sieg", 0.0)))
 		var klauselfeld := _klauselzeile(neu, sp, float(sp["vertrag"].get("ablöseklausel", 0.0)))
+		var zusatz := _zusatzklauseln(neu, sp)
 		var verhandeln := Stil.knopf_primaer("An den Verhandlungstisch")
 		verhandeln.tooltip_text = "Führt die Verlängerung als Gespräch über mehrere Runden."
 		verhandeln.pressed.connect(func():
@@ -430,10 +440,16 @@ func _vertrag(sp: Dictionary) -> void:
 		neu.add_child(verhandeln)
 		var anbieten := Stil.knopf("Direktangebot")
 		anbieten.pressed.connect(func():
+			var werte := {
+				"weiterverkauf": (zusatz["weiterverkauf"] as SpinBox).value / 100.0,
+				"abstiegsklausel": (zusatz["abstieg"] as Button).button_pressed,
+				"einsatzpraemie": (zusatz["einsatz"] as SpinBox).value,
+				"treuepraemie": (zusatz["treue"] as SpinBox).value,
+			}
 			var erg := Transfermarkt.vertrag_verlaengern(Welt.daten, sid, gehalt.value, int(jahre.value),
 				str(rolle.get_item_metadata(rolle.selected)),
 				(praemien["tor"] as SpinBox).value, (praemien["sieg"] as SpinBox).value,
-				klauselfeld.value)
+				klauselfeld.value, werte)
 			_melde(str(erg["grund"]), bool(erg["ok"]))
 			_zeichne())
 		neu.add_child(anbieten)
@@ -779,3 +795,66 @@ func _klauselzeile(eltern: Node, sp: Dictionary, start: float) -> SpinBox:
 	auffrischen.call()
 	feld.value_changed.connect(func(_w): auffrischen.call())
 	return feld
+
+## Vier Zusatzklauseln samt Wirkungshinweis. Liefert die Eingabefelder.
+func _zusatzklauseln(eltern: Node, sp: Dictionary) -> Dictionary:
+	var werte := Klauseln.lesen(sp)
+	var karte := Stil.vbox(4)
+	eltern.add_child(karte)
+	karte.add_child(Stil.matt("Zusatzklauseln — der Spieler rechnet sie gegen sein Festgehalt auf.", Stil.S_MINI))
+	var zeile := Stil.hbox(8)
+	karte.add_child(zeile)
+	zeile.add_child(Stil.matt("Weiterverkauf %"))
+	var verkauf := SpinBox.new()
+	verkauf.min_value = 0
+	verkauf.max_value = int(Klauseln.WEITERVERKAUF_MAX * 100.0)
+	verkauf.step = 5
+	verkauf.value = float(werte["weiterverkauf"]) * 100.0
+	verkauf.custom_minimum_size = Vector2(90, 0)
+	verkauf.tooltip_text = "Anteil, den Ihr Verein beim nächsten Weiterverkauf dieses Spielers erhält."
+	zeile.add_child(verkauf)
+	zeile.add_child(Stil.matt("je Einsatz"))
+	var einsatz := SpinBox.new()
+	einsatz.min_value = 0
+	einsatz.max_value = Klauseln.EINSATZ_MAX
+	einsatz.step = 50
+	einsatz.value = float(werte["einsatzpraemie"])
+	einsatz.custom_minimum_size = Vector2(110, 0)
+	einsatz.tooltip_text = "Wird nach jedem Pflichtspiel mit mindestens 20 Minuten ausgezahlt."
+	zeile.add_child(einsatz)
+	var zeile2 := Stil.hbox(8)
+	karte.add_child(zeile2)
+	zeile2.add_child(Stil.matt("Treueprämie je Saison"))
+	var treue := SpinBox.new()
+	treue.min_value = 0
+	treue.max_value = 250000
+	treue.step = 5000
+	treue.value = float(werte["treuepraemie"])
+	treue.custom_minimum_size = Vector2(130, 0)
+	treue.tooltip_text = "Einmalzahlung am Saisonende, solange der Vertrag weiterläuft."
+	zeile2.add_child(treue)
+	var abstieg := Stil.schalter("")
+	abstieg.text = "Ablösefrei bei Abstieg"
+	abstieg.button_pressed = bool(werte["abstiegsklausel"])
+	abstieg.tooltip_text = "Steigt der Verein ab, darf er ohne Ablöse gehen."
+	zeile2.add_child(abstieg)
+	var hinweis := Stil.matt("", Stil.S_MINI)
+	karte.add_child(hinweis)
+	var rechnen := func():
+		var aktuell := {
+			"weiterverkauf": verkauf.value / 100.0,
+			"abstiegsklausel": abstieg.button_pressed,
+			"einsatzpraemie": einsatz.value,
+			"treuepraemie": treue.value,
+		}
+		var rabatt: float = Klauseln.gehaltsersatz(Welt.daten, sp, aktuell)
+		if rabatt <= 0.001:
+			hinweis.text = "Keine Zugeständnisse — der Spieler verlangt das volle Gehalt."
+		else:
+			hinweis.text = "Er rechnet das mit %d %% seines Gehaltswunsches auf." % int(rabatt * 100.0)
+	verkauf.value_changed.connect(func(_w): rechnen.call())
+	einsatz.value_changed.connect(func(_w): rechnen.call())
+	treue.value_changed.connect(func(_w): rechnen.call())
+	abstieg.toggled.connect(func(_an): rechnen.call())
+	rechnen.call()
+	return {"weiterverkauf": verkauf, "einsatz": einsatz, "treue": treue, "abstieg": abstieg}

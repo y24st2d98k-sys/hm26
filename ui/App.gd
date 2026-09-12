@@ -17,6 +17,7 @@ const BEREICHE := [
 	{"id": "pokale", "name": "Pokale & Europa", "gruppe": "Wettbewerb"},
 	{"id": "national", "name": "Nationalteams", "gruppe": "Wettbewerb"},
 	{"id": "statistik", "name": "Statistiken", "gruppe": "Wettbewerb"},
+	{"id": "analyse", "name": "Analyse", "gruppe": "Wettbewerb"},
 	{"id": "transfer", "name": "Transfermarkt", "gruppe": "Markt"},
 	{"id": "scouting", "name": "Scouting", "gruppe": "Markt"},
 	{"id": "finanzen", "name": "Finanzen", "gruppe": "Führung"},
@@ -288,7 +289,7 @@ func _baue_bildschirme() -> void:
 		"infrastruktur": InfrastrukturBildschirm, "personal": PersonalBildschirm,
 		"vorstand": VorstandsBildschirm, "karriere": KarriereBildschirm, "medien": MedienBildschirm,
 		"chronik": ChronikBildschirm, "nachrichten": NachrichtenBildschirm, "system": SystemBildschirm,
-		"daten": DatenBildschirm,
+		"analyse": AnalyseBildschirm, "daten": DatenBildschirm,
 	}
 	add_to_group("app")
 	for id in liste.keys():

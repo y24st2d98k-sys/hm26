@@ -46,6 +46,7 @@ func _draw() -> void:
 		"pokale": _pokal()
 		"national": _flagge()
 		"statistik": _statistik()
+		"analyse": _analyse()
 		"transfer": _transfer()
 		"scouting": _lupe()
 		"finanzen": _muenze()
@@ -170,6 +171,13 @@ func _statistik() -> void:
 	_kasten(0.26, 0.56, 0.13, 0.30, true)
 	_kasten(0.46, 0.36, 0.13, 0.50, true)
 	_kasten(0.66, 0.22, 0.13, 0.64, true)
+
+## Eine Kurve mit Messpunkten — Auswertung statt Momentaufnahme.
+func _analyse() -> void:
+	_linie([Vector2(0.14, 0.16), Vector2(0.14, 0.86), Vector2(0.88, 0.86)])
+	_linie([Vector2(0.24, 0.68), Vector2(0.42, 0.44), Vector2(0.58, 0.58), Vector2(0.82, 0.26)])
+	_kreis(0.42, 0.44, 0.055)
+	_kreis(0.82, 0.26, 0.055)
 
 func _transfer() -> void:
 	_linie([Vector2(0.14, 0.36), Vector2(0.80, 0.36)])

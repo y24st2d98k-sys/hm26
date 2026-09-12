@@ -88,6 +88,7 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 		"zaehler": {"spieler": 0, "verein": 0, "spiel": 0, "personal": 0, "nachricht": 0, "auftrag": 0},
 		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2,
 			"autospeichern": true,
+			"auto_taktik": true,
 			"ton_an": true, "lautstaerke_musik": 55.0,
 			"lautstaerke_effekte": 75.0, "lautstaerke_atmo": 65.0},
 		"saison_abgeschlossen": false,
@@ -373,6 +374,9 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"taktik": standard_taktik(),
 		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": "", "anweisungen": {}},
 		"mentoring": [],
+		"trainingslager": {},
+		"taktikprofile": [],
+		"taktikregeln": {},
 		"vorstand": {
 			"vertrauen": Namen.glocke(62.0, 8.0, 40.0, 85.0),
 			"saisonziel": "",

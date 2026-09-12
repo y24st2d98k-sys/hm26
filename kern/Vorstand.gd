@@ -23,7 +23,7 @@ static func saisonziel_festlegen(d: Dictionary, cid: String) -> void:
 	# Spiel bewertet wird. Sonst bekommt ein Verein mit gutem Ruf und duennem
 	# Kader ein Ziel, das seine Mannschaft nicht einloesen kann — und der
 	# Trainer verliert das Vertrauen fuer etwas, das er gar nicht steuert.
-	rangliste.sort_custom(func(a, b): return _staerkeindex(d, a) > _staerkeindex(d, b))
+	rangliste.sort_custom(func(a, b): return staerkeindex(d, a) > staerkeindex(d, b))
 	var platz: int = rangliste.find(cid) + 1
 	var teams: int = rangliste.size()
 	var ehrgeiz: float = Namen.bereich(-1.0, 1.0)
@@ -81,8 +81,8 @@ static func nach_spiel(d: Dictionary, cid: String, m: Dictionary) -> void:
 	var gegner: String = str(m["gast"]) if str(m["heim"]) == cid else str(m["heim"])
 	# Erwartet wird an dem gemessen, was der Kader tatsaechlich hergibt — nicht
 	# nur am Ruf, der sich langsamer bewegt als die Mannschaft.
-	var eigen: float = _staerkeindex(d, cid)
-	var fremd: float = _staerkeindex(d, gegner)
+	var eigen: float = staerkeindex(d, cid)
+	var fremd: float = staerkeindex(d, gegner)
 	var erwartung: float = clampf(0.5 + (eigen - fremd) / 90.0, 0.12, 0.88)
 	var ergebnis: float = 1.0 if eigene > fremde else (0.5 if eigene == fremde else 0.0)
 	var delta: float = (ergebnis - erwartung) * 2.8
@@ -123,8 +123,9 @@ static func wochenpruefung(d: Dictionary, cid: String) -> void:
 		v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + 0.15, 0.0, 100.0)
 	_konsequenzen(d, cid, platz, gewicht)
 
-## Mischung aus Ruf und tatsaechlicher Kaderstaerke.
-static func _staerkeindex(d: Dictionary, cid: String) -> float:
+## Mischung aus Ruf und tatsaechlicher Kaderstaerke. Dieselbe Groesse misst
+## das Saisonziel, jedes einzelne Spiel und die Lage vor einer Partie.
+static func staerkeindex(d: Dictionary, cid: String) -> float:
 	var kader: Array = d["vereine"][cid]["kader"]
 	if kader.is_empty():
 		return float(d["vereine"][cid]["ruf"])

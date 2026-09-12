@@ -168,6 +168,7 @@ static func _auf_und_abstieg(d: Dictionary) -> void:
 		oben["absteiger"] = absteiger
 		unten["aufsteiger"] = aufsteiger
 		for cid in absteiger:
+			Klauseln.abstieg_pruefen(d, str(cid))
 			(oben["vereine"] as Array).erase(cid)
 			(unten["vereine"] as Array).append(cid)
 			d["vereine"][cid]["liga"] = str(unten["id"])
@@ -282,6 +283,7 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 			"betreff": "Der Kader ist zu klein",
 			"text": "Nur noch %d Spieler stehen unter Vertrag. Auf dem Transfermarkt finden Sie vereinslose Spieler, die ablösefrei zu haben sind." % (d["vereine"][mein]["kader"] as Array).size(),
 		})
+	Klauseln.treuepraemien(d)
 	Nationaltrainer.angebote_pruefen(d)
 	if mein != "":
 		Vorstand.vertragsangebot_pruefen(d, mein)

@@ -225,6 +225,7 @@ func tag_weiter() -> Dictionary:
 	var t: int = tag()
 
 	Training.tageswechsel(daten)
+	Trainingslager.tageswechsel(daten)
 	Medizin.tageswechsel(daten)
 	Transfermarkt.tageswechsel(daten)
 	Scouting.tageswechsel(daten)
@@ -511,7 +512,8 @@ func _daten_auffrischen() -> void:
 		"rekorde": {}, "scouting": {"auftraege": [], "berichte": [], "beobachtung": []},
 		"transfermarkt": {"angebote": [], "gerüchte": [], "verlauf": [], "fenster_offen": true},
 		"medien": {"outlets": [], "fanaccounts": []},
-		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2,
+		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "auto_taktik": true,
+			"presse_filter": "alle", "sim_tempo": 2,
 			"autospeichern": true,
 			"ton_an": true, "lautstaerke_musik": 55.0,
 			"lautstaerke_effekte": 75.0, "lautstaerke_atmo": 65.0},
@@ -549,6 +551,12 @@ func _daten_auffrischen() -> void:
 			verein_dict["mentoring"] = []
 		if not verein_dict.has("sponsorangebote"):
 			verein_dict["sponsorangebote"] = []
+		if not verein_dict.has("trainingslager"):
+			verein_dict["trainingslager"] = {}
+		if not verein_dict.has("taktikprofile"):
+			verein_dict["taktikprofile"] = []
+		if not verein_dict.has("taktikregeln"):
+			verein_dict["taktikregeln"] = {}
 		if not (verein_dict.get("saison", {}) as Dictionary).has("finanzen"):
 			(verein_dict.get("saison", {}) as Dictionary)["finanzen"] = {}
 		var auf_dict: Dictionary = verein_dict.get("aufstellung", {})

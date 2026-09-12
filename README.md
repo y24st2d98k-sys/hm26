@@ -369,6 +369,84 @@ Wahrscheinlichkeit das Amt.
 
 ---
 
+## Trainingslager
+
+In der Sommervorbereitung und in der Winterpause lässt sich die Mannschaft
+wegfahren. Vier Ziele mit unterschiedlichem Charakter: Mittelgebirge
+(Grundlagen, hart), Sportschule (Taktik und Automatismen), Küste (Mannschaft
+statt Einheiten) und ein Turnier im Ausland (teuer, anstrengend, lehrreich).
+Ein Lager kostet je Spieler und Tag, läuft über sechs bis zehn Tage und wirkt
+jeden davon: Die Zielattribute wachsen deutlich schneller als im Wochenplan,
+Fitness und Teamgeist steigen, Lastkonto und Verletzungsrisiko ebenso. Junge
+Spieler profitieren am meisten, Spieler über 30 kaum noch. Einmal pro Saison.
+
+## Positionsumschulung
+
+Ein Rückraumspieler wird nicht über Nacht zum Kreisläufer. Wer jünger als 30
+ist, kann über Monate auf eine neue Position umgeschult werden; wie schnell,
+hängt an der Verwandtschaft der Positionen, am Arbeitseinsatz des Spielers, an
+seinem Alter und an der Qualität des Trainerstabs. Am Ende zählt die neue
+Position als Zweitposition — der Spieler verliert dort deutlich weniger
+Stärke. Der Fortschritt und die geschätzte Restdauer stehen im Trainingsplan.
+
+---
+
+## Spielideen
+
+Gegen den Tabellenletzten dieselbe Deckung zu spielen wie gegen den Meister ist
+keine Entscheidung, sondern Vergesslichkeit. Eine **Spielidee** hält die
+komplette Einstellung fest — Deckung, Ausrichtung, Mentalität, Tempo, Risiko,
+Härte, Wechselintensität, siebter Feldspieler — und lässt sich unter einem
+Namen speichern (bis zu sechs).
+
+Jeder der vier Lagen — Derby, Favorit, Augenhöhe, Außenseiter — kann eine Idee
+zugeordnet werden. Vor jeder Partie prüft das Spiel, wie es gegen diesen Gegner
+steht (Rivalität geht vor, sonst entscheidet der Stärkeindex mit einer Schwelle
+von 9 Punkten), zieht die hinterlegte Idee und meldet den Wechsel. Abschaltbar
+mit einem Haken.
+
+---
+
+## Saisonanalyse
+
+Der Spielbericht zeigt eine Partie. Der Bildschirm *Analyse* zeigt die Saison:
+
+* **Kennzahlen gegen den Ligaschnitt** — Tore, Gegentore, Wurfquote,
+  technische Fehler, Zeitstrafen und Paraden, jeweils mit dem Abstand zum
+  Durchschnitt der eigenen Liga.
+* **Abschlüsse der Saison** als zusammengefasste Wurfkarte, umschaltbar
+  zwischen eigenen Würfen und denen der Gegner, darunter die Trefferquote je
+  Position.
+* **Tore nach Spielabschnitt** — vier Viertel, eigene Tore gegen Gegentore.
+  Wo Rot überwiegt, gehen die Spiele verloren.
+* **Form über die Saison** — Saisonschnitt gegen die letzten drei Partien je
+  Spieler, mit Tendenz.
+
+Gerechnet wird aus dem, was ohnehin im Archiv liegt; zusätzliche Daten hält der
+Spielstand dafür nicht vor.
+
+---
+
+## Vertragsklauseln
+
+Neben Gehalt, Laufzeit, Rolle, Tor- und Siegprämie und Ablöseklausel stehen
+vier weitere Zeilen im Vertrag, und jede ist eine Wette:
+
+* **Weiterverkaufsbeteiligung** (bis 35 %) — der abgebende Verein verdient am
+  nächsten Transfer mit. Der Spieler rechnet sie sich *nicht* an: das Geld geht
+  an den Verein, nicht an ihn.
+* **Ausstiegsklausel bei Abstieg** — steigt der Verein ab, darf er ablösefrei
+  gehen. Das ist ihm etwas wert, und zwar umso mehr, je wackliger der Verein
+  dasteht.
+* **Einsatzprämie** je Pflichtspiel ab 20 Minuten — angerechnet wird sie nach
+  seiner tatsächlichen Einsatzquote.
+* **Treueprämie** am Ende jeder erfüllten Vertragssaison — ein loyaler Spieler
+  rechnet sie höher an als ein Söldner.
+
+Der Abschlag auf den Gehaltswunsch steht live unter den Feldern.
+
+---
+
 ## Der Co-Trainer
 
 Vor der Partie gibt es den Vorbericht, danach den Spielbericht — dazwischen
@@ -702,6 +780,10 @@ kern/
   Cotrainer.gd       Befunde des Trainerstabs, begrenzt durch dessen Qualität
   Auszeichnungen.gd  Team der Woche, Spieler und Trainer des Monats, Saisonpreise
   Nationaltrainer.gd Verbandsamt: Berufung, Nominierung, Turnierziel, Abrechnung
+  Trainingslager.gd  Trainingslager und Positionsumschulung
+  Taktikprofile.gd   Gespeicherte Spielideen und Regeln, wann sie greifen
+  Saisonanalyse.gd   Wurfkarte, Torverlauf, Kennzahlen und Form über die Saison
+  Klauseln.gd        Weiterverkauf, Ausstieg bei Abstieg, Einsatz- und Treueprämie
   Kaderplanung.gd    Altersstruktur, Kadertiefe über Jahre, Gehaltslast, Prognose
   Laufbahn.gd        Chronik eines Spielerlebens: Debüt, Wechsel, Titel, Marken
   Trikot.gd          Rückennummern: Vergabe nach Position, Eindeutigkeit im Kader
@@ -716,7 +798,7 @@ ui/
                      Verhandlungsraum (3D), Bausteine, Spieler-, Vereins-,
                      Bericht-, Presse-, Vorbericht-, Anliegen-, Verhandlungs-
                      und Vorspulfenster
-  bildschirme/       23 Bildschirme
+  bildschirme/       24 Bildschirme
 daten/               ligen.json und kader.json — die echten Vereine und Kader
 werkzeuge/           Test- und Kalibrierungsszenen
 ```
@@ -736,7 +818,7 @@ mit Verein, Trainer, Saison und Datum, damit die Spielstandsliste nichts laden m
 Felder aus einer Vorlage. Ein Spielstand aus einer älteren Version verliert
 dadurch nichts und stürzt nicht ab, wenn neue Systeme hinzukommen.
 
-**Bildschirme werden gebaut, nicht erzeugt.** Alle 23 Bildschirme hängen von
+**Bildschirme werden gebaut, nicht erzeugt.** Alle 24 Bildschirme hängen von
 Anfang an im Baum und werden nur über `visible` gewechselt. Innerhalb eines
 Bildschirms liegen dauerhafte Knoten (Kopfzeilen, Reiterleisten, Meldungszeilen)
 strikt außerhalb der Container, die bei jeder Aktualisierung geleert werden.

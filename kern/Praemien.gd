@@ -63,6 +63,7 @@ static func abrechnen(d: Dictionary, m: Dictionary) -> void:
 	var bericht: Dictionary = m.get("bericht", {})
 	if bericht.is_empty():
 		return
+	Klauseln.einsatzpraemien(d, m)
 	var th: int = int(m["tore_heim"])
 	var tg: int = int(m["tore_gast"])
 	_seite(d, str(m["heim"]), bericht.get("heim", {}), th > tg)

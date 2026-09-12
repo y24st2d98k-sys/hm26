@@ -8,6 +8,9 @@ extends Bildschirm
 
 var plan_bereich: VBoxContainer
 var last_bereich: VBoxContainer
+var lager_bereich: VBoxContainer
+var umschulung_bereich: VBoxContainer
+var meldung: Label
 var entwicklung_bereich: VBoxContainer
 var budget_anzeige: Label
 
@@ -15,7 +18,12 @@ func aufbauen() -> void:
 	var wurzel := Stil.vbox(10)
 	wurzel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(wurzel)
-	wurzel.add_child(Stil.titel("Training & Belastung", 0))
+	var kopf := Stil.hbox(10)
+	wurzel.add_child(kopf)
+	kopf.add_child(Stil.titel("Training & Belastung", 0))
+	kopf.add_child(Stil.dehner())
+	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
+	kopf.add_child(meldung)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -29,6 +37,8 @@ func aufbauen() -> void:
 	Stil.karte_wurzel(plan_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entwicklung_bereich = Bausteine.karte_in(oben, "Entwicklung im Kader")
 	Stil.karte_wurzel(entwicklung_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lager_bereich = Bausteine.karte_in(inhalt, "Trainingslager")
+	umschulung_bereich = Bausteine.karte_in(inhalt, "Umschulungen")
 	last_bereich = Bausteine.karte_in(inhalt, "Lastkonto & Regenerationsbudget")
 
 func aktualisieren() -> void:
@@ -42,6 +52,8 @@ func aktualisieren() -> void:
 		return
 	_plan()
 	_entwicklung()
+	_lager()
+	_umschulungen()
 	_lastkonto()
 
 func _plan() -> void:
@@ -196,3 +208,123 @@ func _risikotext(wert: float) -> String:
 	elif wert < 7.0:
 		return "hoch"
 	return "sehr hoch"
+
+func _melde(text: String, gut: bool = true) -> void:
+	if meldung != null:
+		meldung.text = text
+		meldung.add_theme_color_override("font_color", Stil.GRUEN if gut else Stil.ROT)
+
+## Trainingslager: nur in den Pausen buchbar, wirkt über mehrere Tage.
+func _lager() -> void:
+	leeren(lager_bereich)
+	var cid: String = Welt.mein_verein_id
+	var laufend := Trainingslager.laufend(Welt.daten, cid)
+	if not laufend.is_empty():
+		var o: Dictionary = Trainingslager.ORTE[str(laufend["ort"])]
+		lager_bereich.add_child(Stil.text("Die Mannschaft ist im Lager: %s" % str(o["name"]),
+			Stil.S_NORMAL, Stil.AKZENT))
+		lager_bereich.add_child(Stil.matt(str(o["text"]), Stil.S_MINI))
+		var zeile := Stil.hbox(10)
+		lager_bereich.add_child(zeile)
+		zeile.add_child(Stil.matt("Tag %d von %d" % [int(laufend["tage_gelaufen"]) + 1,
+			int(laufend["tage_gesamt"])], Stil.S_KLEIN))
+		zeile.add_child(Stil.balken(float(laufend["tage_gelaufen"]), float(laufend["tage_gesamt"]), 160))
+		var ab := Stil.knopf_flach("Abbrechen", Stil.ROT)
+		ab.pressed.connect(func():
+			Trainingslager.abbrechen(Welt.daten, cid)
+			_melde("Das Lager wurde abgebrochen.", false)
+			aktualisieren())
+		zeile.add_child(ab)
+		return
+	if not Trainingslager.fenster_offen(Welt.daten):
+		lager_bereich.add_child(Stil.leerzustand("Ein Lager ist nur in der Sommervorbereitung oder in der Winterpause möglich."))
+		return
+	lager_bereich.add_child(Stil.matt("%s — jetzt ist Platz für ein Lager. Es kostet Geld und Erholung und bringt dafür etwas, das im Wochenrhythmus nicht zu haben ist." % Trainingslager.fenstername(Welt.daten), Stil.S_MINI))
+	for schluessel in Trainingslager.ORTE.keys():
+		if str(schluessel) == "heim":
+			continue
+		var ort: Dictionary = Trainingslager.ORTE[schluessel]
+		var z := Stil.hbox(10)
+		lager_bereich.add_child(z)
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		z.add_child(spalte)
+		spalte.add_child(Stil.text("%s · %d Tage" % [str(ort["name"]), int(ort["tage"])], Stil.S_KLEIN))
+		spalte.add_child(Stil.matt(str(ort["text"]), Stil.S_MINI))
+		var preis: float = Trainingslager.kosten(Welt.daten, cid, str(schluessel))
+		z.add_child(Stil.text(Stil.geld(preis), Stil.S_KLEIN,
+			Stil.GRUEN if float(Welt.mein_verein()["kasse"]) >= preis else Stil.ROT))
+		var knopf := Stil.knopf_primaer("Buchen")
+		var id := str(schluessel)
+		knopf.pressed.connect(func():
+			var erg := Trainingslager.buchen(Welt.daten, cid, id)
+			_melde(str(erg["grund"]), bool(erg["ok"]))
+			Welt.zustand_geaendert.emit()
+			aktualisieren())
+		z.add_child(knopf)
+
+## Positionsumschulungen: laufende und mögliche.
+func _umschulungen() -> void:
+	leeren(umschulung_bereich)
+	var cid: String = Welt.mein_verein_id
+	umschulung_bereich.add_child(Stil.matt("Eine Umschulung dauert Monate. Danach zählt die neue Position als Zweitposition — der Spieler verliert dort deutlich weniger Stärke.", Stil.S_MINI))
+	var laufende := 0
+	for sid in Welt.verein(cid)["kader"]:
+		var sp: Dictionary = Welt.spieler(sid)
+		var u := Trainingslager.umschulung(sp)
+		if u.is_empty():
+			continue
+		laufende += 1
+		var z := Stil.hbox(10)
+		umschulung_bereich.add_child(z)
+		z.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
+		var knopf := Stil.knopf_flach(Spielerfabrik.voller_name(sp))
+		knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		z.add_child(knopf)
+		z.add_child(Stil.matt("→", Stil.S_KLEIN))
+		z.add_child(Bausteine.positions_abzeichen(str(u["position"])))
+		z.add_child(Stil.balken(float(u["fortschritt"]), Trainingslager.UMSCHULUNG_ZIEL, 140))
+		z.add_child(Stil.matt("noch etwa %d Wochen" % Trainingslager.restwochen(Welt.daten, sp), Stil.S_MINI))
+		var ab := Stil.knopf_flach("Abbrechen", Stil.ROT)
+		ab.pressed.connect(func():
+			Trainingslager.umschulung_abbrechen(Welt.daten, sid)
+			_melde("Umschulung abgebrochen.", false)
+			aktualisieren())
+		z.add_child(ab)
+	if laufende == 0:
+		umschulung_bereich.add_child(Stil.matt("Derzeit wird niemand umgeschult."))
+	umschulung_bereich.add_child(Stil.trenner())
+	var neu := Stil.hbox(8)
+	umschulung_bereich.add_child(neu)
+	neu.add_child(Stil.matt("Neu beginnen", Stil.S_KLEIN))
+	var swahl := OptionButton.new()
+	swahl.custom_minimum_size = Vector2(230, 0)
+	var kandidaten: Array = []
+	for sid2 in Welt.verein(cid)["kader"]:
+		var sp2: Dictionary = Welt.spieler(sid2)
+		if int(sp2["alter"]) > 29 or not Trainingslager.umschulung(sp2).is_empty():
+			continue
+		kandidaten.append(sid2)
+	for i in range(kandidaten.size()):
+		var sp3: Dictionary = Welt.spieler(str(kandidaten[i]))
+		swahl.add_item("%s (%s, %d)" % [Spielerfabrik.voller_name(sp3), str(sp3["position"]), int(sp3["alter"])])
+		swahl.set_item_metadata(i, str(kandidaten[i]))
+	if kandidaten.is_empty():
+		neu.add_child(Stil.matt("Kein Spieler unter 30 ohne laufende Umschulung.", Stil.S_MINI))
+		return
+	neu.add_child(swahl)
+	var pwahl := OptionButton.new()
+	pwahl.custom_minimum_size = Vector2(170, 0)
+	for j in range(Spielerfabrik.POSITIONEN.size()):
+		var p2: String = str(Spielerfabrik.POSITIONEN[j])
+		pwahl.add_item(str(Spielerfabrik.POSITION_NAME[p2]))
+		pwahl.set_item_metadata(j, p2)
+	neu.add_child(pwahl)
+	var los := Stil.knopf_primaer("Umschulung beginnen")
+	los.pressed.connect(func():
+		var erg := Trainingslager.umschulung_starten(Welt.daten,
+			str(swahl.get_item_metadata(maxi(swahl.selected, 0))),
+			str(pwahl.get_item_metadata(maxi(pwahl.selected, 0))))
+		_melde(str(erg["grund"]), bool(erg["ok"]))
+		aktualisieren())
+	neu.add_child(los)

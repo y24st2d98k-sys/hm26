@@ -294,6 +294,81 @@ func _ready() -> void:
 	await get_tree().process_frame
 	vf.visible = false
 
+	_log("— Trainingslager und Umschulung —")
+	var cid_t: String = Welt.mein_verein_id
+	# In die Winterpause springen, damit das Lager wirklich geprüft wird.
+	var tag_vorher_t: int = int(Welt.daten["tag"])
+	Welt.daten["tag"] = Kalender.saison_index(tag_vorher_t) * Kalender.TAGE_IM_JAHR + 170
+	_log("   Fenster offen: %s (%s)" % [str(Trainingslager.fenster_offen(Welt.daten)),
+		Trainingslager.fenstername(Welt.daten)])
+	var erg_l := Trainingslager.buchen(Welt.daten, cid_t, "sportschule")
+	_log("   %s" % str(erg_l["grund"]))
+	if bool(erg_l["ok"]):
+		for _tg in range(8):
+			Welt.daten["tag"] = int(Welt.daten["tag"]) + 1
+			Trainingslager.tageswechsel(Welt.daten)
+		_log("   nach dem Lager läuft noch eins: %s" % str(not Trainingslager.laufend(Welt.daten, cid_t).is_empty()))
+	Welt.daten["tag"] = tag_vorher_t
+	var jung := ""
+	for sid_t in Welt.verein(cid_t)["kader"]:
+		if int(Welt.spieler(sid_t)["alter"]) <= 24 and not bool(Welt.spieler(sid_t)["ist_torwart"]):
+			jung = sid_t
+			break
+	if jung != "":
+		var ziel_pos := "KM" if str(Welt.spieler(jung)["position"]) != "KM" else "RM"
+		var erg_u := Trainingslager.umschulung_starten(Welt.daten, jung, ziel_pos)
+		_log("   %s" % str(erg_u["grund"]))
+		for _w2 in range(40):
+			Trainingslager.umschulung_wochenwechsel(Welt.daten)
+		_log("   Zweitpositionen danach: %s" % str(Welt.spieler(jung)["zweitpositionen"]))
+	app.zeige("training")
+	await get_tree().process_frame
+
+	_log("— Taktikprofile —")
+	var erg_p := Taktikprofile.speichern(Welt.daten, cid_t, "Bollwerk")
+	_log("   %s" % str(erg_p["grund"]))
+	Welt.verein(cid_t)["taktik"]["abwehr"] = "4-2"
+	Welt.verein(cid_t)["taktik"]["mentalitaet"] = "all-in"
+	Taktikprofile.speichern(Welt.daten, cid_t, "Alles nach vorn")
+	Taktikprofile.regel_setzen(Welt.daten, cid_t, "favorit", "Alles nach vorn")
+	Taktikprofile.regel_setzen(Welt.daten, cid_t, "aussenseiter", "Bollwerk")
+	_log("   Profile: %s" % str(Taktikprofile.namen(Welt.daten, cid_t)))
+	var naechstes_t := Welt.naechstes_spiel(cid_t)
+	if not naechstes_t.is_empty():
+		var gegner_t: String = str(naechstes_t["gast"]) if str(naechstes_t["heim"]) == cid_t else str(naechstes_t["heim"])
+		var lage_t := Taktikprofile.lage_gegen(Welt.daten, cid_t, gegner_t)
+		var gezogen := Taktikprofile.automatisch_anwenden(Welt.daten, cid_t, gegner_t)
+		_log("   Lage: %s, gezogen: %s, Abwehr jetzt %s" % [lage_t,
+			gezogen if gezogen != "" else "nichts", str(Welt.verein(cid_t)["taktik"]["abwehr"])])
+	app.zeige("taktik")
+	await get_tree().process_frame
+
+	_log("— Vertragsklauseln —")
+	var sid_k: String = str(Welt.verein(cid_t)["kader"][3])
+	var sp_k: Dictionary = Welt.spieler(sid_k)
+	var werte_k := {"weiterverkauf": 0.2, "abstiegsklausel": true,
+		"einsatzpraemie": 500.0, "treuepraemie": 20000.0}
+	_log("   Gehaltsabschlag: %d %%" % int(Klauseln.gehaltsersatz(Welt.daten, sp_k, werte_k) * 100.0))
+	Klauseln.schreiben(sp_k, werte_k)
+	_log("   %s" % Klauseln.beschreibung(Klauseln.lesen(sp_k)))
+	var kasse_vorher := float(Welt.mein_verein()["kasse"])
+	Klauseln.treuepraemien(Welt.daten)
+	_log("   Treueprämien gezahlt: %s" % Stil.geld(kasse_vorher - float(Welt.mein_verein()["kasse"])))
+	Klauseln.abstieg_pruefen(Welt.daten, cid_t)
+	_log("   nach Abstiegsprüfung Ablöseklausel: %s" % Stil.geld(float(sp_k["vertrag"].get("ablöseklausel", 0.0))))
+
+	_log("— Saisonanalyse —")
+	var partien_a := Saisonanalyse.partien(Welt.daten, cid_t)
+	_log("   ausgewertete Partien: %d" % partien_a.size())
+	var karte_a := Saisonanalyse.wurfkarte(Welt.daten, cid_t, true)
+	_log("   Wurfkarte: %d Positionen, Quoten: %d Einträge" % [karte_a.size(),
+		Saisonanalyse.positionsquoten(karte_a).size()])
+	_log("   Kennzahlen: %d, Formtabelle: %d Spieler" % [
+		Saisonanalyse.kennzahlen(Welt.daten, cid_t).size(),
+		Saisonanalyse.formtabelle(Welt.daten, cid_t).size()])
+	app.zeige("analyse")
+	await get_tree().process_frame
+
 	_log("— Nationaltrainer —")
 	# Ein Verbandsangebot erzwingen und annehmen
 	Welt.daten["trainer"]["ruf"] = 62.0
