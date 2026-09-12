@@ -450,6 +450,29 @@ func _entwicklung(sp: Dictionary) -> void:
 		Stil.wert_farbe(20.0 - float(sp["verletzungsneigung"]))))
 	if bool(sp.get("aus_eigener_jugend", false)):
 		karte.add_child(Stil.text("Aus der eigenen Jugend.", Stil.S_KLEIN, Stil.GRUEN))
+	var kurve: Array = sp.get("staerke_verlauf", [])
+	if kurve.size() >= 3:
+		var chart := Bausteine.karte_in(inhalt, "Stärkeverlauf")
+		var tief := 999.0
+		var hoch := 0.0
+		for w in kurve:
+			tief = minf(tief, float(w))
+			hoch = maxf(hoch, float(w))
+		var linie := Stil.linie(kurve, 520, 96, Stil.LILA)
+		linie.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		chart.add_child(linie)
+		var achse := Stil.hbox(8)
+		chart.add_child(achse)
+		achse.add_child(Stil.matt("vor %d Monaten" % kurve.size(), Stil.S_MINI))
+		achse.add_child(Stil.dehner())
+		achse.add_child(Stil.matt("Spanne %s bis %s" % [Stil.komma(tief, 1), Stil.komma(hoch, 1)], Stil.S_MINI))
+		achse.add_child(Stil.dehner())
+		achse.add_child(Stil.matt("heute", Stil.S_MINI))
+		var delta: float = float(kurve[kurve.size() - 1]) - float(kurve[0])
+		chart.add_child(Stil.info_zeile("Veränderung im gezeigten Zeitraum",
+			"%s%s Punkte" % ["+" if delta >= 0.0 else "", Stil.komma(delta, 1)],
+			Stil.GRUEN if delta > 0.5 else (Stil.ROT if delta < -0.5 else Stil.TEXT_MATT)))
+
 	var verlaufsliste: Array = sp.get("entwicklung_log", [])
 	if verlaufsliste.is_empty():
 		karte.add_child(Stil.matt("Noch keine auffälligen Entwicklungssprünge festgehalten."))

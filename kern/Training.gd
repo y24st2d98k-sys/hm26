@@ -102,7 +102,7 @@ static func wochenwechsel(d: Dictionary) -> void:
 		_verein_trainieren(d, cid)
 	Jugend.wochenwechsel(d)
 	_alterung_pruefen(d)
-
+	_staerke_protokollieren(d)
 static func _verein_trainieren(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	var p: Dictionary = plan(d, cid)
@@ -247,3 +247,22 @@ static func _alterung_pruefen(d: Dictionary) -> void:
 			sp["wert"] = Spielerfabrik.marktwert(sp)
 		elif abs(tis - doy) > 7:
 			sp["hatte_geburtstag"] = false
+
+## Alle vier Wochen den Gesamtwert jedes Spielers festhalten. Daraus entsteht im
+## Spielerfenster eine Kurve, die zeigt, ob jemand wirklich besser wird — der
+## Sprungprotokoll-Eintrag allein sagt darueber zu wenig.
+const VERLAUF_LAENGE := 48
+
+static func _staerke_protokollieren(d: Dictionary) -> void:
+	var abschnitt: int = int(d["tag"]) / 28
+	if int(d.get("staerke_abschnitt", -1)) == abschnitt:
+		return
+	d["staerke_abschnitt"] = abschnitt
+	for cid in Weltgenerator.clubs(d):
+		for sid in d["vereine"][cid]["kader"]:
+			var sp: Dictionary = d["spieler"][sid]
+			var verlauf: Array = sp.get("staerke_verlauf", [])
+			verlauf.append(roundf(Spielerfabrik.gesamt(sp) * 10.0) / 10.0)
+			while verlauf.size() > VERLAUF_LAENGE:
+				verlauf.remove_at(0)
+			sp["staerke_verlauf"] = verlauf

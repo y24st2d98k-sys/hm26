@@ -37,6 +37,7 @@ func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0, ec
 	var v: Dictionary = daten["vereine"][verein_id]
 	v["ist_mensch"] = true
 	daten["trainer"] = Trainerkarriere.neu(trainer_daten, verein_id, daten)
+	Saison.prognose_erstellen(daten, verein_id)
 	v["trainer"] = "mensch"
 	Vorstand.saisonziel_festlegen(daten, verein_id)
 	for cid in Weltgenerator.clubs(daten):

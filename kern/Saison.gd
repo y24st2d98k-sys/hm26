@@ -284,6 +284,7 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 				v["vorstand"]["saisonziel"], Stil.geld(float(v["transferbudget"])), Stil.geld(float(v["gehaltsbudget"]))],
 		})
 	jobangebote_erzeugen(d, mein)
+	prognose_erstellen(d, mein)
 
 static func _vertraege_ablaufen(d: Dictionary) -> void:
 	var saison: int = Welt.saison_index()
@@ -426,6 +427,67 @@ static func _wettbewerbe_zuruecksetzen(d: Dictionary) -> void:
 		if int(m["tag"]) >= grenze:
 			behalten[mid] = m
 	d["spiele"] = behalten
+
+## Vor jeder Saison schaetzen Presse und Buchmacher, wer den Titel holt.
+## Grundlage sind Vereinsruf und die tatsaechliche Staerke der zehn besten
+## Spieler — nicht nur der Name. Die Quoten sind das, woran der Verein
+## anschliessend gemessen wird, und sie geben der Tabelle einen Bezugspunkt.
+static func prognose_erstellen(d: Dictionary, mein: String = "") -> void:
+	for lid in d["ligen"].keys():
+		var liga: Dictionary = d["ligen"][lid]
+		var werte: Array = []
+		var summe := 0.0
+		for cid in liga["vereine"]:
+			var index: float = _prognoseindex(d, cid) * Namen.bereich(0.94, 1.06)
+			werte.append({"verein": cid, "index": index})
+			# Erst den Sockel abziehen: die Indexwerte liegen nah beieinander,
+			# ohne das waeren selbst Favoriten mit Quote 10 notiert.
+			summe += pow(maxf(index - 48.0, 1.0), 6.0)
+		if werte.is_empty():
+			continue
+		werte.sort_custom(func(a, b): return float(a["index"]) > float(b["index"]))
+		for e in werte:
+			# Aus dem Staerkeindex eine Siegwahrscheinlichkeit und daraus eine Quote
+			var p: float = pow(maxf(float(e["index"]) - 48.0, 1.0), 6.0) / maxf(summe, 0.001)
+			e["quote"] = clampf(1.0 / maxf(p, 0.0006), 1.15, 999.0)
+		liga["prognose"] = werte
+	if mein == "" or not d["vereine"].has(mein):
+		return
+	var lid2: String = str(d["vereine"][mein]["liga"])
+	var liste: Array = d["ligen"][lid2].get("prognose", [])
+	for i in range(liste.size()):
+		if str((liste[i] as Dictionary)["verein"]) != mein:
+			continue
+		var platz: int = i + 1
+		var ton := "Die Buchmacher sehen Sie auf Rang %d." % platz
+		if platz == 1:
+			ton = "Die Buchmacher machen Sie zum Favoriten."
+		elif platz <= 3:
+			ton = "Die Buchmacher zählen Sie zum engsten Titelkreis (Rang %d)." % platz
+		elif platz >= liste.size() - 2:
+			ton = "Die Buchmacher sehen Sie als Abstiegskandidat (Rang %d von %d)." % [platz, liste.size()]
+		Welt.nachricht({
+			"typ": "medien",
+			"betreff": "Saisonprognose: %s" % str(d["ligen"][lid2]["name"]),
+			"text": "%s Quote auf den Titel: %s." % [ton,
+				Stil.komma(float((liste[i] as Dictionary)["quote"]), 1)],
+		})
+		return
+
+## Mischung aus Vereinsruf und der Staerke der zehn besten Spieler.
+static func _prognoseindex(d: Dictionary, cid: String) -> float:
+	var werte: Array = []
+	for sid in d["vereine"][cid]["kader"]:
+		werte.append(Spielerfabrik.gesamt(d["spieler"][sid]))
+	werte.sort()
+	werte.reverse()
+	var summe := 0.0
+	var n := 0
+	for w in werte.slice(0, 10):
+		summe += float(w)
+		n += 1
+	var kader: float = summe / maxf(float(n), 1.0)
+	return float(d["vereine"][cid]["ruf"]) * 0.45 + kader * 0.55
 
 ## Jobangebote fuer den Trainer — auch dann, wenn er gerade unter Vertrag steht.
 static func jobangebote_erzeugen(d: Dictionary, mein: String) -> void:

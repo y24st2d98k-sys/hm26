@@ -119,6 +119,33 @@ func _zeichne() -> void:
 			g2.add_child(Stil.matt(str(Welt.verein(str(sp["verein"])).get("kurz", "—")), Stil.S_KLEIN))
 			g2.add_child(Stil.text(str(int(liste[i]["tore"])), Stil.S_KLEIN, Stil.AKZENT))
 
+	var prognose := Bausteine.karte_in(unten, "Saisonprognose der Buchmacher")
+	Stil.karte_wurzel(prognose).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var pliste: Array = liga.get("prognose", [])
+	if pliste.is_empty():
+		prognose.add_child(Stil.leerzustand("Für diese Liga liegt keine Prognose vor."))
+	else:
+		var tabelle_jetzt := Spielplan.tabelle_sortiert(Welt.daten, gewaehlt)
+		var g3 := Stil.tabelle(["#", "", "Verein", "Quote", "Jetzt"])
+		g3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		prognose.add_child(g3)
+		for i in range(mini(pliste.size(), 8)):
+			var e: Dictionary = pliste[i]
+			var pcid: String = str(e["verein"])
+			var eigen2: bool = pcid == Welt.mein_verein_id
+			g3.add_child(Stil.matt(str(i + 1), Stil.S_KLEIN))
+			g3.add_child(Wappen.fuer_verein(pcid, 16.0))
+			var pk := Stil.knopf_flach(str(Welt.verein(pcid).get("name", "")),
+				Stil.AKZENT if eigen2 else Stil.TEXT)
+			pk.pressed.connect(func(): Vereinsfenster.oeffnen(self, pcid))
+			g3.add_child(pk)
+			g3.add_child(Stil.text(Stil.komma(float(e["quote"]), 1), Stil.S_KLEIN, Stil.TUERKIS))
+			# Wo der Verein tatsaechlich steht — der Vergleich ist die Pointe
+			var ist: int = tabelle_jetzt.find(pcid) + 1
+			var abweichung: int = (i + 1) - ist
+			g3.add_child(Stil.text("%d." % ist if ist > 0 else "—", Stil.S_KLEIN,
+				Stil.GRUEN if abweichung > 1 else (Stil.ROT if abweichung < -1 else Stil.TEXT_MATT)))
+
 	var historie := Bausteine.karte_in(unten, "Meisterhistorie")
 	Stil.karte_wurzel(historie).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var h: Array = liga.get("meister_historie", [])

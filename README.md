@@ -369,6 +369,20 @@ herausnehmen.
   Einsatzzeit, Zeitstrafen, Ballgewinne, Blocks) mit Mindesteinsatzhürden, dazu
   vier Mannschaftswertungen (bester Angriff, beste Abwehr, Zuschauerschnitt,
   Zeitstrafen) — und in jeder Wertung die Platzierung des eigenen Kaders.
+* **Spielbericht mit Wurfkarte und Torverlauf.** Nach jeder Partie zeigt der
+  Bericht, von wo abgeschlossen wurde: je Position ein Kreis auf der
+  angegriffenen Hälfte, Größe nach Zahl der Würfe, Füllung und Farbe nach
+  Trefferquote, Siebenmeter separat. Daneben der Torverlauf als Treppenkurve
+  um die Nulllinie in den Vereinsfarben — man sieht auf einen Blick, wann ein
+  Spiel gekippt ist. Die Engine hält dafür nur Summen je Position fest, keine
+  Einzelwürfe.
+* **Saisonprognose der Buchmacher.** Vor jeder Saison wird für jede Liga eine
+  Quote je Verein gebildet, aus Vereinsruf und der tatsächlichen Stärke der
+  zehn besten Spieler. Die Tabelle stellt der Prognose den aktuellen Platz
+  gegenüber — grün, wer über der Erwartung liegt, rot, wer darunter.
+* **Stärkeverlauf.** Alle vier Wochen wird der Gesamtwert jedes Spielers
+  festgehalten. Im Spielerfenster ergibt das eine Kurve über bis zu vier Jahre:
+  ob jemand wirklich besser wird, sieht man erst daran.
 * **Team der Saison.** Zum Saisonende wählt jede erste Liga ihre beste Sieben:
   je Position der Spieler mit der besten Durchschnittsnote bei mindestens
   zwölf Einsätzen. Die Berufungen zählen lebenslang und stehen in der
@@ -436,8 +450,8 @@ ui/
   Bildschirm.gd      Grundklasse aller Bildschirme
   LiveSpiel.gd       Live-Ansicht einer Partie
   widgets/           Wappen, Portraet (Gesichter), Flagge, Symbol (Icon-Satz),
-                     NavKnopf, Spielfeld, Pokal3D, Bausteine, Spieler-, Vereins-,
-                     Bericht-, Presse- und Vorberichtsfenster
+                     NavKnopf, Spielfeld, Wurfkarte, Pokal3D, Bausteine,
+                     Spieler-, Vereins-, Bericht-, Presse- und Vorberichtsfenster
   bildschirme/       22 Bildschirme
 daten/               ligen.json und kader.json — die echten Vereine und Kader
 werkzeuge/           Test- und Kalibrierungsszenen
