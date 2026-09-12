@@ -223,7 +223,7 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 	_statistiken_umlegen(d)
 	_wettbewerbe_zuruecksetzen(d)
 	Finanzen.saison_budgets(d)
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		Vorstand.saisonziel_festlegen(d, cid)
 		d["vereine"][cid]["vorstand"]["warnstufe"] = 0
 	KI.saisonvorbereitung(d)
@@ -309,7 +309,7 @@ static func _karriereenden(d: Dictionary) -> void:
 		d["spieler"].erase(sid)
 
 static func _nachwuchs(d: Dictionary) -> void:
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		var v: Dictionary = d["vereine"][cid]
 		var jugend: int = int(v["infrastruktur"]["jugendarbeit"])
 		var anzahl: int = 1 + (1 if jugend >= 5 else 0) + (1 if Namen.zufall() < 0.35 else 0)
@@ -366,7 +366,7 @@ static func _statistiken_umlegen(d: Dictionary) -> void:
 		sp["last"] = clampf(float(sp["last"]) * 0.35, 0.0, 100.0)
 		sp["fitness"] = clampf(float(sp["fitness"]) + 14.0, 40.0, 100.0)
 		sp["wert"] = Spielerfabrik.marktwert(sp)
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		var v: Dictionary = d["vereine"][cid]
 		v["saison"] = Weltgenerator.leere_vereinsstats()
 		v["formkurve"] = []
@@ -411,7 +411,7 @@ static func jobangebote_erzeugen(d: Dictionary, mein: String) -> void:
 	var ruf: float = float(t["ruf"])
 	var kandidaten: Array = []
 	var vereinslos: bool = mein == ""
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		if cid == mein:
 			continue
 		var v: Dictionary = d["vereine"][cid]

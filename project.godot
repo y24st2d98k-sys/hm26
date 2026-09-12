@@ -24,6 +24,13 @@ window/size/resizable=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[debug]
+
+; Godot schreibt sonst eine Logdatei je Start. Bei einer Fehlerschleife
+; wächst die unbegrenzt — im Test waren es zweistellige Gigabyte.
+; Fehler erscheinen weiterhin in Konsole und Editor.
+file_logging/enable_file_logging=false
+
 [gui]
 
 theme/default_font_multichannel_signed_distance_field=true

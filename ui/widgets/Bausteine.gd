@@ -66,6 +66,10 @@ static func status_zeichen(sid: String) -> HBoxContainer:
 		h.add_child(a)
 	if int(sp["sperre"]) > 0:
 		h.add_child(Stil.abzeichen("SPERRE", Stil.ROT))
+	if bool(sp.get("bei_nationalmannschaft", false)):
+		var n := Stil.abzeichen("NATIONAL", Stil.BLAU)
+		n.tooltip_text = "Beim Turnier mit der Nationalmannschaft — steht dem Verein nicht zur Verfügung."
+		h.add_child(n)
 	if bool(sp.get("transferwunsch", false)):
 		var t := Stil.abzeichen("WECHSEL", Stil.GELB)
 		t.tooltip_text = "Der Spieler hat um einen Wechsel gebeten."

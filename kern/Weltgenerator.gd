@@ -101,6 +101,7 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 	_erzeuge_wettbewerbe(d)
 	_erzeuge_medien(d)
 	_erzeuge_rekorde(d)
+	Nationalteam.erzeuge_teams(d)
 	return d
 
 static func _erzeuge_nationen(d: Dictionary) -> void:
@@ -232,7 +233,7 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 	d["zaehler"]["verein"] = index
 
 	# Kader und Personal fuer jeden Verein
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		_fuelle_kader(d, cid)
 		_erzeuge_personal(d, cid)
 	# Rivalitaeten innerhalb der Ligen
@@ -266,6 +267,16 @@ static func _verein_aus_datensatz(d: Dictionary, cid: String, eintrag: Dictionar
 		verein["wappen"]["a"] = Color(str(farben[0]))
 		verein["wappen"]["b"] = Color(str(farben[1]))
 	return verein
+
+## Alle echten Vereine — ohne die Nationalmannschaften, die technisch
+## ebenfalls als Verein gefuehrt werden, aber keinen Ligabetrieb haben.
+static func clubs(d: Dictionary) -> Array:
+	var liste: Array = []
+	for cid in d["vereine"].keys():
+		if bool(d["vereine"][cid].get("ist_nationalteam", false)):
+			continue
+		liste.append(cid)
+	return liste
 
 ## Sorgt dafuer, dass kein Kuerzel doppelt vergeben wird.
 static func _eindeutiges_kuerzel(vorschlag: String, vergeben: Dictionary) -> String:

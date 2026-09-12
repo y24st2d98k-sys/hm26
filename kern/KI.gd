@@ -102,7 +102,7 @@ static func _bester_angriffsstil(d: Dictionary, cid: String) -> String:
 # --------------------------------------------------------------- Wochenlauf ---
 
 static func wochenlogik(d: Dictionary) -> void:
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		if bool(d["vereine"][cid].get("ist_mensch", false)):
 			continue
 		_trainingsplan(d, cid)
@@ -269,16 +269,16 @@ static func _infrastruktur(d: Dictionary, cid: String) -> void:
 ## Alle KI-Vereine verlaengern auslaufende Vertraege — muss VOR dem
 ## Vertragsablauf zum Saisonwechsel laufen.
 static func vertragsrunde(d: Dictionary) -> void:
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		if bool(d["vereine"][cid].get("ist_mensch", false)):
 			continue
 		_vertraege_pflegen(d, cid)
 
 ## Setzt fuer alle KI-Vereine eine sinnvolle Startaufstellung nach der Saisonpause.
 static func saisonvorbereitung(d: Dictionary) -> void:
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		kader_auffuellen(d, cid)
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		Weltgenerator.setze_standardaufstellung(d, cid)
 		if not bool(d["vereine"][cid].get("ist_mensch", false)):
 			taktik_anpassen(d, cid)

@@ -86,7 +86,7 @@ static func teamfaktor(d: Dictionary, cid: String) -> float:
 
 ## Woechentliche Kabinenereignisse.
 static func wochenpuls(d: Dictionary) -> void:
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		var v: Dictionary = d["vereine"][cid]
 		v["stimmung_kabine"] = lerpf(float(v.get("stimmung_kabine", 60.0)), klima_berechnen(d, cid), 0.3)
 		_unzufriedenheit_pflegen(d, cid)

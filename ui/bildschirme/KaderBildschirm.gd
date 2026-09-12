@@ -152,15 +152,6 @@ func _zusammenfassung(kader: Array) -> void:
 	zusammenfassung.add_child(Stil.matt("Ø Stärke %d" % int(staerke / n)))
 	zusammenfassung.add_child(Stil.matt("Ø Alter %.1f" % (alter_summe / n)))
 	zusammenfassung.add_child(Stil.matt("Gehaltssumme %s / Woche" % Stil.geld(gehalt)))
-	if bool(Welt.daten.get("echte_welt", false)):
-		var echt := 0
-		for sid2 in kader:
-			if bool(Welt.spieler(sid2).get("echt", false)):
-				echt += 1
-		var abz := Stil.abzeichen("%d von %d echt" % [echt, kader.size()],
-			Stil.GRUEN if echt > kader.size() / 2 else Stil.TEXT_MATT)
-		abz.tooltip_text = "Spieler aus daten/kader.json. Die übrigen Kaderplätze hat das Spiel gefüllt."
-		zusammenfassung.add_child(abz)
 	zusammenfassung.add_child(Stil.dehner())
 	# Kadertiefe
 	var tiefe := {}

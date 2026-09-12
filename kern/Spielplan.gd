@@ -22,6 +22,7 @@ static func erzeuge_saison(d: Dictionary) -> void:
 	_plane_supercups(d, basis)
 	_plane_testspiele(d, basis)
 	_plane_international(d, basis)
+	Nationalteam.turnier_planen(d, basis)
 
 static func _neue_spiel_id(d: Dictionary) -> String:
 	d["zaehler"]["spiel"] = int(d["zaehler"]["spiel"]) + 1
@@ -331,10 +332,11 @@ static func _auf_groesse(d: Dictionary, liste: Array, groesse: int, tabu: Array)
 	if ergebnis.size() > groesse:
 		return ergebnis.slice(0, groesse)
 	var kandidaten: Array = []
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		if ergebnis.has(cid) or tabu.has(cid):
 			continue
-		if int(d["ligen"][d["vereine"][cid]["liga"]]["stufe"]) != 1:
+		var lid: String = str(d["vereine"][cid]["liga"])
+		if not d["ligen"].has(lid) or int(d["ligen"][lid]["stufe"]) != 1:
 			continue
 		kandidaten.append(cid)
 	kandidaten.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))

@@ -9,7 +9,8 @@ extends Node
 var rng := RandomNumberGenerator.new()
 
 # Kulturen, aus denen Spieler stammen koennen. Gewicht = relative Haeufigkeit.
-const KULTUREN := ["de", "dk", "fr", "es", "pl", "se", "no", "is", "hr", "hu", "rs", "pt", "eg", "br"]
+const KULTUREN := ["de", "dk", "fr", "es", "pl", "se", "no", "is", "hr", "hu", "rs", "pt",
+	"eg", "br", "si", "at", "nl", "mk", "cz", "ch"]
 
 const KULTUR_NAME := {
 	"de": "Deutschland", "dk": "Dänemark", "fr": "Frankreich", "es": "Spanien",
@@ -75,6 +76,25 @@ const VORNAMEN := {
 	"eg": ["Ahmed", "Mohamed", "Yehia", "Karim", "Omar", "Hassan", "Mostafa", "Seif", "Ali", "Ibrahim",
 		"Youssef", "Khaled", "Tarek", "Mahmoud", "Amr", "Hussein", "Sherif", "Zeyad", "Marwan", "Adham",
 		"Nour", "Fares", "Bassem", "Hazem", "Rami", "Salah", "Wael", "Ziad"],
+	"si": ["Jure", "Blaž", "Domen", "Nejc", "Matic", "Miha", "Aleks", "Dean", "Borut", "Gašper",
+		"Klemen", "Luka", "Rok", "Tilen", "Žiga", "Jan", "Aleš", "Primož", "Sebastjan", "Vid",
+		"Anže", "Urban", "Nik", "Tim", "Marko", "Dejan", "Grega", "Matevž"],
+	"at": ["Nikola", "Lukas", "Robert", "Sebastian", "Thomas", "Boris", "Tobias", "Fabian",
+		"Constantin", "Ivan", "Maximilian", "Alexander", "Vincent", "Jakob", "Moritz", "Julian",
+		"Bernhard", "Josef", "Georg", "Markus", "Christoph", "Daniel", "Sandro", "Nico",
+		"Felix", "Elias", "Raul", "Lorenz"],
+	"nl": ["Kay", "Luc", "Dani", "Ivo", "Bobby", "Jasper", "Rutger", "Samir", "Robin", "Bart",
+		"Jorn", "Sven", "Thijs", "Ruben", "Niels", "Daan", "Lars", "Stijn", "Jeroen", "Wouter",
+		"Tim", "Koen", "Bram", "Joris", "Sem", "Teun", "Guus", "Mees"],
+	"mk": ["Dejan", "Filip", "Stojanče", "Kiril", "Martin", "Nikola", "Borko", "Marko", "Igor",
+		"Vlatko", "Zlatko", "Aleksandar", "Goce", "Vančo", "Dragan", "Petar", "Damjan", "Stefan",
+		"Ilija", "Bojan", "Trajče", "Naumče", "Risto", "Blagoja", "Mile", "Vasil", "Gjorgji", "Simeon"],
+	"cz": ["Ondřej", "Tomáš", "Jan", "Lukáš", "Martin", "Stanislav", "Roman", "Vojtěch", "Matěj",
+		"Jakub", "Petr", "Michal", "Filip", "David", "Daniel", "Adam", "Marek", "Pavel", "Radek",
+		"Zdeněk", "Jiří", "Václav", "Milan", "Karel", "Josef", "Dominik", "Šimon", "Vít"],
+	"ch": ["Nikola", "Andy", "Manuel", "Lenny", "Samuel", "Lucas", "Cédric", "Luca", "Noam",
+		"Jonas", "Dimitrij", "Nicolas", "Yves", "Marvin", "Fabian", "Joel", "Simon", "Livio",
+		"Aurel", "Roman", "Silvan", "Nino", "Timo", "Elia", "Sven", "Lars", "Janis", "Robin"],
 	"br": ["Thiago", "Rogério", "Haniel", "Leonardo", "Gustavo", "Felipe", "Rangel", "Vinícius", "Matheus", "José",
 		"Lucas", "Rafael", "Bruno", "Caio", "Everton", "Murilo", "Diego", "Igor", "Wesley", "Danilo",
 		"Alan", "Pedro", "Otávio", "Yuri", "Kaique", "Vitor", "Renan", "Douglas"],
@@ -109,6 +129,19 @@ const NACH_VOLL := {
 		"Sousa", "Gomes", "Almeida", "Carvalho", "Fonseca", "Cardoso", "Moreira"],
 	"eg": ["Elahmar", "Sanad", "Hesham", "Kadry", "Mamdouh", "Elderaa", "Abdallah", "Nasr", "Fouad",
 		"Shebib", "Zein", "Bakr", "Rashad", "Gamal", "Mansour", "Hamdy"],
+	"si": ["Dolenec", "Zarabec", "Bombač", "Janc", "Cehte", "Blagotinšek", "Makuc", "Verdinek",
+		"Ferlin", "Mačkovšek", "Kodrin", "Marguč", "Novak", "Horvat", "Kovačič", "Zorman"],
+	"at": ["Bilyk", "Wagner", "Weber", "Zeiner", "Hermann", "Frimmel", "Bauer", "Gruber",
+		"Huber", "Steinberger", "Pichler", "Leitner", "Wolf", "Fuchs", "Mayer", "Berger"],
+	"nl": ["Steins", "Smits", "Baijens", "Sluijters", "Versteijnen", "Jansen", "Bakker", "Visser",
+		"de Vries", "Meijer", "Mulder", "Kuipers", "Hendriks", "van Dijk", "de Boer", "Willems"],
+	"mk": ["Manaskov", "Lazarov", "Georgievski", "Kuzmanovski", "Mitrevski", "Markoski",
+		"Dimitrioski", "Stoilov", "Angelov", "Petrovski", "Trajkovski", "Nikolovski",
+		"Jovanovski", "Ristovski", "Spasov", "Talevski"],
+	"cz": ["Kasal", "Zdráhala", "Šulc", "Solák", "Franc", "Mašek", "Novák", "Svoboda",
+		"Dvořák", "Černý", "Procházka", "Kučera", "Veselý", "Horák", "Němec", "Beneš"],
+	"ch": ["Portner", "Schmid", "Küng", "Tominec", "Zehnder", "Röthlisberger", "Delhees", "Jud",
+		"Herburger", "Bär", "Wick", "Brunner", "Meier", "Keller", "Frei", "Ammann"],
 	"br": ["Petrus", "Nascimento", "Silva", "Toledo", "Fonseca", "Chiuffa", "Pereira", "Gomes", "Santos",
 		"Almeida", "Oliveira", "Barbosa", "Carvalho", "Moraes", "Ribeiro", "Teixeira"],
 }
@@ -141,6 +174,18 @@ const NACH_STAMM := {
 		"Lou", "Fer", "Serr", "Mat"],
 	"eg": ["El-Aš", "Abd", "Sha", "Ham", "Far", "Sal", "Nag", "Bad", "Kam", "Raf", "Sad", "Gha",
 		"Sob", "Zak", "Has", "Man"],
+	"si": ["Kov", "Nov", "Hor", "Zup", "Pot", "Kral", "Vid", "Bev", "Rup", "Jer",
+		"Kos", "Meh", "Žun", "Šti", "Pav", "Tur"],
+	"at": ["Gru", "Hu", "Wag", "Bau", "Pich", "Leit", "Stein", "Moos", "Ass", "Ram",
+		"Ober", "Unter", "Hoch", "Nieder", "Kai", "Zill"],
+	"nl": ["Bak", "Vis", "Mei", "Mul", "Kui", "Hen", "Ver", "Sme", "Bos", "Dek",
+		"Ros", "Bru", "Haa", "Kra", "Ste", "Wij"],
+	"mk": ["Man", "Laz", "Georg", "Kuzman", "Mitr", "Mark", "Dimitri", "Stoil",
+		"Angel", "Petr", "Trajk", "Nikol", "Jovan", "Rist", "Spas", "Tal"],
+	"cz": ["Nov", "Svo", "Dvo", "Čern", "Proch", "Kuč", "Vesel", "Hor", "Něm",
+		"Pos", "Krej", "Hrub", "Bene", "Fia", "Sed", "Mar"],
+	"ch": ["Schm", "Mei", "Kel", "Bru", "Frei", "Zür", "Bär", "Amm", "Stu", "Wid",
+		"Hug", "Sut", "Gys", "Räb", "Zim", "Blat"],
 	"br": ["Ol", "Sou", "Fer", "Alm", "Car", "Rod", "Gonç", "Bar", "Mar", "Cost", "Rib", "Az",
 		"Vas", "Cam", "Mel", "Ram"],
 }
@@ -160,6 +205,12 @@ const NACH_ENDUNG := {
 	"pt": ["gães", "reia", "beiro", "veira", "cedo", "landa", "sela", "tinho"],
 	"eg": ["mar", "rahim", "loul", "mady", "zeed", "bir", "seem", "waan"],
 	"br": ["iveira", "za", "reira", "eida", "valho", "rigues", "alves", "bosa"],
+	"si": ["ač", "ič", "nik", "šek", "ovc", "ar", "ej", "ovič"],
+	"at": ["ber", "ner", "bauer", "mayr", "egger", "hofer", "gruber", "sperger"],
+	"nl": ["sen", "ker", "straten", "mans", "veld", "huis", "dijk", "kamp"],
+	"mk": ["ov", "ovski", "evski", "oski", "evi", "ievski", "eski", "ovi"],
+	"cz": ["ák", "ada", "oda", "řák", "ný", "ázka", "era", "lý"],
+	"ch": ["id", "er", "mann", "egger", "iker", "matter", "wyler", "hofer"],
 }
 
 # ------------------------------------------------------------- Ortsnamen ---

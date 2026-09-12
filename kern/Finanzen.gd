@@ -24,6 +24,8 @@ static func buchen(d: Dictionary, cid: String, betrag: float, grund: String, kat
 
 ## Eintrittsgelder und Preisgelder nach einer Partie.
 static func spieltag_abrechnen(d: Dictionary, m: Dictionary) -> void:
+	if str(m["art"]) == "turnier":
+		return
 	var heim: Dictionary = d["vereine"][m["heim"]]
 	var zuschauer: int = int(m["zuschauer"])
 	var preis: float = 10.0 + float(heim["halle"]["komfort"]) * 2.0 + float(heim["ruf"]) * 0.14
@@ -43,7 +45,7 @@ static func spieltag_abrechnen(d: Dictionary, m: Dictionary) -> void:
 
 ## Woechentliche Abrechnung aller Vereine.
 static func wochenabrechnung(d: Dictionary) -> void:
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		var v: Dictionary = d["vereine"][cid]
 		var gehaelter: float = spielergehaelter(d, cid) + personalgehaelter(d, cid)
 		buchen(d, cid, -gehaelter, "Gehälter", "gehalt")
@@ -102,7 +104,7 @@ static func _finanznot(d: Dictionary, cid: String) -> void:
 
 ## Legt zu Saisonbeginn Transfer- und Gehaltsbudget fest.
 static func saison_budgets(d: Dictionary) -> void:
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		var v: Dictionary = d["vereine"][cid]
 		var liga: Dictionary = d["ligen"][v["liga"]]
 		var etat: float = pow(maxf(float(v["ruf"]), 10.0), 2.62) * 52.0 * float(d["nationen"][v["nation"]]["reichtum"])

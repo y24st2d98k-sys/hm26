@@ -37,7 +37,7 @@ func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0, ec
 	daten["trainer"] = Trainerkarriere.neu(trainer_daten, verein_id, daten)
 	v["trainer"] = "mensch"
 	Vorstand.saisonziel_festlegen(daten, verein_id)
-	for cid in daten["vereine"].keys():
+	for cid in Weltgenerator.clubs(daten):
 		if cid != verein_id:
 			Vorstand.saisonziel_festlegen(daten, cid)
 	Spielplan.erzeuge_saison(daten)
@@ -120,6 +120,8 @@ func wettbewerb_name(wid: String) -> String:
 		return str(daten["pokale"][wid]["name"])
 	if (daten.get("international", {}) as Dictionary).has(wid):
 		return str(daten["international"][wid]["name"])
+	if wid == "turnier":
+		return str(daten.get("turnier", {}).get("name", "Nationalmannschaft"))
 	if wid.begins_with("test_"):
 		return "Vorbereitungsspiel"
 	if wid.begins_with("sc_"):
@@ -219,6 +221,7 @@ func tag_weiter() -> Dictionary:
 	Medizin.tageswechsel(daten)
 	Transfermarkt.tageswechsel(daten)
 	Scouting.tageswechsel(daten)
+	Nationalteam.tageswechsel(daten)
 
 	# Anstehende Partien
 	var heute: Array = (spiele_am_tag(t) as Array).duplicate()
@@ -267,6 +270,11 @@ func partie_simulieren(mid: String) -> void:
 func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 	var m: Dictionary = daten["spiele"][mid]
 	m["bericht"] = sim.bericht()
+	if str(m["art"]) == "turnier":
+		Nationalteam.spiel_verbuchen(daten, m)
+		Medizin.spiel_nachwirkung(daten, m)
+		spiel_ausgetragen.emit(mid)
+		return
 	Statistik.spiel_verbuchen(daten, m)
 	Finanzen.spieltag_abrechnen(daten, m)
 	Medizin.spiel_nachwirkung(daten, m)
@@ -278,6 +286,7 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 
 ## Prueft nach jedem Spieltag, ob Pokal- oder Europarunden weitergehen.
 func _wettbewerbe_fortschreiben() -> void:
+	Nationalteam.fortschreiben(daten)
 	for pid in daten["pokale"].keys():
 		var pokal: Dictionary = daten["pokale"][pid]
 		if bool(pokal.get("beendet", false)):
@@ -433,6 +442,7 @@ func _daten_auffrischen() -> void:
 		"medien": {"outlets": [], "fanaccounts": []},
 		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2},
 		"plan": {}, "international": {}, "pokale": {}, "saison_abgeschlossen": false,
+		"nationalteams": [], "turnier": Nationalteam.leeres_turnier(),
 	}
 	for k in vorlage.keys():
 		if not daten.has(k):

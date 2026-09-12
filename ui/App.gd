@@ -14,6 +14,7 @@ const BEREICHE := [
 	{"id": "spielplan", "name": "Spielplan", "gruppe": "Wettbewerb"},
 	{"id": "tabellen", "name": "Tabellen", "gruppe": "Wettbewerb"},
 	{"id": "pokale", "name": "Pokale & Europa", "gruppe": "Wettbewerb"},
+	{"id": "national", "name": "Nationalteams", "gruppe": "Wettbewerb"},
 	{"id": "transfer", "name": "Transfermarkt", "gruppe": "Markt"},
 	{"id": "scouting", "name": "Scouting", "gruppe": "Markt"},
 	{"id": "finanzen", "name": "Finanzen", "gruppe": "Führung"},
@@ -157,7 +158,7 @@ func _baue_bildschirme() -> void:
 	var liste := {
 		"buero": BueroBildschirm, "kader": KaderBildschirm, "taktik": TaktikBildschirm,
 		"training": TrainingBildschirm, "kabine": KabinenBildschirm, "spielplan": SpielplanBildschirm,
-		"tabellen": TabellenBildschirm, "pokale": PokalBildschirm, "transfer": TransferBildschirm,
+		"tabellen": TabellenBildschirm, "pokale": PokalBildschirm, "national": NationalBildschirm, "transfer": TransferBildschirm,
 		"scouting": ScoutingBildschirm, "finanzen": FinanzBildschirm,
 		"infrastruktur": InfrastrukturBildschirm, "personal": PersonalBildschirm,
 		"vorstand": VorstandsBildschirm, "karriere": KarriereBildschirm, "medien": MedienBildschirm,

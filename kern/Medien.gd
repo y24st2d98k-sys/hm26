@@ -63,6 +63,8 @@ static func beitrag(d: Dictionary, text: String, tonfall: String, typ_filter: Ar
 # ---------------------------------------------------------- Spielberichte ---
 
 static func spielbericht(d: Dictionary, m: Dictionary, cid: String) -> void:
+	if str(m["art"]) == "turnier":
+		return
 	if str(m["art"]) == "test":
 		_testspielnotiz(d, m, cid)
 		return

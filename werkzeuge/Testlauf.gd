@@ -135,6 +135,15 @@ func _saison_test(dauer: int) -> void:
 		if d["spieler"].has(e["sid"]):
 			print("  %-28s %d" % [Spielerfabrik.voller_name(d["spieler"][e["sid"]]), int(e["tore"])])
 	print("Spieler gesamt: %d, Nachrichten: %d, Presse: %d" % [d["spieler"].size(), (d["nachrichten"] as Array).size(), (d["presse"] as Array).size()])
+	var t: Dictionary = d.get("turnier", {})
+	if not t.is_empty():
+		print("Turnier: %s — Phase %s, %d Teilnehmer" % [str(t.get("name","-")), str(t.get("phase","-")), (t.get("teilnehmer",[]) as Array).size()])
+		if str(t.get("sieger","")) != "":
+			print("  Sieger: %s" % Namen.KULTUR_NAME.get(str(t["sieger"]), "?"))
+		var turnier_tj := Nationalteam.torjaeger(d, 3)
+		for e in turnier_tj:
+			if d["spieler"].has(e["sid"]):
+				print("  Torjaeger: %-26s %d" % [Spielerfabrik.voller_name(d["spieler"][e["sid"]]), int(e["tore"])])
 	if Welt.mein_verein_id != "":
 		var v: Dictionary = d["vereine"][Welt.mein_verein_id]
 		print("Kasse: %s, Vorstandsvertrauen: %.0f, Kabine: %.0f" % [Stil.geld(float(v["kasse"])), float(v["vorstand"]["vertrauen"]), float(v["stimmung_kabine"])])

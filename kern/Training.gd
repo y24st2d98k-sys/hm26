@@ -98,7 +98,7 @@ static func tageswechsel(d: Dictionary) -> void:
 # ------------------------------------------------------------ Wochenablauf ---
 
 static func wochenwechsel(d: Dictionary) -> void:
-	for cid in d["vereine"].keys():
+	for cid in Weltgenerator.clubs(d):
 		_verein_trainieren(d, cid)
 	_alterung_pruefen(d)
 
@@ -113,6 +113,8 @@ static func _verein_trainieren(d: Dictionary, cid: String) -> void:
 
 	for sid in v["kader"]:
 		var sp: Dictionary = d["spieler"][sid]
+		if bool(sp.get("bei_nationalmannschaft", false)):
+			continue
 		var regeneriert: bool = int(zuteilung.get(sid, 0)) > 0
 		var verletzt: bool = not (sp["verletzung"] as Dictionary).is_empty()
 		# Belastung durch Training

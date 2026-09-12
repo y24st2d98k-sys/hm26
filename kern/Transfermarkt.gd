@@ -426,7 +426,7 @@ static func vertrag_aufloesen(d: Dictionary, sid: String) -> Dictionary:
 static func _ki_transferrunde(d: Dictionary) -> void:
 	if not fenster_offen(d):
 		return
-	var vereine: Array = d["vereine"].keys()
+	var vereine: Array = Weltgenerator.clubs(d)
 	vereine.shuffle()
 	var geschaefte := 0
 	for cid in vereine:
@@ -528,7 +528,7 @@ static func _angebot_fuer_eigene_spieler(d: Dictionary, cid: String) -> void:
 	if Spielerfabrik.gesamt(sp) < 55.0 and not bool(sp.get("auf_transferliste", false)):
 		return
 	var interessenten: Array = []
-	for anderer in d["vereine"].keys():
+	for anderer in Weltgenerator.clubs(d):
 		if anderer == cid:
 			continue
 		var av: Dictionary = d["vereine"][anderer]
@@ -575,7 +575,7 @@ static func geruechtekueche(d: Dictionary) -> void:
 		var sp: Dictionary = d["spieler"][sid]
 		if Spielerfabrik.gesamt(sp) < 58.0:
 			continue
-		var ziele: Array = d["vereine"].keys()
+		var ziele: Array = Weltgenerator.clubs(d)
 		var ziel: String = str(ziele[Namen.wuerfel(0, ziele.size() - 1)])
 		if ziel == str(sp["verein"]):
 			continue
