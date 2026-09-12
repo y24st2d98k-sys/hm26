@@ -86,7 +86,8 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 		"chronik": {"saisons": [], "ereignisse": []},
 		"rekorde": {},
 		"zaehler": {"spieler": 0, "verein": 0, "spiel": 0, "personal": 0, "nachricht": 0, "auftrag": 0},
-		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2},
+		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2,
+			"autospeichern": true},
 		"saison_abgeschlossen": false,
 	}
 	var echt: bool = echte_welt and Echtdaten.verfuegbar()
@@ -436,9 +437,8 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 			"rolle": "rotation",
 			"ablöseklausel": 0.0,
 			"unterschrieben_saison": -Namen.wuerfel(0, 3),
-			"praemie_tor": 0.0,
-			"praemie_sieg": 0.0,
 		}
+		_startpraemien_setzen(sp_e, ruf)
 		sp_e["wert"] = Spielerfabrik.marktwert(sp_e)
 		d["spieler"][sid_e] = sp_e
 		(verein["kader"] as Array).append(sid_e)
@@ -470,9 +470,8 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 				"rolle": "rotation",
 				"ablöseklausel": 0.0,
 				"unterschrieben_saison": -Namen.wuerfel(0, 3),
-				"praemie_tor": 0.0,
-				"praemie_sieg": 0.0,
 			}
+			_startpraemien_setzen(sp, ruf)
 			sp["wert"] = Spielerfabrik.marktwert(sp)
 			d["spieler"][sid] = sp
 			(verein["kader"] as Array).append(sid)
@@ -766,3 +765,21 @@ static func _erzeuge_rekorde(d: Dictionary) -> void:
 		"teuerster_transfer": {},
 		"schnellstes_tor": {},
 	}
+
+
+## Ein Teil der Startverträge enthält Erfolgsprämien — je besser zahlend der
+## Verein, desto eher wird variabel vergütet. Das Festgehalt sinkt entsprechend.
+static func _startpraemien_setzen(sp: Dictionary, ruf: float) -> void:
+	var vertrag: Dictionary = sp["vertrag"]
+	vertrag["praemie_tor"] = 0.0
+	vertrag["praemie_sieg"] = 0.0
+	if Namen.zufall() > clampf(0.14 + ruf / 320.0, 0.14, 0.45):
+		return
+	var mass: float = clampf(ruf / 100.0, 0.2, 1.0) * Namen.bereich(0.35, 1.0)
+	if not bool(sp["ist_torwart"]) and Namen.zufall() < 0.7:
+		vertrag["praemie_tor"] = roundf(Praemien.TOR_MAX * mass * 0.55 / 50.0) * 50.0
+	if Namen.zufall() < 0.75:
+		vertrag["praemie_sieg"] = roundf(Praemien.SIEG_MAX * mass * 0.5 / 100.0) * 100.0
+	var ersatz: float = Praemien.erwartete_wochenkosten(sp, float(vertrag["praemie_tor"]),
+		float(vertrag["praemie_sieg"]), clampf(ruf / 130.0, 0.25, 0.78)) * Praemien.anrechnungsfaktor(sp)
+	vertrag["gehalt"] = maxf(float(vertrag["gehalt"]) - ersatz, float(vertrag["gehalt"]) * 0.5)

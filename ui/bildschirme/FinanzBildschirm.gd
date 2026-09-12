@@ -53,8 +53,18 @@ func aktualisieren() -> void:
 	ausgaben.add_child(Stil.info_zeile("Spielergehälter", Stil.geld(-float(u["gehalt_spieler"])), Stil.ROT))
 	ausgaben.add_child(Stil.info_zeile("Personalgehälter", Stil.geld(-float(u["gehalt_personal"])), Stil.ROT))
 	ausgaben.add_child(Stil.info_zeile("Betriebskosten", Stil.geld(-float(u["betrieb"])), Stil.ROT))
+	var praemien_zugesagt := 0.0
+	for sid in v["kader"]:
+		var vertrag: Dictionary = Welt.spieler(sid).get("vertrag", {})
+		praemien_zugesagt += Praemien.erwartete_wochenkosten(Welt.spieler(sid),
+			float(vertrag.get("praemie_tor", 0.0)), float(vertrag.get("praemie_sieg", 0.0)),
+			Praemien.siegquote(Welt.daten, cid))
+	ausgaben.add_child(Stil.info_zeile("Erfolgsprämien (Erwartung)", Stil.geld(-praemien_zugesagt),
+		Stil.ROT if praemien_zugesagt > 0.0 else Stil.TEXT_MATT))
+	ausgaben.add_child(Stil.info_zeile("Prämien diese Saison",
+		Stil.geld(-Praemien.saisonsumme(Welt.daten, cid))))
 	ausgaben.add_child(Stil.trenner())
-	var saldo: float = float(u["sponsoring"]) + float(u["tv"]) + float(u["merch"]) - float(u["gehalt_spieler"]) - float(u["gehalt_personal"]) - float(u["betrieb"])
+	var saldo: float = float(u["sponsoring"]) + float(u["tv"]) + float(u["merch"]) - float(u["gehalt_spieler"]) - float(u["gehalt_personal"]) - float(u["betrieb"]) - praemien_zugesagt
 	ausgaben.add_child(Stil.info_zeile("Saldo ohne Spieltage", Stil.geld(saldo), Stil.GRUEN if saldo > 0.0 else Stil.ROT))
 
 	var sponsoren := Bausteine.karte_in(inhalt, "Sponsoren")

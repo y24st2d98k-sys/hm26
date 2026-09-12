@@ -87,6 +87,10 @@ func _zeile(m: Dictionary, cid: String) -> Control:
 	knopf.add_child(h)
 	if bool(m["gespielt"]):
 		knopf.pressed.connect(func(): Spielbericht.oeffnen(self, str(m["id"])))
+	elif str(m["heim"]) == cid or str(m["gast"]) == cid:
+		# Noch offene eigene Partie: direkt in die Spielvorbereitung springen.
+		var gegner: String = str(m["gast"]) if str(m["heim"]) == cid else str(m["heim"])
+		knopf.pressed.connect(func(): Vorberichtsfenster.oeffnen(self, gegner, str(m["id"])))
 	return knopf
 
 ## Tagesübersicht: was in den nächsten 21 Tagen ansteht — Spiele, feste

@@ -148,6 +148,17 @@ func _saison_test(dauer: int) -> void:
 		var v: Dictionary = d["vereine"][Welt.mein_verein_id]
 		print("Kasse: %s, Vorstandsvertrauen: %.0f, Kabine: %.0f" % [Stil.geld(float(v["kasse"])), float(v["vorstand"]["vertrauen"]), float(v["stimmung_kabine"])])
 		print("Trainerruf: %.1f, Praegungen: %s" % [float(d["trainer"]["ruf"]), str(d["trainer"]["praegungen"])])
+		print("Praemien eigener Kader: %s" % Stil.geld(Praemien.saisonsumme(d, Welt.mein_verein_id)))
+		var mit_praemie := 0
+		var praemiensumme := 0.0
+		for sp in d["spieler"].values():
+			var vertrag: Dictionary = sp.get("vertrag", {})
+			if float(vertrag.get("praemie_tor", 0.0)) > 0.0 or float(vertrag.get("praemie_sieg", 0.0)) > 0.0:
+				mit_praemie += 1
+			praemiensumme += float((sp["stats"]["saison"] as Dictionary).get("praemien", 0.0))
+		print("Vertraege mit Praemien: %d, weltweit ausgeschuettet: %s" % [mit_praemie, Stil.geld(praemiensumme)])
+		var vb := Vorbericht.erzeuge(d, Welt.mein_verein_id, str(Welt.naechstes_spiel(Welt.mein_verein_id).get("gast", Welt.mein_verein_id)))
+		print("Vorbericht-Stufe naechster Gegner: %d" % int(vb["stufe"]))
 
 ## Drei Saisons am Stück: prüft Auf-/Abstieg, Titel, Alterung und Karriere.
 func _langzeit_test(dauer: int) -> void:

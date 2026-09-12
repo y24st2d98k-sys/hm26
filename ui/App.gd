@@ -60,6 +60,7 @@ func _ready() -> void:
 	add_child(Vereinsfenster.new())
 	add_child(Spielbericht.new())
 	add_child(Pressefenster.new())
+	add_child(Vorberichtsfenster.new())
 	live = LiveSpiel.new()
 	live.visible = false
 	add_child(live)

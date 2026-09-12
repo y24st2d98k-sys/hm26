@@ -325,7 +325,10 @@ func _slots_fuellen() -> void:
 	if slotliste == null:
 		return
 	Bildschirm.leeren(slotliste)
-	for slot in range(1, Welt.SLOTS + 1):
+	var plaetze: Array[int] = [Welt.AUTOSLOT]
+	for nr in range(1, Welt.SLOTS + 1):
+		plaetze.append(nr)
+	for slot in plaetze:
 		var info := Welt.slot_info(slot)
 		var p := PanelContainer.new()
 		p.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_NORMAL, Stil.RAND))
@@ -337,7 +340,8 @@ func _slots_fuellen() -> void:
 		p.add_child(m)
 		var h := Stil.hbox(12)
 		m.add_child(h)
-		h.add_child(Stil.text("Platz %d" % slot, Stil.S_NORMAL, Stil.AKZENT))
+		h.add_child(Stil.text("Automatik" if slot == Welt.AUTOSLOT else "Platz %d" % slot,
+			Stil.S_NORMAL, Stil.TUERKIS if slot == Welt.AUTOSLOT else Stil.AKZENT))
 		if info.is_empty():
 			h.add_child(Stil.matt("— leer —"))
 			h.add_child(Stil.dehner())

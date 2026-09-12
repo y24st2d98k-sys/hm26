@@ -94,6 +94,10 @@ func _naechstes_spiel(eltern: Node) -> void:
 	karte.add_child(Bausteine.formkurve(gv["formkurve"], 6))
 	if Scouting.gegnervorteil(Welt.daten, Welt.mein_verein_id, gegner) > 0.0:
 		karte.add_child(Stil.abzeichen("GEGNER ANALYSIERT", Stil.GRUEN))
+	var mid: String = str(m["id"])
+	var vorbereitung := Stil.knopf_primaer("Spielvorbereitung öffnen")
+	vorbereitung.pressed.connect(func(): Vorberichtsfenster.oeffnen(self, gegner, mid))
+	karte.add_child(vorbereitung)
 
 func _tabellenlage(eltern: Node) -> void:
 	var karte := Bausteine.karte_in(eltern, "Tabellenlage")

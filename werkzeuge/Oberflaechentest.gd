@@ -79,6 +79,16 @@ func _ready() -> void:
 		app.zeige(id2)
 		await get_tree().process_frame
 
+	_log("— Spielvorbereitung —")
+	var naechstes2 := Welt.naechstes_spiel(Welt.mein_verein_id)
+	if not naechstes2.is_empty():
+		var gegner2: String = str(naechstes2["gast"]) if str(naechstes2["heim"]) == Welt.mein_verein_id else str(naechstes2["heim"])
+		var vf: Node = get_tree().get_first_node_in_group("vorberichtsfenster")
+		vf.zeige(gegner2, str(naechstes2["id"]))
+		await get_tree().process_frame
+		_log("   Vorbericht Stufe %d ok" % int(Vorbericht.stufe(Welt.daten, Welt.mein_verein_id, gegner2)))
+		vf.visible = false
+
 	_log("— Statistikzentrum: alle Wertungen —")
 	app.zeige("statistik")
 	var stat: Node = app.bildschirme["statistik"]

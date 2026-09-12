@@ -112,7 +112,7 @@ static func _neue_angebots_id(d: Dictionary) -> String:
 
 ## Der Spieler gibt ein Angebot fuer einen fremden Spieler ab.
 static func angebot_abgeben(d: Dictionary, sid: String, ablöse: float, gehalt: float, laufzeit: int,
-		rolle: String, art: String = "kauf") -> Dictionary:
+		rolle: String, art: String = "kauf", praemie_tor: float = 0.0, praemie_sieg: float = 0.0) -> Dictionary:
 	var cid: String = Welt.mein_verein_id
 	if cid == "":
 		return {"ok": false, "grund": "Sie haben derzeit keinen Verein."}
@@ -139,6 +139,8 @@ static func angebot_abgeben(d: Dictionary, sid: String, ablöse: float, gehalt: 
 		"frist_tag": int(d["tag"]) + Namen.wuerfel(1, 3),
 		"antwort": "",
 		"leihgebuehr_anteil": 0.5,
+		"praemie_tor": Praemien.begrenzen(praemie_tor, praemie_sieg)["praemie_tor"],
+		"praemie_sieg": Praemien.begrenzen(praemie_tor, praemie_sieg)["praemie_sieg"],
 	}
 	(d["transfermarkt"]["angebote"] as Array).append(angebot)
 	return {"ok": true, "grund": "Angebot übermittelt. Eine Antwort wird in den nächsten Tagen erwartet."}
@@ -241,6 +243,9 @@ static func _spielerverhandlung(d: Dictionary, a: Dictionary) -> void:
 	var geboten: float = float(a["gehalt"])
 	var attraktivitaet := _attraktivitaet(d, sp, nach, str(a["rolle"]))
 	var schwelle: float = wunsch * clampf(1.12 - attraktivitaet * 0.28, 0.78, 1.25)
+	# Zugesagte Erfolgsprämien ersetzen einen Teil des Festgehalts.
+	schwelle -= Praemien.gehaltsersatz(d, sp, float(a.get("praemie_tor", 0.0)), float(a.get("praemie_sieg", 0.0)), nach)
+	schwelle = maxf(schwelle, wunsch * 0.5)
 	if geboten >= schwelle:
 		_transfer_vollziehen(d, a)
 	elif geboten >= schwelle * 0.85:
@@ -322,13 +327,15 @@ static func _transfer_vollziehen(d: Dictionary, a: Dictionary) -> void:
 		leihe_vollziehen(d, sid, nach, int(a["laufzeit"]))
 		a["status"] = "abgeschlossen"
 		return
-	transfer_durchfuehren(d, sid, nach, ablöse, float(a["gehalt"]), int(a["laufzeit"]), str(a["rolle"]))
+	transfer_durchfuehren(d, sid, nach, ablöse, float(a["gehalt"]), int(a["laufzeit"]), str(a["rolle"]),
+		float(a.get("praemie_tor", 0.0)), float(a.get("praemie_sieg", 0.0)))
 	a["status"] = "abgeschlossen"
 	a["antwort"] = "Der Wechsel ist perfekt."
 	_melde(d, a, "Transfer abgeschlossen", "%s wechselt für %s." % [Spielerfabrik.voller_name(d["spieler"][sid]), Stil.geld(ablöse)])
 
 static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, ablöse: float,
-		gehalt: float, laufzeit: int, rolle: String) -> void:
+		gehalt: float, laufzeit: int, rolle: String,
+		praemie_tor: float = 0.0, praemie_sieg: float = 0.0) -> void:
 	var sp: Dictionary = d["spieler"][sid]
 	var von: String = str(sp["verein"])
 	if von != "" and d["vereine"].has(von):
@@ -347,8 +354,8 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 		"rolle": rolle,
 		"ablöseklausel": 0.0,
 		"unterschrieben_saison": Welt.saison_index(),
-		"praemie_tor": 0.0,
-		"praemie_sieg": 0.0,
+		"praemie_tor": Praemien.begrenzen(praemie_tor, praemie_sieg)["praemie_tor"],
+		"praemie_sieg": Praemien.begrenzen(praemie_tor, praemie_sieg)["praemie_sieg"],
 	}
 	sp["auf_transferliste"] = false
 	sp["transferwunsch"] = false
@@ -390,16 +397,22 @@ static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: 
 	Weltgenerator.setze_standardaufstellung(d, nach)
 
 ## Vertragsverlaengerung eines eigenen Spielers.
-static func vertrag_verlaengern(d: Dictionary, sid: String, gehalt: float, laufzeit: int, rolle: String) -> Dictionary:
+static func vertrag_verlaengern(d: Dictionary, sid: String, gehalt: float, laufzeit: int, rolle: String,
+		praemie_tor: float = 0.0, praemie_sieg: float = 0.0) -> Dictionary:
 	var sp: Dictionary = d["spieler"][sid]
 	var cid: String = str(sp["verein"])
 	var wunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(d["vereine"][cid]["ruf"]))
 	var rollen_bonus: float = {"leistungstraeger": 0.9, "stammspieler": 0.96, "rotation": 1.0, "ergaenzung": 1.08, "talent": 1.0}.get(rolle, 1.0)
 	var schwelle: float = wunsch * rollen_bonus * clampf(1.0 + float(sp["unzufriedenheit"]) / 260.0, 1.0, 1.4)
+	var grenzen := Praemien.begrenzen(praemie_tor, praemie_sieg)
+	schwelle = maxf(schwelle - Praemien.gehaltsersatz(d, sp, grenzen["praemie_tor"], grenzen["praemie_sieg"]),
+		wunsch * 0.5)
 	if gehalt >= schwelle:
 		sp["vertrag"]["gehalt"] = gehalt
 		sp["vertrag"]["bis_saison"] = Welt.saison_index() + maxi(laufzeit, 1)
 		sp["vertrag"]["rolle"] = rolle
+		sp["vertrag"]["praemie_tor"] = grenzen["praemie_tor"]
+		sp["vertrag"]["praemie_sieg"] = grenzen["praemie_sieg"]
 		sp["unzufriedenheit"] = clampf(float(sp["unzufriedenheit"]) - 25.0, 0.0, 100.0)
 		sp["moral"] = clampf(float(sp["moral"]) + 8.0, 5.0, 100.0)
 		return {"ok": true, "grund": "%s hat unterschrieben." % Spielerfabrik.voller_name(sp)}

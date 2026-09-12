@@ -121,6 +121,17 @@ Leistungsfaktor direkt in die Simulation eingeht und eigene Ereignisse
 auslöst. Vier Gesprächstonlagen (Lob, Kritik, Vertrauen, Druck) wirken je nach
 Charakter des Spielers unterschiedlich — und können nach hinten losgehen.
 
+### Erfolgsprämien statt Festgehalt
+Jeder Vertrag kann eine Tor- und eine Siegprämie enthalten. Der Spieler
+rechnet sie gegen sein Festgehalt auf — aber nicht zum vollen Wert: ein
+ehrgeiziger Profi traut sich die Prämien zu und verzichtet dafür spürbar auf
+Grundgehalt, ein Zweifler will Sicherheit und rechnet sie kaum an. Für den
+Verein ist das eine echte Wette: In schwachen Wochen bleibt Luft in der
+Gehaltsliste, in erfolgreichen wird es teuer. Ausgezahlte Prämien heben
+zusätzlich die Stimmung des Spielers. Die Finanzübersicht führt beides
+getrennt — die erwartete Wochenlast und das, was in dieser Saison tatsächlich
+geflossen ist.
+
 ### Das Gespür der Scouts
 Scouts sind nicht nur Werte, sondern haben einen eigenen Ruf. Jede Empfehlung
 eines jungen Spielers wird zwei Saisons später daran gemessen, ob er sich
@@ -164,6 +175,11 @@ Abgebildet sind unter anderem:
 * **Kraftverschleiß** über 60 Minuten, abhängig von Ausdauer, Tempo,
   Deckungsart und Wechselintensität — mit automatischer oder manueller Rotation.
 * **Auszeiten** (drei pro Mannschaft), die einen Lauf des Gegners brechen.
+* **Kabinenansprachen** vor dem Anpfiff und zur Halbzeit: vier Tonlagen
+  (ruhig, anfeuern, kritisieren, Vertrauen aussprechen), deren Wirkung von
+  Spielstand, Kabinenklima und der Handschrift des Trainers abhängt. Eine
+  Ansprache verschiebt Angriffs- und Abwehrkraft für den Rest der Partie —
+  in beide Richtungen.
 * **Verletzungen während der Partie** mit sofortigem Ausfall.
 * **Tempogegenstöße**, Blocks, Ballgewinne, Siebenmeter, Zeitspiel,
   Verlängerung und Siebenmeterwerfen in K.-o.-Partien.
@@ -187,6 +203,13 @@ herausnehmen.
   Gruppen, dann K.-o. mit Hin- und Rückspiel) und die *Challenge-Trophäe*
   (reines K.-o.). Qualifikation über die Abschlusstabellen und Pokalsieger.
 * **Nationale Supercups** zwischen Meister und Pokalsieger.
+* **Nationalmannschaften und ein Winterturnier.** In jeder Winterpause spielen
+  16 Nationen ein Turnier aus — in geraden Saisons eine Europameisterschaft,
+  sonst eine Weltmeisterschaft, mit Gruppenphase und K.-o.-Runde. Die Kader
+  werden aus den besten verfügbaren Spielern der Welt nominiert; wer
+  nominiert wird, fehlt dem Verein und kommt mit Belastung zurück. Die
+  Turnierpartien laufen durch dieselbe Engine, zählen aber in keine
+  Vereinswertung.
 * **Vorbereitungsspiele** im Juli und August: fünf Testspiele gegen Gegner
   ähnlicher Stärke, die für keine Tabelle zählen, aber Spielpraxis, Fitness
   und einen ersten Blick auf den neuen Kader liefern.
@@ -197,19 +220,48 @@ herausnehmen.
 
 ---
 
+## Zwischen den Spielen
+
+* **Spielvorbereitung.** Vor jeder eigenen Partie liefert die Analyseabteilung
+  einen Vorbericht über den Gegner — voraussichtliche Aufstellung,
+  Schlüsselspieler mit Saisonzahlen, Ausrichtung, Stärken, Ansatzpunkte und
+  eine Empfehlung, welche Deckung gegen den Angriffsstil des Gegners am besten
+  wirkt. Der Detailgrad ist gestuft (0 bis 3) und hängt von Scoutbericht,
+  ausgebauter Analyseabteilung und Kenntnis der gegnerischen Spieler ab: ohne
+  Vorarbeit bleibt es bei Vermutungen, mit voller Analyse liegt sogar die
+  Wurfverteilung des Gegners offen.
+* **Pressekonferenzen.** Am Tag vor Pflichtspielen stellt die Presse Fragen —
+  bei Derbys, in der Krise und vor internationalen Partien immer, sonst
+  gelegentlich. Die Fragen greifen die tatsächliche Lage auf: eine Serie von
+  Niederlagen, ein Platz an der Spitze, ein wechselwilliger Spieler. Jede
+  Antwort wirkt auf Fans, Vorstand, Mannschaftsmoral — und auf die Motivation
+  des Gegners, der mitliest.
+* **Nachwuchsakademie.** Jede Saison rückt ein eigener Jahrgang nach. Talente
+  entwickeln sich schneller als Profis, aber nur so gut, wie die Jugendarbeit
+  des Vereins es hergibt. Wer überzeugt, wird in den Profikader befördert; wer
+  mit 20 nicht weit genug ist, wird freigegeben. Auch KI-Vereine pflegen ihre
+  Jugend.
+* **Statistikzentrum.** Zwölf Spielerwertungen je Liga (Tore, Tore je Spiel,
+  Vorlagen, Wurfquote, Siebenmeter, Paraden, Paradenquote, Durchschnittsnote,
+  Einsatzzeit, Zeitstrafen, Ballgewinne, Blocks) mit Mindesteinsatzhürden, dazu
+  vier Mannschaftswertungen (bester Angriff, beste Abwehr, Zuschauerschnitt,
+  Zeitstrafen) — und in jeder Wertung die Platzierung des eigenen Kaders.
+
+---
+
 ## Die neun Säulen im Überblick
 
 | Säule | Umsetzung |
 |---|---|
-| **1 Liga-Welt** | 5 Nationen / 8 Ligen / 96 Vereine, Auf- und Abstieg, 5 Pokale, 2 Europapokale, Supercups, vollständig eigenständige KI |
-| **2 Matchsimulation** | Angriffsweise Engine, 4 Deckungen × 5 Angriffsstile, Zeitstrafen mit Unterzahl, 7-gegen-6, Auszeiten, Kräftehaushalt, Live-Ansicht mit gezeichnetem Feld |
-| **3 Kader** | 29 Attribute, Form, Moral, Fitness, Lastkonto, Verletzungsanfälligkeit, Persönlichkeit, Potenzial, Alterskurve, individuelle Förderprogramme |
-| **4 Transfer & Scouting** | Aktive Suche mit acht Filtern, zweistufige Verhandlung (Verein, dann Spieler), Gegenangebote, Leihen, Transferfenster mit Fristmeldungen, Scoutaufträge mit Unschärfe |
+| **1 Liga-Welt** | 5 Nationen / 10 Ligen / 136 Vereine, Auf- und Abstieg, 5 Pokale, 2 Europapokale, Supercups, Nationalmannschaften mit EM und WM, vollständig eigenständige KI |
+| **2 Matchsimulation** | Angriffsweise Engine, 4 Deckungen × 5 Angriffsstile, Zeitstrafen mit Unterzahl, 7-gegen-6, Auszeiten, Kabinenansprachen, Kräftehaushalt, Live-Ansicht mit gezeichnetem Feld |
+| **3 Kader** | 29 Attribute, Form, Moral, Fitness, Lastkonto, Verletzungsanfälligkeit, Persönlichkeit, Potenzial, Alterskurve, individuelle Förderprogramme, eigene Nachwuchsakademie |
+| **4 Transfer & Scouting** | Aktive Suche mit acht Filtern, zweistufige Verhandlung (Verein, dann Spieler), Gegenangebote, Leihen, Erfolgsprämien im Vertrag, Transferfenster mit Fristmeldungen, Scoutaufträge mit Unschärfe, gestufte Spielvorbereitung |
 | **5 Vereinsführung** | Einnahmen aus Zuschauern, Sponsoring, Medien, Merchandising und Preisgeldern; sechs Ausbaubereiche; sieben Personalrollen mit messbarer Wirkung; Vorstand mit Ziel, Vertrauen, Warnstufen und Entlassung |
 | **6 Trainerkarriere** | Eigener Vertrag, Ruf, Stationen, Titelsammlung, Jobangebote, Handschrift mit Prägungen — alles vereinsübergreifend |
 | **7 Zeitablauf** | Tageskalender mit Vorbereitung, Trainingsalltag und Wochenrhythmus (Montag: Abrechnung, Training, Presse, Vorstand; Donnerstag: Kabine, Gerüchte), Winterpause, Transferfenster; eine Drei-Wochen-Vorschau zeigt Spiele, Fristen, Scoutberichte und Bauabschlüsse |
-| **8 Immersion** | Presse und „Hallenfunk" reagieren auf Ergebnis, Derbycharakter, Serien, Einzelleistungen und Vereinslage; Rivalitäten wachsen aus Duellen; Chronik mit Titeln, Legenden, Rekorden und Saisonverlauf |
-| **9 Persistenz** | 5 Speicherplätze, vollständiger Zustand in einer Datei, Klartext-Beschreibung daneben, automatische Ergänzung fehlender Felder beim Laden |
+| **8 Immersion** | Presse und „Hallenfunk" reagieren auf Ergebnis, Derbycharakter, Serien, Einzelleistungen und Vereinslage; Pressekonferenzen vor Pflichtspielen; Rivalitäten wachsen aus Duellen; Chronik mit Titeln, Legenden, Rekorden und Saisonverlauf |
+| **9 Persistenz** | 5 Speicherplätze plus automatische Sicherung (jeden Montag und zu jedem Saisonwechsel), vollständiger Zustand in einer Datei, Klartext-Beschreibung daneben, automatische Ergänzung fehlender Felder beim Laden |
 
 ---
 
@@ -230,7 +282,7 @@ kern/
   Weltgenerator.gd   Nationen, Ligen, Vereine, Wappen, Kader, Personal, Rivalitäten
   Spielplan.gd       Doppelrunde, Pokalauslosung, Gruppen- und K.-o.-Phasen
   Matchsim.gd        Die Spielsimulation
-  Statistik.gd       Tabellen, Vereins- und Spielerstatistik, Torjäger
+  Statistik.gd       Tabellen, Vereins- und Spielerstatistik, Torjäger, Ranglisten
   Finanzen.gd        Einnahmen, Ausgaben, Budgets, Ausbauprojekte
   Medizin.gd         Verletzungen, Genesung, Belastungssteuerung
   Training.gd        Wochenplan, Entwicklung, Regenerationsbudget
@@ -242,13 +294,21 @@ kern/
   Chronik.gd         Rekorde, Rivalitäten, Legenden, Vereinsgeschichte
   Medien.gd          Presse und Hallenfunk
   Saison.gd          Abschluss, Ehrungen, Auf-/Abstieg, Nachwuchs, neue Saison
+  Nationalteam.gd    Nominierung, EM/WM im Winter, Turnierspielplan
+  Presse.gd          Pressekonferenzen: Fragen, Antworten, Wirkung
+  Jugend.gd          Nachwuchsakademie: Jahrgänge, Entwicklung, Beförderung
+  Praemien.gd        Erfolgsprämien: Bewertung, Auszahlung, Wirkung
+  Vorbericht.gd      Spielvorbereitung: gestufte Gegneranalyse
+  Echtdaten.gd       Lader und Zwischenspeicher für die JSON-Datensätze
   KI.gd              Aufstellung, Taktik, Training, Verträge, Ausbau der KI-Vereine
 ui/
   App.gd/.tscn       Rahmen: Kopfzeile, Navigation, Bildschirmwechsel
   Bildschirm.gd      Grundklasse aller Bildschirme
   LiveSpiel.gd       Live-Ansicht einer Partie
-  widgets/           Wappen, Spielfeld, Bausteine, Spieler-/Vereins-/Berichtsfenster
-  bildschirme/       19 Bildschirme
+  widgets/           Wappen, Spielfeld, Bausteine, Spieler-, Vereins-, Bericht-,
+                     Presse- und Vorberichtsfenster
+  bildschirme/       22 Bildschirme
+daten/               ligen.json und kader.json — die echten Vereine und Kader
 werkzeuge/           Test- und Kalibrierungsszenen
 ```
 
@@ -267,7 +327,7 @@ mit Verein, Trainer, Saison und Datum, damit die Spielstandsliste nichts laden m
 Felder aus einer Vorlage. Ein Spielstand aus einer älteren Version verliert
 dadurch nichts und stürzt nicht ab, wenn neue Systeme hinzukommen.
 
-**Bildschirme werden gebaut, nicht erzeugt.** Alle 19 Bildschirme hängen von
+**Bildschirme werden gebaut, nicht erzeugt.** Alle 22 Bildschirme hängen von
 Anfang an im Baum und werden nur über `visible` gewechselt. Innerhalb eines
 Bildschirms liegen dauerhafte Knoten (Kopfzeilen, Reiterleisten, Meldungszeilen)
 strikt außerhalb der Container, die bei jeder Aktualisierung geleert werden.

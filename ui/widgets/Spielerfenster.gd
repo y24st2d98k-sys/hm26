@@ -309,6 +309,15 @@ func _vertrag(sp: Dictionary) -> void:
 			Kalender.saison_text(Welt.startjahr(), int(vertrag.get("bis_saison", 0))), maxi(rest, 0)],
 			Stil.ROT if rest <= 0 else Stil.TEXT))
 		karte.add_child(Stil.info_zeile("Rolle", str(Transfermarkt.ROLLEN_NAME.get(str(vertrag.get("rolle", "rotation")), "—"))))
+		var pt: float = float(vertrag.get("praemie_tor", 0.0))
+		var ps: float = float(vertrag.get("praemie_sieg", 0.0))
+		if pt > 0.0 or ps > 0.0:
+			karte.add_child(Stil.info_zeile("Erfolgsprämien", "%s je Tor · %s je Sieg" % [
+				Stil.geld(pt), Stil.geld(ps)], Stil.GELB))
+			karte.add_child(Stil.info_zeile("Davon in dieser Saison",
+				Stil.geld(float((sp["stats"]["saison"] as Dictionary).get("praemien", 0.0)))))
+		else:
+			karte.add_child(Stil.info_zeile("Erfolgsprämien", "keine"))
 		karte.add_child(Stil.info_zeile("Unzufriedenheit", "%d" % int(sp["unzufriedenheit"]),
 			Stil.ROT if float(sp["unzufriedenheit"]) > 55.0 else Stil.TEXT))
 
@@ -340,10 +349,13 @@ func _vertrag(sp: Dictionary) -> void:
 			if str(sp["vertrag"].get("rolle", "")) == str(Transfermarkt.ROLLEN[i]):
 				rolle.select(i)
 		zeile.add_child(rolle)
+		var praemien := _praemienzeile(neu, sp,
+			float(sp["vertrag"].get("praemie_tor", 0.0)), float(sp["vertrag"].get("praemie_sieg", 0.0)))
 		var anbieten := Stil.knopf_primaer("Angebot machen")
 		anbieten.pressed.connect(func():
 			var erg := Transfermarkt.vertrag_verlaengern(Welt.daten, sid, gehalt.value, int(jahre.value),
-				str(rolle.get_item_metadata(rolle.selected)))
+				str(rolle.get_item_metadata(rolle.selected)),
+				(praemien["tor"] as SpinBox).value, (praemien["sieg"] as SpinBox).value)
 			_melde(str(erg["grund"]), bool(erg["ok"]))
 			_zeichne())
 		neu.add_child(anbieten)
@@ -410,12 +422,14 @@ func _angebotsbereich(sp: Dictionary) -> void:
 		rolle.set_item_metadata(i, Transfermarkt.ROLLEN[i])
 	rolle.select(1)
 	zeile.add_child(rolle)
+	var praemien := _praemienzeile(karte, sp, 0.0, 0.0)
 	var knopfzeile := Stil.hbox(8)
 	karte.add_child(knopfzeile)
 	var senden := Stil.knopf_primaer("Angebot abgeben")
 	senden.pressed.connect(func():
 		var erg := Transfermarkt.angebot_abgeben(Welt.daten, sid, abloese.value, gehalt.value,
-			int(jahre.value), str(rolle.get_item_metadata(rolle.selected)), "kauf")
+			int(jahre.value), str(rolle.get_item_metadata(rolle.selected)), "kauf",
+			(praemien["tor"] as SpinBox).value, (praemien["sieg"] as SpinBox).value)
 		_melde(str(erg["grund"]), bool(erg["ok"])))
 	knopfzeile.add_child(senden)
 	if not frei:
@@ -454,3 +468,34 @@ func _entwicklung(sp: Dictionary) -> void:
 	for e in verlaufsliste.slice(0, 12):
 		verlauf.add_child(Stil.info_zeile(Kalender.text(int(e["tag"]), Welt.startjahr()),
 			"+%s auf %d" % [Stil.komma(float(e["delta"]), 2), int(float(e["gesamt"]))], Stil.GRUEN))
+
+## Zwei Eingabefelder für Erfolgsprämien samt Wirkungshinweis.
+## Liefert {"tor": SpinBox, "sieg": SpinBox}.
+func _praemienzeile(eltern: Node, sp: Dictionary, start_tor: float, start_sieg: float) -> Dictionary:
+	var zeile := Stil.hbox(8)
+	eltern.add_child(zeile)
+	zeile.add_child(Stil.matt("Prämie je Tor"))
+	var tor := SpinBox.new()
+	tor.min_value = 0
+	tor.max_value = Praemien.TOR_MAX
+	tor.step = 50
+	tor.value = start_tor
+	tor.custom_minimum_size = Vector2(110, 0)
+	tor.editable = not bool(sp.get("ist_torwart", false))
+	zeile.add_child(tor)
+	zeile.add_child(Stil.matt("je Sieg"))
+	var sieg := SpinBox.new()
+	sieg.min_value = 0
+	sieg.max_value = Praemien.SIEG_MAX
+	sieg.step = 100
+	sieg.value = start_sieg
+	sieg.custom_minimum_size = Vector2(110, 0)
+	zeile.add_child(sieg)
+	var hinweis := Stil.matt("", Stil.S_MINI)
+	eltern.add_child(hinweis)
+	var auffrischen := func():
+		hinweis.text = Praemien.beschreibung(Welt.daten, sp, tor.value, sieg.value, Welt.mein_verein_id)
+	auffrischen.call()
+	tor.value_changed.connect(func(_w): auffrischen.call())
+	sieg.value_changed.connect(func(_w): auffrischen.call())
+	return {"tor": tor, "sieg": sieg}

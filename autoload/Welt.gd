@@ -16,6 +16,8 @@ signal live_spiel_faellig(spiel_id: String)
 const DATENVERSION := 1
 const SPEICHERORDNER := "user://spielstaende"
 const SLOTS := 5
+## Platz 0 gehört der Automatik — er wird ohne Zutun überschrieben.
+const AUTOSLOT := 0
 
 var daten: Dictionary = {}
 var mein_verein_id: String = ""
@@ -282,6 +284,7 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 		return
 	Statistik.spiel_verbuchen(daten, m)
 	Finanzen.spieltag_abrechnen(daten, m)
+	Praemien.abrechnen(daten, m)
 	Medizin.spiel_nachwirkung(daten, m)
 	Chronik.spiel_eintragen(daten, m)
 	if str(m["heim"]) == mein_verein_id or str(m["gast"]) == mein_verein_id:
@@ -357,6 +360,8 @@ func wochenrhythmus(t: int) -> void:
 	if wt == 3:  # Donnerstag: Kabine und Gerüchte
 		Kabine.wochenpuls(daten)
 		Transfermarkt.geruechtekueche(daten)
+	if wt == 0:
+		automatisch_speichern()
 
 func saison_pruefen(t: int) -> void:
 	var tis: int = Kalender.tag_in_saison(t)
@@ -369,6 +374,16 @@ func saison_pruefen(t: int) -> void:
 		daten["saison_abgeschlossen"] = false
 		saison_gewechselt.emit(saison_index())
 		unterbrechung = {"art": "neue_saison"}
+		automatisch_speichern()
+
+## Wöchentlicher Sicherungspunkt auf Platz 0. Läuft still im Hintergrund und
+## lässt sich in den Einstellungen abschalten.
+func automatisch_speichern() -> bool:
+	if daten.is_empty() or mein_verein_id == "":
+		return false
+	if not bool(einstellung("autospeichern", true)):
+		return false
+	return speichern(AUTOSLOT, "Automatisch")
 
 # ------------------------------------------------------------- Persistenz ---
 
@@ -445,7 +460,8 @@ func _daten_auffrischen() -> void:
 		"rekorde": {}, "scouting": {"auftraege": [], "berichte": [], "beobachtung": []},
 		"transfermarkt": {"angebote": [], "gerüchte": [], "verlauf": [], "fenster_offen": true},
 		"medien": {"outlets": [], "fanaccounts": []},
-		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2},
+		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2,
+			"autospeichern": true},
 		"plan": {}, "international": {}, "pokale": {}, "saison_abgeschlossen": false,
 		"nationalteams": [], "turnier": Nationalteam.leeres_turnier(),
 		"pressekonferenz": {},
@@ -473,4 +489,14 @@ func _daten_auffrischen() -> void:
 			sp["entwicklung_log"] = []
 		if not sp.has("laufbahn"):
 			sp["laufbahn"] = []
+		var vertrag: Dictionary = sp.get("vertrag", {})
+		if not vertrag.is_empty():
+			if not vertrag.has("praemie_tor"):
+				vertrag["praemie_tor"] = 0.0
+			if not vertrag.has("praemie_sieg"):
+				vertrag["praemie_sieg"] = 0.0
+		for zeitraum in ["saison", "karriere"]:
+			var st: Dictionary = (sp.get("stats", {}) as Dictionary).get(zeitraum, {})
+			if not st.is_empty() and not st.has("praemien"):
+				st["praemien"] = 0.0
 	daten["version"] = DATENVERSION
