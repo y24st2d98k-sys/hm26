@@ -78,6 +78,7 @@ static func _ehrungen(d: Dictionary, mein: String) -> void:
 		var sp: Dictionary = d["spieler"][sid]
 		(sp["stats"]["karriere"] as Dictionary)["titel"] = int(sp["stats"]["karriere"].get("titel", 0)) + 1
 		liga["torschuetzenkoenig"] = {"saison": Welt.saison_index(), "spieler": sid, "tore": int(torjaeger[0]["tore"])}
+		Laufbahn.torjaeger(d, sid, str(liga["name"]), int(torjaeger[0]["tore"]))
 		if str(sp["verein"]) == mein:
 			Welt.nachricht({
 				"typ": "auszeichnung", "wichtig": true,
@@ -117,6 +118,7 @@ static func _allstar(d: Dictionary, lid: String, mein: String) -> void:
 			sieben[pos] = best
 			(d["spieler"][best]["stats"]["karriere"] as Dictionary)["allstar"] = \
 				int((d["spieler"][best]["stats"]["karriere"] as Dictionary).get("allstar", 0)) + 1
+			Laufbahn.allstar(d, best, str(d["ligen"][lid]["name"]))
 	if sieben.is_empty():
 		return
 	d["ligen"][lid]["allstar"] = {"saison": Welt.saison_index(), "spieler": sieben}
@@ -262,10 +264,16 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 	_statistiken_umlegen(d)
 	_wettbewerbe_zuruecksetzen(d)
 	Finanzen.saison_budgets(d)
+	Sponsoren.jahreswechsel(d, mein)
 	for cid in Weltgenerator.clubs(d):
 		Vorstand.saisonziel_festlegen(d, cid)
 		d["vereine"][cid]["vorstand"]["warnstufe"] = 0
 	KI.saisonvorbereitung(d)
+	# Nach Abgängen, Aufrückern und Neuzugängen sitzt jede Nummer wieder
+	# eindeutig — der Saisonumbruch ist der eine Punkt, an dem sich jeder
+	# Kader verändert hat.
+	for cid2 in Weltgenerator.clubs(d):
+		Trikot.kader_nummerieren(d, cid2)
 	Spielplan.erzeuge_saison(d)
 	if mein != "" and (d["vereine"][mein]["kader"] as Array).size() < 15:
 		Welt.nachricht({
@@ -351,7 +359,48 @@ static func _karriereenden(d: Dictionary) -> void:
 				})
 		sp["verein"] = ""
 		sp["karriereende"] = Welt.saison_index()
-		d["spieler"].erase(sid)
+		spieler_entfernen(d, sid)
+
+## Entfernt einen Spieler restlos aus der Welt. Ohne das blieben Angebote,
+## Anliegen, Gerüchte und Beobachtungslisten mit Verweisen auf jemanden
+## zurück, den es nicht mehr gibt — und die Oberfläche stolpert darüber.
+static func spieler_entfernen(d: Dictionary, sid: String) -> void:
+	d["spieler"].erase(sid)
+	var markt: Dictionary = d.get("transfermarkt", {})
+	for schluessel in ["angebote", "gerüchte", "verlauf"]:
+		var liste: Array = markt.get(schluessel, [])
+		for i in range(liste.size() - 1, -1, -1):
+			if str((liste[i] as Dictionary).get("spieler", "")) == sid:
+				liste.remove_at(i)
+	var scouting: Dictionary = d.get("scouting", {})
+	for schluessel2 in ["auftraege", "berichte"]:
+		var liste2: Array = scouting.get(schluessel2, [])
+		for i2 in range(liste2.size() - 1, -1, -1):
+			var e: Dictionary = liste2[i2]
+			if str(e.get("ziel", "")) == sid or str(e.get("spieler", "")) == sid:
+				liste2.remove_at(i2)
+	(scouting.get("beobachtung", []) as Array).erase(sid)
+	for schluessel3 in ["anliegen", "versprechen"]:
+		var liste3: Array = d.get(schluessel3, [])
+		for i3 in range(liste3.size() - 1, -1, -1):
+			if str((liste3[i3] as Dictionary).get("spieler", "")) == sid:
+				liste3.remove_at(i3)
+	# Eine laufende Verhandlung über diesen Spieler ist gegenstandslos.
+	if str((d.get("verhandlung", {}) as Dictionary).get("spieler", "")) == sid:
+		d["verhandlung"] = {}
+	for cid in Weltgenerator.clubs(d):
+		var v: Dictionary = d["vereine"][cid]
+		if (v["kader"] as Array).has(sid):
+			(v["kader"] as Array).erase(sid)
+			Transfermarkt.aufstellung_saeubern(d, cid, sid)
+		(v.get("jugend", []) as Array).erase(sid)
+		var anweisungen: Dictionary = (v.get("aufstellung", {}) as Dictionary).get("anweisungen", {})
+		anweisungen.erase(sid)
+		var paare: Array = v.get("mentoring", [])
+		for i4 in range(paare.size() - 1, -1, -1):
+			var paar: Dictionary = paare[i4]
+			if str(paar["mentor"]) == sid or str(paar["schueler"]) == sid:
+				paare.remove_at(i4)
 
 static func _nachwuchs(d: Dictionary) -> void:
 	Jugend.jahreswechsel(d)
@@ -420,13 +469,19 @@ static func _wettbewerbe_zuruecksetzen(d: Dictionary) -> void:
 		wb["paarungen"] = []
 		wb["runde"] = 0
 		wb["sieger"] = ""
-	# Alte Partien ausduennen: nur die letzte Saison bleibt vollstaendig erhalten
+	# Alte Partien ausduennen: nur die letzte Saison bleibt erhalten, und von
+	# der nur noch Ergebnis und Mannschaftswerte. Die Einzelbewertungen einer
+	# abgeschlossenen Saison schlaegt niemand mehr auf, sie machen aber den
+	# groessten Teil des Spielstands aus.
 	var grenze: int = int(d["tag"]) - 400
 	var behalten := {}
 	for mid in d["spiele"].keys():
 		var m: Dictionary = d["spiele"][mid]
-		if int(m["tag"]) >= grenze:
-			behalten[mid] = m
+		if int(m["tag"]) < grenze:
+			continue
+		if bool(m.get("gespielt", false)) and not (m["bericht"] as Dictionary).is_empty():
+			m["bericht"] = Matchsim.bericht_schlank(m["bericht"])
+		behalten[mid] = m
 	d["spiele"] = behalten
 
 ## Vor jeder Saison schaetzen Presse und Buchmacher, wer den Titel holt.
@@ -521,13 +576,21 @@ static func jobangebote_erzeugen(d: Dictionary, mein: String) -> void:
 		if not verfehlt and Namen.zufall() > 0.12:
 			continue
 		kandidaten.append(cid)
-	# Ein vereinsloser Trainer darf nicht ins Leere laufen: findet sich im
-	# passenden Rufbereich niemand, wird die Suche stufenweise geöffnet.
+	# Ein vereinsloser Trainer darf nicht ins Leere laufen. Findet sich im
+	# passenden Rufbereich niemand, wird die Suche geöffnet — und zwar ohne
+	# harte Schranke: sonst sitzt ein Trainer mit schwachem Ruf dauerhaft ohne
+	# Verein da, weil kein einziger Klub unter seiner Grenze liegt.
 	if vereinslos and kandidaten.is_empty():
-		for cid in Weltgenerator.clubs(d):
-			var v3: Dictionary = d["vereine"][cid]
-			if float(v3["ruf"]) <= ruf + 6.0:
+		var alle: Array = Weltgenerator.clubs(d)
+		alle.sort_custom(func(a, b):
+			return float(d["vereine"][a]["ruf"]) < float(d["vereine"][b]["ruf"]))
+		for cid in alle:
+			if float(d["vereine"][cid]["ruf"]) <= ruf + 12.0:
 				kandidaten.append(cid)
+		# Im Zweifel die schwächsten Vereine der Welt — irgendwo fängt
+		# jede zweite Trainerkarriere wieder an.
+		if kandidaten.is_empty():
+			kandidaten = alle.slice(0, 6)
 		kandidaten.sort_custom(func(a, b):
 			return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
 		kandidaten = kandidaten.slice(0, 6)

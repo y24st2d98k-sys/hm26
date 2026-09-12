@@ -528,6 +528,7 @@ func _angebotsbereich(sp: Dictionary) -> void:
 	knopfzeile.add_child(beobachten)
 
 func _entwicklung(sp: Dictionary) -> void:
+	_laufbahn(sp)
 	var karte := Bausteine.karte_in(inhalt, "Entwicklung")
 	karte.add_child(Stil.info_zeile("Aktuelle Stärke", "%d" % int(Spielerfabrik.gesamt(sp))))
 	karte.add_child(Stil.info_zeile("Einschätzung", Scouting.potenzial_text(Welt.daten, sid), Stil.LILA))
@@ -569,6 +570,37 @@ func _entwicklung(sp: Dictionary) -> void:
 	for e in verlaufsliste.slice(0, 12):
 		verlauf.add_child(Stil.info_zeile(Kalender.text(int(e["tag"]), Welt.startjahr()),
 			"+%s auf %d" % [Stil.komma(float(e["delta"]), 2), int(float(e["gesamt"]))], Stil.GRUEN))
+
+## Die Laufbahn: was in diesem Sportlerleben passiert ist.
+func _laufbahn(sp: Dictionary) -> void:
+	var eintraege: Array = Laufbahn.liste(sp)
+	var karte := Bausteine.karte_in(inhalt, "Laufbahn")
+	if eintraege.is_empty():
+		karte.add_child(Stil.leerzustand("Noch nichts eingetragen — die Laufbahn füllt sich mit Debüt, Wechseln, Titeln und Meilensteinen."))
+		return
+	var letzte_saison := -999
+	for e in eintraege:
+		var saison: int = int(e.get("saison", 0))
+		if saison != letzte_saison:
+			letzte_saison = saison
+			var kopf := Stil.hbox(8)
+			karte.add_child(kopf)
+			kopf.add_child(Stil.abzeichen(Kalender.saison_text(Welt.startjahr(), saison), Stil.TEXT_SCHWACH))
+			var linie := Stil.trenner()
+			linie.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			linie.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			kopf.add_child(linie)
+		var zeile := Stil.hbox(8)
+		karte.add_child(zeile)
+		var datum := Stil.matt(Kalender.kurz(int(e["tag"]), Welt.startjahr()), Stil.S_MINI)
+		datum.custom_minimum_size = Vector2(52, 0)
+		zeile.add_child(datum)
+		var punkt := Stil.text("●", Stil.S_MINI, Laufbahn.farbe(str(e.get("art", ""))))
+		zeile.add_child(punkt)
+		var text := Stil.text(str(e["text"]), Stil.S_KLEIN, Laufbahn.farbe(str(e.get("art", ""))))
+		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(text)
 
 ## Zwei Eingabefelder für Erfolgsprämien samt Wirkungshinweis.
 ## Liefert {"tor": SpinBox, "sieg": SpinBox}.

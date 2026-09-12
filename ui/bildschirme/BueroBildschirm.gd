@@ -48,6 +48,18 @@ func aktualisieren() -> void:
 		knopf.pressed.connect(func(): Anliegenfenster.oeffnen(self, asid))
 		zeile.add_child(knopf)
 
+	var sponsorangebote: Array = Sponsoren.offene_angebote(Welt.daten, Welt.mein_verein_id)
+	if not sponsorangebote.is_empty():
+		var summe := 0.0
+		for a in sponsorangebote:
+			summe += float(a["wert"])
+		var sk := Bausteine.karte_in(bereich, "Sponsorenplätze sind frei")
+		sk.add_child(Stil.text("%d Angebote über zusammen %s im Jahr liegen auf dem Tisch. Bis Sie unterschreiben, bleibt das Geld aus." % [
+			sponsorangebote.size(), Stil.geld(summe)], Stil.S_KLEIN, Stil.GELB))
+		var sk_knopf := Stil.knopf_primaer("Zu den Finanzen")
+		sk_knopf.pressed.connect(func(): wechsel_zu("finanzen"))
+		sk.add_child(sk_knopf)
+
 	if Presse.offen(Welt.daten):
 		var pk := Bausteine.karte_in(bereich, "Pressekonferenz steht an")
 		pk.add_child(Stil.text("Die Journalisten warten auf Ihre Einschätzung vor dem nächsten Spiel.", Stil.S_KLEIN))

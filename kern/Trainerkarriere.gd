@@ -116,7 +116,9 @@ static func spiel_verbuchen(d: Dictionary, m: Dictionary, cid: String) -> void:
 	if eigene > fremde:
 		delta = 0.12 + clampf((gegnerruf - eigenruf) / 100.0, -0.06, 0.35)
 	elif eigene < fremde:
-		delta = -0.1 + clampf((gegnerruf - eigenruf) / 140.0, -0.05, 0.14)
+		# Eine Niederlage gegen einen uebermaechtigen Gegner faellt kaum ins
+		# Gewicht — den Ruf heben darf sie aber nie.
+		delta = -0.1 + clampf((gegnerruf - eigenruf) / 140.0, -0.05, 0.09)
 	t["ruf"] = clampf(float(t["ruf"]) + delta, 1.0, 100.0)
 	handschrift_pflegen(d, cid)
 
@@ -199,6 +201,7 @@ static func verein_wechseln(d: Dictionary, neuer_verein: String) -> void:
 		d["vereine"][str(t["verein"])]["trainer"] = ""
 	t["verein"] = neuer_verein
 	if neuer_verein != "":
+		Vorstand.amtsantritt(d, neuer_verein)
 		d["vereine"][neuer_verein]["ist_mensch"] = true
 		d["vereine"][neuer_verein]["trainer"] = "mensch"
 		(t["stationen"] as Array).append({

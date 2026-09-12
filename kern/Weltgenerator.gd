@@ -101,6 +101,7 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 	else:
 		_erzeuge_nationen(d)
 	_erzeuge_vereine(d)
+	Sponsoren.erstbelegung(d)
 	_erzeuge_wettbewerbe(d)
 	_erzeuge_medien(d)
 	_erzeuge_rekorde(d)
@@ -348,9 +349,10 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"ruf": ruf,
 		"kasse": jahresetat * Namen.bereich(0.08, 0.3),
 		"transferbudget": jahresetat * Namen.bereich(0.06, 0.16),
-		"gehaltsbudget": jahresetat * 0.62 / 52.0,
+		"gehaltsbudget": jahresetat * 0.88 / 52.0,
 		"jahresetat": jahresetat,
-		"sponsoren": _erzeuge_sponsoren(ruf, jahresetat),
+		"sponsoren": [],
+		"sponsorangebote": [],
 		"halle": {
 			"name": "%s %s" % [vn["ort"], Namen.waehle(HALLEN_WORT)],
 			"kapazitaet": kap,
@@ -407,6 +409,8 @@ static func leere_vereinsstats() -> Dictionary:
 		"spiele": 0, "siege": 0, "unentschieden": 0, "niederlagen": 0,
 		"tore": 0, "gegentore": 0, "zuschauer_summe": 0, "heimspiele": 0,
 		"zeitstrafen": 0, "serie": [],
+		# Saisonbuchhaltung je Kategorie — Einnahmen positiv, Ausgaben negativ.
+		"finanzen": {},
 	}
 
 static func standard_taktik() -> Dictionary:
@@ -443,6 +447,7 @@ static func _erzeuge_sponsoren(ruf: float, jahresetat: float) -> Array:
 static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 	var verein: Dictionary = d["vereine"][cid]
 	var ruf: float = float(verein["ruf"])
+	var lohnniveau: float = Finanzen.lohnniveau(d, cid)
 	var nid: String = verein["nation"]
 	# Zuerst die hinterlegten echten Spieler, danach wird auf Sollstärke ergänzt.
 	var belegt := {}
@@ -459,12 +464,12 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 		sp_e["kenntnis"] = 100.0
 		sp_e["vertrag"] = {
 			"bis_saison": Namen.wuerfel(1, 4),
-			"gehalt": Spielerfabrik.gehaltsvorstellung(sp_e, ruf) * Namen.bereich(0.9, 1.15),
+			"gehalt": Spielerfabrik.gehaltsvorstellung(sp_e, ruf, lohnniveau) * Namen.bereich(0.9, 1.15),
 			"rolle": "rotation",
 			"ablöseklausel": 0.0,
 			"unterschrieben_saison": -Namen.wuerfel(0, 3),
 		}
-		_startpraemien_setzen(sp_e, ruf)
+		_startpraemien_setzen(sp_e, ruf, lohnniveau)
 		sp_e["wert"] = Spielerfabrik.marktwert(sp_e)
 		# Erst nach dem Marktwert — die Klausel rechnet damit.
 		_klausel_setzen(sp_e)
@@ -494,12 +499,12 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 			sp["kenntnis"] = 100.0
 			sp["vertrag"] = {
 				"bis_saison": Namen.wuerfel(0, 4),
-				"gehalt": Spielerfabrik.gehaltsvorstellung(sp, ruf) * Namen.bereich(0.85, 1.12),
+				"gehalt": Spielerfabrik.gehaltsvorstellung(sp, ruf, lohnniveau) * Namen.bereich(0.85, 1.12),
 				"rolle": "rotation",
 				"ablöseklausel": 0.0,
 				"unterschrieben_saison": -Namen.wuerfel(0, 3),
 			}
-			_startpraemien_setzen(sp, ruf)
+			_startpraemien_setzen(sp, ruf, lohnniveau)
 			sp["wert"] = Spielerfabrik.marktwert(sp)
 			_klausel_setzen(sp)
 			d["spieler"][sid] = sp
@@ -799,13 +804,15 @@ static func _erzeuge_rekorde(d: Dictionary) -> void:
 
 ## Ein Teil der Startverträge enthält Erfolgsprämien — je besser zahlend der
 ## Verein, desto eher wird variabel vergütet. Das Festgehalt sinkt entsprechend.
-static func _startpraemien_setzen(sp: Dictionary, ruf: float) -> void:
+## `niveau` ist das Lohnniveau des Vereins: Prämien gehören zum Gehalt und
+## dürfen einen kleinen Verein nicht dasselbe kosten wie einen Spitzenklub.
+static func _startpraemien_setzen(sp: Dictionary, ruf: float, niveau: float = 1.0) -> void:
 	var vertrag: Dictionary = sp["vertrag"]
 	vertrag["praemie_tor"] = 0.0
 	vertrag["praemie_sieg"] = 0.0
 	if Namen.zufall() > clampf(0.14 + ruf / 320.0, 0.14, 0.45):
 		return
-	var mass: float = clampf(ruf / 100.0, 0.2, 1.0) * Namen.bereich(0.35, 1.0)
+	var mass: float = clampf(ruf / 100.0, 0.2, 1.0) * Namen.bereich(0.35, 1.0) * niveau
 	if not bool(sp["ist_torwart"]) and Namen.zufall() < 0.7:
 		vertrag["praemie_tor"] = roundf(Praemien.TOR_MAX * mass * 0.55 / 50.0) * 50.0
 	if Namen.zufall() < 0.75:

@@ -327,6 +327,9 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 	if str(m["heim"]) == mein_verein_id or str(m["gast"]) == mein_verein_id:
 		Medien.spielbericht(daten, m, mein_verein_id)
 		Vorstand.nach_spiel(daten, mein_verein_id, m)
+	else:
+		# Alles verbucht — fremde Partien brauchen die Einzelheiten nicht mehr.
+		m["bericht"] = Matchsim.bericht_schlank(m["bericht"])
 	spiel_ausgetragen.emit(mid)
 
 ## Prueft nach jedem Spieltag, ob Pokal- oder Europarunden weitergehen.
@@ -527,6 +530,10 @@ func _daten_auffrischen() -> void:
 			verein_dict["jugend"] = []
 		if not verein_dict.has("mentoring"):
 			verein_dict["mentoring"] = []
+		if not verein_dict.has("sponsorangebote"):
+			verein_dict["sponsorangebote"] = []
+		if not (verein_dict.get("saison", {}) as Dictionary).has("finanzen"):
+			(verein_dict.get("saison", {}) as Dictionary)["finanzen"] = {}
 		var auf_dict: Dictionary = verein_dict.get("aufstellung", {})
 		if not auf_dict.is_empty() and not auf_dict.has("anweisungen"):
 			auf_dict["anweisungen"] = {}

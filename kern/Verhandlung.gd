@@ -38,7 +38,7 @@ static func starten(d: Dictionary, sid: String, art: String) -> Dictionary:
 	if cid == "":
 		return {"ok": false, "grund": "Sie haben derzeit keinen Verein."}
 	var ruf: float = float(d["vereine"][cid]["ruf"])
-	var wunsch: float = Spielerfabrik.gehaltsvorstellung(sp, ruf)
+	var wunsch: float = Finanzen.gehaltswunsch(d, cid, sp)
 	# Wer wechseln soll, verlangt mehr als wer bleibt.
 	if art == "verpflichtung":
 		wunsch *= 1.12

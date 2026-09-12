@@ -8,6 +8,13 @@ extends Control
 var titelzeile: String = ""
 var gebaut: bool = false
 
+## Wechselt zu einem anderen Bildschirm. Die App haengt weiter oben im Baum;
+## ein Bildschirm kennt sie nicht direkt, deshalb der Weg ueber die Gruppe.
+func wechsel_zu(id: String) -> void:
+	var app := get_tree().get_first_node_in_group("app")
+	if app != null:
+		app.zeige(id)
+
 func _init() -> void:
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	size_flags_vertical = Control.SIZE_EXPAND_FILL

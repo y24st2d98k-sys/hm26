@@ -471,6 +471,71 @@ func _taktik_aufbauen() -> void:
 	taktik_bereich.add_child(_schieber("Tempo", int(t["tempo"]), func(w): t["tempo"] = int(w)))
 	taktik_bereich.add_child(_schieber("Risiko", int(t["risiko"]), func(w): t["risiko"] = int(w)))
 	taktik_bereich.add_child(_schieber("Härte", int(t["haerte"]), func(w): t["haerte"] = int(w)))
+	_anweisungen_aufbauen()
+
+## Rollen einzelner Spieler auch während der Partie ändern. Platzsparend:
+## erst den Spieler wählen, dann seine beiden Anweisungen.
+func _anweisungen_aufbauen() -> void:
+	var auf_platz: Array = sim.alle_auf_platz(mein_team)
+	if auf_platz.is_empty():
+		return
+	taktik_bereich.add_child(Stil.trenner())
+	taktik_bereich.add_child(Stil.matt("Anweisung an einen Spieler", Stil.S_MINI))
+	var wahl := OptionButton.new()
+	wahl.custom_minimum_size = Vector2(272, 0)
+	var i := 0
+	for sid in auf_platz:
+		var sp: Dictionary = Welt.spieler(sid)
+		if sp.is_empty() or bool(sp["ist_torwart"]):
+			continue
+		wahl.add_item("%s %s" % [Trikot.text(sp), Spielerfabrik.kurz_name(sp)])
+		wahl.set_item_metadata(i, sid)
+		i += 1
+	if i == 0:
+		return
+	var zeile := Stil.hbox(8)
+	taktik_bereich.add_child(zeile)
+	var l := Stil.matt("Spieler", Stil.S_KLEIN)
+	l.custom_minimum_size = Vector2(90, 0)
+	zeile.add_child(l)
+	zeile.add_child(wahl)
+	var felder := Stil.vbox(4)
+	taktik_bereich.add_child(felder)
+	var zeichnen := func():
+		Bildschirm.leeren(felder)
+		var sid2: String = str(wahl.get_item_metadata(maxi(wahl.selected, 0)))
+		var gesetzt: Dictionary = (mein_team["anweisungen"] as Dictionary).get(sid2, {})
+		for bereich in ["angriff", "abwehr"]:
+			var katalog: Dictionary = Anweisungen.ANGRIFF if bereich == "angriff" else Anweisungen.ABWEHR
+			var namen: Array = []
+			var schluessel: Array = katalog.keys()
+			for k in schluessel:
+				namen.append(str(katalog[k]["name"]))
+			var aktuell: String = str(gesetzt.get(bereich, "normal"))
+			var z := Stil.hbox(8)
+			felder.add_child(z)
+			var lb := Stil.matt("Angriff" if bereich == "angriff" else "Abwehr", Stil.S_KLEIN)
+			lb.custom_minimum_size = Vector2(90, 0)
+			z.add_child(lb)
+			var ow := OptionButton.new()
+			ow.custom_minimum_size = Vector2(272, 0)
+			for j in range(schluessel.size()):
+				ow.add_item(str(namen[j]))
+				ow.set_item_metadata(j, schluessel[j])
+				ow.set_item_tooltip(j, str(katalog[schluessel[j]]["text"]))
+				if str(schluessel[j]) == aktuell:
+					ow.select(j)
+			ow.item_selected.connect(func(idx):
+				var neu: String = str(ow.get_item_metadata(idx))
+				if not (mein_team["anweisungen"] as Dictionary).has(sid2):
+					mein_team["anweisungen"][sid2] = {"angriff": "normal", "abwehr": "normal"}
+				(mein_team["anweisungen"][sid2] as Dictionary)[bereich] = neu
+				# Auch dauerhaft merken, sonst gilt sie nur diese Partie.
+				Anweisungen.setzen(Welt.daten, str(mein_team["cid"]), sid2, bereich, neu)
+				hinweis.text = "%s: %s" % [Spielerfabrik.kurz_name(Welt.spieler(sid2)), str(katalog[neu]["name"])])
+			z.add_child(ow)
+	wahl.item_selected.connect(func(_i): zeichnen.call())
+	zeichnen.call()
 
 func _wahl(beschriftung: String, werte: Array, aktuell: String, rueckruf: Callable) -> HBoxContainer:
 	var h := Stil.hbox(8)

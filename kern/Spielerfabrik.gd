@@ -348,13 +348,18 @@ static func marktwert(spieler: Dictionary) -> float:
 	return maxf(basis * alters_mod * pot_mod * rest_mod * form_mod, 4000.0)
 
 ## Wochengehalt, das ein Spieler erwartet.
-static func gehaltsvorstellung(spieler: Dictionary, vereinsruf: float) -> float:
+##
+## `niveau` ist das Lohnniveau des Vereins (siehe Finanzen.lohnniveau): in der
+## polnischen zweiten Liga verdient dieselbe Stärke ein Bruchteil dessen, was
+## sie in Kiel bekäme. Ohne diesen Faktor zahlten kleine und auswärtige Vereine
+## Gehälter, die ihre Einnahmen um ein Mehrfaches übersteigen.
+static func gehaltsvorstellung(spieler: Dictionary, vereinsruf: float, niveau: float = 1.0) -> float:
 	var g: float = gesamt(spieler)
 	var basis: float = pow(maxf(g - 30.0, 1.0), 2.15) * 1.6 + 300.0
 	var ehrgeiz: float = float((spieler["charakter"] as Dictionary).get("ehrgeiz", 12.0))
 	var gier: float = 0.86 + ehrgeiz / 42.0
 	var ruf_mod: float = clampf(1.25 - vereinsruf / 260.0, 0.82, 1.25)
-	return maxf(basis * gier * ruf_mod, 180.0)
+	return maxf(basis * gier * ruf_mod * niveau, 180.0)
 
 static func voller_name(spieler: Dictionary) -> String:
 	return "%s %s" % [spieler["vorname"], spieler["nachname"]]

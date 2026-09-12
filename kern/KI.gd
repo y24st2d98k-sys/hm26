@@ -6,6 +6,9 @@ extends RefCounted
 
 static func aufstellung_pruefen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
+	if bool(v.get("ist_nationalteam", false)):
+		Weltgenerator.setze_standardaufstellung(d, cid)
+		return
 	# Vor jeder Partie: jeder im Kader traegt eine eindeutige Rueckennummer.
 	Trikot.kader_nummerieren(d, cid)
 	var mensch: bool = bool(v.get("ist_mensch", false))
@@ -108,6 +111,9 @@ static func _bester_angriffsstil(d: Dictionary, cid: String) -> String:
 
 static func wochenlogik(d: Dictionary) -> void:
 	for cid in Weltgenerator.clubs(d):
+		# Guenstig und sichert die Zusage, dass jede Nummer im Kader
+		# eindeutig ist — unabhaengig davon, wie ein Spieler hereinkam.
+		Trikot.kader_nummerieren(d, cid)
 		if bool(d["vereine"][cid].get("ist_mensch", false)):
 			continue
 		_trainingsplan(d, cid)
@@ -152,7 +158,7 @@ static func _vertraege_pflegen(d: Dictionary, cid: String) -> void:
 		if rest > 0:
 			continue
 		var staerke: float = Spielerfabrik.gesamt(sp)
-		var wunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"]))
+		var wunsch: float = Finanzen.gehaltswunsch(d, cid, sp)
 		var auslastung := Finanzen.gehaltsauslastung(d, cid)
 		# Zu teuer und zu schwach: der Verein laesst ihn ziehen.
 		if auslastung > 112.0 and staerke < kaderstaerke - 6.0:
@@ -176,15 +182,20 @@ static func _kaderschnitt(d: Dictionary, cid: String) -> float:
 ## Ohne das wuerde der Markt sich mit Spielern fuellen, die niemand mehr holt.
 static func kader_auffuellen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
-	if bool(v.get("ist_mensch", false)):
+	# Eine Nationalmannschaft nominiert, sie verpflichtet nicht: sonst wuerden
+	# ihr vereinslose Spieler zugeschlagen, die danach keinem Verein mehr
+	# gehoeren und aus dem Transfermarkt verschwinden.
+	if bool(v.get("ist_mensch", false)) or bool(v.get("ist_nationalteam", false)):
 		return
 	for _versuch in range(8):
 		var kader: Array = v["kader"]
 		var luecke := _fehlende_position(d, cid)
 		if luecke == "" and kader.size() >= 18:
 			return
-		var notlage: bool = kader.size() < 15
 		var pos: String = luecke if luecke != "" else schwaechste_position(d, cid)
+		# Eine Position ganz ohne Spieler ist immer eine Notlage — sonst stuende
+		# ein Verein ohne Torwart da, weil gerade kein bezahlbarer frei ist.
+		var notlage: bool = kader.size() < 15 or (luecke != "" and _anzahl_auf(d, cid, luecke) == 0)
 		var kandidat := _bester_freier(d, cid, pos, notlage)
 		if kandidat == "":
 			if not notlage:
@@ -196,8 +207,16 @@ static func kader_auffuellen(d: Dictionary, cid: String) -> void:
 			if kandidat == "":
 				return
 		var sp: Dictionary = d["spieler"][kandidat]
-		var gehalt: float = Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"]))
+		var gehalt: float = Finanzen.gehaltswunsch(d, cid, sp)
 		Transfermarkt.transfer_durchfuehren(d, kandidat, cid, 0.0, gehalt, Namen.wuerfel(1, 3), "rotation")
+
+## Wie viele Spieler der Verein auf einer Position hat.
+static func _anzahl_auf(d: Dictionary, cid: String, pos: String) -> int:
+	var n := 0
+	for sid in d["vereine"][cid]["kader"]:
+		if str(d["spieler"][sid]["position"]) == pos:
+			n += 1
+	return n
 
 ## Position, auf der dem Verein ein einsatzfaehiger Spieler fehlt.
 static func _fehlende_position(d: Dictionary, cid: String) -> String:
@@ -223,18 +242,23 @@ static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: boo
 	var spielraum: float = float(v["gehaltsbudget"]) * 1.1 - Finanzen.spielergehaelter(d, cid) - Finanzen.personalgehaelter(d, cid)
 	var grenze: float = float(v["gehaltsbudget"]) * (0.16 if notlage else 0.06)
 	grenze = maxf(grenze, spielraum)
+	# Ruf und Lohnniveau einmal holen: die Schleife laeuft ueber alle Spieler
+	# der Welt und wird oefter durchlaufen, als es auf den ersten Blick aussieht.
+	var ruf: float = float(v["ruf"])
+	var niveau: float = Finanzen.lohnniveau(d, cid)
 	var best := ""
 	var bw := -1.0
 	for sid in d["spieler"].keys():
 		var sp: Dictionary = d["spieler"][sid]
 		if str(sp["verein"]) != "" or str(sp["position"]) != pos:
 			continue
-		if Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"])) > grenze:
-			continue
 		var w: float = Spielerfabrik.gesamt(sp)
-		if w > bw:
-			bw = w
-			best = sid
+		if w <= bw:
+			continue
+		if Spielerfabrik.gehaltsvorstellung(sp, ruf, niveau) > grenze:
+			continue
+		bw = w
+		best = sid
 	return best
 
 ## Letzter Ausweg: ein Verein, dem sonst die Spieler ausgehen, holt einen
@@ -248,7 +272,7 @@ static func _notverpflichtung(d: Dictionary, cid: String, pos: String) -> String
 	sp["kenntnis"] = 45.0
 	d["spieler"][sid] = sp
 	Transfermarkt.transfer_durchfuehren(d, sid, cid, 0.0,
-		Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"])), Namen.wuerfel(1, 2), "ergaenzung")
+		Finanzen.gehaltswunsch(d, cid, sp), Namen.wuerfel(1, 2), "ergaenzung")
 	return sid
 
 static func _personal_pflegen(d: Dictionary, cid: String) -> void:

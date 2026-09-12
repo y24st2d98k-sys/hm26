@@ -290,6 +290,7 @@ func _baue_bildschirme() -> void:
 		"chronik": ChronikBildschirm, "nachrichten": NachrichtenBildschirm, "system": SystemBildschirm,
 		"daten": DatenBildschirm,
 	}
+	add_to_group("app")
 	for id in liste.keys():
 		var b = liste[id].new()
 		b.visible = false

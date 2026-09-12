@@ -97,6 +97,11 @@ static func _spielerstats(d: Dictionary, m: Dictionary) -> void:
 				continue
 			var sp: Dictionary = d["spieler"][sid]
 			var z: Dictionary = tb["spieler"][sid]
+			var vorher := {
+				"spiele": int(sp["stats"]["karriere"]["spiele"]),
+				"tore": int(sp["stats"]["karriere"]["tore"]),
+				"paraden": int(sp["stats"]["karriere"]["paraden"]),
+			}
 			for ziel in [sp["stats"]["saison"], sp["stats"]["karriere"]]:
 				ziel["spiele"] = int(ziel["spiele"]) + 1
 				ziel["minuten"] = float(ziel["minuten"]) + float(z["sekunden"]) / 60.0
@@ -119,6 +124,8 @@ static func _spielerstats(d: Dictionary, m: Dictionary) -> void:
 					ziel["spieler_des_spiels"] = int(ziel["spieler_des_spiels"]) + 1
 			if int(z["rot"]) != 0:
 				sp["sperre"] = 1
+			Laufbahn.debuet_pruefen(d, sid)
+			Laufbahn.marken_pruefen(d, sid, vorher)
 			# Torschuetzenliste der Liga
 			if str(m["art"]) == "liga" and int(z["tore"]) > 0:
 				var liste: Dictionary = d["ligen"][m["wettbewerb"]]["torschuetzen"]

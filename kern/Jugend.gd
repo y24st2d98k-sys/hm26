@@ -150,12 +150,13 @@ static func befoerdern(d: Dictionary, sid: String) -> Dictionary:
 	(v["jugend"] as Array).erase(sid)
 	(v["kader"] as Array).append(sid)
 	Trikot.vergeben(d, cid, sid)
+	Laufbahn.aus_der_jugend(d, sid, cid)
 	sp["jugendspieler"] = false
 	sp["kenntnis"] = 100.0
 	sp["moral"] = clampf(float(sp["moral"]) + 15.0, 5.0, 100.0)
 	sp["vertrag"]["rolle"] = "talent"
 	sp["vertrag"]["gehalt"] = maxf(float(sp["vertrag"].get("gehalt", 200.0)),
-		Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"])) * 0.6)
+		Finanzen.gehaltswunsch(d, cid, sp) * 0.6)
 	# Der Vorstand sieht Nachwuchsarbeit gern — je nach eigener Haltung.
 	var jugendfokus: float = float(v["vorstand"].get("jugendfokus", 50.0))
 	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + jugendfokus * 0.02, 0.0, 100.0)

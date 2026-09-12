@@ -41,6 +41,7 @@ static func erzeuge_verletzung(d: Dictionary, sid: String, im_spiel: bool) -> Di
 	}
 	sp["fitness"] = clampf(float(sp["fitness"]) - float(schwere) * 12.0, 20.0, 100.0)
 	sp["moral"] = clampf(float(sp["moral"]) - float(schwere) * 5.0, 5.0, 100.0)
+	Laufbahn.schwere_verletzung(d, sid, art, tage)
 	return sp["verletzung"]
 
 ## Wird von der Simulation aufgerufen, wenn sich jemand im Spiel verletzt.

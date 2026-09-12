@@ -2,6 +2,9 @@ class_name Vorstand
 extends RefCounted
 ## Der Vorstand: Saisonziel, Vertrauen, Geduld — und die Konsequenzen.
 
+## Vertrauen, mit dem ein neu verpflichteter Trainer startet.
+const NEUSTART_VERTRAUEN := 58.0
+
 const ZIELE := [
 	{"schluessel": "titel", "text": "Meistertitel", "min": 1, "max": 1},
 	{"schluessel": "meisterschaftskampf", "text": "Kampf um die Meisterschaft", "min": 1, "max": 2},
@@ -16,7 +19,11 @@ static func saisonziel_festlegen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	var liga: Dictionary = d["ligen"][v["liga"]]
 	var rangliste: Array = (liga["vereine"] as Array).duplicate()
-	rangliste.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
+	# Erwartet wird an derselben Groesse gemessen, an der auch jedes einzelne
+	# Spiel bewertet wird. Sonst bekommt ein Verein mit gutem Ruf und duennem
+	# Kader ein Ziel, das seine Mannschaft nicht einloesen kann — und der
+	# Trainer verliert das Vertrauen fuer etwas, das er gar nicht steuert.
+	rangliste.sort_custom(func(a, b): return _staerkeindex(d, a) > _staerkeindex(d, b))
 	var platz: int = rangliste.find(cid) + 1
 	var teams: int = rangliste.size()
 	var ehrgeiz: float = Namen.bereich(-1.0, 1.0)
@@ -160,6 +167,32 @@ static func _konsequenzen(d: Dictionary, cid: String, platz: int, gewicht: float
 	# Entlassen wird nur, wer nach ausdruecklicher Warnung nicht reagiert.
 	if vertrauen < 8.0 and gewicht > 0.3 and warnstufe >= 2:
 		entlassung(d, cid)
+
+## Ein neuer Trainer bekommt Zeit. Der Vorstand setzt das Vertrauen zurueck
+## und formuliert das Ziel neu — wer eine Mannschaft auf einem Abstiegsplatz
+## uebernimmt, wird nicht an der Meisterschaft gemessen.
+static func amtsantritt(d: Dictionary, cid: String) -> void:
+	if cid == "" or not d["vereine"].has(cid):
+		return
+	var v: Dictionary = d["vereine"][cid]
+	var vs: Dictionary = v["vorstand"]
+	vs["vertrauen"] = maxf(float(vs.get("vertrauen", 50.0)), NEUSTART_VERTRAUEN)
+	vs["warnstufe"] = 0
+	saisonziel_festlegen(d, cid)
+	# Mitten in der Saison zaehlt die Lage, die er vorfindet: das Ziel darf
+	# hoechstens ein paar Plaetze ueber dem aktuellen Stand liegen.
+	var liga: Dictionary = d["ligen"][v["liga"]]
+	var gespielt: int = int((liga["tabelle"] as Dictionary).get(cid, {}).get("sp", 0))
+	if gespielt >= 4:
+		var tabelle := Spielplan.tabelle_sortiert(d, str(liga["id"]))
+		var platz: int = tabelle.find(cid) + 1
+		if platz > 0:
+			var anteil: float = clampf(float(gespielt) / float(maxi(int(liga["spieltage"]), 1)), 0.0, 1.0)
+			# Je weiter die Saison, desto weniger laesst sich noch gutmachen.
+			var spielraum: int = int(round(lerpf(6.0, 2.0, anteil)))
+			var rettungsziel: int = maxi(platz - spielraum, 1)
+			vs["ziel_platz"] = maxi(int(vs["ziel_platz"]), rettungsziel)
+			v["fans"]["erwartung"] = float(vs["ziel_platz"])
 
 static func entlassung(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]

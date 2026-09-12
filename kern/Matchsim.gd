@@ -1250,6 +1250,33 @@ func _team_gesamtstaerke(t: Dictionary) -> float:
 		n += 1
 	return summe / maxf(float(n), 1.0)
 
+## Ein Bericht ohne Einzelheiten: Ergebnis, Mannschaftswerte, bester Spieler.
+## Fremde Partien werden nach der Verbuchung darauf eingedampft — sonst waere
+## der Spielstand nach einer Saison mehrere Dutzend Megabyte gross, obwohl
+## niemand die Einzelbewertungen eines Spiels in Polen je aufschlaegt.
+static func bericht_schlank(voll: Dictionary) -> Dictionary:
+	if voll.is_empty():
+		return {}
+	var schlank := {
+		"zuschauer": voll.get("zuschauer", 0),
+		"hallenpuls": voll.get("hallenpuls", 50.0),
+		"spieler_des_spiels": voll.get("spieler_des_spiels", ""),
+		"knapp": true,
+	}
+	for seite in ["heim", "gast"]:
+		var t: Dictionary = voll.get(seite, {})
+		if t.is_empty():
+			continue
+		schlank[seite] = {
+			"cid": t.get("cid", ""),
+			"tore": t.get("tore", 0),
+			"stats": t.get("stats", {}),
+			"spieler": {},
+			"wurfkarte": {},
+			"taktik": t.get("taktik", {}),
+		}
+	return schlank
+
 ## Fasst die Partie zusammen (fuer Bericht, Statistik und Presse).
 func bericht() -> Dictionary:
 	var bester := _spieler_des_spiels()

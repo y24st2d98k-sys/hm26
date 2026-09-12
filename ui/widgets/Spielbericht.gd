@@ -125,6 +125,12 @@ func _zeichne() -> void:
 	if bester != "" and Welt.daten["spieler"].has(bester):
 		werte.add_child(Stil.info_zeile("Spieler des Spiels", Spielerfabrik.voller_name(Welt.spieler(bester)), Stil.AKZENT))
 
+	# Von fremden Partien hebt der Spielstand nur das Ergebnis und die
+	# Mannschaftswerte auf. Das steht hier, damit die leeren Karten unten
+	# nicht wie ein Fehler aussehen.
+	var knapp: bool = bool(bericht.get("knapp", false))
+	if knapp:
+		inhalt.add_child(Stil.banner("Von Partien ohne eigene Beteiligung bewahrt das Archiv nur Ergebnis und Mannschaftswerte auf — Einzelbewertungen, Wurfkarte und Spielverlauf werden nicht dauerhaft gespeichert.", "info"))
 	for seite2 in ["heim", "gast"]:
 		var cid2: String = str(bericht[seite2]["cid"])
 		var wk: Dictionary = bericht[seite2].get("wurfkarte", {})
@@ -138,6 +144,8 @@ func _zeichne() -> void:
 		kk.add_child(w)
 		kk.add_child(Stil.matt("Kreisgröße: Würfe · Füllung: Trefferquote", Stil.S_MINI))
 
+	if knapp:
+		return
 	var ticker := Bausteine.karte_in(inhalt, "Spielverlauf")
 	var tickerscroll := ScrollContainer.new()
 	tickerscroll.custom_minimum_size = Vector2(0, 260)

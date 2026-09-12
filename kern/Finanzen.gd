@@ -5,6 +5,9 @@ extends RefCounted
 ## Einnahmen: Zuschauer, Sponsoren, Fernsehgeld, Preisgelder, Transfererloese, Merchandising.
 ## Ausgaben: Gehaelter (Spieler + Personal), Hallenbetrieb, Jugend, Reisen, Ablösen.
 
+## Jahresetat, an dem sich das volle Marktgehalt bemisst.
+const LOHN_REFERENZ := 8000000.0
+
 const AUSBAU_STUFEN := {
 	"halle": {"name": "Hallenausbau", "beschreibung": "Mehr Plätze, mehr Eintrittsgeld und mehr Hallenpuls."},
 	"trainingszentrum": {"name": "Trainingszentrum", "beschreibung": "Schnellere Entwicklung aller Spieler."},
@@ -27,6 +30,15 @@ static func kategorie_name(schluessel: String) -> String:
 static func buchen(d: Dictionary, cid: String, betrag: float, grund: String, kategorie: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	v["kasse"] = float(v["kasse"]) + betrag
+	# Saisonsumme je Kategorie mitfuehren: die Einzelbuchungen unten sind
+	# gedeckelt, die Jahresbilanz soll trotzdem vollstaendig sein.
+	var saison: Dictionary = v.get("saison", {})
+	if not saison.is_empty():
+		var jahr: Dictionary = saison.get("finanzen", {})
+		if jahr.is_empty():
+			jahr = {}
+			saison["finanzen"] = jahr
+		jahr[kategorie] = float(jahr.get(kategorie, 0.0)) + betrag
 	var buchungen: Array = v["finanz_log"]
 	buchungen.push_front({"tag": int(d["tag"]), "betrag": betrag, "grund": grund, "kategorie": kategorie})
 	if buchungen.size() > 200:
@@ -82,12 +94,31 @@ static func medienerloese(d: Dictionary, cid: String) -> float:
 ## Laufende Kosten je Woche: Halle, Trainingsbetrieb, Jugend, Verwaltung.
 static func betriebskosten(d: Dictionary, cid: String) -> float:
 	var v: Dictionary = d["vereine"][cid]
-	return float(v["halle"]["kapazitaet"]) * 1.6 \
-		+ float(v["infrastruktur"]["trainingszentrum"]) * 900.0 \
+	# Der Betrieb der Abteilungen ist vor allem Personal — und das kostet dort
+	# weniger, wo auch die Spieler weniger verdienen.
+	var abteilungen: float = float(v["infrastruktur"]["trainingszentrum"]) * 900.0 \
 		+ float(v["infrastruktur"]["jugendarbeit"]) * 700.0 \
 		+ float(v["infrastruktur"]["medizin"]) * 520.0 \
 		+ float(v["infrastruktur"]["analyse"]) * 420.0 \
 		+ float(v["infrastruktur"]["regeneration"]) * 380.0
+	return float(v["halle"]["kapazitaet"]) * 1.6 + abteilungen * lohnniveau(d, cid)
+
+## Lohnniveau eines Vereins, gemessen an seiner wirtschaftlichen Grösse.
+## Ein Spitzenverein der stärksten Liga zahlt das volle Marktgehalt, ein
+## Zweitligist oder ein Verein in einem ärmeren Verband deutlich weniger.
+static func lohnniveau(d: Dictionary, cid: String) -> float:
+	var v: Dictionary = d["vereine"].get(cid, {})
+	if v.is_empty():
+		return 1.0
+	var etat: float = maxf(float(v.get("jahresetat", LOHN_REFERENZ)), 50000.0)
+	return clampf(pow(etat / LOHN_REFERENZ, 0.35), 0.30, 1.05)
+
+## Was ein Spieler bei diesem Verein an Wochengehalt verlangt.
+static func gehaltswunsch(d: Dictionary, cid: String, sp: Dictionary) -> float:
+	var v: Dictionary = d["vereine"].get(cid, {})
+	if v.is_empty():
+		return Spielerfabrik.gehaltsvorstellung(sp, 50.0)
+	return Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"]), lohnniveau(d, cid))
 
 static func spielergehaelter(d: Dictionary, cid: String) -> float:
 	var summe := 0.0
@@ -121,7 +152,10 @@ static func saison_budgets(d: Dictionary) -> void:
 		etat *= 0.75 + float(liga["ruf"]) / 200.0
 		v["jahresetat"] = etat
 		var strenge: float = float(v["vorstand"]["finanzstrenge"]) / 100.0
-		v["gehaltsbudget"] = etat * (0.66 - 0.1 * strenge) / 52.0
+		# Das Budget ist nur dann eine brauchbare Kennzahl, wenn eine normal
+		# besetzte Mannschaft es ungefähr ausschöpft. Mit dem alten Anteil stand
+		# die Gehaltsauslastung dauerhaft bei rund 146 % und sagte nichts mehr.
+		v["gehaltsbudget"] = etat * (0.94 - 0.12 * strenge) / 52.0
 		v["transferbudget"] = maxf(etat * (0.16 - 0.06 * strenge) + maxf(float(v["kasse"]), 0.0) * 0.25, 0.0)
 
 static func gehaltsauslastung(d: Dictionary, cid: String) -> float:

@@ -222,8 +222,12 @@ func _ready() -> void:
 	else:
 		var erg_m := Mentoring.anlegen(Welt.daten, cid_a, str(mentoren[0]), str(schueler[0]))
 		_log("   %s" % str(erg_m["grund"]))
+		# Die Patenschaft künstlich altern lassen, ohne die Weltuhr zu
+		# verstellen: ein Sprung im Tageszähler würde 12 Spieltage überspringen.
+		var paare_alt: Array = Mentoring.paare(Welt.daten, cid_a)
+		if not paare_alt.is_empty():
+			paare_alt[0]["seit"] = int(Welt.daten["tag"]) - 84
 		for _w in range(12):
-			Welt.daten["tag"] = int(Welt.daten["tag"]) + 7
 			Mentoring.wochenwechsel(Welt.daten)
 		var paare_m: Array = Mentoring.paare(Welt.daten, cid_a)
 		if not paare_m.is_empty():
@@ -231,6 +235,51 @@ func _ready() -> void:
 				Mentoring.beschreibung(Welt.daten, paare_m[0])])
 	app.zeige("kabine")
 	await get_tree().process_frame
+
+	_log("— Sponsorenmarkt —")
+	var cid_s: String = Welt.mein_verein_id
+	_log("   laufende Verträge: %d, Jahressumme %s" % [
+		Sponsoren.laufende(Welt.daten, cid_s).size(), Stil.geld(Sponsoren.jahressumme(Welt.daten, cid_s))])
+	# Einen Platz künstlich frei machen und das Angebot annehmen
+	var vertraege: Array = Sponsoren.laufende(Welt.daten, cid_s)
+	if not vertraege.is_empty():
+		var weg: String = str(vertraege[0]["art"])
+		vertraege.remove_at(0)
+		Welt.verein(cid_s)["sponsorangebote"] = [Sponsoren.angebot(Welt.daten, cid_s, weg)]
+		var erg_s := Sponsoren.annehmen(Welt.daten, cid_s, 0)
+		_log("   %s" % str(erg_s["grund"]))
+	Sponsoren.titelbonus(Welt.daten, cid_s, "Testpokal")
+	app.zeige("finanzen")
+	await get_tree().process_frame
+
+	_log("— Laufbahn —")
+	var mit_laufbahn := 0
+	var beispiel := ""
+	for sid_l in Welt.verein(cid_s)["kader"]:
+		if not Laufbahn.liste(Welt.spieler(sid_l)).is_empty():
+			mit_laufbahn += 1
+			if beispiel == "":
+				beispiel = "%s: %s" % [Spielerfabrik.kurz_name(Welt.spieler(sid_l)),
+					str(Laufbahn.liste(Welt.spieler(sid_l))[0]["text"])]
+	var welt_gesamt := 0
+	var mit_spielen := 0
+	for sid_w in Welt.daten["spieler"].keys():
+		welt_gesamt += Laufbahn.liste(Welt.spieler(sid_w)).size()
+		if int(Welt.spieler(sid_w)["stats"]["karriere"]["spiele"]) > 0:
+			mit_spielen += 1
+	_log("   Spieler mit mindestens einem Pflichtspiel: %d" % mit_spielen)
+	_log("   eigene Vereinsspiele: %d" % int(Welt.mein_verein()["saison"]["spiele"]))
+	var probe: Dictionary = Welt.spieler(str(Welt.verein(cid_s)["kader"][0]))
+	_log("   %d im eigenen Kader, %d Einträge weltweit (Beispielspieler: %d Pflichtspiele)" % [
+		mit_laufbahn, welt_gesamt, int(probe["stats"]["karriere"]["spiele"])])
+	if beispiel != "":
+		_log("   %s" % beispiel)
+	var fenster_l: Node = get_tree().get_first_node_in_group("spielerfenster")
+	fenster_l.zeige(str(Welt.verein(cid_s)["kader"][0]))
+	fenster_l.reiter = "entwicklung"
+	fenster_l._zeichne()
+	await get_tree().process_frame
+	fenster_l.visible = false
 
 	_log("— Vorspulen —")
 	var vf: Node = get_tree().get_first_node_in_group("vorspulfenster")
@@ -244,6 +293,32 @@ func _ready() -> void:
 	vf._zeichne()
 	await get_tree().process_frame
 	vf.visible = false
+
+	_log("— Alter Spielstand (fehlende Felder ergänzen) —")
+	# Einen Spielstand aus einer früheren Fassung nachstellen: alles, was neu
+	# dazugekommen ist, wieder entfernen und die Welt reparieren lassen.
+	for cid_alt in Weltgenerator.clubs(Welt.daten):
+		var v_alt: Dictionary = Welt.verein(cid_alt)
+		v_alt.erase("mentoring")
+		v_alt.erase("sponsorangebote")
+		(v_alt["saison"] as Dictionary).erase("finanzen")
+		(v_alt["aufstellung"] as Dictionary).erase("anweisungen")
+		for sid_alt in v_alt["kader"]:
+			Welt.spieler(sid_alt).erase("nummer")
+			Welt.spieler(sid_alt).erase("laufbahn")
+	Welt._daten_auffrischen()
+	var fehlt := 0
+	for cid_p in Weltgenerator.clubs(Welt.daten):
+		var v_p: Dictionary = Welt.verein(cid_p)
+		if not v_p.has("mentoring") or not v_p.has("sponsorangebote"):
+			fehlt += 1
+		for sid_p in v_p["kader"]:
+			if int(Welt.spieler(sid_p).get("nummer", 0)) <= 0:
+				fehlt += 1
+	_log("   nach der Ergänzung fehlende Felder: %d" % fehlt)
+	for id_alt in app.bildschirme.keys():
+		app.zeige(id_alt)
+		await get_tree().process_frame
 
 	_log("— Speichern und Laden —")
 	if Welt.speichern(1, "Testlauf"):

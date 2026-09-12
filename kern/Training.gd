@@ -188,7 +188,6 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 
 	if zuwachs <= 0.0001:
 		return
-	var vorher: float = gesamt
 	for i in range(2):
 		if attr_liste.is_empty():
 			break
@@ -198,15 +197,7 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 		if Spielerfabrik.gesamt(sp) >= potenzial and Namen.zufall() < 0.8:
 			break
 		sp["attr"][a] = clampf(float(sp["attr"][a]) + zuwachs * Namen.bereich(0.5, 1.6), 1.0, 20.0)
-	var nachher: float = Spielerfabrik.gesamt(sp)
 	sp["wert"] = Spielerfabrik.marktwert(sp)
-	if nachher - vorher > 0.45 and cid == Welt.mein_verein_id and int(sp["alter"]) <= 23:
-		(sp["entwicklung_log"] as Array).push_front({"tag": int(d["tag"]), "delta": nachher - vorher, "gesamt": nachher})
-		if Namen.zufall() < 0.3:
-			Welt.nachricht({
-				"typ": "training", "betreff": "Entwicklungssprung: %s" % Spielerfabrik.voller_name(sp),
-				"text": "%s hat im Training deutlich zugelegt. Der Trainerstab ist beeindruckt." % Spielerfabrik.kurz_name(sp),
-			})
 
 static func _positionsattribute(sp: Dictionary) -> Array:
 	if bool(sp["ist_torwart"]):
@@ -263,7 +254,28 @@ static func _staerke_protokollieren(d: Dictionary) -> void:
 		for sid in d["vereine"][cid]["kader"]:
 			var sp: Dictionary = d["spieler"][sid]
 			var verlauf: Array = sp.get("staerke_verlauf", [])
-			verlauf.append(roundf(Spielerfabrik.gesamt(sp) * 10.0) / 10.0)
+			var jetzt: float = roundf(Spielerfabrik.gesamt(sp) * 10.0) / 10.0
+			# Ein Entwicklungssprung wird an dieser Stelle festgehalten und nicht
+			# Woche fuer Woche: eine einzelne Trainingswoche bewegt den
+			# Gesamtwert um Hundertstel, erst vier Wochen ergeben ein Signal.
+			if not verlauf.is_empty() and cid == Welt.mein_verein_id:
+				var davor: float = float(verlauf[verlauf.size() - 1])
+				if jetzt - davor >= 0.8:
+					_sprung_festhalten(d, sp, jetzt - davor, jetzt)
+			verlauf.append(jetzt)
 			while verlauf.size() > VERLAUF_LAENGE:
 				verlauf.remove_at(0)
 			sp["staerke_verlauf"] = verlauf
+
+## Haelt einen deutlichen Entwicklungsschritt fest und meldet ihn gelegentlich.
+static func _sprung_festhalten(d: Dictionary, sp: Dictionary, delta: float, gesamt: float) -> void:
+	var elog: Array = sp["entwicklung_log"]
+	elog.push_front({"tag": int(d["tag"]), "delta": delta, "gesamt": gesamt})
+	if elog.size() > 40:
+		elog.resize(40)
+	if int(sp["alter"]) <= 23 and Namen.zufall() < 0.5:
+		Welt.nachricht({
+			"typ": "training", "betreff": "Entwicklungssprung: %s" % Spielerfabrik.voller_name(sp),
+			"text": "%s hat in den letzten Wochen deutlich zugelegt (%s auf %d). Der Trainerstab ist beeindruckt." % [
+				Spielerfabrik.kurz_name(sp), Stil.komma(delta, 1), int(gesamt)],
+		})

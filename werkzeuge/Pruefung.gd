@@ -1,0 +1,317 @@
+extends Node
+## Integritätsprüfung: simuliert mehrere Saisons und prüft nach jeder Saison
+## harte Invarianten der Welt. Was hier anschlägt, ist ein echter Fehler —
+## kein Geschmacksurteil über Balance.
+##
+## Aufruf: godot --headless res://werkzeuge/Pruefung.gd  bzw. .tscn
+##         optionales Argument: Anzahl Tage (Vorgabe 1100)
+
+var fehler: int = 0
+var geprueft: int = 0
+
+func _log(text: String) -> void:
+	print(text)
+
+func _fehler(text: String) -> void:
+	fehler += 1
+	print("  FEHLER: %s" % text)
+
+func _pruefe(bedingung: bool, text: String) -> void:
+	geprueft += 1
+	if not bedingung:
+		_fehler(text)
+
+func _ready() -> void:
+	var args := OS.get_cmdline_user_args()
+	var tage: int = int(args[0]) if args.size() > 0 else 1100
+	var start := Time.get_ticks_msec()
+	Welt.neues_spiel(_erster_verein(), {"vorname": "Prüf", "nachname": "Trainer", "hintergrund": "taktiker"}, 20260)
+	var d: Dictionary = Welt.daten
+	_log("— Ausgangswelt —")
+	var soll_ligagroessen := _ligagroessen(d)
+	_alles_pruefen(d, soll_ligagroessen)
+
+	var saison := 0
+	for i in range(tage):
+		var u := Welt.tag_weiter()
+		# Die eigene Partie wird sonst nie ausgetragen — dann fehlen dem
+		# eigenen Verein alle Einnahmen und die Messung wäre wertlos.
+		if str(u.get("art", "")) == "eigenes_spiel":
+			Welt.partie_simulieren(str(u["spiel"]))
+			Welt.spieltag_abwickeln(Welt.tag())
+			Welt.wochenrhythmus(Welt.tag())
+			Welt.saison_pruefen(Welt.tag())
+		Welt.unterbrechung = {}
+		if Welt.saison_index() != saison:
+			saison = Welt.saison_index()
+			_log("— Nach Saison %d (Tag %d) —" % [saison, int(d["tag"])])
+			_alles_pruefen(d, soll_ligagroessen)
+	_log("— Abschluss nach %d Tagen —" % tage)
+	_alles_pruefen(d, soll_ligagroessen)
+	_groessenbericht(d)
+	_finanzbericht(d)
+	_trainerbericht(d)
+	_log("")
+	_log("%d Prüfungen, %d Fehler. Dauer: %d ms" % [geprueft, fehler, Time.get_ticks_msec() - start])
+	get_tree().quit(1 if fehler > 0 else 0)
+
+func _erster_verein() -> String:
+	var d := Weltgenerator.erzeuge(2026, 20260)
+	return str(d["ligen"]["l_de1"]["vereine"][0])
+
+func _ligagroessen(d: Dictionary) -> Dictionary:
+	var g := {}
+	for lid in d["ligen"].keys():
+		g[lid] = (d["ligen"][lid]["vereine"] as Array).size()
+	return g
+
+func _alles_pruefen(d: Dictionary, soll: Dictionary) -> void:
+	_ligen(d, soll)
+	_kader(d)
+	_spieler(d)
+	_verweise(d)
+	_finanzen(d)
+	_spielplan(d)
+	_trikotnummern(d)
+
+## Ligen behalten ihre Größe über Auf- und Abstieg hinweg.
+func _ligen(d: Dictionary, soll: Dictionary) -> void:
+	for lid in soll.keys():
+		var ist: int = (d["ligen"][lid]["vereine"] as Array).size()
+		_pruefe(ist == int(soll[lid]), "Liga %s hat %d statt %d Vereine" % [lid, ist, int(soll[lid])])
+	# Kein Verein in zwei Ligen
+	var gesehen := {}
+	for lid2 in d["ligen"].keys():
+		for cid in d["ligen"][lid2]["vereine"]:
+			if gesehen.has(cid):
+				_fehler("Verein %s steht in %s und in %s" % [cid, gesehen[cid], lid2])
+			gesehen[cid] = lid2
+		_pruefe(not (d["ligen"][lid2]["vereine"] as Array).is_empty(), "Liga %s ist leer" % lid2)
+	# Jeder Verein kennt seine Liga
+	for cid2 in Weltgenerator.clubs(d):
+		var lid3: String = str(d["vereine"][cid2]["liga"])
+		_pruefe(gesehen.get(cid2, "") == lid3,
+			"Verein %s meldet Liga %s, steht aber in %s" % [cid2, lid3, str(gesehen.get(cid2, "—"))])
+
+## Jeder Verein kann eine Mannschaft aufs Feld stellen.
+func _kader(d: Dictionary) -> void:
+	for cid in Weltgenerator.clubs(d):
+		var v: Dictionary = d["vereine"][cid]
+		var kader: Array = v["kader"]
+		_pruefe(kader.size() >= 12, "%s hat nur %d Spieler im Kader" % [str(v["name"]), kader.size()])
+		var torhueter := 0
+		var einsatzfaehig := 0
+		var doppelt := {}
+		for sid in kader:
+			if doppelt.has(sid):
+				_fehler("%s führt %s doppelt im Kader" % [str(v["name"]), sid])
+			doppelt[sid] = true
+			var sp: Dictionary = d["spieler"].get(sid, {})
+			if sp.is_empty():
+				_fehler("%s führt unbekannten Spieler %s" % [str(v["name"]), sid])
+				continue
+			_pruefe(str(sp["verein"]) == cid,
+				"%s steht im Kader von %s, gehört aber zu %s" % [sid, cid, str(sp["verein"])])
+			if bool(sp["ist_torwart"]):
+				torhueter += 1
+			if (sp["verletzung"] as Dictionary).is_empty() and int(sp["sperre"]) <= 0:
+				einsatzfaehig += 1
+		_pruefe(torhueter >= 1, "%s hat keinen Torwart" % str(v["name"]))
+		_pruefe(einsatzfaehig >= 7, "%s hat nur %d einsatzfähige Spieler" % [str(v["name"]), einsatzfaehig])
+
+## Kein Spieler steht in zwei Kadern; Werte bleiben im gültigen Bereich.
+func _spieler(d: Dictionary) -> void:
+	var zuordnung := {}
+	for cid in Weltgenerator.clubs(d):
+		for sid in d["vereine"][cid]["kader"]:
+			if zuordnung.has(sid):
+				_fehler("Spieler %s steht in %s und in %s" % [sid, zuordnung[sid], cid])
+			zuordnung[sid] = cid
+		for jid in d["vereine"][cid].get("jugend", []):
+			if zuordnung.has(jid):
+				_fehler("Jugendspieler %s steht auch in %s" % [jid, zuordnung[jid]])
+			zuordnung[jid] = cid
+	var schlecht := 0
+	for sid2 in d["spieler"].keys():
+		var sp: Dictionary = d["spieler"][sid2]
+		var verein: String = str(sp["verein"])
+		if verein != "" and not zuordnung.has(sid2) and not bool(sp.get("jugendspieler", false)):
+			_fehler("Spieler %s nennt Verein %s, steht dort aber nicht im Kader" % [sid2, verein])
+		for feld in ["form", "moral", "fitness", "last"]:
+			var w: float = float(sp[feld])
+			if is_nan(w) or w < 0.0 or w > 100.0:
+				schlecht += 1
+				if schlecht <= 3:
+					_fehler("Spieler %s hat %s = %s" % [sid2, feld, str(w)])
+		for a in (sp["attr"] as Dictionary).keys():
+			var av: float = float(sp["attr"][a])
+			if is_nan(av) or av < 1.0 or av > 20.0:
+				schlecht += 1
+				if schlecht <= 6:
+					_fehler("Spieler %s hat Attribut %s = %s" % [sid2, a, str(av)])
+		if float(sp["wert"]) < 0.0 or is_nan(float(sp["wert"])):
+			_fehler("Spieler %s hat Marktwert %s" % [sid2, str(sp["wert"])])
+		_pruefe(int(sp["alter"]) >= 15 and int(sp["alter"]) <= 45,
+			"Spieler %s ist %d Jahre alt" % [sid2, int(sp["alter"])])
+	if schlecht > 6:
+		_log("  (%d Wertverletzungen insgesamt)" % schlecht)
+
+## Aufstellungen, Angebote und Aufträge zeigen nur auf Dinge, die es gibt.
+func _verweise(d: Dictionary) -> void:
+	for cid in Weltgenerator.clubs(d):
+		var v: Dictionary = d["vereine"][cid]
+		var auf: Dictionary = v.get("aufstellung", {})
+		for block in ["angriff", "abwehr"]:
+			for pos in (auf.get(block, {}) as Dictionary).keys():
+				var sid: String = str(auf[block][pos])
+				if sid == "":
+					continue
+				if not (v["kader"] as Array).has(sid):
+					_fehler("%s stellt %s auf, der nicht im Kader ist" % [str(v["name"]), sid])
+	for angebot in d.get("transfermarkt", {}).get("angebote", []):
+		var asid: String = str(angebot.get("spieler", ""))
+		_pruefe(d["spieler"].has(asid), "Transferangebot für unbekannten Spieler %s" % asid)
+	for auftrag in d.get("scouting", {}).get("auftraege", []):
+		var ziel: String = str(auftrag.get("ziel", ""))
+		if str(auftrag.get("art", "")) == "spieler" and ziel != "":
+			_pruefe(d["spieler"].has(ziel), "Scoutauftrag für unbekannten Spieler %s" % ziel)
+	for eintrag in d.get("anliegen", []):
+		_pruefe(d["spieler"].has(str(eintrag.get("spieler", ""))),
+			"Anliegen eines unbekannten Spielers")
+
+## Kein Verein rutscht dauerhaft ins Bodenlose.
+func _finanzen(d: Dictionary) -> void:
+	var pleite: Array = []
+	for cid in Weltgenerator.clubs(d):
+		var v: Dictionary = d["vereine"][cid]
+		var kasse: float = float(v["kasse"])
+		if is_nan(kasse):
+			_fehler("%s hat eine ungültige Kasse" % str(v["name"]))
+		elif kasse < -2000000.0:
+			pleite.append("%s (%s)" % [str(v["name"]), Stil.geld(kasse)])
+	if not pleite.is_empty():
+		_fehler("%d Vereine tief im Minus: %s" % [pleite.size(), ", ".join(pleite.slice(0, 5))])
+
+## Jede Liga spielt eine vollständige Doppelrunde.
+func _spielplan(d: Dictionary) -> void:
+	var pro_verein := {}
+	var saison_start: int = Kalender.saison_index(int(d["tag"])) * Kalender.TAGE_IM_JAHR
+	for mid in d["spiele"].keys():
+		var m: Dictionary = d["spiele"][mid]
+		if str(m["art"]) != "liga" or int(m["tag"]) < saison_start:
+			continue
+		for seite in ["heim", "gast"]:
+			var cid: String = str(m[seite])
+			pro_verein[cid] = int(pro_verein.get(cid, 0)) + 1
+	for lid in d["ligen"].keys():
+		var vereine: Array = d["ligen"][lid]["vereine"]
+		var soll: int = (vereine.size() - 1) * 2
+		for cid2 in vereine:
+			var ist: int = int(pro_verein.get(cid2, 0))
+			if ist != soll:
+				_fehler("%s hat %d Ligaspiele statt %d" % [str(d["vereine"][cid2]["name"]), ist, soll])
+				return
+
+## Rückennummern sind je Kader eindeutig.
+func _trikotnummern(d: Dictionary) -> void:
+	for cid in Weltgenerator.clubs(d):
+		var gesehen := {}
+		for sid in d["vereine"][cid]["kader"]:
+			var n: int = int(d["spieler"][sid].get("nummer", 0))
+			if n <= 0:
+				_fehler("%s trägt keine Rückennummer" % sid)
+			elif gesehen.has(n):
+				_fehler("Nummer %d bei %s doppelt vergeben" % [n, str(d["vereine"][cid]["name"])])
+			gesehen[n] = true
+
+## Wie es dem Trainer ergangen ist. Viele Stationen bei ordentlicher Siegquote
+## heisst: der Vorstand feuert schneller, als jemand arbeiten kann.
+func _trainerbericht(d: Dictionary) -> void:
+	var t: Dictionary = d.get("trainer", {})
+	if t.is_empty():
+		return
+	var s: Dictionary = t["statistik"]
+	var spiele: int = int(s["spiele"])
+	_log("")
+	_log("Trainerkarriere:")
+	_log("  %s, Ruf %.1f (%s)" % [Trainerkarriere.voller_name(t), float(t["ruf"]),
+		Trainerkarriere.ruf_stufe(float(t["ruf"]))])
+	_log("  %d Spiele, %d Siege (%.0f %%), %d Titel" % [spiele, int(s["siege"]),
+		float(s["siege"]) / maxf(float(spiele), 1.0) * 100.0, (t["titel"] as Array).size()])
+	_log("  Stationen: %d, derzeit: %s" % [(t["stationen"] as Array).size(),
+		str(d["vereine"].get(str(t["verein"]), {}).get("name", "vereinslos"))])
+
+## Einnahmen und Ausgaben je Saison, hochgerechnet aus der Wochenübersicht.
+## Zeigt, ob das Wirtschaftsmodell überhaupt aufgehen kann.
+func _finanzbericht(d: Dictionary) -> void:
+	_log("")
+	_log("Wirtschaft — tatsächlich gebuchte Saisonsummen:")
+	var beispiele: Array = []
+	for lid in ["l_de1", "l_de2", "l_pl1"]:
+		if not d["ligen"].has(lid):
+			continue
+		var vereine: Array = (d["ligen"][lid]["vereine"] as Array).duplicate()
+		vereine.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
+		beispiele.append(str(vereine[0]))
+		beispiele.append(str(vereine[-1]))
+	for cid in beispiele:
+		var v: Dictionary = d["vereine"][cid]
+		var jahr: Dictionary = (v["saison"] as Dictionary).get("finanzen", {})
+		var ein := 0.0
+		var aus := 0.0
+		var teile: Array = []
+		var schluessel: Array = jahr.keys()
+		schluessel.sort()
+		for k in schluessel:
+			var betrag: float = float(jahr[k])
+			if betrag >= 0.0:
+				ein += betrag
+			else:
+				aus -= betrag
+			teile.append("%s %s" % [str(k), Stil.geld(betrag)])
+		_log("  %-30s Ruf %2d  Etat %s" % [str(v["name"]).substr(0, 30), int(float(v["ruf"])), Stil.geld(float(v["jahresetat"]))])
+		_log("     %s" % ", ".join(teile))
+		_log("     %d Spiele (%d daheim) · Ein %s  Aus %s  Saldo %s  Kasse %s" % [
+			int(v["saison"]["spiele"]), int(v["saison"]["heimspiele"]),
+			Stil.geld(ein), Stil.geld(aus), Stil.geld(ein - aus), Stil.geld(float(v["kasse"]))])
+	var summe := 0.0
+	var minus := 0
+	for cid2 in Weltgenerator.clubs(d):
+		summe += float(d["vereine"][cid2]["kasse"])
+		if float(d["vereine"][cid2]["kasse"]) < 0.0:
+			minus += 1
+	_log("  Vereine mit negativer Kasse: %d von %d, Summe aller Kassen %s" % [
+		minus, Weltgenerator.clubs(d).size(), Stil.geld(summe)])
+
+## Was im Spielstand über die Zeit wächst — Frühwarnung für Speicherwucher.
+func _groessenbericht(d: Dictionary) -> void:
+	_log("")
+	_log("Größen im Spielstand:")
+	_log("  Spieler gesamt: %d" % (d["spieler"] as Dictionary).size())
+	_log("  Spiele gesamt: %d" % (d["spiele"] as Dictionary).size())
+	_log("  Nachrichten: %d, Presse: %d, Hallenfunk: %d" % [
+		(d["nachrichten"] as Array).size(), (d["presse"] as Array).size(), (d["social"] as Array).size()])
+	_log("  Transferverlauf: %d" % (d["transfermarkt"]["verlauf"] as Array).size())
+	_log("  Chronikereignisse: %d" % (d["chronik"]["ereignisse"] as Array).size())
+	var log_max := 0
+	var laufbahn_max := 0
+	var log_summe := 0
+	for sid in d["spieler"].keys():
+		var n: int = (d["spieler"][sid].get("entwicklung_log", []) as Array).size()
+		log_summe += n
+		log_max = maxi(log_max, n)
+		laufbahn_max = maxi(laufbahn_max, (d["spieler"][sid].get("laufbahn", []) as Array).size())
+	_log("  Entwicklungslog: %d Einträge gesamt, längster %d" % [log_summe, log_max])
+	_log("  Längste Laufbahn: %d Stationen" % laufbahn_max)
+	# Woraus besteht der Spielstand eigentlich?
+	var teile := {"spieler": d["spieler"], "vereine": d["vereine"], "spiele": d["spiele"],
+		"ligen": d["ligen"], "personal": d["personal"], "presse": d["presse"],
+		"nachrichten": d["nachrichten"], "social": d["social"]}
+	var namen: Array = teile.keys()
+	namen.sort_custom(func(a, b): return var_to_bytes(teile[a]).size() > var_to_bytes(teile[b]).size())
+	for k in namen:
+		_log("  Anteil %-12s %.1f MB" % [str(k), float(var_to_bytes(teile[k]).size()) / 1048576.0])
+	if Welt.speichern(9, "Prüfung"):
+		var groesse: int = FileAccess.get_file_as_bytes(Welt.slot_pfad(9)).size()
+		_log("  Spielstand auf der Platte: %.1f MB" % (float(groesse) / 1048576.0))
+		Welt.slot_loeschen(9)

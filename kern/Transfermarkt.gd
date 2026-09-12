@@ -239,7 +239,7 @@ static func _spielerverhandlung(d: Dictionary, a: Dictionary) -> void:
 	var sp: Dictionary = d["spieler"][sid]
 	var nach: String = str(a["nach"])
 	var kaeufer: Dictionary = d["vereine"][nach]
-	var wunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(kaeufer["ruf"]))
+	var wunsch: float = Finanzen.gehaltswunsch(d, nach, sp)
 	var geboten: float = float(a["gehalt"])
 	var attraktivitaet := _attraktivitaet(d, sp, nach, str(a["rolle"]))
 	var schwelle: float = wunsch * clampf(1.12 - attraktivitaet * 0.28, 0.78, 1.25)
@@ -362,13 +362,21 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 	sp["transferwunsch"] = false
 	sp["unzufriedenheit"] = clampf(float(sp["unzufriedenheit"]) - 40.0, 0.0, 100.0)
 	sp["moral"] = clampf(float(sp["moral"]) + 12.0, 5.0, 100.0)
-	(d["transfermarkt"]["verlauf"] as Array).push_front({
+	_verlauf_eintragen(d, {
 		"tag": int(d["tag"]), "spieler": sid, "von": von, "nach": nach, "ablöse": ablöse, "art": "kauf",
 	})
+	Laufbahn.wechsel(d, sid, von, nach, ablöse)
 	Medien.transfer_meldung(d, sid, von, nach, ablöse)
 	Chronik.transfer_pruefen(d, sid, ablöse)
 	if nach != "":
 		KI.aufstellung_pruefen(d, nach)
+
+## Transferverlauf mit Deckel — sonst waechst er ueber viele Jahre endlos.
+static func _verlauf_eintragen(d: Dictionary, eintrag: Dictionary) -> void:
+	var verlauf: Array = d["transfermarkt"]["verlauf"]
+	verlauf.push_front(eintrag)
+	if verlauf.size() > 300:
+		verlauf.resize(300)
 
 static func aufstellung_saeubern(d: Dictionary, cid: String, sid: String) -> void:
 	var auf: Dictionary = d["vereine"][cid]["aufstellung"]
@@ -393,9 +401,10 @@ static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: 
 	(d["vereine"][nach]["kader"] as Array).append(sid)
 	Trikot.vergeben(d, nach, sid)
 	sp["verein"] = nach
-	(d["transfermarkt"]["verlauf"] as Array).push_front({
+	_verlauf_eintragen(d, {
 		"tag": int(d["tag"]), "spieler": sid, "von": von, "nach": nach, "ablöse": 0.0, "art": "leihe",
 	})
+	Laufbahn.leihe(d, sid, von, nach)
 	Weltgenerator.setze_standardaufstellung(d, nach)
 
 # ------------------------------------------------------- Ablöseklausel ---
@@ -469,7 +478,7 @@ static func _klausel_versuchen(d: Dictionary, sid: String, sp: Dictionary, klaus
 	var nach: String = str(Namen.waehle(interessenten))
 	if _attraktivitaet(d, sp, nach, "stammspieler") < 0.45:
 		return
-	var gehalt: float = Spielerfabrik.gehaltsvorstellung(sp, float(d["vereine"][nach]["ruf"])) * 1.1
+	var gehalt: float = Finanzen.gehaltswunsch(d, nach, sp) * 1.1
 	var name: String = Spielerfabrik.voller_name(sp)
 	transfer_durchfuehren(d, sid, nach, klausel, gehalt, Namen.wuerfel(3, 5), "leistungstraeger")
 	if von == Welt.mein_verein_id:
@@ -486,7 +495,7 @@ static func vertrag_verlaengern(d: Dictionary, sid: String, gehalt: float, laufz
 		praemie_tor: float = 0.0, praemie_sieg: float = 0.0, klausel: float = 0.0) -> Dictionary:
 	var sp: Dictionary = d["spieler"][sid]
 	var cid: String = str(sp["verein"])
-	var wunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(d["vereine"][cid]["ruf"]))
+	var wunsch: float = Finanzen.gehaltswunsch(d, cid, sp)
 	var rollen_bonus: float = {"leistungstraeger": 0.9, "stammspieler": 0.96, "rotation": 1.0, "ergaenzung": 1.08, "talent": 1.0}.get(rolle, 1.0)
 	var schwelle: float = wunsch * rollen_bonus * clampf(1.0 + float(sp["unzufriedenheit"]) / 260.0, 1.0, 1.4)
 	var grenzen := Praemien.begrenzen(praemie_tor, praemie_sieg)
@@ -565,8 +574,8 @@ static func _ki_verstaerkung(d: Dictionary, cid: String) -> bool:
 		var preis := ablösevorstellung(d, sid)
 		if preis > budget:
 			continue
-		var gehalt := Spielerfabrik.gehaltsvorstellung(sp, float(v["ruf"]))
-		if gehalt * 52.0 > float(v["gehaltsbudget"]) * 52.0 * 0.25:
+		var gehalt := Finanzen.gehaltswunsch(d, cid, sp)
+		if gehalt * 52.0 > float(v["gehaltsbudget"]) * 52.0 * 0.18:
 			continue
 		if str(sp["verein"]) == Welt.mein_verein_id:
 			_angebot_an_spieler(d, cid, sid, preis, gehalt)
@@ -646,7 +655,7 @@ static func _angebot_fuer_eigene_spieler(d: Dictionary, cid: String) -> void:
 	if interessenten.is_empty():
 		return
 	var kaeufer: String = str(interessenten[Namen.wuerfel(0, interessenten.size() - 1)])
-	_angebot_an_spieler(d, kaeufer, sid, ablösevorstellung(d, sid), Spielerfabrik.gehaltsvorstellung(sp, float(d["vereine"][kaeufer]["ruf"])))
+	_angebot_an_spieler(d, kaeufer, sid, ablösevorstellung(d, sid), Finanzen.gehaltswunsch(d, kaeufer, sp))
 
 ## Antwort des Spielers auf ein eingehendes Angebot.
 static func eingehendes_angebot_entscheiden(d: Dictionary, angebots_id: String, annehmen: bool) -> Dictionary:

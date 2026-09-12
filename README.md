@@ -29,7 +29,20 @@ godot4 --headless res://werkzeuge/Testlauf.tscn -- spiele      # 300 Partien, Ke
 godot4 --headless res://werkzeuge/Testlauf.tscn -- halbsaison  # halbe Saison
 godot4 --headless res://werkzeuge/Testlauf.tscn -- langzeit    # drei Saisons am Stück
 godot4 --headless res://werkzeuge/Oberflaechentest.tscn        # alle Bildschirme + Live-Spiel + Speichern
+godot4 --headless res://werkzeuge/Pruefung.tscn -- 740          # Integritätsprüfung über zwei Saisons
+godot4 --headless res://werkzeuge/Testlauf.tscn -- rollen        # Verteilung der Rollenvorschläge
+godot4 --headless res://werkzeuge/Testlauf.tscn -- wirkung       # Wirkung jeder Spieleranweisung
 ```
+
+Die **Prüfung** ist der schärfste dieser Tests: Sie simuliert eine ganze Saison
+und misst danach harte Zusagen der Welt — Ligagrößen bleiben konstant, jeder
+Verein hat einen Torwart und sieben einsatzfähige Spieler, kein Spieler steht in
+zwei Kadern, keine Aufstellung zeigt auf jemanden, der nicht im Kader ist, jede
+Rückennummer gibt es nur einmal, jede Liga spielt eine vollständige Doppelrunde,
+alle Werte bleiben im gültigen Bereich. Dazu ein Bericht darüber, was im
+Spielstand wächst und wie die Wirtschaft jedes Vereins tatsächlich aussieht.
+Was hier anschlägt, ist ein Fehler und keine Geschmacksfrage — der erste Lauf
+förderte fünf davon zutage.
 
 Und zum Ansehen der Oberfläche ohne Fenster — legt je Bildschirm ein PNG ab:
 
@@ -150,7 +163,7 @@ beim Verein einfach `"wappen": {"form": …, "muster": …, "symbol": …}`.
 
 ## Was Hallenherz eigen ist
 
-Sieben Systeme, die es so nicht als Pflichtanforderung gab und die das Spiel prägen:
+Acht Systeme, die es so nicht als Pflichtanforderung gab und die das Spiel prägen:
 
 ### Hallenpuls
 Die Atmosphäre in der Halle ist eine eigene Größe (0–100), die sich **während**
@@ -211,6 +224,17 @@ Unzufriedenheit sinkt — **und sein Charakter zieht langsam in Richtung seines
 Vorbilds**. Wer einen Söldner zum Paten macht, hat in zwei Jahren einen
 zweiten Söldner. Drei Patenschaften trägt eine Kabine, nicht mehr. Zu finden
 unter *Kabine*.
+
+### Der Sponsorenmarkt
+Sponsoring ist im Hallenhandball die grösste Einnahmequelle, und es ist keine
+feste Zahl. Ein Verein hat fünf Plätze — Trikotbrust, Hallenname, Ausrüster,
+Ärmel, Rückenpartner —, die unterschiedlich viel wert sind. Was er dafür
+aufrufen kann, hängt an Etat, Liga, Fanzufriedenheit, Treue und den Titeln der
+letzten drei Jahre. Verträge laufen aus; dann liegen neue Angebote auf dem
+Tisch, und **solange nicht unterschrieben wird, bleibt der Platz leer und das
+Geld aus**. Jeder Vertrag trägt eine Titelprämie, die bei einem Titelgewinn
+tatsächlich ausgezahlt wird. Aufstieg, Erfolg und volle Hallen zahlen sich
+dadurch mit einem Jahr Verzögerung aus — und ein Absturz auch.
 
 ### Das Gespür der Scouts
 Scouts sind nicht nur Werte, sondern haben einen eigenen Ruf. Jede Empfehlung
@@ -496,6 +520,15 @@ in eine sehr lange Schleife schickt.
   Quote je Verein gebildet, aus Vereinsruf und der tatsächlichen Stärke der
   zehn besten Spieler. Die Tabelle stellt der Prognose den aktuellen Platz
   gegenüber — grün, wer über der Erwartung liegt, rot, wer darunter.
+* **Die Laufbahn jedes Spielers.** Neben der Statistik führt jeder Spieler eine
+  Chronik seines Sportlerlebens: Pflichtspieldebüt, jeder Wechsel mit Ablöse,
+  Leihen, der Sprung aus der eigenen Jugend, gewonnene Titel (nur für die, die
+  mindestens fünf Saisonspiele hatten), Berufungen ins Team der Saison,
+  Torschützenkronen, Nominierungen für EM und WM, schwere Verletzungen ab acht
+  Wochen Ausfall und runde Marken — das 100. Pflichtspiel, der 200.
+  Karrieretreffer, die 1000. Parade. Nach Saisons gruppiert im Spielerfenster
+  unter *Entwicklung*. Damit ist ein Transferziel keine Zeile mit Zahlen mehr,
+  sondern jemand mit Vergangenheit.
 * **Stärkeverlauf.** Alle vier Wochen wird der Gesamtwert jedes Spielers
   festgehalten. Im Spielerfenster ergibt das eine Kurve über bis zu vier Jahre:
   ob jemand wirklich besser wird, sieht man erst daran.
@@ -514,7 +547,7 @@ in eine sehr lange Schleife schickt.
 | **2 Matchsimulation** | Angriffsweise Engine, 4 Deckungen × 5 Angriffsstile, individuelle Spieleranweisungen (5 im Angriff, 4 in der Abwehr), Zeitstrafen mit Unterzahl, 7-gegen-6, Auszeiten, Kabinenansprachen, Kräftehaushalt, Live-Ansicht mit gezeichnetem Feld |
 | **3 Kader** | 29 Attribute, Form, Moral, Fitness, Lastkonto, Verletzungsanfälligkeit, Persönlichkeit, Potenzial, Alterskurve, individuelle Förderprogramme, Rückennummern, Patenschaften, eigene Nachwuchsakademie |
 | **4 Transfer & Scouting** | Aktive Suche mit acht Filtern, zweistufige Verhandlung (Verein, dann Spieler), Gegenangebote, Leihen, Erfolgsprämien im Vertrag, Transferfenster mit Fristmeldungen, Scoutaufträge mit Unschärfe, gestufte Spielvorbereitung |
-| **5 Vereinsführung** | Einnahmen aus Zuschauern, Sponsoring, Medien, Merchandising und Preisgeldern; sechs Ausbaubereiche; sieben Personalrollen mit messbarer Wirkung; Vorstand mit Ziel, Vertrauen, Warnstufen und Entlassung |
+| **5 Vereinsführung** | Einnahmen aus Zuschauern, einem eigenen Sponsorenmarkt mit auslaufenden Verträgen, Medien, Merchandising und Preisgeldern; sechs Ausbaubereiche; sieben Personalrollen mit messbarer Wirkung; Vorstand mit Ziel, Vertrauen, Warnstufen und Entlassung |
 | **6 Trainerkarriere** | Eigener Vertrag, Ruf, Stationen, Titelsammlung, Jobangebote, Handschrift mit Prägungen — alles vereinsübergreifend |
 | **7 Zeitablauf** | Tageskalender mit Vorbereitung, Trainingsalltag und Wochenrhythmus (Montag: Abrechnung, Training, Presse, Vorstand; Donnerstag: Kabine, Gerüchte), Winterpause, Transferfenster; eine Drei-Wochen-Vorschau zeigt Spiele, Fristen, Scoutberichte und Bauabschlüsse |
 | **8 Immersion** | Presse und „Hallenfunk" reagieren auf Ergebnis, Derbycharakter, Serien, Einzelleistungen und Vereinslage; Pressekonferenzen vor Pflichtspielen; Rivalitäten wachsen aus Duellen; Chronik mit Titeln, Legenden, Rekorden und Saisonverlauf |
@@ -564,6 +597,8 @@ kern/
   Vorbericht.gd      Spielvorbereitung: gestufte Gegneranalyse
   Echtdaten.gd       Lader und Zwischenspeicher für die JSON-Datensätze
   Anweisungen.gd     Individuelle Spieleranweisungen für Angriff und Abwehr
+  Sponsoren.gd       Sponsorenmarkt: Plätze, Marktwert, Auslauf, Angebote, Prämien
+  Laufbahn.gd        Chronik eines Spielerlebens: Debüt, Wechsel, Titel, Marken
   Trikot.gd          Rückennummern: Vergabe nach Position, Eindeutigkeit im Kader
   Mentoring.gd       Patenschaften: Passung, Reifung, Charakterübertragung
   KI.gd              Aufstellung, Taktik, Training, Verträge, Ausbau der KI-Vereine
@@ -640,6 +675,35 @@ halbiert und die Ruf-Spanne der Ligen gestaucht — jetzt liegt der Schnitt bei
 5,9 Toren und 19 % der Partien enden zweistellig, bei unveränderter
 Tabellenordnung: die starken Vereine stehen weiterhin oben, sie gewinnen nur
 nicht mehr jedes Spiel zweistellig.
+
+**Gehalt richtet sich nach der Größe des Vereins, nicht nur nach dem Spieler.**
+Ohne diesen Faktor zahlte ein polnischer Zweitligist dieselben Wochengehälter
+wie der THW Kiel — das Ergebnis war eine Welt, in der 119 von 136 Vereinen im
+Minus standen und die Summe aller Kassen bei minus 104 Millionen lag. Jeder
+Verein hat jetzt ein Lohnniveau, das sich aus seinem Jahresetat ergibt und in
+Gehaltsforderungen, Erfolgsprämien und die Betriebskosten der Abteilungen
+eingeht. Zusammen mit dem Sponsorenmarkt kippt die Bilanz: 10 Vereine im Minus,
+Summe aller Kassen deutlich positiv.
+
+**Ein neuer Trainer bekommt Zeit.** Jobangebote kommen von Vereinen, die ihr
+Ziel verfehlt haben — also von Vereinen mit niedrigem Vorstandsvertrauen und
+einem Saisonziel, das die Mannschaft nicht einlösen kann. Wer dort anfing, war
+in wenigen Wochen wieder entlassen: im Langzeittest fünf Stationen in drei
+Saisons bei 55 % Siegquote. Beim Amtsantritt setzt der Vorstand das Vertrauen
+deshalb zurück, streicht die Warnstufe und formuliert das Ziel neu, gemessen an
+der Lage, die der neue Trainer vorfindet. Zusätzlich ergibt sich das Saisonziel
+jetzt aus derselben Größe, an der auch jedes einzelne Spiel bewertet wird —
+vorher war es der Vereinsruf, während die Spiele an der Kaderstärke gemessen
+wurden.
+
+**Der Spielstand darf nicht mitwachsen.** Ein vollständiger Spielbericht mit
+Einzelbewertungen, Wurfkarte und Spielverlauf hängt an jeder Partie — bei über
+4000 Partien im Archiv waren das 48 MB nach einer Saison. Von Partien ohne
+eigene Beteiligung wird der Bericht direkt nach dem Verbuchen auf Ergebnis und
+Mannschaftswerte eingedampft, beim Saisonwechsel auch der Rest. Dazu haben
+Transferverlauf, Chronikereignisse und Entwicklungsprotokolle jetzt einen
+Deckel. Ergebnis: knapp 25 MB nach zwei Saisons, ohne dass etwas fehlt, was
+angezeigt wird.
 
 **Die Welt darf nicht ausbluten.** Ein Manager-Spiel, das KI-Vereine nur
 verwalten lässt, läuft nach wenigen Saisons leer. Deshalb verlängern KI-Vereine

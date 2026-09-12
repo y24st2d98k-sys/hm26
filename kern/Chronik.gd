@@ -155,11 +155,16 @@ static func rivalitaet_stufe(wert: float) -> String:
 
 static func titel_eintragen(d: Dictionary, cid: String, titel: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
+	Laufbahn.titel(d, cid, titel)
+	Sponsoren.titelbonus(d, cid, titel)
 	(v["chronik"]["titel"] as Array).append({"saison": Welt.saison_index(), "titel": titel,
 		"saisontext": Kalender.saison_text(int(d["startjahr"]), Welt.saison_index())})
-	(d["chronik"]["ereignisse"] as Array).push_front({
+	var ereignisse: Array = d["chronik"]["ereignisse"]
+	ereignisse.push_front({
 		"tag": int(d["tag"]), "verein": cid, "text": "%s gewinnt %s" % [v["name"], titel],
 	})
+	if ereignisse.size() > 250:
+		ereignisse.resize(250)
 
 static func saison_eintragen(d: Dictionary, cid: String, eintrag: Dictionary) -> void:
 	(d["vereine"][cid]["chronik"]["saisons"] as Array).push_front(eintrag)

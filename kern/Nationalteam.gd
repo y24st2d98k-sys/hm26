@@ -146,6 +146,7 @@ static func nominieren(d: Dictionary) -> void:
 			var sp: Dictionary = d["spieler"][sid]
 			sp["bei_nationalmannschaft"] = true
 			sp["nationalspieler"] = int(sp.get("nationalspieler", 0)) + 1
+			Laufbahn.nationalelf(d, sid, "%s %d" % [str(t["name"]), Welt.startjahr() + Welt.saison_index()])
 			if str(sp["verein"]) == Welt.mein_verein_id:
 				eigene.append(sid)
 	# Gruppen auslosen: Schlangensetzung nach Stärke
