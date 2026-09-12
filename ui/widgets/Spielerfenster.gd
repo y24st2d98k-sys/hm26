@@ -7,6 +7,7 @@ extends Control
 
 var sid: String = ""
 var gespraech_thema: String = ""
+var vergleich_sid: String = ""
 var reiter: String = "uebersicht"
 var inhalt: VBoxContainer
 var kopfbereich: VBoxContainer
@@ -81,6 +82,7 @@ func zeige(spieler_id: String) -> void:
 	sid = spieler_id
 	reiter = "uebersicht"
 	gespraech_thema = ""
+	vergleich_sid = ""
 	meldung.text = ""
 	visible = true
 	_reiter_aufbauen()
@@ -208,6 +210,47 @@ func _uebersicht(sp: Dictionary) -> void:
 		fokus.add_child(wahl)
 
 func _attribute(sp: Dictionary) -> void:
+	# Profil zuerst: das Netz sagt in einem Blick mehr als 29 Einzelwerte.
+	var oben := Stil.hbox(12)
+	inhalt.add_child(oben)
+	var profil := Bausteine.karte_in(oben, "Profil")
+	Stil.karte_wurzel(profil).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var vergleichspieler: Dictionary = {}
+	if vergleich_sid != "" and Welt.daten["spieler"].has(vergleich_sid):
+		vergleichspieler = Welt.spieler(vergleich_sid)
+	var netz := Radar.fuer(sp, vergleichspieler, 300.0)
+	netz.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	profil.add_child(netz)
+	var legende := Stil.hbox(10)
+	profil.add_child(legende)
+	legende.add_child(Stil.abzeichen(Spielerfabrik.kurz_name(sp), Stil.AKZENT))
+	if not vergleichspieler.is_empty():
+		legende.add_child(Stil.abzeichen(Spielerfabrik.kurz_name(vergleichspieler), Stil.BLAU))
+	legende.add_child(Stil.dehner())
+	_vergleichswahl(profil, sp)
+
+	var kennzahlen := Bausteine.karte_in(oben, "Eignung nach Position")
+	Stil.karte_wurzel(kennzahlen).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for pos in Spielerfabrik.POSITIONEN:
+		if bool(sp["ist_torwart"]) != (pos == "TW"):
+			continue
+		var eignung: float = Spielerfabrik.eignung(sp, pos)
+		var wert: float = Spielerfabrik.angriff_auf(sp, pos) if pos != "TW" else Spielerfabrik.gesamt(sp)
+		var zeile := Stil.hbox(8)
+		kennzahlen.add_child(zeile)
+		zeile.add_child(Bausteine.positions_abzeichen(pos))
+		var l := Stil.matt(str(Spielerfabrik.POSITION_NAME[pos]))
+		l.custom_minimum_size = Vector2(150, 0)
+		zeile.add_child(l)
+		zeile.add_child(Stil.balken(wert, 100.0, 110))
+		var w := Stil.text("%d" % int(wert), Stil.S_KLEIN, Stil.wert_farbe(wert, 100.0))
+		w.custom_minimum_size = Vector2(32, 0)
+		zeile.add_child(w)
+		if pos != "TW" and eignung < 0.85:
+			zeile.add_child(Stil.matt("%d %% Eignung" % int(eignung * 100.0), Stil.S_MINI))
+	kennzahlen.add_child(Stil.trenner())
+	_staerken_schwaechen(kennzahlen, sp)
+
 	var gruppen: Array = []
 	if bool(sp["ist_torwart"]):
 		gruppen = [["Torwartspiel", Spielerfabrik.ATTR_TORWART], ["Athletik", Spielerfabrik.ATTR_ATHLETIK],
@@ -570,3 +613,62 @@ func _reiter_aufbauen() -> void:
 	leiste.set_meta("segmente", true)
 	reiterleiste.add_child(leiste)
 	reiterleiste.move_child(leiste, 0)
+
+## Auswahl eines zweiten Spielers, der im Netzdiagramm daruebergelegt wird.
+func _vergleichswahl(eltern: Node, sp: Dictionary) -> void:
+	if Welt.mein_verein_id == "":
+		return
+	var zeile := Stil.hbox(8)
+	eltern.add_child(zeile)
+	zeile.add_child(Stil.matt("Vergleichen mit"))
+	var wahl := OptionButton.new()
+	wahl.custom_minimum_size = Vector2(200, 0)
+	wahl.add_item("— niemandem —")
+	wahl.set_item_metadata(0, "")
+	var i := 1
+	for kandidat in Welt.verein(Welt.mein_verein_id)["kader"]:
+		if str(kandidat) == sid:
+			continue
+		var k: Dictionary = Welt.spieler(str(kandidat))
+		# Nur sinnvolle Paare: Torhueter gegen Torhueter, Feldspieler gegen Feldspieler
+		if bool(k["ist_torwart"]) != bool(sp["ist_torwart"]):
+			continue
+		wahl.add_item("%s (%s)" % [Spielerfabrik.voller_name(k), str(k["position"])])
+		wahl.set_item_metadata(i, str(kandidat))
+		if str(kandidat) == vergleich_sid:
+			wahl.select(i)
+		i += 1
+	wahl.item_selected.connect(func(index):
+		vergleich_sid = str(wahl.get_item_metadata(index))
+		_zeichne())
+	zeile.add_child(wahl)
+
+## Die drei stärksten und die drei schwächsten Attribute — das, worüber in
+## einer Kaderbesprechung tatsächlich geredet wird.
+func _staerken_schwaechen(eltern: Node, sp: Dictionary) -> void:
+	var attr: Dictionary = sp["attr"]
+	# Nur Attribute, die für diese Rolle überhaupt zählen — sonst stünde bei
+	# jedem Torwart "Schwäche: Zweikampf", was nichts über ihn aussagt.
+	var relevant: Array = []
+	if bool(sp["ist_torwart"]):
+		relevant.append_array(Spielerfabrik.ATTR_TORWART)
+	else:
+		relevant.append_array(Spielerfabrik.ATTR_TECHNIK)
+		relevant.append_array(Spielerfabrik.ATTR_DEFENSIV)
+	relevant.append_array(Spielerfabrik.ATTR_ATHLETIK)
+	relevant.append_array(Spielerfabrik.ATTR_MENTAL)
+	var liste: Array = []
+	for schluessel in relevant:
+		if attr.has(schluessel):
+			liste.append({"id": str(schluessel), "wert": float(attr[schluessel])})
+	liste.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	eltern.add_child(Stil.etikett("Stärken"))
+	for e in liste.slice(0, 3):
+		eltern.add_child(Stil.info_zeile(
+			str(Spielerfabrik.ATTR_LABEL.get(str(e["id"]), str(e["id"]))),
+			"%d" % int(float(e["wert"])), Stil.wert_farbe(float(e["wert"]))))
+	eltern.add_child(Stil.etikett("Schwächen"))
+	for e2 in liste.slice(maxi(liste.size() - 3, 0)):
+		eltern.add_child(Stil.info_zeile(
+			str(Spielerfabrik.ATTR_LABEL.get(str(e2["id"]), str(e2["id"]))),
+			"%d" % int(float(e2["wert"])), Stil.wert_farbe(float(e2["wert"]))))

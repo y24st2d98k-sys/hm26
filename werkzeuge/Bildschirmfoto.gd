@@ -63,6 +63,16 @@ func _ready() -> void:
 			var f: Node = get_tree().get_first_node_in_group("spielerfenster")
 			f.zeige(sid)
 			await _foto("%s/spieler.png" % ordner)
+			# Zweiter Blick: Attributreiter mit Netzdiagramm und Vergleich
+			f.reiter = "attribute"
+			for kandidat in Welt.mein_verein()["kader"]:
+				var k: Dictionary = Welt.spieler(str(kandidat))
+				if str(kandidat) != sid and bool(k["ist_torwart"]) == bool(Welt.spieler(sid)["ist_torwart"]):
+					f.vergleich_sid = str(kandidat)
+					break
+			f._reiter_aufbauen()
+			f._zeichne()
+			await _foto("%s/spieler_attribute.png" % ordner)
 			f.schliessen()
 			continue
 		if str(id) == "pokal":
