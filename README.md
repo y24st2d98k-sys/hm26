@@ -114,6 +114,22 @@ Projekt, keine Symbolschrift, kein fremdes Theme.
   Wappen und Vereinsnamen beider Mannschaften, darunter Wettbewerb und
   Hallenpuls.
 
+### Spielergesichter
+
+Jeder Spieler hat ein Gesicht, und zwar dauerhaft dasselbe: aus der Spieler-ID
+wird ein Zufallsstrom abgeleitet, der Kopfform, Kinn, Hautton, Haarfarbe,
+Frisur, Augen, Brauen, Nase, Mund, Bart und Ohren festlegt. Herkunft und Alter
+wirken mit — die Hauttöne folgen der Nation, Haare ergrauen und weichen mit den
+Jahren zurück, ab dreißig kommen Falten dazu. Der Hintergrund und die Schultern
+tragen die Vereinsfarben, sodass ein Portrait auch bei 22 Pixeln in der
+Kaderliste noch etwas aussagt. Alles gezeichnet, keine Bilddateien.
+
+### Nationalflaggen
+
+`ui/widgets/Flagge.gd` zeichnet die Flaggen aus kleinen Rezepten — waagerechte
+und senkrechte Streifen, Nordkreuz, Schweizer Kreuz, Mittelbalken, Viertelung,
+einfarbig mit Scheibe. Sie stehen überall dort, wo eine Herkunft genannt wird.
+
 ### Vereinswappen
 
 Jeder Verein hat ein Wappen aus vier Schichten: Grundform (Schild, Rundschild,
@@ -190,6 +206,48 @@ eines jungen Spielers wird zwei Saisons später daran gemessen, ob er sich
 wirklich entwickelt hat. Wer richtig lag, wird zuverlässiger: seine Berichte
 werden enger, seine Einschätzungen glaubwürdiger. Wer danebenliegt, verliert
 an Gespür — und seine Berichte sind entsprechend zu lesen.
+
+---
+
+## Ton
+
+Es liegt keine Audiodatei im Projekt. `autoload/Klang.gd` berechnet beim Start
+jeden Klang als PCM-Puffer und legt ihn als `AudioStreamWAV` in den Speicher:
+
+* **Schiedsrichterpfeife** aus zwei leicht verstimmten Sinustönen mit Vibrato
+  und einem Hauch Luftrauschen (Grundton rund 2,9 kHz).
+* **Torjubel** aus zweifach tiefpassgefiltertem Rauschen mit schnellem Anstieg,
+  langem Ausklingen und einem tiefen Rumpler als Körper — in drei Stärken für
+  eigenes Tor, Gegentor und Parade.
+* **Hallenatmosphäre** als sechs Sekunden lange, nahtlos geschlossene
+  Rauschschleife mit langsamer Wellenbewegung. **Ihre Lautstärke folgt dem
+  Hallenpuls der laufenden Partie** — die Halle wird hörbar lauter, wenn das
+  Spiel kippt.
+* **Ball**, **Schlusssirene**, **Klick** und ein weiches **Blättern** beim
+  Seitenwechsel.
+* **Menümusik**: eine zwölf Sekunden lange Schleife in a-Moll aus Pad-Akkorden
+  (mehrere leicht verstimmte Sinusanteile), einem weichen Bass und einer
+  sparsamen Melodie.
+
+Hauptschalter und drei Regler (Musik, Effekte, Atmosphäre) stehen unter
+*Spielstand*. Die Werte gehören zum Spielstand und werden mitgespeichert.
+
+Zum Prüfen ohne Lautsprecher:
+
+```bash
+godot4 --headless res://werkzeuge/Klangtest.tscn   # Länge, Spitze, RMS, Nulldurchgänge
+```
+
+## Warum das Spiel zweidimensional ist — und wo nicht
+
+Eine Draufsicht liest sich in einem Manager besser als eine Kameraperspektive:
+Man sieht alle sieben Feldspieler, ihre Abstände und die Deckungsformation auf
+einen Blick. Eine 3D-Spielansicht würde das verschlechtern und wäre ein
+Vielfaches an Aufwand. An **einer** Stelle verdient sich 3D seinen Platz: beim
+gewonnenen Titel. `ui/widgets/Pokal3D.gd` baut eine Trophäe aus
+Godot-Grundkörpern (Zylinder, Kugel, Torus, Kasten), gibt ihr ein metallisches
+Material und dreht sie langsam in einem eigenen Viewport — in Gold ab drei
+Titeln, sonst in Silber. Auch hier: kein geladenes Modell, keine Textur.
 
 ---
 
@@ -333,6 +391,7 @@ autoload/
                      Nachnamen getrennt, Nachnamen zusätzlich aus Stamm+Endung,
                      Orte aus Präfix+Suffix, Firmen aus Präfix+Branche+Rechtsform)
   Welt.gd            DER Spielzustand + Zeitablauf + Persistenz
+  Klang.gd           Synthese aller Geraeusche und der Musik
 kern/
   Kalender.gd        Datumsrechnung (365-Tage-Jahr, Saison 1. Juli – 30. Juni)
   Spielerfabrik.gd   Spielererzeugung, Positionsgewichte, Marktwert, Alterskurve
@@ -362,8 +421,9 @@ ui/
   App.gd/.tscn       Rahmen: Kopfzeile, Navigation, Bildschirmwechsel
   Bildschirm.gd      Grundklasse aller Bildschirme
   LiveSpiel.gd       Live-Ansicht einer Partie
-  widgets/           Wappen, Symbol (Icon-Satz), NavKnopf, Spielfeld, Bausteine,
-                     Spieler-, Vereins-, Bericht-, Presse- und Vorberichtsfenster
+  widgets/           Wappen, Portraet (Gesichter), Flagge, Symbol (Icon-Satz),
+                     NavKnopf, Spielfeld, Pokal3D, Bausteine, Spieler-, Vereins-,
+                     Bericht-, Presse- und Vorberichtsfenster
   bildschirme/       22 Bildschirme
 daten/               ligen.json und kader.json — die echten Vereine und Kader
 werkzeuge/           Test- und Kalibrierungsszenen

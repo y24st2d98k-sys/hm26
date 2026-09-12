@@ -11,9 +11,11 @@ const ANGRIFF_RECHTS := {
 	"LA": Vector2(30.5, 2.4), "RL": Vector2(27.5, 6.4), "RM": Vector2(26.0, 10.0),
 	"RR": Vector2(27.5, 13.6), "RA": Vector2(30.5, 17.6), "KM": Vector2(34.6, 10.0),
 }
+## Sechs Plaetze vor dem eigenen Tor. Frueher lagen die beiden Innenblocker
+## fast deckungsgleich auf der Mittelachse — ihre Namen ueberdeckten sich.
 const ABWEHR_RECHTS := [
-	Vector2(33.6, 4.6), Vector2(33.9, 7.3), Vector2(34.1, 9.999), Vector2(34.1, 10.001),
-	Vector2(33.9, 12.7), Vector2(33.6, 15.4),
+	Vector2(33.5, 4.4), Vector2(33.8, 7.0), Vector2(34.0, 9.0), Vector2(34.0, 11.0),
+	Vector2(33.8, 13.0), Vector2(33.5, 15.6),
 ]
 
 var heim_farbe: Color = Color("#f0a23c")
@@ -53,59 +55,103 @@ func _draw() -> void:
 	var s := _skala()
 	if s <= 0.5:
 		return
-	# Parkett
-	draw_rect(Rect2(_m(Vector2(0, 0)), Vector2(LAENGE, BREITE) * s), Color("#1a2129"), true)
-	# Torräume
-	_torraum(true, s)
-	_torraum(false, s)
-	# Linien
-	var linie := Color("#4a5766")
-	draw_rect(Rect2(_m(Vector2(0, 0)), Vector2(LAENGE, BREITE) * s), linie, false, maxf(s * 0.08, 1.5))
-	draw_line(_m(Vector2(20, 0)), _m(Vector2(20, BREITE)), linie, maxf(s * 0.06, 1.0))
-	_kreis_linie(0.0, 6.0, linie, s, false)
-	_kreis_linie(0.0, 9.0, Color("#3d4a58"), s, true)
-	_kreis_linie(LAENGE, 6.0, linie, s, false)
-	_kreis_linie(LAENGE, 9.0, Color("#3d4a58"), s, true)
+	var feld := Rect2(_m(Vector2(0, 0)), Vector2(LAENGE, BREITE) * s)
+
+	# Parkett mit angedeuteten Dielen — sonst wirkt die Flaeche wie ein Loch
+	draw_rect(feld, Color("#182029"), true)
+	var diele := Color(1, 1, 1, 0.012)
+	var x := 0.0
+	while x < LAENGE:
+		draw_rect(Rect2(_m(Vector2(x, 0)), Vector2(1.25, BREITE) * s), diele, true)
+		x += 2.5
+
+	# Torraeume in den Vereinsfarben: man sieht sofort, wer auf welches Tor spielt
+	# Heim greift nach rechts an und verteidigt deshalb links.
+	_torraum(true, s, heim_farbe)
+	_torraum(false, s, gast_farbe)
+
+	var linie := Color("#5a6a7c")
+	var schwach := Color("#3f4c5b")
+	# Mittellinie und Anwurfkreis
+	draw_line(_m(Vector2(20, 0)), _m(Vector2(20, BREITE)), schwach, maxf(s * 0.05, 1.0))
+	draw_arc(_m(Vector2(20, 10)), s * 1.6, 0.0, TAU, 28, schwach, maxf(s * 0.05, 1.0), true)
+
+	# Torraum- (6 m), Freiwurf- (9 m, gestrichelt) und Torwartlinie (4 m)
+	for tor_x in [0.0, LAENGE]:
+		_bogen(tor_x, 6.0, linie, s, 0)
+		_bogen(tor_x, 9.0, schwach, s, 2)
+		_torwartlinie(tor_x, s, schwach)
+
 	# Siebenmeterlinien
-	draw_line(_m(Vector2(7, 9.2)), _m(Vector2(7, 10.8)), linie, maxf(s * 0.06, 1.0))
-	draw_line(_m(Vector2(33, 9.2)), _m(Vector2(33, 10.8)), linie, maxf(s * 0.06, 1.0))
-	# Tore
+	for sieben in [7.0, LAENGE - 7.0]:
+		draw_line(_m(Vector2(sieben, 9.5)), _m(Vector2(sieben, 10.5)), linie, maxf(s * 0.07, 1.2))
+
+	# Wechselzonen auf der Bankseite
+	for zone in [Vector2(15.5, 0.0), Vector2(24.5, 0.0)]:
+		draw_line(_m(zone), _m(zone + Vector2(0.0, -0.55)), linie, maxf(s * 0.07, 1.2))
+
+	# Aussenlinien zuletzt, damit sie ueber allem liegen
+	draw_rect(feld, linie, false, maxf(s * 0.08, 1.5))
+
 	_tor(0.0, s)
 	_tor(LAENGE, s)
-	# Mannschaften
+
 	_zeichne_mannschaft("heim", s)
 	_zeichne_mannschaft("gast", s)
-	# Ball
-	draw_circle(_m(ball), maxf(s * 0.3, 3.0), Color("#f5f0e2"))
-	draw_arc(_m(ball), maxf(s * 0.3, 3.0), 0.0, TAU, 12, Color("#2a2118"), maxf(s * 0.05, 1.0))
+
+	# Ball mit weichem Schein
+	var bp := _m(ball)
+	var br: float = maxf(s * 0.3, 3.0)
+	draw_circle(bp, br * 2.1, Color(1, 0.95, 0.8, 0.10))
+	draw_circle(bp, br, Color("#f7f2e4"))
+	draw_arc(bp, br, 0.0, TAU, 12, Color("#2a2118"), maxf(s * 0.05, 1.0))
 
 ## Der Torraum ist der Halbkreis mit 6 m Radius um die Tormitte.
-func _torraum(links: bool, s: float) -> void:
+func _torraum(links: bool, s: float, farbe: Color) -> void:
 	var x: float = 0.0 if links else LAENGE
 	var richtung: float = 1.0 if links else -1.0
 	var punkte := PackedVector2Array()
-	var schritte := 24
+	var schritte := 28
 	for i in range(schritte + 1):
 		var w: float = PI * float(i) / float(schritte)
 		punkte.append(_m(Vector2(x + sin(w) * 6.0 * richtung, 10.0 - cos(w) * 6.0)))
 	if punkte.size() >= 3:
-		draw_colored_polygon(punkte, Color("#22303b"))
+		draw_colored_polygon(punkte, Color("#202b36"))
+		draw_colored_polygon(punkte, Color(farbe.r, farbe.g, farbe.b, 0.10))
 
-func _kreis_linie(x: float, radius: float, farbe: Color, s: float, gestrichelt: bool) -> void:
-	var schritte := 30
+## Bogen um ein Tor. luecke = 0 zeichnet durch, sonst wird jedes n-te Stueck ausgelassen.
+func _bogen(x: float, radius: float, farbe: Color, s: float, luecke: int) -> void:
+	var schritte := 40
 	var richtung: float = 1.0 if x < LAENGE / 2.0 else -1.0
 	var vorher := Vector2.ZERO
 	for i in range(schritte + 1):
 		var w: float = PI * float(i) / float(schritte)
 		var pm := _m(Vector2(x + sin(w) * radius * richtung, 10.0 - cos(w) * radius))
-		if i > 0 and (not gestrichelt or i % 2 == 0):
+		if i > 0 and (luecke == 0 or i % (luecke + 1) != 0):
 			draw_line(vorher, pm, farbe, maxf(s * 0.05, 1.0))
 		vorher = pm
 
+## Die 4-Meter-Linie, bis zu der der Torwart beim Siebenmeter vorlaufen darf.
+func _torwartlinie(x: float, s: float, farbe: Color) -> void:
+	var richtung: float = 1.0 if x < LAENGE / 2.0 else -1.0
+	draw_line(_m(Vector2(x + 4.0 * richtung, 9.85)), _m(Vector2(x + 4.0 * richtung, 10.15)),
+		farbe, maxf(s * 0.06, 1.0))
+
 func _tor(x: float, s: float) -> void:
 	var links: bool = x < LAENGE / 2.0
-	draw_line(_m(Vector2(x, 8.5)), _m(Vector2(x, 11.5)), Color("#e8eef5"), maxf(s * 0.14, 2.5))
-	draw_rect(Rect2(_m(Vector2(x - (0.0 if links else 1.0), 8.5)), Vector2(1.0, 3.0) * s), Color(1, 1, 1, 0.09), true)
+	var richtung: float = -1.0 if links else 1.0
+	# Netz als angedeutetes Raster hinter der Torlinie
+	var netz := Color(1, 1, 1, 0.07)
+	for i in range(5):
+		var y: float = 8.5 + float(i) * 0.75
+		draw_line(_m(Vector2(x, y)), _m(Vector2(x + 1.1 * richtung, y)), netz, 1.0)
+	for k in range(4):
+		var xx: float = x + (0.28 + float(k) * 0.28) * richtung
+		draw_line(_m(Vector2(xx, 8.5)), _m(Vector2(xx, 11.5)), netz, 1.0)
+	# Pfosten und Latte
+	draw_line(_m(Vector2(x, 8.5)), _m(Vector2(x, 11.5)), Color("#eef3f9"), maxf(s * 0.15, 2.5))
+	draw_line(_m(Vector2(x, 8.5)), _m(Vector2(x + 1.1 * richtung, 8.5)), Color("#c8d2dd"), maxf(s * 0.07, 1.2))
+	draw_line(_m(Vector2(x, 11.5)), _m(Vector2(x + 1.1 * richtung, 11.5)), Color("#c8d2dd"), maxf(s * 0.07, 1.2))
 
 func _zeichne_mannschaft(seite: String, s: float) -> void:
 	var spieler: Dictionary = szene.get(seite, {})
@@ -115,24 +161,46 @@ func _zeichne_mannschaft(seite: String, s: float) -> void:
 	var farbe: Color = heim_farbe if seite == "heim" else gast_farbe
 	# Heim greift auf das rechte Tor an, Gast auf das linke
 	var nach_rechts: bool = (seite == "heim")
+	var schrift := ThemeDB.fallback_font
 	for pos in spieler.keys():
 		var eintrag: Dictionary = spieler[pos]
-		var p := _position(pos, greift_an, nach_rechts, int(eintrag.get("index", 0)))
-		var r: float = maxf(s * 0.42, 5.0)
+		var p := _m(_position(pos, greift_an, nach_rechts, int(eintrag.get("index", 0))))
+		var r: float = maxf(s * 0.46, 6.0)
 		var ist_tw: bool = pos == "TW"
-		var f: Color = farbe.lightened(0.25) if ist_tw else farbe
-		if str(eintrag.get("status", "")) == "strafe":
-			f = Color("#60636b")
-		draw_circle(_m(p), r, f)
-		draw_arc(_m(p), r, 0.0, TAU, 14, Color(0, 0, 0, 0.55), maxf(s * 0.06, 1.0))
-		if hervorgehoben != "" and str(eintrag.get("sid", "")) == hervorgehoben:
-			draw_arc(_m(p), r * 1.55, 0.0, TAU, 18, Color("#ffffff"), maxf(s * 0.09, 1.5))
-		var beschriftung: String = str(eintrag.get("kurz", pos))
-		var schrift := ThemeDB.fallback_font
-		var groesse: int = maxi(int(s * 0.42), 8)
+		var f: Color = farbe.lightened(0.30) if ist_tw else farbe
+		var bestraft: bool = str(eintrag.get("status", "")) == "strafe"
+		if bestraft:
+			f = Color("#5b6068")
+		# Schatten, Trikot, Rand — der Rand haelt die Farbe auch auf hellem Parkett lesbar
+		draw_circle(p + Vector2(0, maxf(s * 0.1, 1.0)), r, Color(0, 0, 0, 0.35))
+		draw_circle(p, r, f)
+		draw_arc(p, r, 0.0, TAU, 18, Color(0, 0, 0, 0.5), maxf(s * 0.07, 1.2), true)
+		if ist_tw:
+			draw_arc(p, r * 0.55, 0.0, TAU, 14, Color(0, 0, 0, 0.30), maxf(s * 0.06, 1.0), true)
+		if str(eintrag.get("sid", "")) != "" and str(eintrag.get("sid", "")) == hervorgehoben:
+			draw_arc(p, r * 1.6, 0.0, TAU, 22, Color("#ffffff"), maxf(s * 0.09, 1.5), true)
+		# Positionskuerzel im Trikot
+		var pgroesse: int = maxi(int(s * 0.34), 7)
+		var pbreite: float = schrift.get_string_size(pos, HORIZONTAL_ALIGNMENT_LEFT, -1, pgroesse).x
+		var dunkel: bool = f.get_luminance() < 0.5
+		draw_string(schrift, p + Vector2(-pbreite * 0.5, pgroesse * 0.36), pos,
+			HORIZONTAL_ALIGNMENT_LEFT, -1, pgroesse,
+			Color(1, 1, 1, 0.85) if dunkel else Color(0, 0, 0, 0.7))
+		# Name darunter, mit dunkler Kante fuer Lesbarkeit
+		var beschriftung: String = str(eintrag.get("kurz", ""))
+		if beschriftung == "":
+			continue
+		var groesse: int = maxi(int(s * 0.40), 8)
 		var breite: float = schrift.get_string_size(beschriftung, HORIZONTAL_ALIGNMENT_LEFT, -1, groesse).x
-		draw_string(schrift, _m(p) + Vector2(-breite * 0.5, r + groesse * 1.15), beschriftung,
-			HORIZONTAL_ALIGNMENT_LEFT, -1, groesse, Color("#c9d4df"))
+		# Namen der verteidigenden Mannschaft nach oben, die der angreifenden nach
+		# unten — sonst kollidiert die Beschriftung des Kreislaeufers mit der Abwehr.
+		var versatz_y: float = (r + groesse * 1.15) if greift_an else -(r + groesse * 0.55)
+		var stelle: Vector2 = p + Vector2(-breite * 0.5, versatz_y)
+		stelle.x = clampf(stelle.x, 2.0, maxf(size.x - breite - 2.0, 2.0))
+		draw_string(schrift, stelle + Vector2(0, 1), beschriftung,
+			HORIZONTAL_ALIGNMENT_LEFT, -1, groesse, Color(0, 0, 0, 0.65))
+		draw_string(schrift, stelle, beschriftung, HORIZONTAL_ALIGNMENT_LEFT, -1, groesse,
+			Color("#8d99a6") if bestraft else Color("#dbe4ee"))
 
 func _position(pos: String, greift_an: bool, nach_rechts: bool, index: int) -> Vector2:
 	if pos == "TW":

@@ -4,7 +4,7 @@ extends Bildschirm
 
 const SPALTEN := [
 	{"id": "position", "name": "Pos", "breite": 44},
-	{"id": "name", "name": "Name", "breite": 190},
+	{"id": "name", "name": "Name", "breite": 234},
 	{"id": "alter", "name": "Alter", "breite": 48},
 	{"id": "gesamt", "name": "Stärke", "breite": 62},
 	{"id": "form", "name": "Form", "breite": 74},
@@ -207,7 +207,9 @@ func _zeile(sid: String, index: int) -> Control:
 			"abzeichen":
 				zelle = Bausteine.positions_abzeichen(str(e["wert"]))
 			"name":
-				var box := Stil.hbox(4)
+				var box := Stil.hbox(5)
+				box.add_child(Portraet.fuer_spieler(sid, 22.0))
+				box.add_child(Flagge.fuer(str(sp["nation"]), 16.0))
 				box.add_child(Stil.text(str(e["wert"]), Stil.S_KLEIN))
 				box.add_child(Bausteine.status_zeichen(sid))
 				zelle = box

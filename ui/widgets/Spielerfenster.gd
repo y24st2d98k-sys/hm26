@@ -120,6 +120,7 @@ func _zeichne() -> void:
 func _kopf(sp: Dictionary) -> void:
 	var h := Stil.hbox(14)
 	kopfbereich.add_child(h)
+	h.add_child(Portraet.fuer_spieler(sid, 72.0))
 	if str(sp["verein"]) != "":
 		h.add_child(Wappen.fuer_verein(str(sp["verein"]), 46.0))
 	var links := Stil.vbox(2)
@@ -131,6 +132,7 @@ func _kopf(sp: Dictionary) -> void:
 	zeile.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
 	for zp in sp["zweitpositionen"]:
 		zeile.add_child(Stil.abzeichen(str(zp), Stil.TEXT_SCHWACH))
+	zeile.add_child(Flagge.fuer(str(sp["nation"]), 20.0))
 	zeile.add_child(Stil.matt("%d Jahre · %s · %s" % [
 		int(sp["alter"]), Namen.KULTUR_NAME.get(str(sp["nation"]), str(sp["nation"])),
 		str(Welt.verein(str(sp["verein"])).get("name", "vereinslos"))]))

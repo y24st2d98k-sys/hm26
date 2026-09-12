@@ -173,7 +173,9 @@ func _baue_navigation() -> void:
 			navigation.add_child(Stil.abstand(1))
 		var id: String = str(b["id"])
 		var knopf := NavKnopf.neu(id, str(b["name"]))
-		knopf.pressed.connect(func(): zeige(id))
+		knopf.pressed.connect(func():
+			Klang.spiele("blaettern", 0.5)
+			zeige(id))
 		navigation.add_child(knopf)
 		nav_knoepfe[id] = knopf
 	navigation.add_child(Stil.abstand(8))
@@ -281,6 +283,9 @@ func _zeige_start(an: bool) -> void:
 	rahmen.visible = not an
 	if an:
 		startbildschirm.aktualisieren()
+		Klang.musik_start()
+	else:
+		Klang.musik_stop()
 
 # --------------------------------------------------------------- Wechsel ---
 
@@ -348,6 +353,7 @@ func _weiter() -> void:
 	if not Welt.laeuft:
 		return
 	weiter_knopf.disabled = true
+	Klang.spiele("klick", 0.6)
 	var unterbrechung := Welt.tag_weiter()
 	weiter_knopf.disabled = false
 	if unterbrechung.has("art"):

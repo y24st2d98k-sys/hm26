@@ -172,6 +172,9 @@ func _baue() -> void:
 func starte(spiel_id: String) -> void:
 	mid = spiel_id
 	fertig = false
+	Klang.musik_stop()
+	Klang.atmo_start()
+	Klang.atmo_puls(55.0)
 	abschluss_knopf.visible = false
 	gewaehlt_raus = ""
 	Bildschirm.leeren(ticker)
@@ -205,6 +208,7 @@ func starte(spiel_id: String) -> void:
 
 func _anpfiff() -> void:
 	angepfiffen = true
+	Klang.spiele("anpfiff", 0.85)
 	_ansprache_aufbauen(false)
 	anpfiff_knopf.visible = false
 	hinweis.text = ""
@@ -265,6 +269,8 @@ func _ende() -> void:
 	if fertig:
 		return
 	fertig = true
+	Klang.spiele("sirene", 0.9)
+	Klang.atmo_stop()
 	uhr.stop()
 	abschluss_knopf.visible = true
 	hinweis.text = "Abpfiff."
@@ -275,6 +281,7 @@ func _abschliessen() -> void:
 	if sim == null:
 		return
 	Welt.partie_abschliessen(mid, sim)
+	Klang.atmo_stop()
 	var id := mid
 	sim = null
 	beendet.emit(id)
@@ -288,6 +295,7 @@ func _anzeige_auffrischen() -> void:
 	anzeige_zeit.text = sim.zeittext(sim.zeit)
 	puls_text.text = "Hallenpuls %d — %s" % [int(sim.hallenpuls), _pulstext(sim.hallenpuls)]
 	puls_text.add_theme_color_override("font_color", Stil.prozent_farbe(sim.hallenpuls))
+	Klang.atmo_puls(sim.hallenpuls)
 	if puls_balken.has_method("setze"):
 		puls_balken.setze(sim.hallenpuls)
 	knopf_auszeit.text = "Auszeit nehmen (%d übrig)" % int(mein_team.get("auszeiten", 0))
@@ -307,6 +315,7 @@ func _pulstext(wert: float) -> String:
 	return "eisige Stimmung"
 
 func _ereignis_anzeigen(e: Dictionary) -> void:
+	_klang_zu(e)
 	var zeile := Stil.hbox(8)
 	var zeit := Stil.matt(sim.zeittext(float(e["zeit"])), Stil.S_MINI)
 	zeit.custom_minimum_size = Vector2(44, 0)
@@ -659,3 +668,31 @@ func _baue_tempoleiste() -> void:
 				_setze_tempo(i)
 				return)
 	tempo_leiste.add_child(leiste)
+
+## Welcher Klang zu welchem Ereignis gehört. Die Lautstärke des Jubels haengt
+## davon ab, ob die eigene Halle jubelt oder verstummt.
+func _klang_zu(e: Dictionary) -> void:
+	var typ := str(e.get("typ", ""))
+	var seite := str(e.get("seite", ""))
+	var eigene: bool = mein_team.is_empty() or seite == _seite_von_mir()
+	var puls: float = clampf(sim.hallenpuls / 100.0, 0.2, 1.0) if sim != null else 0.6
+	match typ:
+		"tor":
+			Klang.spiele("tor" if eigene else "tor_gegen", (0.55 + 0.45 * puls) * (1.0 if eigene else 0.8))
+		"parade":
+			Klang.spiele("parade" if eigene else "raunen", 0.5 + 0.3 * puls)
+		"zeitstrafe", "rot":
+			Klang.spiele("pfiff", 0.75)
+		"siebenmeter":
+			Klang.spiele("pfiff", 0.6, 1.08)
+		"fehler", "block":
+			Klang.spiele("ball", 0.5)
+		"auszeit", "halbzeit":
+			Klang.spiele("pfiff", 0.7, 0.94)
+		"ende":
+			Klang.spiele("sirene", 0.9)
+
+func _seite_von_mir() -> String:
+	if sim == null:
+		return "heim"
+	return "heim" if str(sim.heim.get("cid", "")) == Welt.mein_verein_id else "gast"

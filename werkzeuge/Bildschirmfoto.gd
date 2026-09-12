@@ -45,6 +45,12 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "pokal":
+			await _pokal(app, ordner)
+			continue
+		if str(id) == "gesichter":
+			await _gesichter(app, ordner)
+			continue
 		if str(id) == "start":
 			app._zeige_start(true)
 			await _foto("%s/start.png" % ordner)
@@ -79,3 +85,55 @@ func _foto(pfad: String) -> void:
 	var bild := get_viewport().get_texture().get_image()
 	bild.save_png(pfad)
 	_log("→ %s" % pfad)
+
+## Kontaktbogen aller Gesichter: zum Beurteilen der prozeduralen Portraets.
+func _gesichter(app: Node, ordner: String) -> void:
+	var tafel := PanelContainer.new()
+	tafel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tafel.add_theme_stylebox_override("panel", Stil.box(Stil.GRUND, 0))
+	app.add_child(tafel)
+	var rand := MarginContainer.new()
+	rand.add_theme_constant_override("margin_left", 24)
+	rand.add_theme_constant_override("margin_top", 20)
+	tafel.add_child(rand)
+	var v := Stil.vbox(14)
+	rand.add_child(v)
+	v.add_child(Stil.titel("Gesichter", 0))
+	var gross := Stil.hbox(12)
+	v.add_child(gross)
+	var alle: Array = Welt.daten["spieler"].keys()
+	for i in range(8):
+		var sid: String = str(alle[i * 37 % alle.size()])
+		var sp: Dictionary = Welt.spieler(sid)
+		var spalte := Stil.vbox(3)
+		gross.add_child(spalte)
+		spalte.add_child(Portraet.fuer_spieler(sid, 108.0))
+		spalte.add_child(Stil.matt("%s (%d, %s)" % [Spielerfabrik.kurz_name(sp),
+			int(sp["alter"]), str(sp["nation"])], Stil.S_MINI))
+	var raster := Stil.raster(20, 6)
+	v.add_child(raster)
+	for i in range(120):
+		raster.add_child(Portraet.fuer_spieler(str(alle[i * 13 % alle.size()]), 52.0))
+	var klein := Stil.hbox(6)
+	v.add_child(klein)
+	for i in range(24):
+		klein.add_child(Portraet.fuer_spieler(str(alle[i * 91 % alle.size()]), 26.0))
+	await _foto("%s/gesichter.png" % ordner)
+	tafel.queue_free()
+
+## Schaubild der Trophaee in drei Metallen.
+func _pokal(app: Node, ordner: String) -> void:
+	var tafel := PanelContainer.new()
+	tafel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tafel.add_theme_stylebox_override("panel", Stil.box(Stil.GRUND, 0))
+	app.add_child(tafel)
+	var mitte := CenterContainer.new()
+	tafel.add_child(mitte)
+	var reihe := Stil.hbox(40)
+	mitte.add_child(reihe)
+	for f in [Color("#e6b64c"), Color("#d8dde3"), Color("#c0703a")]:
+		reihe.add_child(Pokal3D.neu(300.0, f))
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await _foto("%s/pokal.png" % ordner)
+	tafel.queue_free()

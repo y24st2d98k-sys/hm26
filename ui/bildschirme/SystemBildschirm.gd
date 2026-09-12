@@ -25,10 +25,66 @@ func aktualisieren() -> void:
 	if liste == null:
 		return
 	leeren(liste)
+	liste.add_child(_ton())
 	liste.add_child(_automatik())
 	liste.add_child(_slot(Welt.AUTOSLOT))
 	for slot in range(1, Welt.SLOTS + 1):
 		liste.add_child(_slot(slot))
+
+## Ton: Hauptschalter und drei Regler. Alle Klänge werden beim Start berechnet,
+## es liegt keine Audiodatei im Projekt.
+func _ton() -> Control:
+	var karte := Stil.karte("Ton")
+	karte.add_child(Stil.matt("Musik, Hallenatmosphäre und Effekte werden im Spiel selbst erzeugt. Die Atmosphäre folgt dem Hallenpuls der laufenden Partie.", Stil.S_KLEIN))
+	var an := Stil.schalter("Ton eingeschaltet", bool(Welt.einstellung("ton_an", true)))
+	an.disabled = Welt.daten.is_empty()
+	an.toggled.connect(func(wert):
+		if Welt.daten.is_empty():
+			return
+		Welt.setze_einstellung("ton_an", wert)
+		if wert:
+			Klang.spiele("klick", 0.7)
+			if Welt.mein_verein_id == "":
+				Klang.musik_start()
+		else:
+			Klang.musik_stop()
+			Klang.atmo_stop())
+	karte.add_child(an)
+	for regler in [["lautstaerke_musik", "Musik", 55.0], ["lautstaerke_effekte", "Effekte", 75.0],
+			["lautstaerke_atmo", "Hallenatmosphäre", 65.0]]:
+		karte.add_child(_regler(str(regler[0]), str(regler[1]), float(regler[2])))
+	var probe := Stil.knopf_geist("Klangprobe")
+	probe.disabled = Welt.daten.is_empty()
+	probe.pressed.connect(func():
+		Klang.spiele("anpfiff", 0.8)
+		Klang.spiele("tor", 0.9))
+	karte.add_child(probe)
+	return Stil.karte_wurzel(karte)
+
+func _regler(schluessel: String, beschriftung: String, standard: float) -> HBoxContainer:
+	var zeile := Stil.hbox(10)
+	var l := Stil.matt(beschriftung)
+	l.custom_minimum_size = Vector2(150, 0)
+	zeile.add_child(l)
+	var s := HSlider.new()
+	s.min_value = 0
+	s.max_value = 100
+	s.step = 5
+	s.value = float(Welt.einstellung(schluessel, standard))
+	s.custom_minimum_size = Vector2(240, 0)
+	s.editable = not Welt.daten.is_empty()
+	zeile.add_child(s)
+	var wert := Stil.text("%d" % int(s.value), Stil.S_KLEIN, Stil.AKZENT)
+	wert.custom_minimum_size = Vector2(36, 0)
+	zeile.add_child(wert)
+	s.value_changed.connect(func(v):
+		wert.text = "%d" % int(v)
+		if Welt.daten.is_empty():
+			return
+		Welt.setze_einstellung(schluessel, v)
+		if schluessel == "lautstaerke_musik":
+			Klang.musik_start())
+	return zeile
 
 ## Schalter für die wöchentliche Sicherung.
 func _automatik() -> Control:

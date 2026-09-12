@@ -32,6 +32,18 @@ func aktualisieren() -> void:
 	var titel := Bausteine.karte_in(oben, "Titel")
 	Stil.karte_wurzel(titel).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var liste: Array = v["chronik"]["titel"]
+	# Bei mindestens einem Titel steht die Trophäe daneben — das einzige
+	# 3D-Element im Spiel, und an dieser Stelle verdient es sich seinen Platz.
+	if not liste.is_empty():
+		var schau := Stil.hbox(14)
+		titel.add_child(schau)
+		var metall: Color = Color("#e6b64c") if liste.size() >= 3 else Color("#d8dde3")
+		schau.add_child(Pokal3D.neu(120.0, metall))
+		var zahl := Stil.vbox(0)
+		zahl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		schau.add_child(zahl)
+		zahl.add_child(Stil.anzeige(str(liste.size()), Stil.S_RIESIG, Stil.AKZENT))
+		zahl.add_child(Stil.etikett("Titel in Ihrer Amtszeit"))
 	if liste.is_empty():
 		titel.add_child(Stil.matt("Noch kein Titel in Ihrer Amtszeit."))
 	for t in liste:
