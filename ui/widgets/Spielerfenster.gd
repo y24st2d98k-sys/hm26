@@ -6,6 +6,7 @@ extends Control
 ## Elemente (Rahmen, Reiterleiste) liegen ausserhalb dieses Bereichs.
 
 var sid: String = ""
+var gespraech_thema: String = ""
 var reiter: String = "uebersicht"
 var inhalt: VBoxContainer
 var kopfbereich: VBoxContainer
@@ -40,7 +41,7 @@ func _ready() -> void:
 	add_child(mitte)
 
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(880, 620)
+	panel.custom_minimum_size = Vector2(1120, 760)
 	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
 	mitte.add_child(panel)
 
@@ -59,13 +60,7 @@ func _ready() -> void:
 
 	reiterleiste = Stil.hbox(6)
 	v.add_child(reiterleiste)
-	for r in REITER:
-		var k := Stil.knopf(str(r[1]))
-		var id: String = str(r[0])
-		k.pressed.connect(func():
-			reiter = id
-			_zeichne())
-		reiterleiste.add_child(k)
+	_reiter_aufbauen()
 	reiterleiste.add_child(Stil.dehner())
 	var zu := Stil.knopf("Schließen")
 	zu.pressed.connect(schliessen)
@@ -85,8 +80,10 @@ func _ready() -> void:
 func zeige(spieler_id: String) -> void:
 	sid = spieler_id
 	reiter = "uebersicht"
+	gespraech_thema = ""
 	meldung.text = ""
 	visible = true
+	_reiter_aufbauen()
 	_zeichne()
 
 func schliessen() -> void:
@@ -194,18 +191,7 @@ func _uebersicht(sp: Dictionary) -> void:
 		Stil.wert_farbe(6.0 - note, 5.0) if note > 0.0 else Stil.TEXT_MATT))
 
 	if str(sp["verein"]) == Welt.mein_verein_id:
-		var aktionen := Bausteine.karte_in(rechts, "Einzelgespräch")
-		aktionen.add_child(Stil.matt("Die Wirkung hängt von Charakter und Situation ab.", Stil.S_MINI))
-		var reihe := Stil.hbox(6)
-		aktionen.add_child(reihe)
-		for g in [["lob", "Loben"], ["kritik", "Kritisieren"], ["vertrauen", "Vertrauen zusichern"], ["druck", "Druck machen"]]:
-			var k := Stil.knopf(str(g[1]))
-			var ton: String = str(g[0])
-			k.pressed.connect(func():
-				var erg := Kabine.gespraech(Welt.daten, sid, ton)
-				_melde(str(erg["text"]), bool(erg["gelungen"]))
-				_zeichne())
-			reihe.add_child(k)
+		_gespraechskarte(rechts, sp)
 		var fokus := Bausteine.karte_in(rechts, "Individuelle Förderung")
 		fokus.add_child(Stil.matt("Ein Sonderprogramm beschleunigt die Entwicklung in einem Bereich.", Stil.S_MINI))
 		var wahl := OptionButton.new()
@@ -503,3 +489,61 @@ func _praemienzeile(eltern: Node, sp: Dictionary, start_tor: float, start_sieg: 
 	tor.value_changed.connect(func(_w): auffrischen.call())
 	sieg.value_changed.connect(func(_w): auffrischen.call())
 	return {"tor": tor, "sieg": sieg}
+
+## Einzelgespräch: Thema wählen, Antwort wählen, Folgen tragen.
+func _gespraechskarte(eltern: Node, sp: Dictionary) -> void:
+	var karte := Bausteine.karte_in(eltern, "Einzelgespräch")
+	var wert: float = Gespraech.beziehung(sp)
+	karte.add_child(Stil.info_zeile("Verhältnis zu Ihnen",
+		"%d — %s" % [int(wert), Gespraech.beziehung_text(wert)], Stil.prozent_farbe(wert)))
+	for e in Gespraech.offene(Welt.daten, sid):
+		var rest: int = int(e["faellig"]) - Welt.tag()
+		karte.add_child(Stil.banner("%s — Prüfung in %d Tag(en)" % [
+			Gespraech.versprechen_text(e), maxi(rest, 0)], "warnung"))
+	var sperre: int = Gespraech.sperre_rest(Welt.daten, sp)
+	if sperre > 0:
+		karte.add_child(Stil.matt("Zuletzt vor Kurzem gesprochen — %d Tag(e) Ruhe." % sperre, Stil.S_MINI))
+		return
+
+	var themen := Gespraech.themen(Welt.daten, sid)
+	if gespraech_thema == "" or not themen.has(gespraech_thema):
+		gespraech_thema = str(themen[0])
+	var optionen: Array = []
+	for t in themen:
+		optionen.append({"id": str(t), "name": str((Gespraech.THEMEN[t] as Dictionary)["name"])})
+	karte.add_child(Stil.segmente(optionen, gespraech_thema, func(id):
+		gespraech_thema = str(id)
+		_zeichne()))
+	karte.add_child(Stil.text(str((Gespraech.THEMEN[gespraech_thema] as Dictionary)["frage"])
+		% Spielerfabrik.kurz_name(sp), Stil.S_KLEIN, Stil.AKZENT))
+	for a in Gespraech.ANTWORTEN[gespraech_thema]:
+		var eintrag: Dictionary = a
+		var k := Stil.knopf(str(eintrag["text"]))
+		k.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		if eintrag.has("versprechen"):
+			k.tooltip_text = "Das ist ein Versprechen. Es wird in einigen Wochen geprüft."
+		k.pressed.connect(func():
+			var erg := Gespraech.fuehren(Welt.daten, sid, gespraech_thema, str(eintrag["id"]))
+			_melde(str(erg["text"]), bool(erg.get("gelungen", false)))
+			Klang.spiele("klick", 0.5)
+			_zeichne())
+		karte.add_child(k)
+
+## Die Reiterleiste als segmentierte Umschaltleiste — sie muss bei jedem
+## Wechsel neu gebaut werden, damit der aktive Reiter markiert ist.
+func _reiter_aufbauen() -> void:
+	if reiterleiste == null:
+		return
+	if reiterleiste.get_child_count() > 0 and reiterleiste.get_child(0).has_meta("segmente"):
+		reiterleiste.get_child(0).queue_free()
+		reiterleiste.remove_child(reiterleiste.get_child(0))
+	var optionen: Array = []
+	for r in REITER:
+		optionen.append({"id": str(r[0]), "name": str(r[1])})
+	var leiste := Stil.segmente(optionen, reiter, func(id):
+		reiter = str(id)
+		_reiter_aufbauen()
+		_zeichne())
+	leiste.set_meta("segmente", true)
+	reiterleiste.add_child(leiste)
+	reiterleiste.move_child(leiste, 0)

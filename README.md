@@ -346,6 +346,19 @@ herausnehmen.
   Niederlagen, ein Platz an der Spitze, ein wechselwilliger Spieler. Jede
   Antwort wirkt auf Fans, Vorstand, Mannschaftsmoral — und auf die Motivation
   des Gegners, der mitliest.
+* **Einzelgespräche mit Versprechen.** Jeder eigene Spieler hat ein Verhältnis
+  zum Trainer (0–100). Welche Themen anstehen, ergibt sich aus seiner Lage:
+  eine gute oder schlechte Serie, zu wenig Einsatzzeit, ein Wechselwunsch, ein
+  auslaufender Vertrag, oder die Frage, ob er Verantwortung übernehmen soll.
+  Jedes Thema hat mehrere Antworten mit unterschiedlichem Risiko; wie sie
+  ankommen, hängt an Charakter, Moral, dem bisherigen Verhältnis und der
+  **Strenge in der Handschrift des Trainers** — eine harte Ansage trägt bei
+  einem Profi und einem strengen Trainer, bei einem Hitzkopf geht sie nach
+  hinten los.
+  Zwei Antworten sind **Versprechen**: mehr Einsatzzeit oder eine Freigabe im
+  nächsten Transferfenster. Sie werden gespeichert und nach sechs Wochen
+  überprüft. Wer Wort hält, bindet den Spieler dauerhaft. Wer es bricht,
+  verliert Vertrauen und Moral, oft den Spieler — und die Kabine erfährt davon.
 * **Nachwuchsakademie.** Jede Saison rückt ein eigener Jahrgang nach. Talente
   entwickeln sich schneller als Profis, aber nur so gut, wie die Jugendarbeit
   des Vereins es hergibt. Wer überzeugt, wird in den Profikader befördert; wer
@@ -414,6 +427,7 @@ kern/
   Presse.gd          Pressekonferenzen: Fragen, Antworten, Wirkung
   Jugend.gd          Nachwuchsakademie: Jahrgänge, Entwicklung, Beförderung
   Praemien.gd        Erfolgsprämien: Bewertung, Auszahlung, Wirkung
+  Gespraech.gd       Einzelgespräche, Verhältnis zum Trainer, Versprechen
   Vorbericht.gd      Spielvorbereitung: gestufte Gegneranalyse
   Echtdaten.gd       Lader und Zwischenspeicher für die JSON-Datensätze
   KI.gd              Aufstellung, Taktik, Training, Verträge, Ausbau der KI-Vereine

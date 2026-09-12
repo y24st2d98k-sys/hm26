@@ -229,6 +229,7 @@ func tag_weiter() -> Dictionary:
 	Scouting.tageswechsel(daten)
 	Nationalteam.tageswechsel(daten)
 	Presse.tageswechsel(daten)
+	Gespraech.tageswechsel(daten)
 
 	# Anstehende Partien
 	var heute: Array = (spiele_am_tag(t) as Array).duplicate()
@@ -466,7 +467,7 @@ func _daten_auffrischen() -> void:
 			"lautstaerke_effekte": 75.0, "lautstaerke_atmo": 65.0},
 		"plan": {}, "international": {}, "pokale": {}, "saison_abgeschlossen": false,
 		"nationalteams": [], "turnier": Nationalteam.leeres_turnier(),
-		"pressekonferenz": {},
+		"pressekonferenz": {}, "versprechen": [],
 	}
 	for k in vorlage.keys():
 		if not daten.has(k):
@@ -491,6 +492,8 @@ func _daten_auffrischen() -> void:
 			sp["entwicklung_log"] = []
 		if not sp.has("laufbahn"):
 			sp["laufbahn"] = []
+		if not sp.has("beziehung"):
+			sp["beziehung"] = 50.0
 		var vertrag: Dictionary = sp.get("vertrag", {})
 		if not vertrag.is_empty():
 			if not vertrag.has("praemie_tor"):

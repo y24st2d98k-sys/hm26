@@ -45,6 +45,13 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "spieler":
+			var sid: String = str(Welt.mein_verein()["kader"][0])
+			var f: Node = get_tree().get_first_node_in_group("spielerfenster")
+			f.zeige(sid)
+			await _foto("%s/spieler.png" % ordner)
+			f.schliessen()
+			continue
 		if str(id) == "pokal":
 			await _pokal(app, ordner)
 			continue

@@ -85,6 +85,22 @@ func _ready() -> void:
 		app.zeige(id2)
 		await get_tree().process_frame
 
+	_log("— Einzelgespräch —")
+	var gsid: String = str(Welt.mein_verein()["kader"][1])
+	_log("   angebotene Themen: %s" % str(Gespraech.themen(Welt.daten, gsid)))
+	# Zum Pruefen alle Themen durchspielen, nicht nur die gerade angebotenen.
+	for t in Gespraech.THEMEN.keys():
+		for a in Gespraech.ANTWORTEN[t]:
+			var erg := Gespraech.fuehren(Welt.daten, gsid, str(t), str((a as Dictionary)["id"]))
+			_log("   %s/%s: %s" % [str(t), str((a as Dictionary)["id"]), str(erg["text"])])
+			Welt.spieler(gsid)["letztes_gespraech_tag"] = -999
+	fenster.zeige(gsid)
+	fenster.reiter = "statistik"
+	fenster._zeichne()
+	await get_tree().process_frame
+	fenster.schliessen()
+	_log("   Versprechen offen: %d" % Gespraech.offene(Welt.daten, gsid).size())
+
 	_log("— Spielvorbereitung —")
 	var naechstes2 := Welt.naechstes_spiel(Welt.mein_verein_id)
 	if not naechstes2.is_empty():

@@ -127,6 +127,7 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 		"stats": leere_statistik(),
 		"laufbahn": [],
 		"unzufriedenheit": 0.0,
+		"beziehung": 50.0,
 		"transferwunsch": false,
 		"nationalspieler": 0,
 		"trainingsfokus": "",
