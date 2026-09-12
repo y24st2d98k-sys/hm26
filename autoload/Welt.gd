@@ -499,4 +499,6 @@ func _daten_auffrischen() -> void:
 			var st: Dictionary = (sp.get("stats", {}) as Dictionary).get(zeitraum, {})
 			if not st.is_empty() and not st.has("praemien"):
 				st["praemien"] = 0.0
+			if not st.is_empty() and not st.has("allstar"):
+				st["allstar"] = 0
 	daten["version"] = DATENVERSION

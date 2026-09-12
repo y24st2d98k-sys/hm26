@@ -166,7 +166,7 @@ static func leere_saisonstats() -> Dictionary:
 		"technische_fehler": 0, "zeitstrafen": 0, "rote": 0, "siebenmeter_tore": 0, "siebenmeter_wuerfe": 0,
 		"paraden": 0, "gegentore": 0, "blocks": 0, "ballgewinne": 0,
 		"note_summe": 0.0, "noten": 0, "spieler_des_spiels": 0, "titel": 0,
-		"praemien": 0.0,
+		"praemien": 0.0, "allstar": 0,
 	}
 
 ## Zieht die leistungsrelevanten Attribute so zurecht, dass der Gesamtwert die

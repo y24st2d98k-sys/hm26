@@ -161,6 +161,8 @@ func _zeichne() -> void:
 			wk.add_child(Bausteine.wertzeile(str(Spielerfabrik.POSITION_NAME.get(pos, pos)),
 				float(wv[pos]) * 100.0, 40.0, "%s %%" % Stil.komma(float(wv[pos]) * 100.0, 0)))
 
+	if Welt.mein_verein_id == "":
+		return
 	var scouts := Scouting.scouts(Welt.daten, Welt.mein_verein_id)
 	if not scouts.is_empty() and s < 3:
 		var auftrag := Stil.knopf_primaer("Scout auf %s ansetzen" % str(g["kurz"]))

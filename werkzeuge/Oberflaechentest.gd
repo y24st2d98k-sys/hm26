@@ -57,6 +57,12 @@ func _ready() -> void:
 	await get_tree().process_frame
 	for i in range(40):
 		live._schritt()
+	_log("— Kabinenansprachen —")
+	for ton in Matchsim.ANSPRACHEN.keys():
+		var erg: Dictionary = live.sim.ansprache_halten(live.sim.heim, str(ton))
+		_log("   %s: %s" % [str(ton), str(erg.get("text", erg))])
+	live._ansprache_aufbauen(false)
+	await get_tree().process_frame
 	live._ueberspringen()
 	await get_tree().process_frame
 	_log("   Endstand: %d:%d" % [int(live.sim.heim["tore"]), int(live.sim.gast["tore"])])

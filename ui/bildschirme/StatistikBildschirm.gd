@@ -92,10 +92,39 @@ func _zeichne() -> void:
 	_bestenliste(oben, liga, info)
 	_eigene_karte(oben, liga, info)
 
+	_allstar(liga)
+
 	var unten := Stil.hbox(12)
 	inhalt.add_child(unten)
 	for schluessel in TEAM_KATEGORIEN.keys():
 		_teamkarte(unten, str(schluessel))
+
+## Die beste Sieben der zuletzt abgeschlossenen Saison.
+func _allstar(liga: Dictionary) -> void:
+	var a: Dictionary = liga.get("allstar", {})
+	if a.is_empty():
+		return
+	var karte := Bausteine.karte_in(inhalt, "Team der Saison %s" % Kalender.saison_text(
+		Welt.startjahr(), int(a["saison"])))
+	var reihe := Stil.hbox(10)
+	karte.add_child(reihe)
+	var sieben: Dictionary = a["spieler"]
+	for pos in Spielerfabrik.POSITIONEN:
+		if not sieben.has(pos):
+			continue
+		var sid: String = str(sieben[pos])
+		if not Welt.daten["spieler"].has(sid):
+			continue
+		var sp: Dictionary = Welt.spieler(sid)
+		var spalte := Stil.vbox(2)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		reihe.add_child(spalte)
+		spalte.add_child(Bausteine.positions_abzeichen(str(pos)))
+		var k := Stil.knopf_flach(Spielerfabrik.kurz_name(sp),
+			Stil.AKZENT if str(sp["verein"]) == Welt.mein_verein_id else Stil.TEXT)
+		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		spalte.add_child(k)
+		spalte.add_child(Wappen.fuer_verein(str(sp["verein"]), 16.0))
 
 func _bestenliste(eltern: Node, liga: Dictionary, info: Dictionary) -> void:
 	var karte := Bausteine.karte_in(eltern, "%s — %s" % [str(info["name"]), str(liga["name"])])

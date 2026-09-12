@@ -93,6 +93,45 @@ static func _ehrungen(d: Dictionary, mein: String) -> void:
 			Welt.nachricht({"typ": "auszeichnung", "wichtig": true,
 				"betreff": "Spieler der Saison: %s" % Spielerfabrik.voller_name(d["spieler"][mvp]),
 				"text": "Die Trainer der Liga haben %s zum wertvollsten Spieler gewählt." % Spielerfabrik.voller_name(d["spieler"][mvp])})
+		_allstar(d, lid, mein)
+
+## Die beste Sieben einer Liga: je Position der Spieler mit der besten
+## Durchschnittsnote, der genug gespielt hat.
+static func _allstar(d: Dictionary, lid: String, mein: String) -> void:
+	var sieben: Dictionary = {}
+	for pos in Spielerfabrik.POSITIONEN:
+		var best := ""
+		var bw := 9.0
+		for cid in d["ligen"][lid]["vereine"]:
+			for sid in d["vereine"][cid]["kader"]:
+				var sp: Dictionary = d["spieler"][sid]
+				if str(sp["position"]) != pos:
+					continue
+				if int(sp["stats"]["saison"]["spiele"]) < 12:
+					continue
+				var note: float = Spielerfabrik.note(sp)
+				if note > 0.0 and note < bw:
+					bw = note
+					best = sid
+		if best != "":
+			sieben[pos] = best
+			(d["spieler"][best]["stats"]["karriere"] as Dictionary)["allstar"] = \
+				int((d["spieler"][best]["stats"]["karriere"] as Dictionary).get("allstar", 0)) + 1
+	if sieben.is_empty():
+		return
+	d["ligen"][lid]["allstar"] = {"saison": Welt.saison_index(), "spieler": sieben}
+	var eigene: Array = []
+	for pos in sieben.keys():
+		if str(d["spieler"][sieben[pos]]["verein"]) == mein:
+			eigene.append(Spielerfabrik.voller_name(d["spieler"][sieben[pos]]))
+	if eigene.is_empty():
+		return
+	Welt.nachricht({
+		"typ": "auszeichnung", "wichtig": true,
+		"betreff": "Team der Saison: %d Spieler von uns" % eigene.size(),
+		"text": "In die beste Sieben der %s wurden berufen: %s." % [
+			str(d["ligen"][lid]["name"]), ", ".join(eigene)],
+	})
 
 static func _bester_der_liga(d: Dictionary, lid: String, torwart: bool) -> String:
 	var best := ""
@@ -419,10 +458,22 @@ static func jobangebote_erzeugen(d: Dictionary, mein: String) -> void:
 		if not verfehlt and Namen.zufall() > 0.12:
 			continue
 		kandidaten.append(cid)
+	# Ein vereinsloser Trainer darf nicht ins Leere laufen: findet sich im
+	# passenden Rufbereich niemand, wird die Suche stufenweise geöffnet.
+	if vereinslos and kandidaten.is_empty():
+		for cid in Weltgenerator.clubs(d):
+			var v3: Dictionary = d["vereine"][cid]
+			if float(v3["ruf"]) <= ruf + 6.0:
+				kandidaten.append(cid)
+		kandidaten.sort_custom(func(a, b):
+			return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
+		kandidaten = kandidaten.slice(0, 6)
 	kandidaten.shuffle()
 	var anzahl: int = mini(kandidaten.size(), 1 + int(ruf / 30.0))
 	if mein == "":
-		anzahl = maxi(anzahl, 2)
+		# Ohne Verein soll immer etwas auf dem Tisch liegen — aber nie mehr
+		# Angebote, als es Kandidaten gibt.
+		anzahl = mini(maxi(anzahl, 2), kandidaten.size())
 	for i in range(anzahl):
 		var cid: String = str(kandidaten[i])
 		var v2: Dictionary = d["vereine"][cid]

@@ -278,6 +278,8 @@ func _statistik(sp: Dictionary) -> void:
 	rechts.add_child(Stil.info_zeile("Zeitstrafen", str(int(k["zeitstrafen"]))))
 	rechts.add_child(Stil.info_zeile("Rote Karten", str(int(k["rote"]))))
 	rechts.add_child(Stil.info_zeile("Spieler des Spiels", str(int(k["spieler_des_spiels"]))))
+	rechts.add_child(Stil.info_zeile("Team der Saison", str(int(k.get("allstar", 0))),
+		Stil.AKZENT if int(k.get("allstar", 0)) > 0 else Stil.TEXT))
 	rechts.add_child(Stil.info_zeile("Blocks", str(int(k["blocks"]))))
 
 	var verlauf: Array = sp["stats"]["verlauf"]

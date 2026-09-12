@@ -159,6 +159,13 @@ func _saison_test(dauer: int) -> void:
 		print("Vertraege mit Praemien: %d, weltweit ausgeschuettet: %s" % [mit_praemie, Stil.geld(praemiensumme)])
 		var vb := Vorbericht.erzeuge(d, Welt.mein_verein_id, str(Welt.naechstes_spiel(Welt.mein_verein_id).get("gast", Welt.mein_verein_id)))
 		print("Vorbericht-Stufe naechster Gegner: %d" % int(vb["stufe"]))
+		var allstar: Dictionary = d["ligen"][lid].get("allstar", {})
+		if not allstar.is_empty():
+			var namen: Array = []
+			for pos in Spielerfabrik.POSITIONEN:
+				if (allstar["spieler"] as Dictionary).has(pos):
+					namen.append("%s %s" % [pos, Spielerfabrik.kurz_name(d["spieler"][allstar["spieler"][pos]])])
+			print("Team der Saison: %s" % ", ".join(namen))
 
 ## Drei Saisons am Stück: prüft Auf-/Abstieg, Titel, Alterung und Karriere.
 func _langzeit_test(dauer: int) -> void:
@@ -173,6 +180,15 @@ func _langzeit_test(dauer: int) -> void:
 			Welt.spieltag_abwickeln(Welt.tag())
 			Welt.wochenrhythmus(Welt.tag())
 			Welt.saison_pruefen(Welt.tag())
+		# Ohne Verein das erste Angebot annehmen — sonst prueft der Lauf den
+		# Vereinswechsel nie und die restlichen Saisons laufen ins Leere.
+		if Welt.mein_verein_id == "":
+			var offen: Array = d["trainer"].get("jobangebote", [])
+			if not offen.is_empty():
+				var ziel: String = str(offen[0]["verein"])
+				Trainerkarriere.verein_wechseln(d, ziel)
+				d["trainer"]["jobangebote"] = []
+				printerr("  Neuer Verein: %s (Tag %d)" % [d["vereine"][ziel]["name"], tage])
 		tage += 1
 		if tage % 365 == 0:
 			printerr("  ... Tag %d, %s" % [tage, Welt.datum_text()])
@@ -237,7 +253,9 @@ func _langzeit_test(dauer: int) -> void:
 	printerr("  Durchschnittsalter: %.1f" % (alt / maxf(float(d["spieler"].size()), 1.0)))
 	var kadergroessen: Array = []
 	var kleinster := 99
-	for cid in d["vereine"].keys():
+	# Nur echte Vereine — Nationalmannschaften haben ausserhalb der Turniere
+	# bewusst keinen Kader.
+	for cid in Weltgenerator.clubs(d):
 		var n: int = (d["vereine"][cid]["kader"] as Array).size()
 		kadergroessen.append(n)
 		kleinster = mini(kleinster, n)

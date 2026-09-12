@@ -66,9 +66,11 @@ godot4 --headless res://werkzeuge/Datenbericht.tscn
 ```
 
 Aktueller Stand: **96 von 136 Vereinen** echt, **94 echte Spieler** bei zehn
-Vereinen; alle übrigen Kaderplätze sind gefüllt. Im Spielerfenster ist jeder
-erfundene Spieler mit **ERFUNDEN** gekennzeichnet, der Kaderbildschirm zeigt
-das Verhältnis für den eigenen Verein.
+Vereinen; alle übrigen Kaderplätze sind gefüllt. In der Oberfläche ist das
+nicht zu sehen: hinterlegte und erfundene Spieler stehen ununterschieden
+nebeneinander, werden nach denselben Regeln erzeugt und entwickeln sich
+gleich. Wer wissen will, wie weit der Datensatz reicht, ruft den
+Datenbericht auf — im Spiel selbst soll die Welt aus einem Guss wirken.
 
 Kader veralten mit jedem Transferfenster. Das Format ist in
 [`daten/README.md`](daten/README.md) beschrieben und bewusst so einfach
@@ -246,6 +248,10 @@ herausnehmen.
   Einsatzzeit, Zeitstrafen, Ballgewinne, Blocks) mit Mindesteinsatzhürden, dazu
   vier Mannschaftswertungen (bester Angriff, beste Abwehr, Zuschauerschnitt,
   Zeitstrafen) — und in jeder Wertung die Platzierung des eigenen Kaders.
+* **Team der Saison.** Zum Saisonende wählt jede erste Liga ihre beste Sieben:
+  je Position der Spieler mit der besten Durchschnittsnote bei mindestens
+  zwölf Einsätzen. Die Berufungen zählen lebenslang und stehen in der
+  Laufbahn jedes Spielers.
 
 ---
 
