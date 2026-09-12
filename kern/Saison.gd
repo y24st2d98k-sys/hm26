@@ -302,6 +302,7 @@ static func _vertraege_ablaufen(d: Dictionary) -> void:
 			if d["vereine"].has(stamm):
 				(d["vereine"][stamm]["kader"] as Array).append(sid)
 				sp["verein"] = stamm
+				Trikot.vergeben(d, stamm, sid)
 			else:
 				sp["verein"] = ""
 			sp["leihe"] = {}

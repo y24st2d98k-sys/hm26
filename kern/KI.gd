@@ -6,6 +6,8 @@ extends RefCounted
 
 static func aufstellung_pruefen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
+	# Vor jeder Partie: jeder im Kader traegt eine eindeutige Rueckennummer.
+	Trikot.kader_nummerieren(d, cid)
 	var mensch: bool = bool(v.get("ist_mensch", false))
 	var auf: Dictionary = v["aufstellung"]
 	var neu_aufstellen := false
@@ -73,6 +75,9 @@ static func taktik_anpassen(d: Dictionary, cid: String) -> void:
 	t["risiko"] = clampi(int(t["risiko"]) + Namen.wuerfel(-8, 8), 15, 85)
 	t["wechselspiel"] = clampi(int(t.get("wechselspiel", 55)) + Namen.wuerfel(-6, 6), 20, 90)
 	t["siebter_feldspieler"] = "schluss" if Namen.zufall() < 0.45 else "nie"
+	# Auch die Computertrainer geben ihren Spielern Rollen — sonst waere die
+	# Anweisungstafel ein Vorteil, den nur der Mensch hat.
+	Anweisungen.automatisch(d, cid)
 
 static func _bester_angriffsstil(d: Dictionary, cid: String) -> String:
 	var v: Dictionary = d["vereine"][cid]
@@ -108,6 +113,8 @@ static func wochenlogik(d: Dictionary) -> void:
 		_trainingsplan(d, cid)
 		_vertraege_pflegen(d, cid)
 		kader_auffuellen(d, cid)
+		if Namen.zufall() < 0.05:
+			Mentoring.automatisch(d, cid)
 		if Namen.zufall() < 0.08:
 			_personal_pflegen(d, cid)
 		if Namen.zufall() < 0.1:

@@ -10,6 +10,7 @@ var taktik_bereich: VBoxContainer
 var bank_bereich: VBoxContainer
 var feld: Spielfeld
 var warnungen_bereich: VBoxContainer
+var anweisungs_bereich: VBoxContainer
 var vorschau_angriff: bool = true
 var meldung: Label
 
@@ -81,6 +82,7 @@ func aufbauen() -> void:
 	feldkarte.add_child(feld)
 	taktik_bereich = Bausteine.karte_in(rechts, "Spielidee")
 
+	anweisungs_bereich = Bausteine.karte_in(inhalt, "Spieleranweisungen")
 	bank_bereich = Bausteine.karte_in(inhalt, "Restlicher Kader")
 
 func _melde(text: String, gut: bool = true) -> void:
@@ -95,6 +97,7 @@ func aktualisieren() -> void:
 	leeren(abwehr_bereich)
 	leeren(taktik_bereich)
 	leeren(bank_bereich)
+	leeren(anweisungs_bereich)
 	leeren(warnungen_bereich)
 	if Welt.mein_verein_id == "":
 		bank_bereich.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
@@ -103,6 +106,7 @@ func aktualisieren() -> void:
 	_angriff()
 	_abwehr()
 	_taktik()
+	_anweisungen()
 	_bank()
 	_feld_auffrischen()
 
@@ -152,7 +156,7 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 			continue
 		var wert: float = Spielerfabrik.angriff_auf(sp, pos) if (block == "angriff" and pos != "TW") else (
 			Spielerfabrik.gesamt(sp) if nur_torwart else Spielerfabrik.abwehrwert(sp))
-		wahl.add_item("%s  (%d)" % [Spielerfabrik.voller_name(sp), int(wert)])
+		wahl.add_item("%s  %s  (%d)" % [Trikot.text(sp), Spielerfabrik.voller_name(sp), int(wert)])
 		wahl.set_item_metadata(index, sid)
 		if sid == aktuell:
 			wahl.select(index)
@@ -163,7 +167,7 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 	if aktuell != "" and wahl.selected <= 0 and not Welt.spieler(aktuell).is_empty():
 		var gesperrt: Dictionary = Welt.spieler(aktuell)
 		var grund := "gesperrt" if int(gesperrt["sperre"]) > 0 else "verletzt"
-		wahl.add_item("%s  (%s)" % [Spielerfabrik.voller_name(gesperrt), grund])
+		wahl.add_item("%s  %s  (%s)" % [Trikot.text(gesperrt), Spielerfabrik.voller_name(gesperrt), grund])
 		wahl.set_item_metadata(index, aktuell)
 		wahl.select(index)
 		index += 1
@@ -351,6 +355,116 @@ func _schieber(beschriftung: String, wert: int, rueckruf: Callable, hinweis: Str
 		rueckruf.call(w))
 	h.tooltip_text = hinweis
 	return h
+
+## Individuelle Rollen fuer die Spieler auf dem Feld. Die Mannschaftstaktik
+## oben gibt den Rahmen vor — hier steht, was der Einzelne darin tun soll.
+func _anweisungen() -> void:
+	var cid: String = Welt.mein_verein_id
+	var auf: Dictionary = Welt.verein(cid)["aufstellung"]
+	var kopf := Stil.hbox(10)
+	anweisungs_bereich.add_child(kopf)
+	kopf.add_child(Stil.matt("Wer sucht den Abschluss, wer eröffnet, wer schiebt in der Abwehr vor? Jede Rolle hat einen Preis.", Stil.S_MINI))
+	kopf.add_child(Stil.dehner())
+	var gesetzt: int = Anweisungen.gesetzt(Welt.daten, cid)
+	kopf.add_child(Stil.abzeichen("%d MIT ROLLE" % gesetzt, Stil.AKZENT if gesetzt > 0 else Stil.TEXT_MATT))
+	var vorschlag := Stil.knopf("Vorschlag des Trainerstabs")
+	vorschlag.tooltip_text = "Setzt für den gesamten Kader die Rolle, die zu Position und Stärken des Spielers passt."
+	vorschlag.pressed.connect(func():
+		Anweisungen.automatisch(Welt.daten, cid)
+		_melde("Der Trainerstab hat die Rollen verteilt.")
+		aktualisieren())
+	kopf.add_child(vorschlag)
+	var zuruecksetzen := Stil.knopf_flach("Zurücksetzen", Stil.TEXT_MATT)
+	zuruecksetzen.pressed.connect(func():
+		auf["anweisungen"] = {}
+		_melde("Alle Rollen zurückgesetzt.")
+		aktualisieren())
+	kopf.add_child(zuruecksetzen)
+	anweisungs_bereich.add_child(Stil.trenner())
+
+	var angriff_auf: Dictionary = auf.get("angriff", {})
+	var abwehr_auf: Dictionary = auf.get("abwehr", {})
+	var reihenfolge: Array = []
+	for pos in ["LA", "RL", "RM", "RR", "RA", "KM"]:
+		var sid: String = str(angriff_auf.get(pos, ""))
+		if sid != "" and not reihenfolge.has(sid):
+			reihenfolge.append(sid)
+	for pos in ["A1", "A2", "A3", "A4", "A5", "A6"]:
+		var sid2: String = str(abwehr_auf.get(pos, ""))
+		if sid2 != "" and not reihenfolge.has(sid2):
+			reihenfolge.append(sid2)
+	if reihenfolge.is_empty():
+		anweisungs_bereich.add_child(Stil.matt("Stellen Sie zuerst eine Formation auf."))
+		return
+
+	var kopfzeile := Stil.hbox(10)
+	anweisungs_bereich.add_child(kopfzeile)
+	var k1 := Stil.matt("Spieler", Stil.S_MINI)
+	k1.custom_minimum_size = Vector2(220, 0)
+	kopfzeile.add_child(k1)
+	var k2 := Stil.matt("Im Angriff", Stil.S_MINI)
+	k2.custom_minimum_size = Vector2(210, 0)
+	kopfzeile.add_child(k2)
+	var k3 := Stil.matt("In der Abwehr", Stil.S_MINI)
+	k3.custom_minimum_size = Vector2(210, 0)
+	kopfzeile.add_child(k3)
+	kopfzeile.add_child(Stil.matt("Was das bedeutet", Stil.S_MINI))
+
+	for sid in reihenfolge:
+		var sp: Dictionary = Welt.spieler(sid)
+		if sp.is_empty():
+			continue
+		var im_angriff: bool = (angriff_auf.values() as Array).has(sid)
+		var im_abwehr: bool = (abwehr_auf.values() as Array).has(sid)
+		var akt: Dictionary = Anweisungen.fuer(Welt.daten, cid, sid)
+		var zeile := Stil.hbox(10)
+		anweisungs_bereich.add_child(zeile)
+		var name := Stil.hbox(6)
+		name.custom_minimum_size = Vector2(220, 0)
+		zeile.add_child(name)
+		var nr := Stil.matt(Trikot.text(sp), Stil.S_KLEIN)
+		nr.custom_minimum_size = Vector2(22, 0)
+		nr.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		name.add_child(nr)
+		name.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
+		name.add_child(Stil.text(Spielerfabrik.kurz_name(sp), Stil.S_KLEIN))
+		zeile.add_child(_rollenwahl(Anweisungen.ANGRIFF, str(akt["angriff"]), im_angriff,
+			func(w): _rolle_setzen(sid, "angriff", w)))
+		zeile.add_child(_rollenwahl(Anweisungen.ABWEHR, str(akt["abwehr"]), im_abwehr,
+			func(w): _rolle_setzen(sid, "abwehr", w)))
+		var beschreibung: String = ""
+		if im_angriff and str(akt["angriff"]) != "normal":
+			beschreibung = str(Anweisungen.ANGRIFF[str(akt["angriff"])]["text"])
+		elif im_abwehr and str(akt["abwehr"]) != "normal":
+			beschreibung = str(Anweisungen.ABWEHR[str(akt["abwehr"])]["text"])
+		var txt := Stil.matt(beschreibung, Stil.S_MINI)
+		txt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(txt)
+
+## Ein Auswahlfeld ueber einen Anweisungskatalog.
+func _rollenwahl(katalog: Dictionary, aktuell: String, aktiv: bool, rueckruf: Callable) -> OptionButton:
+	var wahl := OptionButton.new()
+	wahl.custom_minimum_size = Vector2(210, 0)
+	wahl.disabled = not aktiv
+	var i := 0
+	for schluessel in katalog.keys():
+		var e: Dictionary = katalog[schluessel]
+		wahl.add_item(str(e["name"]))
+		wahl.set_item_metadata(i, schluessel)
+		wahl.set_item_tooltip(i, str(e["text"]))
+		if str(schluessel) == aktuell:
+			wahl.select(i)
+		i += 1
+	if not aktiv:
+		wahl.tooltip_text = "Der Spieler steht in dieser Formation nicht auf dem Feld."
+	wahl.item_selected.connect(func(idx): rueckruf.call(str(wahl.get_item_metadata(idx))))
+	return wahl
+
+func _rolle_setzen(sid: String, bereich: String, wert: String) -> void:
+	Anweisungen.setzen(Welt.daten, Welt.mein_verein_id, sid, bereich, wert)
+	var katalog: Dictionary = Anweisungen.ANGRIFF if bereich == "angriff" else Anweisungen.ABWEHR
+	_melde("%s: %s" % [Spielerfabrik.kurz_name(Welt.spieler(sid)), str(katalog[wert]["name"])])
+	aktualisieren()
 
 func _bank() -> void:
 	var auf: Dictionary = Welt.verein(Welt.mein_verein_id)["aufstellung"]

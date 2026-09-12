@@ -378,7 +378,8 @@ func _team_szene(t: Dictionary, greift_an: bool) -> Dictionary:
 		if pos == "TW" and bool(t["sieben_gegen_sechs"]) and greift_an:
 			continue
 		var sp: Dictionary = Welt.spieler(sid)
-		eintraege[pos] = {"sid": sid, "kurz": str(sp["nachname"]).substr(0, 9), "index": 0 if pos == "TW" else i}
+		eintraege[pos] = {"sid": sid, "kurz": str(sp["nachname"]).substr(0, 9),
+			"nummer": int(sp.get("nummer", 0)), "index": 0 if pos == "TW" else i}
 		if pos != "TW":
 			i += 1
 	return eintraege

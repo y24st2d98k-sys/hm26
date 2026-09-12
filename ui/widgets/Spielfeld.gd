@@ -179,13 +179,15 @@ func _zeichne_mannschaft(seite: String, s: float) -> void:
 			draw_arc(p, r * 0.55, 0.0, TAU, 14, Color(0, 0, 0, 0.30), maxf(s * 0.06, 1.0), true)
 		if str(eintrag.get("sid", "")) != "" and str(eintrag.get("sid", "")) == hervorgehoben:
 			draw_arc(p, r * 1.6, 0.0, TAU, 22, Color("#ffffff"), maxf(s * 0.09, 1.5), true)
-		# Positionskuerzel im Trikot
-		var pgroesse: int = maxi(int(s * 0.34), 7)
-		var pbreite: float = schrift.get_string_size(pos, HORIZONTAL_ALIGNMENT_LEFT, -1, pgroesse).x
+		# Rueckennummer im Trikot — nur wo keine bekannt ist, steht das Positionskuerzel
+		var nummer: int = int(eintrag.get("nummer", 0))
+		var aufdruck: String = str(nummer) if nummer > 0 else pos
+		var pgroesse: int = maxi(int(s * (0.46 if nummer > 0 else 0.34)), 7)
+		var pbreite: float = schrift.get_string_size(aufdruck, HORIZONTAL_ALIGNMENT_LEFT, -1, pgroesse).x
 		var dunkel: bool = f.get_luminance() < 0.5
-		draw_string(schrift, p + Vector2(-pbreite * 0.5, pgroesse * 0.36), pos,
+		draw_string(schrift, p + Vector2(-pbreite * 0.5, pgroesse * 0.36), aufdruck,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, pgroesse,
-			Color(1, 1, 1, 0.85) if dunkel else Color(0, 0, 0, 0.7))
+			Color(1, 1, 1, 0.9) if dunkel else Color(0, 0, 0, 0.75))
 		# Name darunter, mit dunkler Kante fuer Lesbarkeit
 		var beschriftung: String = str(eintrag.get("kurz", ""))
 		if beschriftung == "":
@@ -225,7 +227,8 @@ static func szene_aus_aufstellung(cid: String, angriff: bool) -> Dictionary:
 		if sid == "" or not Welt.daten["spieler"].has(sid):
 			continue
 		var sp: Dictionary = Welt.spieler(sid)
-		eintraege[pos] = {"sid": sid, "kurz": str(sp["nachname"]).substr(0, 9), "index": i if pos != "TW" else 0}
+		eintraege[pos] = {"sid": sid, "kurz": str(sp["nachname"]).substr(0, 9),
+			"nummer": int(sp.get("nummer", 0)), "index": i if pos != "TW" else 0}
 		if pos != "TW":
 			i += 1
 	return eintraege

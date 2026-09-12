@@ -344,6 +344,7 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 		aufstellung_saeubern(d, von, sid)
 	if nach != "" and d["vereine"].has(nach):
 		(d["vereine"][nach]["kader"] as Array).append(sid)
+		Trikot.vergeben(d, nach, sid)
 		Finanzen.buchen(d, nach, -ablöse, "Ablöse %s" % Spielerfabrik.voller_name(sp), "transfer")
 		d["vereine"][nach]["transferbudget"] = maxf(float(d["vereine"][nach]["transferbudget"]) - ablöse, 0.0)
 	sp["verein"] = nach
@@ -390,6 +391,7 @@ static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: 
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		aufstellung_saeubern(d, von, sid)
 	(d["vereine"][nach]["kader"] as Array).append(sid)
+	Trikot.vergeben(d, nach, sid)
 	sp["verein"] = nach
 	(d["transfermarkt"]["verlauf"] as Array).push_front({
 		"tag": int(d["tag"]), "spieler": sid, "von": von, "nach": nach, "ablöse": 0.0, "art": "leihe",

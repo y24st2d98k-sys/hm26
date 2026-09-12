@@ -15,6 +15,8 @@ extends RefCounted
 ##  * "Hallenpuls" — die Atmosphaere in der Halle als eigener Leistungsfaktor
 
 const SPIELZEIT := 3600.0
+## Umrechnung der Anweisungs-Wurfguete in Punkte der internen Gueteskala.
+const ANWEISUNG_GUETE := 2.0
 const HALBZEIT := 1800.0
 
 const DECKUNG := {
@@ -140,6 +142,8 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		"letzte_wechselpruefung": -999.0,
 		"ansprache": 0.0,
 		"ansprachen": [],
+		# Individuelle Spieleranweisungen (siehe kern/Anweisungen.gd)
+		"anweisungen": (auf.get("anweisungen", {}) as Dictionary).duplicate(true),
 	}
 	var angriff: Dictionary = auf.get("angriff", {})
 	var abwehr: Dictionary = auf.get("abwehr", {})
@@ -308,6 +312,12 @@ func _angriffsdauer(a: Dictionary) -> float:
 	var diff: int = int(a["tore"]) - (int(gast["tore"]) if a == heim else int(heim["tore"]))
 	if diff >= 2 and zeit > SPIELZEIT - 420.0 and tempo < 45.0:
 		basis += 10.0
+	# Abschlussbereitschaft: eine Mannschaft, in der niemand den Wurf nimmt,
+	# spielt sich fest. Das kostet Zeit — und damit Angriffe. Umgekehrt bringt
+	# blindes Draufhalten kaum Tempo, sonst waere "Abschluss suchen" fuer alle
+	# eine Gratisverbesserung.
+	var bereitschaft: float = _anweisungsmittel(a, "angriff_auf", "angriff", "wurfanteil")
+	basis += clampf((1.0 - bereitschaft) * 18.0, -3.0, 10.5)
 	return clampf(basis + rng.randf_range(-6.0, 6.0), 9.0, 52.0)
 
 # ---------------------------------------------------------- Angriffslogik ---
@@ -320,7 +330,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	var angriffskraft: float = _angriffskraft(a, v)
 	var abwehrkraft: float = _abwehrkraft(v, a)
 	var diff: float = angriffskraft - abwehrkraft
-	var td: Dictionary = DECKUNG.get(str(v["taktik"]["abwehr"]), DECKUNG["6-0"])
+	var td: Dictionary = _deckungswerte(v)
 
 	# Unter- bzw. Ueberzahl wirkt deutlich
 	diff += float(ueberzahl) * 11.0
@@ -332,6 +342,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	# Technischer Fehler / Ballgewinn der Abwehr
 	var risiko: float = clampf(float(a["taktik"]["risiko"]) + float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["risiko"]), 0.0, 100.0)
 	var p_fehler: float = clampf(0.185 - diff * 0.0008 + (risiko - 50.0) * 0.0009, 0.09, 0.26) * float(td["ballgewinn"])
+	p_fehler *= _anweisungsmittel(a, "angriff_auf", "angriff", "fehler")
 	if a["sieben_gegen_sechs"]:
 		p_fehler *= 1.35
 	if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "kontrolleur"):
@@ -343,6 +354,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	var haerte: float = clampf(float(v["taktik"]["haerte"]), 0.0, 100.0)
 	var p_2min: float = clampf(0.050 + haerte * 0.00058, 0.02, 0.12) * float(td["zeitstrafe"])
 	var p_7m: float = clampf(0.034 + haerte * 0.00026 + maxf(diff, 0.0) * 0.0005, 0.015, 0.09)
+	p_7m *= _anweisungsmittel(a, "angriff_auf", "angriff", "siebenmeter")
 	var wurf_zuf: float = rng.randf()
 	if wurf_zuf < p_2min:
 		_zeitstrafe(v, a)
@@ -396,6 +408,63 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 		_wurf_notieren(a, pos, "parade")
 		return _parade(a, v, schuetze, tw, pos)
 
+# ------------------------------------------------------- Spieleranweisungen ---
+#
+# Die Mannschaftstaktik legt den Rahmen fest, die Anweisung eines einzelnen
+# Spielers verschiebt darin sein Verhalten. Positionsbezogene Faktoren
+# (Wurfanteil, Wurfguete) wirken direkt auf den betroffenen Spieler,
+# mannschaftsbezogene (Fehler, Siebenmeter, Block, Ballgewinn, Zeitstrafe)
+# als Mittelwert ueber die Feldspieler der jeweiligen Formation.
+
+## Welchen Wert die Anweisung eines Spielers in einem Bereich hat.
+func _faktor(t: Dictionary, sid: String, bereich: String, feld: String) -> float:
+	var katalog: Dictionary = Anweisungen.ANGRIFF if bereich == "angriff" else Anweisungen.ABWEHR
+	var gesetzt: Dictionary = (t["anweisungen"] as Dictionary).get(sid, {})
+	var eintrag: Dictionary = katalog.get(str(gesetzt.get(bereich, "normal")), katalog["normal"])
+	return float(eintrag[feld])
+
+## Mittelwert eines Anweisungsfaktors ueber die Feldspieler einer Formation.
+func _anweisungsmittel(t: Dictionary, formation: String, bereich: String, feld: String) -> float:
+	var auf: Dictionary = t[formation]
+	var summe := 0.0
+	var n := 0
+	for pos in auf.keys():
+		if str(pos) == "TW":
+			continue
+		var sid: String = str(auf[pos])
+		if sid == "":
+			continue
+		summe += _faktor(t, sid, bereich, feld)
+		n += 1
+	if n == 0:
+		return 1.0
+	return summe / float(n)
+
+## Wie stark der Kreislaeufer von den Anspielern bedient wird.
+func _kreisschub(a: Dictionary) -> float:
+	var auf: Dictionary = a["angriff_auf"]
+	var summe := 0.0
+	var n := 0
+	for pos in auf.keys():
+		if str(pos) == "TW" or str(pos) == "KM":
+			continue
+		var sid: String = str(auf[pos])
+		if sid == "":
+			continue
+		summe += _faktor(a, sid, "angriff", "kreis")
+		n += 1
+	if n == 0:
+		return 1.0
+	return summe / float(n)
+
+## Deckungswerte der Taktik, verschoben durch die Abwehranweisungen.
+func _deckungswerte(v: Dictionary) -> Dictionary:
+	var td: Dictionary = (DECKUNG.get(str(v["taktik"]["abwehr"]), DECKUNG["6-0"]) as Dictionary).duplicate()
+	td["block"] = float(td["block"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "block")
+	td["ballgewinn"] = float(td["ballgewinn"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "ballgewinn")
+	td["zeitstrafe"] = float(td["zeitstrafe"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "zeitstrafe")
+	return td
+
 ## Haelt fest, was aus einem Abschluss von dieser Position geworden ist.
 func _wurf_notieren(a: Dictionary, pos: String, ergebnis: String) -> void:
 	var karte: Dictionary = a["wurfkarte"]
@@ -417,8 +486,16 @@ func _wurfposition(a: Dictionary) -> String:
 			continue
 		var kraft: float = float(a["zustand"][sid]["kraft"]) / 100.0
 		var g: float = float(verteilung[pos]) * (0.55 + 0.45 * kraft) * (0.7 + 0.6 * _angriff_basis(a, sid, pos) / 100.0)
+		g *= _faktor(a, sid, "angriff", "wurfanteil")
 		gewichte[pos] = g
 		gesamt += g
+	# Wer den Kreis anspielt, verschiebt Abschluesse zum Kreislaeufer.
+	if gewichte.has("KM"):
+		var schub: float = _kreisschub(a)
+		if not is_equal_approx(schub, 1.0):
+			gesamt -= float(gewichte["KM"])
+			gewichte["KM"] = float(gewichte["KM"]) * schub
+			gesamt += float(gewichte["KM"])
 	if gesamt <= 0.0:
 		return ""
 	var wurf: float = rng.randf() * gesamt
@@ -453,7 +530,8 @@ func _wurfguete(sp: Dictionary, pos: String, a: Dictionary, diff: float) -> floa
 		if abstand <= 2:
 			druck = 0.9 + 0.2 * nerven
 	var puls_bonus: float = _puls_wirkung(a)
-	return basis * 5.0 * (0.70 + 0.30 * kraft) * float(z_sch["tagesform"]) * druck * puls_bonus + clampf(diff, -30.0, 30.0) * 0.12
+	var anweisung: float = _faktor(a, str(sp["id"]), "angriff", "wurfguete") * ANWEISUNG_GUETE
+	return basis * 5.0 * (0.70 + 0.30 * kraft) * float(z_sch["tagesform"]) * druck * puls_bonus + clampf(diff, -30.0, 30.0) * 0.12 + anweisung
 
 func _paradenwert(v: Dictionary, tw: String, pos: String) -> float:
 	if tw == "":

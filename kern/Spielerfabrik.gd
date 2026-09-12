@@ -108,6 +108,7 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 		"alter": alter_jahre,
 		"position": position,
 		"zweitpositionen": zweit,
+		"nummer": 0,
 		"ist_torwart": ist_tw,
 		"attr": attr,
 		"potenzial": potenzial,

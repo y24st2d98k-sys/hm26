@@ -125,7 +125,15 @@ func _kopf(sp: Dictionary) -> void:
 	var links := Stil.vbox(2)
 	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(links)
-	links.add_child(Stil.titel(Spielerfabrik.voller_name(sp), 1))
+	var namenszeile := Stil.hbox(8)
+	links.add_child(namenszeile)
+	var nummer: int = int(sp.get("nummer", 0))
+	if nummer > 0:
+		var rueckennummer := Stil.titel(str(nummer), 1)
+		rueckennummer.add_theme_color_override("font_color", Stil.AKZENT)
+		rueckennummer.tooltip_text = "Rückennummer"
+		namenszeile.add_child(rueckennummer)
+	namenszeile.add_child(Stil.titel(Spielerfabrik.voller_name(sp), 1))
 	var zeile := Stil.hbox(8)
 	links.add_child(zeile)
 	zeile.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
@@ -208,6 +216,29 @@ func _uebersicht(sp: Dictionary) -> void:
 			Welt.spieler(sid)["trainingsfokus"] = str(wahl.get_item_metadata(idx))
 			_melde("Förderprogramm gesetzt."))
 		fokus.add_child(wahl)
+		_nummernkarte(rechts, sp)
+
+## Rückennummer ändern. Doppelte Nummern lehnt der Zeugwart ab.
+func _nummernkarte(eltern: VBoxContainer, sp: Dictionary) -> void:
+	var karte := Bausteine.karte_in(eltern, "Rückennummer")
+	karte.add_child(Stil.matt("Die Nummer gehört dem Spieler, solange er im Verein ist.", Stil.S_MINI))
+	var zeile := Stil.hbox(8)
+	karte.add_child(zeile)
+	var feld := SpinBox.new()
+	feld.min_value = 1
+	feld.max_value = Trikot.HOECHSTE
+	feld.step = 1
+	feld.value = maxi(int(sp.get("nummer", 0)), 1)
+	feld.custom_minimum_size = Vector2(90, 0)
+	zeile.add_child(feld)
+	var setzen := Stil.knopf("Übernehmen")
+	setzen.pressed.connect(func():
+		var erg := Trikot.setzen(Welt.daten, Welt.mein_verein_id, sid, int(feld.value))
+		_melde(str(erg["grund"]), bool(erg["ok"]))
+		if bool(erg["ok"]):
+			Welt.zustand_geaendert.emit()
+			_zeichne())
+	zeile.add_child(setzen)
 
 func _attribute(sp: Dictionary) -> void:
 	# Profil zuerst: das Netz sagt in einem Blick mehr als 29 Einzelwerte.

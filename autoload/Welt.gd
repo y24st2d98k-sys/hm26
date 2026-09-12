@@ -515,7 +515,8 @@ func _daten_auffrischen() -> void:
 		daten["datenstand"] = ""
 	if not daten.has("zaehler"):
 		daten["zaehler"] = {"spieler": 0, "verein": 0, "spiel": 0, "personal": 0, "nachricht": 0, "auftrag": 0}
-	for verein_dict in daten.get("vereine", {}).values():
+	for verein_cid in daten.get("vereine", {}).keys():
+		var verein_dict: Dictionary = daten["vereine"][verein_cid]
 		if not verein_dict.has("chronik"):
 			verein_dict["chronik"] = {"titel": [], "beste_liga_platzierung": {}, "saisons": [],
 				"ewige_bilanz": {"spiele": 0, "siege": 0, "unentschieden": 0, "niederlagen": 0, "tore": 0, "gegentore": 0},
@@ -524,6 +525,12 @@ func _daten_auffrischen() -> void:
 			verein_dict["formkurve"] = []
 		if not verein_dict.has("jugend"):
 			verein_dict["jugend"] = []
+		if not verein_dict.has("mentoring"):
+			verein_dict["mentoring"] = []
+		var auf_dict: Dictionary = verein_dict.get("aufstellung", {})
+		if not auf_dict.is_empty() and not auf_dict.has("anweisungen"):
+			auf_dict["anweisungen"] = {}
+		Trikot.kader_nummerieren(daten, str(verein_cid))
 	for sp in daten.get("spieler", {}).values():
 		if not sp.has("entwicklung_log"):
 			sp["entwicklung_log"] = []

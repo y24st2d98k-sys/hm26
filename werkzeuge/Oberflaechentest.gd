@@ -185,6 +185,53 @@ func _ready() -> void:
 	vfenster.visible = false
 	Verhandlung.abbrechen(Welt.daten)
 
+	_log("— Spieleranweisungen —")
+	var cid_a: String = Welt.mein_verein_id
+	Anweisungen.automatisch(Welt.daten, cid_a)
+	_log("   Rollen vergeben: %d" % Anweisungen.gesetzt(Welt.daten, cid_a))
+	var erster: String = str(Welt.verein(cid_a)["kader"][0])
+	Anweisungen.setzen(Welt.daten, cid_a, erster, "angriff", "abschluss")
+	Anweisungen.setzen(Welt.daten, cid_a, erster, "abwehr", "offensiv")
+	var gesetzt_a: Dictionary = Anweisungen.fuer(Welt.daten, cid_a, erster)
+	_log("   %s: %s / %s" % [Spielerfabrik.kurz_name(Welt.spieler(erster)),
+		str(Anweisungen.ANGRIFF[str(gesetzt_a["angriff"])]["name"]),
+		str(Anweisungen.ABWEHR[str(gesetzt_a["abwehr"])]["name"])])
+	app.zeige("taktik")
+	await get_tree().process_frame
+
+	_log("— Rückennummern —")
+	Trikot.kader_nummerieren(Welt.daten, cid_a)
+	var nummern := {}
+	var ohne := 0
+	for sid_t in Welt.verein(cid_a)["kader"]:
+		var n_t: int = int(Welt.spieler(sid_t).get("nummer", 0))
+		if n_t <= 0:
+			ohne += 1
+		elif nummern.has(n_t):
+			_log("   FEHLER: Nummer %d doppelt vergeben" % n_t)
+		nummern[n_t] = true
+	_log("   %d Nummern, ohne Nummer: %d" % [nummern.size(), ohne])
+	var tausch := Trikot.setzen(Welt.daten, cid_a, erster, int(Welt.spieler(str(Welt.verein(cid_a)["kader"][1])).get("nummer", 7)))
+	_log("   Doppelvergabe abgelehnt: %s (%s)" % [str(not bool(tausch["ok"])), str(tausch["grund"])])
+
+	_log("— Patenschaft —")
+	var mentoren: Array = Mentoring.kandidaten_mentor(Welt.daten, cid_a)
+	var schueler: Array = Mentoring.kandidaten_schueler(Welt.daten, cid_a)
+	if mentoren.is_empty() or schueler.is_empty():
+		_log("   keine passenden Kandidaten im Kader")
+	else:
+		var erg_m := Mentoring.anlegen(Welt.daten, cid_a, str(mentoren[0]), str(schueler[0]))
+		_log("   %s" % str(erg_m["grund"]))
+		for _w in range(12):
+			Welt.daten["tag"] = int(Welt.daten["tag"]) + 7
+			Mentoring.wochenwechsel(Welt.daten)
+		var paare_m: Array = Mentoring.paare(Welt.daten, cid_a)
+		if not paare_m.is_empty():
+			_log("   Fortschritt nach 12 Wochen: %.1f · %s" % [float(paare_m[0]["fortschritt"]),
+				Mentoring.beschreibung(Welt.daten, paare_m[0])])
+	app.zeige("kabine")
+	await get_tree().process_frame
+
 	_log("— Vorspulen —")
 	var vf: Node = get_tree().get_first_node_in_group("vorspulfenster")
 	vf.zeige()

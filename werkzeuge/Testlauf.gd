@@ -15,10 +15,14 @@ func _ready() -> void:
 			_saison_test(730)
 		"halbsaison":
 			_saison_test(300)
+		"rollen":
+			_rollen_test()
+		"wirkung":
+			_wirkungstest()
 		"langzeit":
 			_langzeit_test(1100)
 		_:
-			_spiele_test()
+			_spiele_test(args.size() > 1 and str(args[1]) == "rollen")
 	print("Dauer: %d ms" % (Time.get_ticks_msec() - start))
 	get_tree().quit()
 
@@ -51,11 +55,107 @@ func _welt_test() -> void:
 			break
 	print("Beispielvereine: %s" % ", ".join(beispiel))
 
-func _spiele_test() -> void:
+## Verteilung der Rollenvorschlaege und ihr Mittelwert je Faktor. Liegt ein
+## Mittelwert deutlich neben 1.0, verschiebt der Vorschlag die Kalibrierung.
+func _rollen_test() -> void:
+	var d := Weltgenerator.erzeuge(2026, 999)
+	var a := {}
+	var b := {}
+	var summe := {"fehler": 0.0, "siebenmeter": 0.0, "wurfguete": 0.0, "kreis": 0.0,
+		"ballgewinn": 0.0, "block": 0.0, "zeitstrafe": 0.0}
+	var n := 0
+	for cid in Weltgenerator.clubs(d):
+		for sid in d["vereine"][cid]["kader"]:
+			var sp: Dictionary = d["spieler"][sid]
+			if bool(sp["ist_torwart"]):
+				continue
+			var v := Anweisungen.vorschlag(sp)
+			a[v["angriff"]] = int(a.get(v["angriff"], 0)) + 1
+			b[v["abwehr"]] = int(b.get(v["abwehr"], 0)) + 1
+			for k in ["fehler", "siebenmeter", "wurfguete", "kreis"]:
+				summe[k] += float(Anweisungen.ANGRIFF[v["angriff"]][k])
+			for k2 in ["ballgewinn", "block", "zeitstrafe"]:
+				summe[k2] += float(Anweisungen.ABWEHR[v["abwehr"]][k2])
+			n += 1
+	print("Feldspieler: %d" % n)
+	print("Angriff: %s" % str(a))
+	print("Abwehr:  %s" % str(b))
+	for k3 in summe.keys():
+		print("  Mittel %s: %.3f" % [k3, float(summe[k3]) / maxf(float(n), 1.0)])
+
+## Wirkungsprobe: dieselbe Partie, einmal je Anweisung fuer die Heimmannschaft.
+## Zeigt, ob eine Rolle im Spiel ueberhaupt ankommt — und wie stark.
+func _wirkungstest() -> void:
+	var proben := [
+		["angriff", "normal", "Angriff: Ausgeglichen"],
+		["angriff", "abschluss", "Angriff: Abschluss suchen"],
+		["angriff", "vorbereiten", "Angriff: Spiel eröffnen"],
+		["angriff", "durchbruch", "Angriff: Eins gegen Eins"],
+		["angriff", "kreis_anspielen", "Angriff: Kreis anspielen"],
+		["abwehr", "normal", "Abwehr: Position halten"],
+		["abwehr", "offensiv", "Abwehr: Vorschieben"],
+		["abwehr", "block", "Abwehr: Block stellen"],
+		["abwehr", "absichern", "Abwehr: Absichern"],
+	]
+	print("%-30s %6s %6s %6s %7s %6s %7s %7s %7s" % ["Anweisung (Heim)", "Tore", "Gegen", "KM %", "Fehler", "7m", "Blocks", "2min", "Geg2m"])
+	for probe in proben:
+		var d := Weltgenerator.erzeuge(2026, 999)
+		Welt.daten = d
+		Welt.mein_verein_id = ""
+		Spielplan.erzeuge_saison(d)
+		var partien: Array = []
+		for mid in d["spiele"].keys():
+			if str(d["spiele"][mid]["art"]) == "liga":
+				partien.append(mid)
+			if partien.size() >= 200:
+				break
+		var tore := 0.0
+		var gegentore := 0.0
+		var km := 0.0
+		var wuerfe := 0.0
+		var fehler := 0.0
+		var sieben := 0.0
+		var blocks := 0.0
+		var zeitstrafen := 0.0
+		var gegen_zeitstrafen := 0.0
+		for mid in partien:
+			var m: Dictionary = d["spiele"][mid]
+			var heim: String = str(m["heim"])
+			var auf: Dictionary = d["vereine"][heim]["aufstellung"]
+			auf["anweisungen"] = {}
+			for sid in d["vereine"][heim]["kader"]:
+				Anweisungen.setzen(d, heim, sid, str(probe[0]), str(probe[1]))
+			var sim := Matchsim.new(d, m, 0)
+			sim.vorbereiten()
+			sim.schnell_simulieren()
+			tore += float(sim.heim["stats"]["tore"])
+			gegentore += float(sim.gast["stats"]["tore"])
+			fehler += float(sim.heim["stats"]["technische_fehler"])
+			sieben += float(sim.heim["stats"]["siebenmeter"])
+			blocks += float(sim.heim["stats"]["blocks"])
+			zeitstrafen += float(sim.heim["stats"]["zeitstrafen"])
+			gegen_zeitstrafen += float(sim.gast["stats"]["zeitstrafen"])
+			for pos in (sim.heim["wurfkarte"] as Dictionary).keys():
+				var e: Dictionary = sim.heim["wurfkarte"][pos]
+				var n: float = float(int(e.get("tor", 0)) + int(e.get("parade", 0)) + int(e.get("vorbei", 0)) + int(e.get("block", 0)))
+				wuerfe += n
+				if str(pos) == "KM":
+					km += n
+		var p := float(partien.size())
+		print("%-30s %6.1f %6.1f %5.1f%% %7.1f %6.1f %7.1f %7.1f %7.1f" % [str(probe[2]), tore / p, gegentore / p,
+			km / maxf(wuerfe, 1.0) * 100.0, fehler / p, sieben / p, blocks / p, zeitstrafen / p, gegen_zeitstrafen / p])
+
+func _spiele_test(mit_rollen: bool = false) -> void:
 	Welt.daten = Weltgenerator.erzeuge(2026, 999)
 	Welt.mein_verein_id = ""
 	var d := Welt.daten
 	Spielplan.erzeuge_saison(d)
+	# Zweiter Durchlauf: alle Vereine mit den Rollenvorschlaegen des Trainerstabs.
+	# So laesst sich pruefen, ob die Spieleranweisungen die Kalibrierung verschieben.
+	if mit_rollen:
+		for cid in Weltgenerator.clubs(d):
+			Anweisungen.automatisch(d, cid)
+		print("Mit Spieleranweisungen (Vorschlag des Trainerstabs)")
 	var partien: Array = []
 	for mid in d["spiele"].keys():
 		if str(d["spiele"][mid]["art"]) == "liga":

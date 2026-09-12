@@ -149,6 +149,7 @@ static func befoerdern(d: Dictionary, sid: String) -> Dictionary:
 		return {"ok": false, "grund": "Der Profikader ist voll (max. %d Spieler)." % KADER_GRENZE}
 	(v["jugend"] as Array).erase(sid)
 	(v["kader"] as Array).append(sid)
+	Trikot.vergeben(d, cid, sid)
 	sp["jugendspieler"] = false
 	sp["kenntnis"] = 100.0
 	sp["moral"] = clampf(float(sp["moral"]) + 15.0, 5.0, 100.0)

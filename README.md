@@ -150,7 +150,7 @@ beim Verein einfach `"wappen": {"form": …, "muster": …, "symbol": …}`.
 
 ## Was Hallenherz eigen ist
 
-Fünf Systeme, die es so nicht als Pflichtanforderung gab und die das Spiel prägen:
+Sieben Systeme, die es so nicht als Pflichtanforderung gab und die das Spiel prägen:
 
 ### Hallenpuls
 Die Atmosphäre in der Halle ist eine eigene Größe (0–100), die sich **während**
@@ -199,6 +199,18 @@ Gehaltsliste, in erfolgreichen wird es teuer. Ausgezahlte Prämien heben
 zusätzlich die Stimmung des Spielers. Die Finanzübersicht führt beides
 getrennt — die erwartete Wochenlast und das, was in dieser Saison tatsächlich
 geflossen ist.
+
+### Patenschaften
+Ein erfahrener Spieler (ab 27) nimmt ein Talent (bis 23) an die Hand. Wie gut
+das funktioniert, hängt an Führung, Profitum und Temperament des Paten, am
+Klassenunterschied, an gleicher Position und gleicher Sprache — und daran, ob
+der Pate selbst zufrieden ist. Eine Patenschaft braucht eine gemeinsame
+Vorbereitung, bis sie voll wirkt. Dann wächst der Schützling in Entscheidung,
+Übersicht und Nervenstärke schneller, seine Moral steigt, seine
+Unzufriedenheit sinkt — **und sein Charakter zieht langsam in Richtung seines
+Vorbilds**. Wer einen Söldner zum Paten macht, hat in zwei Jahren einen
+zweiten Söldner. Drei Patenschaften trägt eine Kabine, nicht mehr. Zu finden
+unter *Kabine*.
 
 ### Das Gespür der Scouts
 Scouts sind nicht nur Werte, sondern haben einen eigenen Ruf. Jede Empfehlung
@@ -449,6 +461,20 @@ in eine sehr lange Schleife schickt.
   nächsten Transferfenster. Sie werden gespeichert und nach sechs Wochen
   überprüft. Wer Wort hält, bindet den Spieler dauerhaft. Wer es bricht,
   verliert Vertrauen und Moral, oft den Spieler — und die Kabine erfährt davon.
+* **Spieleranweisungen.** Die Mannschaftstaktik gibt den Rahmen, die Anweisung
+  sagt, was der Einzelne darin tun soll. Im Angriff: ausgeglichen, Abschluss
+  suchen, Spiel eröffnen, Eins gegen Eins, Kreis anspielen. In der Abwehr:
+  Position halten, Vorschieben, Block stellen, Absichern. Jede Rolle hat einen
+  Preis — wer öfter abzieht, trifft aus schlechteren Lagen; wer nur eröffnet,
+  spielt die Mannschaft fest und verliert Angriffe an die Uhr; wer vorschiebt,
+  gewinnt Bälle und kassiert Zeitstrafen. Der Trainerstab macht auf Knopfdruck
+  einen Vorschlag je Spieler, die Computervereine nutzen dasselbe System.
+* **Rückennummern.** Jeder Spieler trägt eine eigene Nummer, vergeben nach der
+  Gewohnheit des Handballs: die Eins gehört dem Torwart, die Sieben dem
+  Linksaußen, die Zehn dem Spielmacher. Sie steht in der Kaderliste, im
+  Spielerfenster, in den Aufstellungsfeldern — und auf dem Trikot auf dem
+  gezeichneten Spielfeld. Wer eine Nummer schon trägt, behält sie beim Wechsel,
+  wenn sie im neuen Kader frei ist; ändern lässt sie sich im Spielerfenster.
 * **Nachwuchsakademie.** Jede Saison rückt ein eigener Jahrgang nach. Talente
   entwickeln sich schneller als Profis, aber nur so gut, wie die Jugendarbeit
   des Vereins es hergibt. Wer überzeugt, wird in den Profikader befördert; wer
@@ -485,8 +511,8 @@ in eine sehr lange Schleife schickt.
 | Säule | Umsetzung |
 |---|---|
 | **1 Liga-Welt** | 5 Nationen / 10 Ligen / 136 Vereine, Auf- und Abstieg, 5 Pokale, 2 Europapokale, Supercups, Nationalmannschaften mit EM und WM, vollständig eigenständige KI |
-| **2 Matchsimulation** | Angriffsweise Engine, 4 Deckungen × 5 Angriffsstile, Zeitstrafen mit Unterzahl, 7-gegen-6, Auszeiten, Kabinenansprachen, Kräftehaushalt, Live-Ansicht mit gezeichnetem Feld |
-| **3 Kader** | 29 Attribute, Form, Moral, Fitness, Lastkonto, Verletzungsanfälligkeit, Persönlichkeit, Potenzial, Alterskurve, individuelle Förderprogramme, eigene Nachwuchsakademie |
+| **2 Matchsimulation** | Angriffsweise Engine, 4 Deckungen × 5 Angriffsstile, individuelle Spieleranweisungen (5 im Angriff, 4 in der Abwehr), Zeitstrafen mit Unterzahl, 7-gegen-6, Auszeiten, Kabinenansprachen, Kräftehaushalt, Live-Ansicht mit gezeichnetem Feld |
+| **3 Kader** | 29 Attribute, Form, Moral, Fitness, Lastkonto, Verletzungsanfälligkeit, Persönlichkeit, Potenzial, Alterskurve, individuelle Förderprogramme, Rückennummern, Patenschaften, eigene Nachwuchsakademie |
 | **4 Transfer & Scouting** | Aktive Suche mit acht Filtern, zweistufige Verhandlung (Verein, dann Spieler), Gegenangebote, Leihen, Erfolgsprämien im Vertrag, Transferfenster mit Fristmeldungen, Scoutaufträge mit Unschärfe, gestufte Spielvorbereitung |
 | **5 Vereinsführung** | Einnahmen aus Zuschauern, Sponsoring, Medien, Merchandising und Preisgeldern; sechs Ausbaubereiche; sieben Personalrollen mit messbarer Wirkung; Vorstand mit Ziel, Vertrauen, Warnstufen und Entlassung |
 | **6 Trainerkarriere** | Eigener Vertrag, Ruf, Stationen, Titelsammlung, Jobangebote, Handschrift mit Prägungen — alles vereinsübergreifend |
@@ -537,6 +563,9 @@ kern/
   Kaderpflege.gd     Eigene Kaderdaten, CSV-Import, Export ins Projekt
   Vorbericht.gd      Spielvorbereitung: gestufte Gegneranalyse
   Echtdaten.gd       Lader und Zwischenspeicher für die JSON-Datensätze
+  Anweisungen.gd     Individuelle Spieleranweisungen für Angriff und Abwehr
+  Trikot.gd          Rückennummern: Vergabe nach Position, Eindeutigkeit im Kader
+  Mentoring.gd       Patenschaften: Passung, Reifung, Charakterübertragung
   KI.gd              Aufstellung, Taktik, Training, Verträge, Ausbau der KI-Vereine
 ui/
   App.gd/.tscn       Rahmen: Kopfzeile, Navigation, Bildschirmwechsel

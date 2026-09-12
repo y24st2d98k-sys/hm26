@@ -369,7 +369,8 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"jugend": [],
 		"personal": [],
 		"taktik": standard_taktik(),
-		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": ""},
+		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": "", "anweisungen": {}},
+		"mentoring": [],
 		"vorstand": {
 			"vertrauen": Namen.glocke(62.0, 8.0, 40.0, 85.0),
 			"saisonziel": "",
@@ -504,6 +505,7 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 			d["spieler"][sid] = sp
 			(verein["kader"] as Array).append(sid)
 	_verteile_rollen(d, cid)
+	Trikot.kader_nummerieren(d, cid)
 	setze_standardaufstellung(d, cid)
 
 static func _zufalls_alter(rang: int, _gesamt: int) -> int:

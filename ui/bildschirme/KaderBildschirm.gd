@@ -3,8 +3,9 @@ extends Bildschirm
 ## Kaderübersicht mit sortierbaren Spalten, Filtern und Kadertiefe je Position.
 
 const SPALTEN := [
+	{"id": "nummer", "name": "#", "breite": 30},
 	{"id": "position", "name": "Pos", "breite": 44},
-	{"id": "name", "name": "Name", "breite": 234},
+	{"id": "name", "name": "Name", "breite": 226},
 	{"id": "alter", "name": "Alter", "breite": 48},
 	{"id": "gesamt", "name": "Stärke", "breite": 62},
 	{"id": "form", "name": "Form", "breite": 74},
@@ -111,6 +112,9 @@ func _vergleich(a, b) -> bool:
 func _sortwert(sid: String) -> Variant:
 	var sp: Dictionary = Welt.spieler(sid)
 	match sortierung:
+		"nummer":
+			var nr: int = int(sp.get("nummer", 0))
+			return -float(nr if nr > 0 else 999)
 		"position":
 			return -float(Spielerfabrik.POSITIONEN.find(str(sp["position"])))
 		"name":
@@ -184,6 +188,7 @@ func _zeile(sid: String, index: int) -> Control:
 
 	var st: Dictionary = sp["stats"]["saison"]
 	var eintraege := [
+		{"art": "nummer", "wert": Trikot.text(sp)},
 		{"art": "abzeichen", "wert": str(sp["position"])},
 		{"art": "name", "wert": Spielerfabrik.voller_name(sp)},
 		{"art": "text", "wert": str(int(sp["alter"]))},
@@ -204,6 +209,10 @@ func _zeile(sid: String, index: int) -> Control:
 		var e: Dictionary = eintraege[i]
 		var zelle: Control
 		match str(e["art"]):
+			"nummer":
+				var nz := Stil.text(str(e["wert"]), Stil.S_KLEIN, Stil.TEXT_MATT)
+				nz.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+				zelle = nz
 			"abzeichen":
 				zelle = Bausteine.positions_abzeichen(str(e["wert"]))
 			"name":
