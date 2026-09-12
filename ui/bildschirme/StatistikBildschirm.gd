@@ -193,7 +193,9 @@ func _eigene_karte(eltern: Node, liga: Dictionary, info: Dictionary) -> void:
 	if treffer == 0:
 		karte.add_child(Stil.matt("Noch kein Spieler des Kaders in dieser Wertung."))
 	else:
-		karte.add_child(Stil.matt("Mindestens %d Spiele nötig." % int(info["min_spiele"]), Stil.S_MINI))
+		var mindest: int = int(info["min_spiele"])
+		karte.add_child(Stil.matt("Mindestens %d %s nötig." % [mindest, "Spiel" if mindest == 1 else "Spiele"],
+			Stil.S_MINI))
 
 func _teamkarte(eltern: Node, schluessel: String) -> void:
 	var info: Dictionary = TEAM_KATEGORIEN[schluessel]

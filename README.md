@@ -31,6 +31,13 @@ godot4 --headless res://werkzeuge/Testlauf.tscn -- langzeit    # drei Saisons am
 godot4 --headless res://werkzeuge/Oberflaechentest.tscn        # alle Bildschirme + Live-Spiel + Speichern
 ```
 
+Und zum Ansehen der Oberfläche ohne Fenster — legt je Bildschirm ein PNG ab:
+
+```bash
+xvfb-run -a godot4 --rendering-driver opengl3 \
+  res://werkzeuge/Bildschirmfoto.tscn -- /tmp/bilder buero kader live
+```
+
 Der **Kaltstarttest** ist der wichtigste davon: Er startet die Anwendung so, wie
 sie ein Spieler startet — ohne geladenen Spielstand — und ruft in diesem Zustand
 jeden Bildschirm und jedes Fenster auf. Genau diese Reihenfolge hatte der frühere
@@ -79,6 +86,49 @@ gehalten, dass es sich ohne Programmierkenntnisse pflegen lässt.
 > Vereins- und Spielernamen sind für den privaten Gebrauch erfasst. Für eine
 > Veröffentlichung des Spiels wären Namens- und Markenrechte zu klären — dafür
 > gibt es das Häkchen „Erfundene Welt".
+
+---
+
+## Die Oberfläche
+
+Alles, was zu sehen ist, wird gezeichnet — es liegt keine einzige Bilddatei im
+Projekt, keine Symbolschrift, kein fremdes Theme.
+
+* **Ein Design-System als einzige Quelle.** `autoload/Stil.gd` hält Farbwelt,
+  Höhenstaffelung der Flächen, Schriftgrößen, Abstände und jeden
+  wiederverwendbaren Baustein: Karte mit Kopfzeile und Aktionsslot,
+  Kennzahlenkachel, Abzeichen, segmentierte Umschaltleiste, Balken,
+  Ringanzeige, Verlaufslinie, Säulenreihe, Hinweisstreifen, Leerzustand,
+  Monogramm und Tabelle. Kein Bildschirm baut sich eigene Controls zusammen.
+* **Tabellen sehen überall gleich aus.** `Stil.tabelle()` liefert ein Raster,
+  das Zebrastreifen, Kopflinie und Hervorhebung der eigenen Mannschaft selbst
+  hinter die Zellen zeichnet — die Bildschirme müssen dafür nichts tun.
+* **Ein eigener Symbolsatz.** `ui/widgets/Symbol.gd` zeichnet rund dreißig
+  Icons aus Linien und Polygonen in einem 0..1-Raum. Sie skalieren verlustfrei
+  und tragen die Navigation, die Kopfzeile und die Bedienelemente.
+* **Seitenleiste und Kopfzeile.** Links Wortmarke, nach Bereichen gruppierte
+  Navigation mit Symbol, Aktivmarke und Zähler für ungelesene Nachrichten,
+  unten der Trainer. Oben Wappen, Verein, Liga, Kasse, Spieltag, Saison,
+  Nachrichtenglocke und der Weiter-Knopf.
+* **Anzeigetafel im Spiel.** Heimseite, Spielstand mit Uhr, Gastseite — mit
+  Wappen und Vereinsnamen beider Mannschaften, darunter Wettbewerb und
+  Hallenpuls.
+
+### Vereinswappen
+
+Jeder Verein hat ein Wappen aus vier Schichten: Grundform (Schild, Rundschild,
+Kreis, Sechseck, Wimpel, Raute, Banner, Rechteck), heraldische Teilung (Pfahl,
+Bänder, Schräge, Sparren, Viertelung, Streifen, Kopfband, Ringband, Spaltung),
+das Vereinskürzel oder ein Symbol, dazu Rand, Innenkante und Schattierung.
+
+Die echten Vereine bekommen ihre **tatsächlichen Vereinsfarben** und ihr
+**Kürzel**; Form und Teilung stehen für die bekannten Vereine im Datensatz und
+ergeben sich sonst aus einer Prüfsumme des Vereinsnamens — dasselbe Wappen also
+in jeder Karriere. Damit ist jeder Verein auf einen Blick zu erkennen, ohne dass
+eine fremde Grafik im Projekt liegt: eingebundene Original-Logos wären Bilddateien
+und damit sowohl gegen die Bauvorgabe „keine externen Assets" als auch gegen
+fremde Markenrechte. Wer eigene Wappenrezepte will, ändert in `daten/ligen.json`
+beim Verein einfach `"wappen": {"form": …, "muster": …, "symbol": …}`.
 
 ---
 
@@ -276,8 +326,9 @@ herausnehmen.
 ```
 project.godot
 autoload/
-  Stil.gd            Design-System: Farben, Typografie, Theme, Karten,
-                     Abzeichen, Balken, Tabellen, Geldformatierung
+  Stil.gd            Design-System: Farben, Typografie, Theme, Karten, Kacheln,
+                     Abzeichen, Balken, Ringe, Verlaufslinien, Schalter,
+                     Tabellen mit Zebrastreifen, Geldformatierung
   Namen.gd           Kombinatorische Namensgebung (14 Kulturen, Vor- und
                      Nachnamen getrennt, Nachnamen zusätzlich aus Stamm+Endung,
                      Orte aus Präfix+Suffix, Firmen aus Präfix+Branche+Rechtsform)
@@ -311,8 +362,8 @@ ui/
   App.gd/.tscn       Rahmen: Kopfzeile, Navigation, Bildschirmwechsel
   Bildschirm.gd      Grundklasse aller Bildschirme
   LiveSpiel.gd       Live-Ansicht einer Partie
-  widgets/           Wappen, Spielfeld, Bausteine, Spieler-, Vereins-, Bericht-,
-                     Presse- und Vorberichtsfenster
+  widgets/           Wappen, Symbol (Icon-Satz), NavKnopf, Spielfeld, Bausteine,
+                     Spieler-, Vereins-, Bericht-, Presse- und Vorberichtsfenster
   bildschirme/       22 Bildschirme
 daten/               ligen.json und kader.json — die echten Vereine und Kader
 werkzeuge/           Test- und Kalibrierungsszenen

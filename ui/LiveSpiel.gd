@@ -36,6 +36,9 @@ var stats_bereich: VBoxContainer
 var taktik_bereich: VBoxContainer
 var knopf_auszeit: Button
 var tempo_knoepfe: Array = []
+var tempo_leiste: HBoxContainer
+var heim_seite: Dictionary = {}
+var gast_seite: Dictionary = {}
 var abschluss_knopf: Button
 var gewaehlt_raus: String = ""
 var hinweis: Label
@@ -70,54 +73,54 @@ func _baue() -> void:
 	var v := Stil.vbox(10)
 	wurzel.add_child(v)
 
-	# Anzeigetafel
+	# Anzeigetafel — Heimseite, Spielstand mit Uhr, Gastseite, darunter der Puls
 	var tafel := PanelContainer.new()
-	tafel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE_TIEF, Stil.R_NORMAL, Stil.RAND_HELL))
+	var tafelstil := Stil.box(Stil.FLAECHE_TIEF, Stil.R_NORMAL, Stil.RAND_HELL)
+	tafelstil.content_margin_left = 18
+	tafelstil.content_margin_right = 18
+	tafelstil.content_margin_top = 10
+	tafelstil.content_margin_bottom = 10
+	tafel.add_theme_stylebox_override("panel", tafelstil)
 	v.add_child(tafel)
-	var tafelbox := Stil.hbox(18)
-	var tafelrand := MarginContainer.new()
-	tafelrand.add_theme_constant_override("margin_left", 16)
-	tafelrand.add_theme_constant_override("margin_right", 16)
-	tafelrand.add_theme_constant_override("margin_top", 8)
-	tafelrand.add_theme_constant_override("margin_bottom", 8)
-	tafel.add_child(tafelrand)
-	tafelrand.add_child(tafelbox)
-	anzeige_wettbewerb = Stil.matt("", Stil.S_KLEIN)
-	anzeige_wettbewerb.custom_minimum_size = Vector2(220, 0)
-	tafelbox.add_child(anzeige_wettbewerb)
-	tafelbox.add_child(Stil.dehner())
-	anzeige_stand = Stil.titel("0 : 0", 0)
-	anzeige_stand.add_theme_font_size_override("font_size", Stil.S_RIESIG)
-	tafelbox.add_child(anzeige_stand)
-	anzeige_zeit = Stil.titel("00:00", 1, Stil.AKZENT)
-	tafelbox.add_child(anzeige_zeit)
-	tafelbox.add_child(Stil.dehner())
-	var pulsbox := Stil.vbox(2)
-	pulsbox.custom_minimum_size = Vector2(200, 0)
-	tafelbox.add_child(pulsbox)
-	puls_text = Stil.matt("Hallenpuls 50", Stil.S_MINI)
-	pulsbox.add_child(puls_text)
+	var tafelspalte := Stil.vbox(6)
+	tafel.add_child(tafelspalte)
+
+	var tafelbox := Stil.hbox(14)
+	tafelspalte.add_child(tafelbox)
+	heim_seite = _tafelseite(tafelbox, true)
+	var mitte := Stil.vbox(0)
+	mitte.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	tafelbox.add_child(mitte)
+	anzeige_stand = Stil.anzeige("0 : 0", Stil.S_ANZEIGE)
+	mitte.add_child(anzeige_stand)
+	anzeige_zeit = Stil.anzeige("00:00", Stil.S_GROSS, Stil.AKZENT)
+	mitte.add_child(anzeige_zeit)
+	gast_seite = _tafelseite(tafelbox, false)
+
+	var fusszeile := Stil.hbox(12)
+	tafelspalte.add_child(fusszeile)
+	anzeige_wettbewerb = Stil.matt("", Stil.S_MINI)
+	fusszeile.add_child(anzeige_wettbewerb)
+	fusszeile.add_child(Stil.dehner())
+	puls_text = Stil.etikett("Hallenpuls 50")
+	fusszeile.add_child(puls_text)
 	puls_balken = Stil.balken(50.0, 100.0, 190)
-	puls_balken.custom_minimum_size = Vector2(190, 12)
-	pulsbox.add_child(puls_balken)
+	puls_balken.custom_minimum_size = Vector2(190, 10)
+	fusszeile.add_child(puls_balken)
 
 	# Steuerleiste
-	var steuerung := Stil.hbox(8)
+	var steuerung := Stil.hbox(10)
 	v.add_child(steuerung)
-	for i in range(TEMPI.size()):
-		var k := Stil.knopf(str(TEMPI[i]["name"]))
-		var idx := i
-		k.pressed.connect(func(): _setze_tempo(idx))
-		steuerung.add_child(k)
-		tempo_knoepfe.append(k)
+	tempo_leiste = Stil.hbox(0)
+	steuerung.add_child(tempo_leiste)
+	_baue_tempoleiste()
 	anpfiff_knopf = Stil.knopf_primaer("Anpfiff")
 	anpfiff_knopf.pressed.connect(_anpfiff)
 	steuerung.add_child(anpfiff_knopf)
-	var ueberspringen := Stil.knopf("Zum Ende springen")
+	var ueberspringen := Stil.knopf_geist("Zum Ende springen")
 	ueberspringen.pressed.connect(_ueberspringen)
 	steuerung.add_child(ueberspringen)
-	steuerung.add_child(VSeparator.new())
-	knopf_auszeit = Stil.knopf("Auszeit nehmen")
+	knopf_auszeit = Stil.knopf_geist("Auszeit nehmen", Stil.BLAU)
 	knopf_auszeit.pressed.connect(_auszeit)
 	steuerung.add_child(knopf_auszeit)
 	steuerung.add_child(Stil.dehner())
@@ -187,6 +190,7 @@ func starte(spiel_id: String) -> void:
 	feld.gast_kurz = str(Welt.verein(str(m["gast"])).get("kurz", ""))
 	anzeige_wettbewerb.text = "%s · %s · %s" % [Welt.wettbewerb_name(str(m["wettbewerb"])),
 		Kalender.text(int(m["tag"]), Welt.startjahr(), true), Welt.verein(str(m["heim"]))["halle"]["name"]]
+	_tafel_beschriften(m)
 	wunschtempo = int(Welt.daten["einstellungen"].get("sim_tempo", 2))
 	angepfiffen = false
 	anpfiff_knopf.visible = true
@@ -214,8 +218,7 @@ func _setze_tempo(i: int) -> void:
 		if not angepfiffen:
 			angepfiffen = true
 			anpfiff_knopf.visible = false
-	for k in range(tempo_knoepfe.size()):
-		tempo_knoepfe[k].add_theme_color_override("font_color", Stil.AKZENT if k == i else Stil.TEXT)
+	_baue_tempoleiste()
 	var sekunden: float = float(TEMPI[i]["sekunden"])
 	if sekunden <= 0.0 or fertig:
 		uhr.stop()
@@ -281,9 +284,10 @@ func _abschliessen() -> void:
 func _anzeige_auffrischen() -> void:
 	if sim == null:
 		return
-	anzeige_stand.text = "%s  %d : %d  %s" % [feld.heim_kurz, int(sim.heim["tore"]), int(sim.gast["tore"]), feld.gast_kurz]
+	anzeige_stand.text = "%d : %d" % [int(sim.heim["tore"]), int(sim.gast["tore"])]
 	anzeige_zeit.text = sim.zeittext(sim.zeit)
 	puls_text.text = "Hallenpuls %d — %s" % [int(sim.hallenpuls), _pulstext(sim.hallenpuls)]
+	puls_text.add_theme_color_override("font_color", Stil.prozent_farbe(sim.hallenpuls))
 	if puls_balken.has_method("setze"):
 		puls_balken.setze(sim.hallenpuls)
 	knopf_auszeit.text = "Auszeit nehmen (%d übrig)" % int(mein_team.get("auszeiten", 0))
@@ -598,3 +602,60 @@ func _stats_auffrischen() -> void:
 		var team: String = str(lauf["team"])
 		var laufteam: String = str(sim.heim["kurz"]) if team == "heim" else str(sim.gast["kurz"])
 		stats_bereich.add_child(Stil.abzeichen("LAUF: %d Tore für %s" % [int(lauf["tore"]), laufteam], Stil.AKZENT))
+
+## Eine Seite der Anzeigetafel: Wappen, Vereinsname, Kürzel.
+## Die Heimmannschaft steht links, der Gast rechts — wie auf jeder Hallenanzeige.
+func _tafelseite(eltern: Node, ist_heim: bool) -> Dictionary:
+	var box := Stil.hbox(10)
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	box.alignment = BoxContainer.ALIGNMENT_END if ist_heim else BoxContainer.ALIGNMENT_BEGIN
+	eltern.add_child(box)
+	var halter := Stil.hbox(0)
+	halter.custom_minimum_size = Vector2(46, 46)
+	var namen := Stil.vbox(0)
+	namen.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var name := Stil.text("", Stil.S_GROSS)
+	var ort := Stil.etikett("")
+	if ist_heim:
+		name.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		ort.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		namen.add_child(name)
+		namen.add_child(ort)
+		box.add_child(namen)
+		box.add_child(halter)
+	else:
+		namen.add_child(name)
+		namen.add_child(ort)
+		box.add_child(halter)
+		box.add_child(namen)
+	return {"halter": halter, "name": name, "ort": ort}
+
+## Trägt Wappen und Namen beider Mannschaften in die Anzeigetafel ein.
+func _tafel_beschriften(m: Dictionary) -> void:
+	for paar in [[heim_seite, str(m["heim"])], [gast_seite, str(m["gast"])]]:
+		var seite: Dictionary = paar[0]
+		var cid: String = str(paar[1])
+		var halter: Node = seite["halter"]
+		for k in halter.get_children():
+			k.queue_free()
+		halter.add_child(Wappen.fuer_verein(cid, 44.0))
+		var v: Dictionary = Welt.verein(cid)
+		(seite["name"] as Label).text = str(v.get("name", "?"))
+		(seite["ort"] as Label).text = str(v.get("ort", ""))
+		if cid == Welt.mein_verein_id:
+			(seite["name"] as Label).add_theme_color_override("font_color", Stil.AKZENT)
+
+## Die Tempowahl als segmentierte Leiste statt loser Knöpfe.
+func _baue_tempoleiste() -> void:
+	for k in tempo_leiste.get_children():
+		k.queue_free()
+	tempo_knoepfe.clear()
+	var optionen: Array = []
+	for t in TEMPI:
+		optionen.append({"id": str(t["name"]), "name": str(t["name"])})
+	var leiste := Stil.segmente(optionen, str(TEMPI[tempo]["name"]), func(id):
+		for i in range(TEMPI.size()):
+			if str(TEMPI[i]["name"]) == id:
+				_setze_tempo(i)
+				return)
+	tempo_leiste.add_child(leiste)

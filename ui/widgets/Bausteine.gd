@@ -138,7 +138,7 @@ static func wertzeile(beschriftung: String, wert: float, maximum: float = 100.0,
 	h.add_child(l)
 	h.add_child(Stil.balken(wert, maximum, 96))
 	var z := Stil.text(str(int(round(wert))), Stil.S_KLEIN, Stil.prozent_farbe(wert / maximum * 100.0))
-	z.custom_minimum_size = Vector2(30, 0)
+	z.custom_minimum_size = Vector2(34, 0)
 	z.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	h.add_child(z)
 	if hinweis != "":

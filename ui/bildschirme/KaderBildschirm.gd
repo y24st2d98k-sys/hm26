@@ -96,8 +96,10 @@ func aktualisieren() -> void:
 		kader = gefiltert
 	kader.sort_custom(_vergleich)
 	_zusammenfassung(kader)
+	var zeilennummer := 0
 	for sid in kader:
-		liste.add_child(_zeile(sid))
+		liste.add_child(_zeile(sid, zeilennummer))
+		zeilennummer += 1
 
 func _vergleich(a, b) -> bool:
 	var wa: Variant = _sortwert(str(a))
@@ -168,14 +170,15 @@ func _zusammenfassung(kader: Array) -> void:
 		b.tooltip_text = "%s: %d im Kader (empfohlen: %d)" % [Spielerfabrik.POSITION_NAME[p], anzahl, soll]
 		zusammenfassung.add_child(b)
 
-func _zeile(sid: String) -> Control:
+func _zeile(sid: String, index: int) -> Control:
 	var sp: Dictionary = Welt.spieler(sid)
-	var knopf := Button.new()
-	knopf.flat = true
-	knopf.custom_minimum_size = Vector2(0, 28)
+	var knopf := Stil.zeilen_knopf(index)
+	knopf.tooltip_text = "%s öffnen" % Spielerfabrik.voller_name(sp)
 	knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
 	var h := Stil.hbox(6)
 	h.set_anchors_preset(Control.PRESET_FULL_RECT)
+	h.offset_left = 6
+	h.offset_right = -6
 	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	knopf.add_child(h)
 
@@ -224,7 +227,9 @@ func _zeile(sid: String) -> Control:
 				zelle = Stil.text("%d J." % maxi(rest, 0), Stil.S_KLEIN, Stil.ROT if rest <= 0 else Stil.TEXT_MATT)
 			_:
 				zelle = Stil.text(str(e["wert"]), Stil.S_KLEIN)
-		zelle.custom_minimum_size = Vector2(breite, 0)
+		# Nur die Spaltenbreite vorgeben — die Mindesthoehe gehoert der Zelle
+		# selbst (Balken und Abzeichen bringen ihre eigene mit).
+		zelle.custom_minimum_size.x = breite
 		zelle.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		h.add_child(zelle)
 	return knopf

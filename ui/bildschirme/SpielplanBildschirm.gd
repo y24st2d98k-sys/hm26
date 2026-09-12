@@ -53,22 +53,25 @@ func aktualisieren() -> void:
 		partien.append(m)
 	partien.sort_custom(func(a, b): return int(a["tag"]) < int(b["tag"]))
 	var letzter_monat := -1
+	var nummer := 0
 	for m in partien:
 		var d := Kalender.datum(int(m["tag"]), Welt.startjahr())
 		if int(d["monat"]) != letzter_monat:
 			letzter_monat = int(d["monat"])
 			liste.add_child(Stil.abstand(6))
-			liste.add_child(Stil.titel("%s %d" % [Kalender.MONATSNAMEN[letzter_monat - 1], int(d["jahr"])], 1, Stil.AKZENT))
-			liste.add_child(Stil.trenner())
-		var zeile := _zeile(m, cid)
+			liste.add_child(Stil.band("%s %d" % [Kalender.MONATSNAMEN[letzter_monat - 1], int(d["jahr"])]))
+			nummer = 0
+		var zeile := _zeile(m, cid, nummer)
+		nummer += 1
 		liste.add_child(zeile)
 
-func _zeile(m: Dictionary, cid: String) -> Control:
-	var knopf := Button.new()
-	knopf.flat = true
-	knopf.custom_minimum_size = Vector2(0, 30)
+func _zeile(m: Dictionary, cid: String, index: int = 0) -> Control:
+	var eigenes: bool = str(m["heim"]) == cid or str(m["gast"]) == cid
+	var knopf := Stil.zeilen_knopf(index, eigenes and int(m["tag"]) >= Welt.tag(), 30)
 	var h := Bausteine.spielzeile(str(m["id"]), cid)
 	h.set_anchors_preset(Control.PRESET_FULL_RECT)
+	h.offset_left = 6
+	h.offset_right = -6
 	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for kind in h.get_children():
 		kind.mouse_filter = Control.MOUSE_FILTER_IGNORE

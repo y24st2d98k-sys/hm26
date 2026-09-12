@@ -22,7 +22,7 @@ func aufbauen() -> void:
 	wurzel.add_child(kopf)
 	kopf.add_child(Stil.titel("Aufstellung & Taktik", 0))
 	kopf.add_child(Stil.dehner())
-	var auto_haken := CheckBox.new()
+	var auto_haken := Stil.schalter("")
 	auto_haken.text = "Aufstellung vor jedem Spiel automatisch optimieren"
 	auto_haken.tooltip_text = "Der Trainerstab stellt vor jeder Partie die beste verfügbare Sieben auf — nach Form, Fitness und Lastkonto. Ausschalten, wenn Sie selbst aufstellen wollen."
 	auto_haken.button_pressed = bool(Welt.einstellung("auto_aufstellung", true))
@@ -157,6 +157,16 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 		if sid == aktuell:
 			wahl.select(index)
 		index += 1
+	# Steht auf der Position jemand, der gerade nicht spielen kann, taucht er
+	# oben nicht in der Kandidatenliste auf. Ohne diesen Eintrag stuende dort
+	# "frei", obwohl die Aufstellung ihn weiterhin fuehrt.
+	if aktuell != "" and wahl.selected <= 0 and not Welt.spieler(aktuell).is_empty():
+		var gesperrt: Dictionary = Welt.spieler(aktuell)
+		var grund := "gesperrt" if int(gesperrt["sperre"]) > 0 else "verletzt"
+		wahl.add_item("%s  (%s)" % [Spielerfabrik.voller_name(gesperrt), grund])
+		wahl.set_item_metadata(index, aktuell)
+		wahl.select(index)
+		index += 1
 	wahl.item_selected.connect(func(i):
 		var gewaehlt: String = str(wahl.get_item_metadata(i))
 		_setze(block, pos, gewaehlt))
@@ -174,7 +184,7 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 				var warnung := Stil.abzeichen("FREMDE POSITION", Stil.GELB)
 				warnung.tooltip_text = "Eignung %d %% — der Spieler verliert auf dieser Position deutlich." % int(eignung * 100.0)
 				h.add_child(warnung)
-		var info := Stil.knopf_flach("Profil")
+		var info := Stil.knopf_flach("Profil", Stil.BLAU)
 		info.pressed.connect(func(): Spielerfenster.oeffnen(self, aktuell))
 		h.add_child(info)
 	return h
@@ -294,12 +304,12 @@ func _taktik() -> void:
 	wahl.item_selected.connect(func(idx): auf["siebenmeter"] = str(wahl.get_item_metadata(idx)))
 	schuetze.add_child(wahl)
 
-	var haken := CheckBox.new()
+	var haken := Stil.schalter("")
 	haken.text = "Auszeiten automatisch nehmen"
 	haken.button_pressed = bool(t.get("auszeit_automatik", true))
 	haken.toggled.connect(func(an): t["auszeit_automatik"] = an)
 	taktik_bereich.add_child(haken)
-	var haken2 := CheckBox.new()
+	var haken2 := Stil.schalter("")
 	haken2.text = "Automatische Rotation im Spiel (Kräftehaushalt)"
 	haken2.button_pressed = bool(Welt.einstellung("autorotation", true))
 	haken2.toggled.connect(func(gesetzt): Welt.setze_einstellung("autorotation", gesetzt))

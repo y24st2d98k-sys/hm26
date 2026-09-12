@@ -34,7 +34,7 @@ func aktualisieren() -> void:
 func _automatik() -> Control:
 	var karte := Stil.karte("Automatische Sicherung")
 	karte.add_child(Stil.matt("Jeden Montag und zu jedem Saisonwechsel legt das Spiel eine Sicherung auf Platz 0 an. Der Platz wird dabei überschrieben.", Stil.S_KLEIN))
-	var an := CheckBox.new()
+	var an := Stil.schalter("")
 	an.text = "Automatisch sichern"
 	an.button_pressed = bool(Welt.einstellung("autospeichern", true))
 	an.disabled = Welt.daten.is_empty()

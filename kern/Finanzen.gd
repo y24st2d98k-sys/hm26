@@ -14,6 +14,16 @@ const AUSBAU_STUFEN := {
 	"regeneration": {"name": "Regenerationsbereich", "beschreibung": "Das Lastkonto sinkt schneller."},
 }
 
+## Klartext fuer die Kategorien der Buchungsliste.
+const KATEGORIE_NAME := {
+	"zuschauer": "Zuschauer", "sponsor": "Sponsoring", "tv": "Medien", "merch": "Merchandising",
+	"gehalt": "Gehälter", "betrieb": "Betrieb", "transfer": "Transfer", "reise": "Reise",
+	"preisgeld": "Preisgeld", "praemie": "Erfolgsprämien", "ausbau": "Ausbau", "sonstiges": "Sonstiges",
+}
+
+static func kategorie_name(schluessel: String) -> String:
+	return str(KATEGORIE_NAME.get(schluessel, schluessel.capitalize()))
+
 static func buchen(d: Dictionary, cid: String, betrag: float, grund: String, kategorie: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	v["kasse"] = float(v["kasse"]) + betrag

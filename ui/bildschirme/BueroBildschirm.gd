@@ -24,17 +24,7 @@ func aktualisieren() -> void:
 	var cid := Welt.mein_verein_id
 	var v: Dictionary = Welt.verein(cid)
 
-	var kopf := Stil.hbox(14)
-	bereich.add_child(kopf)
-	kopf.add_child(Wappen.fuer_verein(cid, 54.0))
-	var titelbox := Stil.vbox(2)
-	titelbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	kopf.add_child(titelbox)
-	titelbox.add_child(Stil.titel(str(v["name"]), 0))
-	titelbox.add_child(Stil.matt("%s · %s · %s" % [
-		Welt.wettbewerb_name(str(v["liga"])), str(v["halle"]["name"]),
-		Trainerkarriere.voller_name(Welt.trainer())]))
-	titelbox.add_child(Bausteine.formkurve(v["formkurve"], 6))
+	_kennzahlen(v)
 
 	if Presse.offen(Welt.daten):
 		var pk := Bausteine.karte_in(bereich, "Pressekonferenz steht an")
@@ -58,6 +48,50 @@ func aktualisieren() -> void:
 	bereich.add_child(unten)
 	_presse(unten)
 	_finanzen(unten)
+
+## Kennzahlenband: die sechs Zahlen, die den Zustand des Vereins beschreiben.
+func _kennzahlen(v: Dictionary) -> void:
+	var reihe := Stil.hbox(10)
+	bereich.add_child(reihe)
+	var lid: String = str(v["liga"])
+	var tabelle := Spielplan.tabelle_sortiert(Welt.daten, lid)
+	var platz: int = tabelle.find(Welt.mein_verein_id) + 1
+	var zeile: Dictionary = (Welt.daten["ligen"][lid]["tabelle"] as Dictionary).get(
+		Welt.mein_verein_id, Spielplan.leere_tabellenzeile())
+	var ziel: int = int(v["vorstand"]["ziel_platz"])
+	reihe.add_child(Stil.kachel("Tabellenplatz", "%d." % platz if platz > 0 else "—",
+		"Ziel: Platz %d" % ziel,
+		Stil.GRUEN if platz > 0 and platz <= ziel else (Stil.GELB if platz <= ziel + 2 else Stil.ROT)))
+	reihe.add_child(Stil.kachel("Punkte", str(int(zeile["punkte"])),
+		"%d Spiele · %+d Tore" % [int(zeile["sp"]), int(zeile["tore"]) - int(zeile["gegentore"])]))
+
+	var serie: Array = v["formkurve"]
+	var letzte: Array = serie.slice(maxi(serie.size() - 5, 0))
+	var siege := 0
+	var remis := 0
+	for e in letzte:
+		if str(e) == "S":
+			siege += 1
+		elif str(e) == "U":
+			remis += 1
+	var formkachel := Stil.kachel("Form (5 Spiele)",
+		"%dS %dU %dN" % [siege, remis, letzte.size() - siege - remis], "")
+	(formkachel.get_child(0) as Node).add_child(Bausteine.formkurve(serie, 5))
+	reihe.add_child(formkachel)
+
+	var summe := 0.0
+	var anzahl := 0
+	for sid in v["kader"]:
+		summe += Spielerfabrik.gesamt(Welt.spieler(sid))
+		anzahl += 1
+	reihe.add_child(Stil.kachel("Kaderstärke", "%d" % int(round(summe / maxf(float(anzahl), 1.0))),
+		"%d Spieler · Ruf %d" % [anzahl, int(float(v["ruf"]))]))
+	reihe.add_child(Stil.kachel("Kasse", Stil.geld(float(v["kasse"])),
+		"Transferbudget %s" % Stil.geld(float(v["transferbudget"])),
+		Stil.TEXT if float(v["kasse"]) >= 0.0 else Stil.ROT))
+	var vertrauen: float = float(v["vorstand"]["vertrauen"])
+	reihe.add_child(Stil.kachel("Vorstand", "%d" % int(vertrauen),
+		str(v["vorstand"]["saisonziel"]), Stil.prozent_farbe(vertrauen)))
 
 func _ohne_verein() -> void:
 	var karte := Bausteine.karte_in(bereich, "Ohne Verein")

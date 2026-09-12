@@ -68,7 +68,7 @@ func aufbauen() -> void:
 	v.add_child(zeile2)
 	for f in [["nur_transferliste", "nur Transferliste / Wechselwunsch"], ["nur_vereinslos", "nur vereinslose Spieler"],
 			["nur_vertragsende", "nur auslaufende Verträge"]]:
-		var haken := CheckBox.new()
+		var haken := Stil.schalter("")
 		haken.text = str(f[1])
 		var schluessel: String = str(f[0])
 		haken.toggled.connect(func(an):
@@ -154,17 +154,20 @@ func _suche() -> void:
 	if treffer.is_empty():
 		suchergebnis.add_child(Stil.matt("Keine Spieler gefunden."))
 		return
+	var nummer := 0
 	for sid in treffer:
-		suchergebnis.add_child(_zeile(sid))
+		suchergebnis.add_child(_zeile(sid, nummer))
+		nummer += 1
 
-func _zeile(sid: String) -> Control:
+func _zeile(sid: String, index: int = 0) -> Control:
 	var sp: Dictionary = Welt.spieler(sid)
-	var knopf := Button.new()
-	knopf.flat = true
-	knopf.custom_minimum_size = Vector2(0, 26)
+	var knopf := Stil.zeilen_knopf(index, false, 27)
+	knopf.tooltip_text = "%s öffnen" % Spielerfabrik.voller_name(sp)
 	knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
 	var h := Stil.hbox(6)
 	h.set_anchors_preset(Control.PRESET_FULL_RECT)
+	h.offset_left = 6
+	h.offset_right = -6
 	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	knopf.add_child(h)
 	var zellen := [

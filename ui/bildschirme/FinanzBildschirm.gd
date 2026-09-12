@@ -36,7 +36,8 @@ func aktualisieren() -> void:
 	lage.add_child(Stil.info_zeile("Transferbudget", Stil.geld(float(v["transferbudget"]))))
 	lage.add_child(Stil.info_zeile("Gehaltsbudget (Woche)", Stil.geld(float(v["gehaltsbudget"]))))
 	var auslastung := Finanzen.gehaltsauslastung(Welt.daten, cid)
-	lage.add_child(Bausteine.wertzeile("Gehaltsauslastung", minf(auslastung, 150.0), 150.0))
+	lage.add_child(Bausteine.wertzeile("Gehaltsauslastung", minf(auslastung, 150.0), 150.0,
+		"%d %% des Gehaltsbudgets sind gebunden." % int(auslastung)))
 	lage.add_child(Stil.info_zeile("Jahresetat", Stil.geld(float(v["jahresetat"]))))
 
 	var einnahmen := Bausteine.karte_in(oben, "Wöchentliche Einnahmen")
@@ -89,6 +90,6 @@ func aktualisieren() -> void:
 		for e in buchungsliste.slice(0, 30):
 			g2.add_child(Stil.matt(Kalender.kurz(int(e["tag"]), Welt.startjahr()), Stil.S_KLEIN))
 			g2.add_child(Stil.text(str(e["grund"]), Stil.S_KLEIN))
-			g2.add_child(Stil.matt(str(e["kategorie"]), Stil.S_KLEIN))
+			g2.add_child(Stil.matt(Finanzen.kategorie_name(str(e["kategorie"])), Stil.S_KLEIN))
 			var betrag: float = float(e["betrag"])
 			g2.add_child(Stil.text(Stil.geld(betrag), Stil.S_KLEIN, Stil.GRUEN if betrag > 0.0 else Stil.ROT))

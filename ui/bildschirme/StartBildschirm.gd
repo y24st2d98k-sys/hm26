@@ -29,6 +29,10 @@ func _ready() -> void:
 	bg.color = Stil.GRUND
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
+	var motiv := Hallenmotiv.new()
+	motiv.set_anchors_preset(Control.PRESET_FULL_RECT)
+	motiv.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(motiv)
 	_baue_menue()
 	_baue_trainer()
 	_baue_vereinswahl()
@@ -66,47 +70,99 @@ func _kopf(v: VBoxContainer, untertitel: String) -> void:
 # ----------------------------------------------------------------- Menue ---
 
 func _baue_menue() -> void:
-	var v := _neue_seite("menue")
-	_kopf(v, "Handball-Manager — Ihre Karriere an der Seitenlinie")
-	v.add_child(Stil.abstand(10))
-	var box := Stil.vbox(10)
-	box.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	box.custom_minimum_size = Vector2(320, 0)
-	v.add_child(box)
+	# Das Startbild wird mittig gesetzt und in der Breite begrenzt — sonst
+	# verliert sich die Titelzeile auf breiten Bildschirmen am linken Rand.
+	var mitte := CenterContainer.new()
+	mitte.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(mitte)
+	seiten["menue"] = mitte
+	var spalte := Stil.vbox(20)
+	spalte.custom_minimum_size = Vector2(1000, 0)
+	mitte.add_child(spalte)
+
+	var kopf := Stil.hbox(16)
+	spalte.add_child(kopf)
+	var puls := Stil.Marke.new()
+	puls.custom_minimum_size = Vector2(6, 68)
+	puls.farbe = Stil.AKZENT
+	kopf.add_child(puls)
+	var titelspalte := Stil.vbox(2)
+	titelspalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	kopf.add_child(titelspalte)
+	var t := Stil.titel("HALLENHERZ", 0, Stil.TEXT)
+	t.add_theme_font_size_override("font_size", Stil.S_RIESIG)
+	titelspalte.add_child(t)
+	titelspalte.add_child(Stil.text("Handball-Manager — Ihre Karriere an der Seitenlinie",
+		Stil.S_NORMAL, Stil.TEXT_MATT))
+	kopf.add_child(Stil.dehner())
+
+	var knoepfe := Stil.hbox(10)
+	spalte.add_child(knoepfe)
 	var neu := Stil.knopf_primaer("Neue Karriere beginnen")
 	neu.pressed.connect(func(): _seite("trainer"))
-	box.add_child(neu)
+	knoepfe.add_child(neu)
 	var laden := Stil.knopf("Spielstand laden")
 	laden.pressed.connect(func():
 		_slots_fuellen()
 		_seite("laden"))
-	box.add_child(laden)
-	var ende := Stil.knopf("Beenden")
+	knoepfe.add_child(laden)
+	knoepfe.add_child(Stil.dehner())
+	var ende := Stil.knopf_geist("Beenden")
 	ende.pressed.connect(func(): get_tree().quit())
-	box.add_child(ende)
-	v.add_child(Stil.abstand(24))
-	if Echtdaten.verfuegbar():
-		var quelle := Stil.karte("Datenbestand")
-		v.add_child(Stil.karte_wurzel(quelle))
-		quelle.add_child(Stil.info_zeile("Ligen und Vereine", "Stand %s" % Echtdaten.stand(), Stil.GRUEN))
-		quelle.add_child(Stil.info_zeile("Echte Spieler hinterlegt", "%d bei %d Vereinen" % [
-			Echtdaten.echte_spieler_gesamt(), Echtdaten.vereine_mit_kader()]))
-		var h := Stil.text(Echtdaten.hinweis(), Stil.S_MINI, Stil.TEXT_MATT)
-		h.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		h.custom_minimum_size = Vector2(700, 0)
-		quelle.add_child(h)
+	knoepfe.add_child(ende)
+
+	var reihe := Stil.hbox(14)
+	reihe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spalte.add_child(reihe)
+
 	var info := Stil.karte("Was Sie erwartet")
-	v.add_child(Stil.karte_wurzel(info))
+	var infowurzel := Stil.karte_wurzel(info)
+	infowurzel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	infowurzel.size_flags_stretch_ratio = 1.35
+	reihe.add_child(infowurzel)
 	for zeile in [
-		"Fünf Nationen, acht Ligen, 96 Vereine mit echtem Auf- und Abstieg, nationalen Pokalen und zwei europäischen Wettbewerben.",
+		"Fünf Nationen, zehn Ligen und 136 Vereine mit echtem Auf- und Abstieg, fünf Pokalen und zwei europäischen Wettbewerben.",
 		"Eine Spielsimulation mit Zeitstrafen, Unterzahl, 7-gegen-6, getrennten Angriffs- und Abwehrformationen — und dem Hallenpuls, der Ihre Halle zum Mitspieler macht.",
+		"Kabinenansprachen vor dem Anpfiff und zur Halbzeit, Pressekonferenzen vor Pflichtspielen, eine eigene Nachwuchsakademie.",
 		"Ein Lastkonto, das jede Minute Spielzeit festhält und Rotation zu einer echten Entscheidung macht.",
 		"Eine Trainer-Handschrift, die sich über Jahre aus Ihrer tatsächlichen Arbeitsweise formt — mit spürbaren Folgen.",
-		"Eine Kabine mit Wortführern, Gruppen und Reibung, die Ihre Mannschaft trägt oder zerlegt.",
 	]:
 		var l := Stil.text("•  " + zeile, Stil.S_KLEIN, Stil.TEXT_MATT)
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info.add_child(l)
+
+	var rechts := Stil.vbox(14)
+	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	reihe.add_child(rechts)
+	if Echtdaten.verfuegbar():
+		var quelle := Stil.karte("Echte Daten")
+		var qw := Stil.karte_wurzel(quelle)
+		qw.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		rechts.add_child(qw)
+		quelle.add_child(Stil.info_zeile("Ligen und Vereine", "Stand %s" % Echtdaten.stand(), Stil.GRUEN))
+		quelle.add_child(Stil.info_zeile("Echte Spieler hinterlegt", "%d bei %d Vereinen" % [
+			Echtdaten.echte_spieler_gesamt(), Echtdaten.vereine_mit_kader()]))
+		var h := Stil.text(Echtdaten.hinweis(), Stil.S_MINI, Stil.TEXT_SCHWACH)
+		h.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		h.custom_minimum_size = Vector2(300, 0)
+		quelle.add_child(h)
+	var tasten := Stil.karte("Bedienung")
+	var tw := Stil.karte_wurzel(tasten)
+	tw.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rechts.add_child(tw)
+	tasten.add_child(Stil.info_zeile("Leertaste", "einen Tag weiterschalten"))
+	tasten.add_child(Stil.info_zeile("Klick auf einen Namen", "Spielerprofil öffnen"))
+	tasten.add_child(Stil.info_zeile("Klick auf ein Wappen", "Vereinsprofil öffnen"))
+
+## Feiner Hallenhintergrund: die Kreislinie und der Sechsmeterraum als Andeutung.
+class Hallenmotiv extends Control:
+	func _draw() -> void:
+		var f := Color(Stil.AKZENT.r, Stil.AKZENT.g, Stil.AKZENT.b, 0.05)
+		var m := Vector2(size.x * 0.5, size.y * 1.18)
+		for i in range(5):
+			draw_arc(m, size.y * (0.55 + float(i) * 0.14), PI, TAU, 90, f, 1.6, true)
+		var g := Color(1, 1, 1, 0.02)
+		draw_line(Vector2(0, size.y * 0.5), Vector2(size.x, size.y * 0.5), g, 1.0)
 
 # --------------------------------------------------------- Trainerprofil ---
 
@@ -197,7 +253,7 @@ func _baue_vereinswahl() -> void:
 		gewaehlte_liga = str(liga_wahl.get_item_metadata(i))
 		_vereine_fuellen())
 	filterzeile.add_child(Stil.dehner())
-	var welt_haken := CheckBox.new()
+	var welt_haken := Stil.schalter("")
 	welt_haken.text = "Echte Vereine"
 	welt_haken.button_pressed = true
 	welt_haken.tooltip_text = "Angehakt: echte Ligen, Vereine und — soweit hinterlegt — echte Spieler aus daten/ligen.json und daten/kader.json.\nAbgehakt: eine vollständig erfundene Welt."

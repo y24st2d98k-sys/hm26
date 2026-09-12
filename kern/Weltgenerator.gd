@@ -265,11 +265,33 @@ static func _verein_aus_datensatz(d: Dictionary, cid: String, eintrag: Dictionar
 	verein["gegruendet"] = int(eintrag.get("gegruendet", verein["gegruendet"]))
 	verein["halle"]["name"] = str(eintrag.get("halle", verein["halle"]["name"]))
 	verein["halle"]["kapazitaet"] = int(eintrag.get("kapazitaet", verein["halle"]["kapazitaet"]))
+	_wappen_setzen(verein, eintrag)
+	return verein
+
+## Das Wappen eines echten Vereins: seine tatsaechlichen Farben, sein Kuerzel und
+## eine Form, die sich aus dem Namen ergibt — damit derselbe Verein in jeder
+## Karriere gleich aussieht. Der Datensatz kann Form und Teilung vorgeben.
+static func _wappen_setzen(verein: Dictionary, eintrag: Dictionary) -> void:
+	var w: Dictionary = verein["wappen"]
 	var farben: Array = eintrag.get("farben", [])
 	if farben.size() >= 2:
-		verein["wappen"]["a"] = Color(str(farben[0]))
-		verein["wappen"]["b"] = Color(str(farben[1]))
-	return verein
+		w["a"] = Color(str(farben[0]))
+		w["b"] = Color(str(farben[1]))
+	if farben.size() >= 3:
+		w["c"] = Color(str(farben[2]))
+	w["text"] = str(eintrag.get("kuerzel_wappen", verein["kurz"]))
+	var vorgabe: Dictionary = eintrag.get("wappen", {})
+	var streu: int = _namenszahl(str(eintrag.get("name", verein["name"])))
+	w["form"] = int(vorgabe.get("form", streu % 8))
+	w["muster"] = int(vorgabe.get("muster", (streu / 8) % 10))
+	w["symbol"] = int(vorgabe.get("symbol", (streu / 80) % 8))
+
+## Stabile Zahl aus einem Namen — unabhaengig von Zufallssaat und Reihenfolge.
+static func _namenszahl(name: String) -> int:
+	var summe := 0
+	for i in range(name.length()):
+		summe = (summe * 31 + name.unicode_at(i)) % 100003
+	return summe
 
 ## Alle echten Vereine — ohne die Nationalmannschaften, die technisch
 ## ebenfalls als Verein gefuehrt werden, aber keinen Ligabetrieb haben.
@@ -314,9 +336,10 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"liga": lid,
 		"gegruendet": Namen.wuerfel(1893, 1998),
 		"wappen": {
-			"form": Namen.wuerfel(0, 4),
-			"muster": Namen.wuerfel(0, 5),
+			"form": Namen.wuerfel(0, 7),
+			"muster": Namen.wuerfel(0, 9),
 			"symbol": Namen.wuerfel(0, 7),
+			"text": vn["kurz"],
 			"a": Color(palette[0]),
 			"b": Color(palette[1]),
 		},

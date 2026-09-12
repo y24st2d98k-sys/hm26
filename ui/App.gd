@@ -1,5 +1,5 @@
 extends Control
-## Das Hauptfenster von Hallenherz: Kopfzeile, Navigation und Bildschirmbereich.
+## Das Hauptfenster von Hallenherz: Seitenleiste, Kopfzeile und Bildschirmbereich.
 ##
 ## Alle Bildschirme werden einmalig erzeugt und bleiben im Baum haengen; gewechselt
 ## wird ausschliesslich ueber "visible". Dadurch ist jeder Bildschirm von Anfang an
@@ -35,10 +35,16 @@ var aktueller: String = ""
 var inhalt: MarginContainer
 var navigation: VBoxContainer
 var kopf: Control
+var kopf_wappen: Control
+var kopf_wappen_halter: Control
 var kopf_verein: Label
-var kopf_datum: Label
+var kopf_liga: Label
 var kopf_kasse: Label
-var kopf_nachrichten: Button
+var kopf_datum: Label
+var kopf_saison: Label
+var kopf_glocke: Button
+var seitenfuss: Label
+var seitenfuss_ruf: Label
 var weiter_knopf: Button
 var nav_knoepfe: Dictionary = {}
 var startbildschirm: Control
@@ -74,89 +80,174 @@ func _ready() -> void:
 # ------------------------------------------------------------------ Rahmen ---
 
 func _baue_rahmen() -> void:
-	rahmen = VBoxContainer.new()
+	rahmen = HBoxContainer.new()
 	rahmen.set_anchors_preset(Control.PRESET_FULL_RECT)
 	rahmen.add_theme_constant_override("separation", 0)
 	add_child(rahmen)
 
-	# Kopfzeile
-	var kopfpanel := PanelContainer.new()
-	var kopfbox := Stil.box(Stil.FLAECHE, 0, Stil.RAND)
-	kopfbox.content_margin_left = 16
-	kopfbox.content_margin_right = 16
-	kopfbox.content_margin_top = 10
-	kopfbox.content_margin_bottom = 10
-	kopfpanel.add_theme_stylebox_override("panel", kopfbox)
-	rahmen.add_child(kopfpanel)
-	kopf = kopfpanel
-	var kopfzeile := Stil.hbox(16)
-	kopfpanel.add_child(kopfzeile)
+	_baue_seitenleiste()
 
-	var marke := Stil.titel("HALLENHERZ", 1, Stil.AKZENT)
-	marke.add_theme_font_size_override("font_size", Stil.S_GROSS)
-	kopfzeile.add_child(marke)
-	kopfzeile.add_child(VSeparator.new())
-	kopf_verein = Stil.text("", Stil.S_NORMAL)
-	kopfzeile.add_child(kopf_verein)
-	kopfzeile.add_child(Stil.dehner())
-	kopf_kasse = Stil.text("", Stil.S_KLEIN, Stil.TEXT_MATT)
-	kopfzeile.add_child(kopf_kasse)
-	kopf_datum = Stil.text("", Stil.S_KLEIN, Stil.TEXT_MATT)
-	kopfzeile.add_child(kopf_datum)
-	kopf_nachrichten = Stil.knopf("Nachrichten")
-	kopf_nachrichten.pressed.connect(func(): zeige("nachrichten"))
-	kopfzeile.add_child(kopf_nachrichten)
-	weiter_knopf = Stil.knopf_primaer("Weiter ▶")
-	weiter_knopf.pressed.connect(_weiter)
-	kopfzeile.add_child(weiter_knopf)
+	var rechts := VBoxContainer.new()
+	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rechts.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	rechts.add_theme_constant_override("separation", 0)
+	rahmen.add_child(rechts)
 
-	# Hauptbereich: Navigation + Inhalt
-	var haupt := HBoxContainer.new()
-	haupt.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	haupt.add_theme_constant_override("separation", 0)
-	rahmen.add_child(haupt)
-
-	var navpanel := PanelContainer.new()
-	navpanel.custom_minimum_size = Vector2(186, 0)
-	navpanel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE_TIEF, 0, Stil.RAND))
-	haupt.add_child(navpanel)
-	var navscroll := ScrollContainer.new()
-	navscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	navpanel.add_child(navscroll)
-	navigation = Stil.vbox(2)
-	navigation.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	navscroll.add_child(navigation)
-	_baue_navigation()
+	_baue_kopfzeile(rechts)
 
 	inhalt = MarginContainer.new()
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	inhalt.add_theme_constant_override("margin_left", 14)
-	inhalt.add_theme_constant_override("margin_right", 14)
-	inhalt.add_theme_constant_override("margin_top", 12)
-	inhalt.add_theme_constant_override("margin_bottom", 12)
-	haupt.add_child(inhalt)
+	inhalt.add_theme_constant_override("margin_left", 18)
+	inhalt.add_theme_constant_override("margin_right", 18)
+	inhalt.add_theme_constant_override("margin_top", 16)
+	inhalt.add_theme_constant_override("margin_bottom", 16)
+	rechts.add_child(inhalt)
 	_baue_bildschirme()
+
+## Linke Spalte: Wortmarke, Navigation nach Gruppen, Trainerzeile unten.
+func _baue_seitenleiste() -> void:
+	var navpanel := PanelContainer.new()
+	navpanel.custom_minimum_size = Vector2(212, 0)
+	navpanel.add_theme_stylebox_override("panel",
+		Stil.box_kante(Stil.FLAECHE_TIEF, "rechts", Stil.RAND))
+	rahmen.add_child(navpanel)
+
+	var spalte := VBoxContainer.new()
+	spalte.add_theme_constant_override("separation", 0)
+	navpanel.add_child(spalte)
+
+	# Wortmarke
+	var marke := PanelContainer.new()
+	var mbox := Stil.box_kante(Color(0, 0, 0, 0), "unten", Stil.RAND)
+	mbox.content_margin_left = 16
+	mbox.content_margin_right = 14
+	mbox.content_margin_top = 12
+	mbox.content_margin_bottom = 12
+	marke.add_theme_stylebox_override("panel", mbox)
+	spalte.add_child(marke)
+	var mzeile := Stil.hbox(9)
+	marke.add_child(mzeile)
+	var puls := Stil.Marke.new()
+	puls.custom_minimum_size = Vector2(4, 24)
+	puls.farbe = Stil.AKZENT
+	mzeile.add_child(puls)
+	var mtext := Stil.vbox(0)
+	mzeile.add_child(mtext)
+	var wort := Stil.text("HALLENHERZ", Stil.S_GROSS, Stil.TEXT)
+	mtext.add_child(wort)
+	mtext.add_child(Stil.etikett("Handball Manager"))
+
+	var navscroll := ScrollContainer.new()
+	navscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	navscroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	spalte.add_child(navscroll)
+	navigation = Stil.vbox(1)
+	navigation.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	navscroll.add_child(navigation)
+	_baue_navigation()
+
+	# Fusszeile: wer hier eigentlich arbeitet
+	var fuss := PanelContainer.new()
+	var fbox := Stil.box_kante(Color(0, 0, 0, 0), "oben", Stil.RAND)
+	fbox.content_margin_left = 16
+	fbox.content_margin_right = 14
+	fbox.content_margin_top = 10
+	fbox.content_margin_bottom = 11
+	fuss.add_theme_stylebox_override("panel", fbox)
+	spalte.add_child(fuss)
+	var fspalte := Stil.vbox(1)
+	fuss.add_child(fspalte)
+	seitenfuss = Stil.text("", Stil.S_KLEIN, Stil.TEXT)
+	fspalte.add_child(seitenfuss)
+	seitenfuss_ruf = Stil.matt("", Stil.S_MINI)
+	fspalte.add_child(seitenfuss_ruf)
 
 func _baue_navigation() -> void:
 	var letzte_gruppe := ""
 	for b in BEREICHE:
 		if str(b["gruppe"]) != letzte_gruppe:
 			letzte_gruppe = str(b["gruppe"])
-			var l := Stil.matt("  " + letzte_gruppe.to_upper(), Stil.S_MINI)
-			l.add_theme_color_override("font_color", Stil.TEXT_SCHWACH)
-			navigation.add_child(Stil.abstand(8))
-			navigation.add_child(l)
-		var knopf := Button.new()
-		knopf.text = "  " + str(b["name"])
-		knopf.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		knopf.flat = true
-		knopf.add_theme_color_override("font_color", Stil.TEXT_MATT)
-		knopf.add_theme_color_override("font_hover_color", Stil.AKZENT)
+			navigation.add_child(Stil.abstand(9))
+			navigation.add_child(Stil.etikett("   " + letzte_gruppe))
+			navigation.add_child(Stil.abstand(1))
 		var id: String = str(b["id"])
+		var knopf := NavKnopf.neu(id, str(b["name"]))
 		knopf.pressed.connect(func(): zeige(id))
 		navigation.add_child(knopf)
 		nav_knoepfe[id] = knopf
+	navigation.add_child(Stil.abstand(8))
+
+## Obere Leiste: Vereinsidentitaet links, Lage und Aktionen rechts.
+func _baue_kopfzeile(eltern: Node) -> void:
+	var kopfpanel := PanelContainer.new()
+	var kopfbox := Stil.box_kante(Stil.FLAECHE, "unten", Stil.RAND)
+	kopfbox.content_margin_left = 18
+	kopfbox.content_margin_right = 18
+	kopfbox.content_margin_top = 10
+	kopfbox.content_margin_bottom = 10
+	kopfpanel.add_theme_stylebox_override("panel", kopfbox)
+	eltern.add_child(kopfpanel)
+	kopf = kopfpanel
+
+	var zeile := Stil.hbox(14)
+	kopfpanel.add_child(zeile)
+
+	kopf_wappen_halter = Stil.hbox(0)
+	kopf_wappen_halter.custom_minimum_size = Vector2(36, 36)
+	zeile.add_child(kopf_wappen_halter)
+
+	var namen := Stil.vbox(0)
+	namen.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	zeile.add_child(namen)
+	kopf_verein = Stil.text("", Stil.S_GROSS, Stil.TEXT)
+	namen.add_child(kopf_verein)
+	kopf_liga = Stil.matt("", Stil.S_MINI)
+	namen.add_child(kopf_liga)
+
+	zeile.add_child(Stil.dehner())
+
+	kopf_kasse = _kopf_wert(zeile, "Kasse")
+	zeile.add_child(_kopf_strich())
+	kopf_datum = _kopf_wert(zeile, "Spieltag")
+	zeile.add_child(_kopf_strich())
+	kopf_saison = _kopf_wert(zeile, "Saison")
+	zeile.add_child(Stil.abstand(4))
+
+	kopf_glocke = Button.new()
+	kopf_glocke.flat = true
+	kopf_glocke.custom_minimum_size = Vector2(38, 34)
+	kopf_glocke.focus_mode = Control.FOCUS_NONE
+	kopf_glocke.tooltip_text = "Nachrichten"
+	kopf_glocke.add_theme_stylebox_override("normal", Stil.box_leer())
+	kopf_glocke.add_theme_stylebox_override("hover", Stil.box(Stil.lasur(Stil.TEXT, 0.07), Stil.R_KLEIN))
+	kopf_glocke.add_theme_stylebox_override("pressed", Stil.box(Stil.lasur(Stil.AKZENT, 0.14), Stil.R_KLEIN))
+	kopf_glocke.pressed.connect(func(): zeige("nachrichten"))
+	var g := Symbol.neu("glocke", 19.0, Stil.TEXT_MATT)
+	g.set_anchors_preset(Control.PRESET_FULL_RECT)
+	kopf_glocke.add_child(g)
+	kopf_glocke.set_meta("symbol", g)
+	zeile.add_child(kopf_glocke)
+
+	weiter_knopf = Stil.knopf_primaer("Weiter")
+	weiter_knopf.pressed.connect(_weiter)
+	weiter_knopf.tooltip_text = "Einen Tag weiterschalten (Leertaste)"
+	zeile.add_child(weiter_knopf)
+
+## Etikett ueber Wert — die Statusanzeigen der Kopfzeile.
+func _kopf_wert(eltern: Node, beschriftung: String) -> Label:
+	var v := Stil.vbox(0)
+	v.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	eltern.add_child(v)
+	v.add_child(Stil.etikett(beschriftung))
+	var l := Stil.text("—", Stil.S_KLEIN, Stil.TEXT)
+	v.add_child(l)
+	return l
+
+func _kopf_strich() -> Control:
+	var s := VSeparator.new()
+	s.add_theme_constant_override("separation", 10)
+	return s
 
 func _baue_bildschirme() -> void:
 	var liste := {
@@ -199,12 +290,12 @@ func zeige(id: String) -> void:
 	if aktueller != "" and bildschirme.has(aktueller):
 		bildschirme[aktueller].visible = false
 		if nav_knoepfe.has(aktueller):
-			nav_knoepfe[aktueller].add_theme_color_override("font_color", Stil.TEXT_MATT)
+			nav_knoepfe[aktueller].setze_aktiv(false)
 	aktueller = id
 	bildschirme[id].visible = true
 	bildschirme[id].aktualisieren()
 	if nav_knoepfe.has(id):
-		nav_knoepfe[id].add_theme_color_override("font_color", Stil.AKZENT)
+		nav_knoepfe[id].setze_aktiv(true)
 	_kopf_auffrischen()
 
 func _auffrischen() -> void:
@@ -215,22 +306,41 @@ func _auffrischen() -> void:
 func _kopf_auffrischen() -> void:
 	if not Welt.laeuft:
 		return
+	var t: Dictionary = Welt.trainer()
+	seitenfuss.text = Trainerkarriere.voller_name(t)
+	seitenfuss_ruf.text = Trainerkarriere.ruf_stufe(float(t.get("ruf", 0.0)))
+
 	var v: Dictionary = Welt.mein_verein()
+	if kopf_wappen != null:
+		kopf_wappen.queue_free()
+		kopf_wappen = null
 	if v.is_empty():
-		kopf_verein.text = "%s — ohne Verein" % Trainerkarriere.voller_name(Welt.trainer())
-		kopf_kasse.text = ""
+		kopf_verein.text = "Ohne Verein"
+		kopf_liga.text = "auf Vereinssuche"
+		kopf_kasse.text = "—"
 	else:
-		kopf_verein.text = "%s  ·  %s" % [v["name"], Welt.wettbewerb_name(str(v["liga"]))]
-		kopf_kasse.text = "Kasse: %s" % Stil.geld(float(v["kasse"]))
-	kopf_datum.text = "%s  ·  Saison %s" % [Welt.datum_text(), Welt.saison_text()]
+		kopf_wappen = Wappen.fuer_verein(Welt.mein_verein_id, 34.0)
+		kopf_wappen_halter.add_child(kopf_wappen)
+		kopf_verein.text = str(v["name"])
+		kopf_liga.text = Welt.wettbewerb_name(str(v["liga"]))
+		kopf_kasse.text = Stil.geld(float(v["kasse"]))
+		kopf_kasse.add_theme_color_override("font_color",
+			Stil.TEXT if float(v["kasse"]) >= 0.0 else Stil.ROT)
+	kopf_datum.text = Welt.datum_text()
+	kopf_saison.text = Welt.saison_text()
+
 	var offen: int = Welt.ungelesene_nachrichten()
-	kopf_nachrichten.text = "Nachrichten (%d)" % offen if offen > 0 else "Nachrichten"
-	kopf_nachrichten.add_theme_color_override("font_color", Stil.AKZENT if offen > 0 else Stil.TEXT)
+	if nav_knoepfe.has("nachrichten"):
+		nav_knoepfe["nachrichten"].setze_zaehler(offen)
+	if kopf_glocke.has_meta("symbol"):
+		(kopf_glocke.get_meta("symbol") as Symbol).setze_farbe(Stil.AKZENT if offen > 0 else Stil.TEXT_MATT)
+	kopf_glocke.tooltip_text = "%d ungelesene Nachricht(en)" % offen if offen > 0 else "Nachrichten"
+
 	var naechstes: Dictionary = Welt.naechstes_spiel(Welt.mein_verein_id) if Welt.mein_verein_id != "" else {}
 	if not naechstes.is_empty() and int(naechstes["tag"]) == Welt.tag():
-		weiter_knopf.text = "Zum Spiel ▶"
+		weiter_knopf.text = "Zum Spiel"
 	else:
-		weiter_knopf.text = "Weiter ▶"
+		weiter_knopf.text = "Weiter"
 
 # ------------------------------------------------------------- Zeitablauf ---
 

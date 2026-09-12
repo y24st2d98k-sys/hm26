@@ -175,7 +175,7 @@ func _lastkonto() -> void:
 		g.add_child(Stil.text("%d" % int(float(sp["stats"]["saison"]["minuten"]) / float(spiele)), Stil.S_KLEIN))
 		var risiko: float = Medizin.risiko(Welt.daten, sid) * 10000.0
 		g.add_child(Stil.text("%s" % _risikotext(risiko), Stil.S_KLEIN, Stil.wert_farbe(10.0 - clampf(risiko, 0.0, 10.0), 10.0)))
-		var haken := CheckBox.new()
+		var haken := Stil.schalter("")
 		haken.button_pressed = int(zuteilung2.get(sid, 0)) > 0
 		haken.toggled.connect(func(an):
 			if an:
