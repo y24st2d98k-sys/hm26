@@ -45,6 +45,14 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "planung":
+			app.zeige("kader")
+			app.bildschirme["kader"].modus = "planung"
+			app.bildschirme["kader"].aktualisieren()
+			await _foto("%s/planung.png" % ordner)
+			app.bildschirme["kader"].modus = "liste"
+			app.bildschirme["kader"].aktualisieren()
+			continue
 		if str(id) == "anliegen":
 			Welt.spieler(str(Welt.mein_verein()["kader"][5]))["unzufriedenheit"] = 62.0
 			Anliegen.wochenpruefung(Welt.daten)

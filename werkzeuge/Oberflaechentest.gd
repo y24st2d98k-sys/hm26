@@ -294,6 +294,43 @@ func _ready() -> void:
 	await get_tree().process_frame
 	vf.visible = false
 
+	_log("— Kaderplanung —")
+	var cid_p2: String = Welt.mein_verein_id
+	_log("   %s" % Kaderplanung.altersurteil(Welt.daten, cid_p2))
+	var luecken_p := Kaderplanung.luecken(Welt.daten, cid_p2)
+	_log("   Lücken in den nächsten %d Jahren: %d" % [Kaderplanung.HORIZONT, luecken_p.size()])
+	for l_p in luecken_p:
+		_log("     %s: in %d Jahr(en) nur %d von %d" % [str(l_p["position"]), int(l_p["in_jahren"]),
+			int(l_p["ist"]), int(l_p["soll"])])
+	var verlauf_p := Kaderplanung.gehaltsverlauf(Welt.daten, cid_p2)
+	var texte_p: Array = []
+	for w_p in verlauf_p:
+		texte_p.append(Stil.geld(float(w_p)))
+	_log("   Gehaltslast je Woche: %s" % " → ".join(texte_p))
+	var erster_p: Dictionary = Welt.spieler(str(Welt.verein(cid_p2)["kader"][0]))
+	_log("   Prognose %s: heute %d, in 3 Jahren %d" % [Spielerfabrik.kurz_name(erster_p),
+		int(Spielerfabrik.gesamt(erster_p)), int(Kaderplanung.prognose(erster_p, 3))])
+	app.zeige("kader")
+	app.bildschirme["kader"].modus = "planung"
+	app.bildschirme["kader"].aktualisieren()
+	await get_tree().process_frame
+	app.bildschirme["kader"].modus = "liste"
+	app.bildschirme["kader"].aktualisieren()
+	await get_tree().process_frame
+
+	_log("— Co-Trainer —")
+	var cid_c: String = Welt.mein_verein_id
+	_log("   Kompetenz des Stabs: %d (%s)" % [int(Cotrainer.kompetenz(Welt.daten, cid_c)),
+		Cotrainer.kompetenz_text(Cotrainer.kompetenz(Welt.daten, cid_c))])
+	for b in Cotrainer.befunde(Welt.daten, cid_c):
+		_log("   [%s] %s — %s" % [Cotrainer.stufentext(int(b["stufe"])), str(b["titel"]), str(b["text"])])
+	# Auch im Notfall darf er nicht stolpern: Kader leeren und erneut fragen
+	var sicherung: Array = (Welt.verein(cid_c)["kader"] as Array).duplicate()
+	Welt.verein(cid_c)["kader"] = []
+	var notbefunde := Cotrainer.befunde(Welt.daten, cid_c)
+	Welt.verein(cid_c)["kader"] = sicherung
+	_log("   mit leerem Kader: %d Befunde, kein Absturz" % notbefunde.size())
+
 	_log("— Alter Spielstand (fehlende Felder ergänzen) —")
 	# Einen Spielstand aus einer früheren Fassung nachstellen: alles, was neu
 	# dazugekommen ist, wieder entfernen und die Welt reparieren lassen.

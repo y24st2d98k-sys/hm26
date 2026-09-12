@@ -26,6 +26,9 @@ var liste: VBoxContainer
 var kopfzeile: HBoxContainer
 var zusammenfassung: HBoxContainer
 var filter_position: String = ""
+## "liste" zeigt den Kader von heute, "planung" den Blick auf die nächsten Jahre.
+var modus: String = "liste"
+var modusleiste: HBoxContainer
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -35,6 +38,9 @@ func aufbauen() -> void:
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
 	kopf.add_child(Stil.titel("Kader", 0))
+	modusleiste = Stil.hbox(0)
+	kopf.add_child(modusleiste)
+	_baue_modusleiste()
 	kopf.add_child(Stil.dehner())
 	kopf.add_child(Stil.matt("Position"))
 	var wahl := OptionButton.new()
@@ -80,13 +86,26 @@ func aufbauen() -> void:
 	liste.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(liste)
 
+func _baue_modusleiste() -> void:
+	leeren(modusleiste)
+	modusleiste.add_child(Stil.segmente([
+		{"id": "liste", "name": "Kader"}, {"id": "planung", "name": "Planung"}],
+		modus, func(id):
+			modus = str(id)
+			_baue_modusleiste()
+			aktualisieren()))
+
 func aktualisieren() -> void:
 	if liste == null:
 		return
 	leeren(liste)
 	leeren(zusammenfassung)
+	kopfzeile.visible = modus == "liste"
 	if Welt.mein_verein_id == "":
 		liste.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
+		return
+	if modus == "planung":
+		_planung()
 		return
 	var kader: Array = (Welt.verein(Welt.mein_verein_id)["kader"] as Array).duplicate()
 	if filter_position != "":
@@ -244,3 +263,91 @@ func _zeile(sid: String, index: int) -> Control:
 		zelle.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		h.add_child(zelle)
 	return knopf
+
+# ------------------------------------------------------------- Planung ---
+
+## Der Blick über die laufende Saison hinaus: Altersstruktur, Kadertiefe in den
+## kommenden Jahren, auslaufende Verträge und die Gehaltslast, die daraus folgt.
+func _planung() -> void:
+	var cid: String = Welt.mein_verein_id
+	var oben := Stil.hbox(12)
+	liste.add_child(oben)
+
+	var alter := Bausteine.karte_in(oben, "Altersstruktur")
+	Stil.karte_wurzel(alter).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var gruppen := Kaderplanung.altersgruppen(Welt.daten, cid)
+	var groesste := 1
+	for k in gruppen.keys():
+		groesste = maxi(groesste, int(gruppen[k]))
+	for k2 in ["talent", "aufbau", "beste", "erfahren", "veteran"]:
+		var zeile := Stil.hbox(8)
+		alter.add_child(zeile)
+		var l := Stil.matt(str(Kaderplanung.GRUPPENNAME[k2]), Stil.S_KLEIN)
+		l.custom_minimum_size = Vector2(64, 0)
+		zeile.add_child(l)
+		zeile.add_child(Stil.balken(float(gruppen[k2]), float(groesste), 150,
+			Stil.AKZENT if k2 == "beste" else Stil.BLAU))
+		zeile.add_child(Stil.text(str(int(gruppen[k2])), Stil.S_KLEIN))
+	alter.add_child(Stil.trenner())
+	var urteil := Stil.matt(Kaderplanung.altersurteil(Welt.daten, cid), Stil.S_MINI)
+	urteil.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	alter.add_child(urteil)
+
+	var last := Bausteine.karte_in(oben, "Gehaltslast, wenn nichts geschieht")
+	Stil.karte_wurzel(last).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var verlauf := Kaderplanung.gehaltsverlauf(Welt.daten, cid)
+	var budget: float = float(Welt.verein(cid)["gehaltsbudget"])
+	for j in range(verlauf.size()):
+		var beschriftung: String = "diese Saison" if j == 0 else Kalender.saison_text(Welt.startjahr(), Welt.saison_index() + j)
+		var anteil: float = float(verlauf[j]) / maxf(budget, 1.0) * 100.0
+		last.add_child(Stil.info_zeile(beschriftung, "%s je Woche (%d %% des Budgets)" % [
+			Stil.geld(float(verlauf[j])), int(anteil)],
+			Stil.ROT if anteil > 100.0 else Stil.GRUEN))
+	last.add_child(Stil.matt("Gerechnet mit den heutigen Verträgen: Wer ausläuft, fällt heraus.", Stil.S_MINI))
+
+	var tiefe := Bausteine.karte_in(liste, "Kadertiefe in den nächsten Jahren")
+	tiefe.add_child(Stil.matt("Gezählt werden Spieler unter Vertrag, die dann noch nicht zu alt sind. Rot heißt: unter der Sollbesetzung.", Stil.S_MINI))
+	var kopf: Array = ["Position", "heute"]
+	for j2 in range(1, Kaderplanung.HORIZONT + 1):
+		kopf.append(Kalender.saison_text(Welt.startjahr(), Welt.saison_index() + j2))
+	var g := Stil.tabelle(kopf)
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tiefe.add_child(g)
+	var werte := Kaderplanung.tiefe(Welt.daten, cid)
+	for pos in Spielerfabrik.POSITIONEN:
+		g.add_child(Stil.text(str(Spielerfabrik.POSITION_NAME[pos]), Stil.S_KLEIN))
+		var soll: int = int(Kaderplanung.SOLLTIEFE.get(pos, 2))
+		for j3 in range(Kaderplanung.HORIZONT + 1):
+			var ist: int = int((werte[pos] as Array)[j3])
+			g.add_child(Stil.text(str(ist), Stil.S_KLEIN,
+				Stil.ROT if ist < soll else (Stil.GRUEN if ist > soll else Stil.TEXT_MATT)))
+	var luecken := Kaderplanung.luecken(Welt.daten, cid)
+	if luecken.is_empty():
+		tiefe.add_child(Stil.text("Auf keiner Position droht in den nächsten drei Jahren eine Lücke.", Stil.S_KLEIN, Stil.GRUEN))
+	for l2 in luecken:
+		var wann: String = "schon jetzt" if int(l2["in_jahren"]) == 0 else "in %d Jahr(en)" % int(l2["in_jahren"])
+		tiefe.add_child(Stil.text("%s: %s nur %d von %d." % [
+			Spielerfabrik.POSITION_NAME[str(l2["position"])], wann, int(l2["ist"]), int(l2["soll"])],
+			Stil.S_KLEIN, Stil.GELB))
+
+	var vertraege := Bausteine.karte_in(liste, "Verträge und Perspektive")
+	var g2 := Stil.tabelle(["#", "Spieler", "Pos", "Alter", "Stärke", "in 3 Jahren", "Gehalt", "Vertrag bis"])
+	g2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vertraege.add_child(g2)
+	for sid in Kaderplanung.vertragsuebersicht(Welt.daten, cid):
+		var sp: Dictionary = Welt.spieler(sid)
+		g2.add_child(Stil.matt(Trikot.text(sp), Stil.S_KLEIN))
+		var knopf := Stil.knopf_flach(Spielerfabrik.voller_name(sp))
+		knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		g2.add_child(knopf)
+		g2.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
+		g2.add_child(Stil.text(str(int(sp["alter"])), Stil.S_KLEIN))
+		var jetzt: float = Spielerfabrik.gesamt(sp)
+		g2.add_child(Stil.text("%d" % int(jetzt), Stil.S_KLEIN, Stil.wert_farbe(jetzt, 100.0)))
+		var dann: float = Kaderplanung.prognose(sp, 3)
+		g2.add_child(Stil.text("%d (%s%d)" % [int(dann), "+" if dann >= jetzt else "", int(dann - jetzt)],
+			Stil.S_KLEIN, Stil.GRUEN if dann > jetzt + 1.0 else (Stil.ROT if dann < jetzt - 1.0 else Stil.TEXT_MATT)))
+		g2.add_child(Stil.matt(Stil.geld(float(sp["vertrag"].get("gehalt", 0.0))), Stil.S_KLEIN))
+		var rest: int = int(sp["vertrag"].get("bis_saison", 0)) - Welt.saison_index()
+		g2.add_child(Stil.text(Kalender.saison_text(Welt.startjahr(), int(sp["vertrag"].get("bis_saison", 0))),
+			Stil.S_KLEIN, Stil.ROT if rest <= 0 else (Stil.GELB if rest == 1 else Stil.TEXT_MATT)))

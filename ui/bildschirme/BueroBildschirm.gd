@@ -67,6 +67,8 @@ func aktualisieren() -> void:
 		pk_knopf.pressed.connect(func(): Pressefenster.oeffnen(self))
 		pk.add_child(pk_knopf)
 
+	_cotrainer()
+
 	var oben := Stil.hbox(12)
 	bereich.add_child(oben)
 	_naechstes_spiel(oben)
@@ -84,6 +86,41 @@ func aktualisieren() -> void:
 	_finanzen(unten)
 
 ## Kennzahlenband: die sechs Zahlen, die den Zustand des Vereins beschreiben.
+## Was dem Trainerstab zwischen zwei Spielen aufgefallen ist.
+func _cotrainer() -> void:
+	var cid: String = Welt.mein_verein_id
+	var befunde: Array = Cotrainer.befunde(Welt.daten, cid)
+	var karte := Bausteine.karte_in(bereich, "Der Co-Trainer")
+	if befunde.is_empty():
+		karte.add_child(Stil.leerzustand("Nichts zu beanstanden — der Stab sieht die Mannschaft gut aufgestellt."))
+		return
+	karte.add_child(Stil.matt(Cotrainer.kompetenz_text(Cotrainer.kompetenz(Welt.daten, cid)), Stil.S_MINI))
+	for b in befunde:
+		var zeile := Stil.hbox(10)
+		karte.add_child(zeile)
+		var marke := Stil.abzeichen(Cotrainer.stufentext(int(b["stufe"])), Cotrainer.farbe(int(b["stufe"])),
+			int(b["stufe"]) == Cotrainer.STUFE_DRINGEND)
+		marke.custom_minimum_size = Vector2(94, 0)
+		zeile.add_child(marke)
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(spalte)
+		spalte.add_child(Stil.text(str(b["titel"]), Stil.S_KLEIN, Cotrainer.farbe(int(b["stufe"]))))
+		var text := Stil.matt(str(b["text"]), Stil.S_MINI)
+		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spalte.add_child(text)
+		var sid: String = str(b.get("spieler", ""))
+		if sid != "" and Welt.daten["spieler"].has(sid):
+			var profil := Stil.knopf_flach("Profil", Stil.BLAU)
+			profil.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+			zeile.add_child(profil)
+		var ziel: String = str(b.get("ziel", ""))
+		if ziel != "":
+			var hin := Stil.knopf_flach("Ansehen")
+			hin.pressed.connect(func(): wechsel_zu(ziel))
+			zeile.add_child(hin)
+
 func _kennzahlen(v: Dictionary) -> void:
 	var reihe := Stil.hbox(10)
 	bereich.add_child(reihe)

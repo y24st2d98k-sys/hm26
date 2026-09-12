@@ -325,6 +325,42 @@ dauerhaft gespeichert.
 
 ---
 
+## Der Co-Trainer
+
+Vor der Partie gibt es den Vorbericht, danach den Spielbericht — dazwischen
+sagte niemand etwas. Dabei liegen die meisten Fehler eines Managers genau dort:
+eine faule Aufstellung, ein auslaufender Vertrag, ein Talent ohne Einsatzzeit,
+eine Position ohne Ersatzmann, ein unbesetzter Sponsorenplatz.
+
+Der Co-Trainer prüft im Büro laufend acht Bereiche — Aufstellung, Kadertiefe,
+Verträge, Stimmung, Belastung, Wirtschaft, Nachwuchs und taktische Feinheiten —
+und meldet, was auffällt, nach Dringlichkeit sortiert und jeweils mit einem
+Sprung zur zuständigen Seite. **Er sieht dabei nur so viel, wie sein Stab
+hergibt:** Wie viele Punkte er findet, hängt an Taktik-, Analyse- und
+Menschenführungswerten Ihres Personals. Ein Verein ohne guten Analysten bekommt
+das Grobe zu hören, keine Feinheiten — die Patenschaft, die passen würde, oder
+den Spieler, der bei Stärke 79 seit acht Spieltagen zuschaut, nennt nur ein
+starker Stab.
+
+---
+
+## Kaderplanung
+
+Die Kaderliste zeigt heute. Ein Manager entscheidet über die nächsten drei
+Jahre. Der Reiter *Planung* im Kader beantwortet vier Fragen:
+
+* **Altersstruktur** — wie viele Spieler in welcher Altersgruppe, mit Urteil:
+  eine Mannschaft, die zur Hälfte über 30 ist, muss man in zwei Jahren neu bauen.
+* **Kadertiefe in den nächsten Jahren** — je Position und Saison, gezählt werden
+  nur Spieler, die dann noch unter Vertrag und nicht zu alt sind. Rot heißt:
+  unter der Sollbesetzung. Darunter im Klartext, wo wann eine Lücke aufgeht.
+* **Gehaltslast, wenn nichts geschieht** — was die heutigen Verträge in den
+  kommenden Saisons kosten, gemessen am Budget.
+* **Verträge und Perspektive** — alle Spieler nach Vertragsende sortiert, mit
+  einer Stärkeprognose über drei Jahre aus Alterskurve und Potenzial.
+
+---
+
 ## Warum das Spiel zweidimensional ist — und wo nicht
 
 Eine Draufsicht liest sich in einem Manager besser als eine Kameraperspektive:
@@ -619,6 +655,8 @@ kern/
   Echtdaten.gd       Lader und Zwischenspeicher für die JSON-Datensätze
   Anweisungen.gd     Individuelle Spieleranweisungen für Angriff und Abwehr
   Sponsoren.gd       Sponsorenmarkt: Plätze, Marktwert, Auslauf, Angebote, Prämien
+  Cotrainer.gd       Befunde des Trainerstabs, begrenzt durch dessen Qualität
+  Kaderplanung.gd    Altersstruktur, Kadertiefe über Jahre, Gehaltslast, Prognose
   Laufbahn.gd        Chronik eines Spielerlebens: Debüt, Wechsel, Titel, Marken
   Trikot.gd          Rückennummern: Vergabe nach Position, Eindeutigkeit im Kader
   Mentoring.gd       Patenschaften: Passung, Reifung, Charakterübertragung
