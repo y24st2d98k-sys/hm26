@@ -46,6 +46,8 @@ var anpfiff_knopf: Button
 var ansprache_bereich: VBoxContainer
 var angepfiffen: bool = false
 var wunschtempo: int = 2
+## Verbleibende Takte des laufenden Angriffs (siehe _zug_bauen).
+var _zug: Array = []
 
 func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -187,6 +189,8 @@ func starte(spiel_id: String) -> void:
 	var heim_ist_mein: bool = str(m["heim"]) == Welt.mein_verein_id
 	mein_team = sim.heim if heim_ist_mein else sim.gast
 	gegner_team = sim.gast if heim_ist_mein else sim.heim
+	feld.lebendig = true
+	_zug.clear()
 	feld.heim_farbe = Welt.verein(str(m["heim"]))["wappen"]["a"]
 	feld.gast_farbe = Welt.verein(str(m["gast"]))["wappen"]["a"]
 	feld.heim_kurz = str(Welt.verein(str(m["heim"])).get("kurz", ""))
@@ -232,16 +236,93 @@ func _setze_tempo(i: int) -> void:
 
 # ----------------------------------------------------------------- Ablauf ---
 
+## Ereignisse, die als Angriff gespielt werden: erst ein paar Stationen,
+## dann der Abschluss. Alles andere (Zeitstrafe, Wechsel, Pause) erscheint sofort.
+const ANGRIFFSAUSGANG := ["tor", "fehlwurf", "parade", "block", "ballverlust"]
+
 func _schritt() -> void:
 	if sim == null or fertig:
+		return
+	# Ein Angriff besteht aus mehreren Takten. Solange noch welche offen sind,
+	# wird gespielt und kein neues Ereignis geholt.
+	if not _zug.is_empty():
+		_takt_ausfuehren(_zug.pop_front())
 		return
 	var e := sim.naechstes_ereignis()
 	if e.is_empty():
 		_ende()
 		return
+	_zug = _zug_bauen(e)
+	if _zug.is_empty():
+		_ereignis_abschliessen(e)
+	else:
+		# Die Mannschaften nehmen ihre Positionen ein, der Ball geht zum Angriff.
+		_szene_auffrischen()
+
+## Baut aus einem Ereignis die Takte eines Angriffs. Der letzte Takt traegt das
+## Ereignis selbst — dort erscheint der Text im Ticker.
+func _zug_bauen(e: Dictionary) -> Array:
+	var typ: String = str(e["typ"])
+	if not ANGRIFFSAUSGANG.has(typ):
+		return []
+	var seite: String = str(e["team"])
+	if seite != "heim" and seite != "gast":
+		return []
+	var takte: Array = []
+	var mannschaft: Dictionary = sim.heim if seite == "heim" else sim.gast
+	var stationen := _anspielstationen(mannschaft, str(e.get("spieler", "")))
+	for sid in stationen:
+		takte.append({"art": "pass", "sid": sid})
+	if typ == "ballverlust":
+		takte.append({"art": "ereignis", "ereignis": e})
+		return takte
+	takte.append({"art": "wurf", "seite": seite, "typ": typ, "spieler": str(e.get("spieler", ""))})
+	takte.append({"art": "ereignis", "ereignis": e})
+	return takte
+
+## Zwei bis drei Mitspieler, über die der Ball vor dem Abschluss läuft.
+func _anspielstationen(mannschaft: Dictionary, schuetze: String) -> Array:
+	var feldspieler: Array = []
+	for pos in (mannschaft["angriff_auf"] as Dictionary).keys():
+		if str(pos) == "TW":
+			continue
+		var sid: String = str(mannschaft["angriff_auf"][pos])
+		if sid != "" and sid != schuetze:
+			feldspieler.append(sid)
+	feldspieler.shuffle()
+	var anzahl: int = mini(feldspieler.size(), 2 if randf() < 0.6 else 3)
+	var kette: Array = feldspieler.slice(0, anzahl)
+	if schuetze != "":
+		kette.append(schuetze)
+	return kette
+
+func _takt_ausfuehren(takt: Dictionary) -> void:
+	var dauer: float = maxf(uhr.wait_time, 0.08)
+	match str(takt["art"]):
+		"pass":
+			feld.ball_spielen(feld.spielerpunkt(str(takt["sid"])), dauer * 0.85)
+			# Der Ring wandert mit dem Ball — so ist immer zu sehen, wer ihn hat.
+			feld.hervorgehoben = str(takt["sid"])
+			Klang.spiele("ball", 0.18, 1.35)
+		"wurf":
+			var seite: String = str(takt["seite"])
+			var ziel: Vector2 = feld.tormitte(seite)
+			var typ: String = str(takt["typ"])
+			# Ein Fehlwurf geht sichtbar daneben.
+			if typ == "fehlwurf":
+				ziel.y += 3.2 if randf() < 0.5 else -3.2
+			elif typ == "block":
+				ziel = feld.spielerpunkt(str(takt["spieler"])).lerp(ziel, 0.35)
+			feld.hervorgehoben = str(takt["spieler"])
+			feld.ball_werfen(ziel, dauer * 0.8, 1.8)
+		"ereignis":
+			_ereignis_abschliessen(takt["ereignis"])
+
+func _ereignis_abschliessen(e: Dictionary) -> void:
 	_ereignis_anzeigen(e)
 	_anzeige_auffrischen()
 	_szene_auffrischen(e)
+	_wirkung_zeigen(e)
 	if str(e["typ"]) == "halbzeit":
 		_setze_tempo(0)
 		hinweis.text = "Halbzeit — Ansprache halten, wechseln, umstellen."
@@ -249,12 +330,29 @@ func _schritt() -> void:
 	if str(e["typ"]) == "ende":
 		_ende()
 
+## Ein kurzer Lichtblitz dort, wo etwas passiert ist.
+func _wirkung_zeigen(e: Dictionary) -> void:
+	var typ: String = str(e["typ"])
+	var seite: String = str(e.get("team", ""))
+	match typ:
+		"tor":
+			feld.aufblitzen(feld.tormitte(seite), Stil.GRUEN, 0.9)
+		"parade":
+			feld.aufblitzen(feld.tormitte(seite), Stil.BLAU, 0.7)
+		"block":
+			feld.aufblitzen(feld.spielerpunkt(str(e.get("spieler", ""))), Stil.TUERKIS, 0.6)
+		"zeitstrafe", "rot":
+			feld.aufblitzen(feld.spielerpunkt(str(e.get("spieler", ""))), Stil.ROT, 0.9)
+		"ballverlust":
+			feld.aufblitzen(feld._ballpunkt(), Stil.GELB, 0.6)
+
 func _ueberspringen() -> void:
 	if sim == null or fertig:
 		return
 	angepfiffen = true
 	anpfiff_knopf.visible = false
 	uhr.stop()
+	_zug.clear()
 	while not sim.beendet:
 		var e := sim.naechstes_ereignis()
 		if e.is_empty():
@@ -360,11 +458,14 @@ func _szene_auffrischen(e: Dictionary = {}) -> void:
 		"heim": _team_szene(sim.heim, sim.angriffsrecht == "heim"),
 		"gast": _team_szene(sim.gast, sim.angriffsrecht == "gast"),
 	})
-	if not e.is_empty() and e.has("position"):
-		var pos: String = str(e["position"])
-		var basis: Vector2 = Spielfeld.ANGRIFF_RECHTS.get(pos, Vector2(26.0, 10.0))
-		feld.ball = basis if str(e["team"]) == "heim" else Vector2(Spielfeld.LAENGE - basis.x, basis.y)
-		feld.hervorgehoben = str(e.get("spieler", ""))
+	if not e.is_empty() and str(e.get("spieler", "")) != "":
+		feld.hervorgehoben = str(e["spieler"])
+	if e.is_empty():
+		# Neuer Angriff: der Ball geht zum Aufbauspieler der angreifenden Mannschaft.
+		var angreifer: Dictionary = sim.heim if sim.angriffsrecht == "heim" else sim.gast
+		var aufbau: String = str((angreifer["angriff_auf"] as Dictionary).get("RM", ""))
+		if aufbau != "":
+			feld.ball_spielen(feld.spielerpunkt(aufbau), maxf(uhr.wait_time, 0.1) * 0.8)
 	feld.queue_redraw()
 
 func _team_szene(t: Dictionary, greift_an: bool) -> Dictionary:

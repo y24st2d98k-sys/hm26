@@ -304,6 +304,27 @@ Zum Prüfen ohne Lautsprecher:
 godot4 --headless res://werkzeuge/Klangtest.tscn   # Länge, Spitze, RMS, Nulldurchgänge
 ```
 
+## Der Spieltag
+
+Die Live-Ansicht zeigt das Spiel, sie erzählt es nicht nur. Das Feld ist keine
+Momentaufnahme mehr: Jeder Spieler hat eine tatsächliche und eine angestrebte
+Position und läuft dazwischen; beim Wechsel zwischen Angriff und Abwehr sieht
+man die Mannschaft die Seite wechseln. Ein Angriff besteht aus mehreren Takten
+— der Ball läuft über zwei bis drei Stationen, ein Ring wandert mit ihm mit,
+und erst am Ende steht der Abschluss. Der Wurf fliegt in hohem Bogen aufs Tor,
+ein Fehlwurf sichtbar daneben, ein Block bleibt auf halbem Weg stecken. Tor,
+Parade, Block und Zeitstrafe setzen einen kurzen Ring an die Stelle, an der es
+passiert ist. Stehende Spieler wippen leicht, damit das Bild lebt.
+
+Die Geschwindigkeitsstufen steuern weiterhin alles: bei *Langsam* sieht man
+jeden Pass, bei *Schnell* läuft ein Angriff in einem Wimpernschlag durch. Die
+Namen weichen einander aus, wenn sechs Abwehrspieler dicht beieinanderstehen.
+Während all dem lassen sich Taktik, Wechsel, Auszeit **und die Anweisung an
+einen einzelnen Spieler** ändern — letztere gilt sofort und wird zugleich
+dauerhaft gespeichert.
+
+---
+
 ## Warum das Spiel zweidimensional ist — und wo nicht
 
 Eine Draufsicht liest sich in einem Manager besser als eine Kameraperspektive:

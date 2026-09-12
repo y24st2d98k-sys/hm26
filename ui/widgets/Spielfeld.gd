@@ -32,12 +32,159 @@ var nur_angriff: bool = false
 var puls: float = 50.0
 var zeige_puls: bool = true
 
+# ------------------------------------------------------------- Bewegung ---
+#
+# Das Feld ist keine Momentaufnahme mehr: jeder Spieler hat eine tatsaechliche
+# und eine angestrebte Position, der Ball fliegt zwischen beiden Punkten. Ohne
+# das sprang die Live-Ansicht von Ereignis zu Ereignis, und ein Handballspiel
+# sah aus wie eine Tabelle mit Kreisen.
+
+## Laeuft die Bewegung? In der Aufstellungsvorschau bleibt alles ruhig stehen.
+var lebendig: bool = false
+## Laufgeschwindigkeit in Metern je Sekunde.
+const TEMPO := 7.5
+
+var _ist: Dictionary = {}        # sid -> Vector2, wo der Spieler gerade steht
+var _ziel: Dictionary = {}       # sid -> Vector2, wohin er unterwegs ist
+var _zittern: Dictionary = {}    # sid -> float, Phase der kleinen Standbewegung
+var _ball_von: Vector2 = Vector2(20.0, 10.0)
+var _ball_nach: Vector2 = Vector2(20.0, 10.0)
+var _ball_t: float = 1.0
+var _ball_dauer: float = 0.35
+var _ball_bogen: float = 0.0
+## Kurze Lichtblitze: [{"punkt": Vector2, "farbe": Color, "rest": float, "dauer": float}]
+var _blitze: Array = []
+var _zeit: float = 0.0
+
 func _init() -> void:
 	custom_minimum_size = Vector2(520, 270)
 
+func _process(delta: float) -> void:
+	if not lebendig or not is_visible_in_tree():
+		return
+	_zeit += delta
+	var bewegt := false
+	for sid in _ziel.keys():
+		var ziel: Vector2 = _ziel[sid]
+		var ist: Vector2 = _ist.get(sid, ziel)
+		var weg: Vector2 = ziel - ist
+		var laenge: float = weg.length()
+		if laenge > 0.02:
+			var schritt: float = minf(TEMPO * delta, laenge)
+			_ist[sid] = ist + weg / laenge * schritt
+			bewegt = true
+		else:
+			_ist[sid] = ziel
+	if _ball_t < 1.0:
+		_ball_t = minf(_ball_t + delta / maxf(_ball_dauer, 0.05), 1.0)
+		bewegt = true
+	for i in range(_blitze.size() - 1, -1, -1):
+		var b: Dictionary = _blitze[i]
+		b["rest"] = float(b["rest"]) - delta
+		if float(b["rest"]) <= 0.0:
+			_blitze.remove_at(i)
+		bewegt = true
+	if bewegt or lebendig:
+		queue_redraw()
+
+## Wo der Ball gerade ist — auf der Flugbahn zwischen Start und Ziel.
+func _ballpunkt() -> Vector2:
+	if _ball_t >= 1.0:
+		return _ball_nach
+	var t: float = _ball_t
+	var p: Vector2 = _ball_von.lerp(_ball_nach, t)
+	# Ein Wurf fliegt sichtbar hoch, ein Pass bleibt flach.
+	if _ball_bogen > 0.0:
+		p.y -= sin(t * PI) * _ball_bogen
+	return p
+
+## Setzt die Mannschaften. Bekannte Spieler laufen zu ihrem neuen Platz,
+## neu erschienene stehen sofort dort.
 func setze_szene(neue: Dictionary) -> void:
 	szene = neue
+	_ziele_berechnen()
 	queue_redraw()
+
+func _ziele_berechnen() -> void:
+	var gesehen := {}
+	for seite in ["heim", "gast"]:
+		var spieler: Dictionary = szene.get(seite, {})
+		var greift_an: bool = angreifer == seite
+		var nach_rechts: bool = seite == "heim"
+		for pos in spieler.keys():
+			var eintrag: Dictionary = spieler[pos]
+			var sid: String = str(eintrag.get("sid", "%s_%s" % [seite, pos]))
+			var ziel := _position(str(pos), greift_an, nach_rechts, int(eintrag.get("index", 0)))
+			_ziel[sid] = ziel
+			if not _ist.has(sid):
+				_ist[sid] = ziel
+			if not _zittern.has(sid):
+				_zittern[sid] = randf() * TAU
+			gesehen[sid] = true
+	for sid2 in _ziel.keys():
+		if not gesehen.has(sid2):
+			_ziel.erase(sid2)
+			_ist.erase(sid2)
+			_zittern.erase(sid2)
+
+## Wo steht dieser Spieler gerade? Faellt auf seinen Sollplatz zurueck.
+func spielerpunkt(sid: String) -> Vector2:
+	return _ist.get(sid, _ziel.get(sid, Vector2(20.0, 10.0)))
+
+## Der Ball wandert flach zu einem Punkt (Pass, Dribbling, Anspiel).
+func ball_spielen(nach: Vector2, dauer: float = 0.32) -> void:
+	_ball_von = _ballpunkt()
+	_ball_nach = nach
+	_ball_dauer = maxf(dauer, 0.05)
+	_ball_bogen = 0.0
+	_ball_t = 0.0
+
+## Der Ball fliegt in hohem Bogen — ein Wurf.
+func ball_werfen(nach: Vector2, dauer: float = 0.30, hoehe: float = 1.6) -> void:
+	_ball_von = _ballpunkt()
+	_ball_nach = nach
+	_ball_dauer = maxf(dauer, 0.05)
+	_ball_bogen = hoehe
+	_ball_t = 0.0
+
+## Ball ohne Flug an eine Stelle setzen (Anwurf, Auszeit, Halbzeit).
+func ball_setzen(punkt: Vector2) -> void:
+	_ball_von = punkt
+	_ball_nach = punkt
+	_ball_t = 1.0
+	_ball_bogen = 0.0
+	ball = punkt
+
+## Kurzer Lichtblitz an einer Stelle — Tor, Parade, Block.
+func aufblitzen(punkt: Vector2, farbe: Color, dauer: float = 0.7) -> void:
+	_blitze.append({"punkt": punkt, "farbe": farbe, "rest": dauer, "dauer": dauer})
+	# Mehr als eine Handvoll gleichzeitig wäre kein Signal mehr, sondern Nebel.
+	while _blitze.size() > 4:
+		_blitze.remove_at(0)
+
+## Schon vergebene Namensfelder dieses Zeichenvorgangs.
+var _belegt: Array = []
+
+## Schiebt eine Beschriftung so weit, bis sie keine andere überdeckt. In der
+## Abwehr stehen sechs Spieler dicht beieinander — ohne das liest man dort nichts.
+func _freie_stelle(stelle: Vector2, breite: float, hoehe: float, nach_unten: bool) -> Vector2:
+	var richtung: float = 1.0 if nach_unten else -1.0
+	for _versuch in range(4):
+		var frei := true
+		for r in _belegt:
+			var anderes: Rect2 = r
+			if anderes.intersects(Rect2(stelle - Vector2(0, hoehe), Vector2(breite, hoehe + 2.0))):
+				frei = false
+				break
+		if frei:
+			break
+		stelle.y += richtung * (hoehe + 1.0)
+	_belegt.append(Rect2(stelle - Vector2(0, hoehe), Vector2(breite, hoehe + 2.0)))
+	return stelle
+
+## Mittelpunkt des Tores, auf das diese Seite wirft.
+func tormitte(seite: String) -> Vector2:
+	return Vector2(LAENGE - 0.3, 10.0) if seite == "heim" else Vector2(0.3, 10.0)
 
 func _m(p: Vector2) -> Vector2:
 	var rand := 14.0
@@ -55,6 +202,7 @@ func _draw() -> void:
 	var s := _skala()
 	if s <= 0.5:
 		return
+	_belegt.clear()
 	var feld := Rect2(_m(Vector2(0, 0)), Vector2(LAENGE, BREITE) * s)
 
 	# Parkett mit angedeuteten Dielen — sonst wirkt die Flaeche wie ein Loch
@@ -99,8 +247,16 @@ func _draw() -> void:
 	_zeichne_mannschaft("heim", s)
 	_zeichne_mannschaft("gast", s)
 
+	# Kurze Lichtblitze (Tor, Parade, Block): ein aufgehender Ring, kein Nebel
+	for b in _blitze:
+		var anteil: float = clampf(float(b["rest"]) / maxf(float(b["dauer"]), 0.01), 0.0, 1.0)
+		var f: Color = b["farbe"]
+		f.a = anteil * 0.75
+		var radius: float = s * (0.7 + (1.0 - anteil) * 1.5)
+		draw_arc(_m(b["punkt"]), radius, 0.0, TAU, 22, f, maxf(s * 0.11, 1.6), true)
+
 	# Ball mit weichem Schein
-	var bp := _m(ball)
+	var bp := _m(_ballpunkt() if lebendig else ball)
 	var br: float = maxf(s * 0.3, 3.0)
 	draw_circle(bp, br * 2.1, Color(1, 0.95, 0.8, 0.10))
 	draw_circle(bp, br, Color("#f7f2e4"))
@@ -164,7 +320,14 @@ func _zeichne_mannschaft(seite: String, s: float) -> void:
 	var schrift := ThemeDB.fallback_font
 	for pos in spieler.keys():
 		var eintrag: Dictionary = spieler[pos]
-		var p := _m(_position(pos, greift_an, nach_rechts, int(eintrag.get("index", 0))))
+		var sid_e: String = str(eintrag.get("sid", "%s_%s" % [seite, pos]))
+		var meter: Vector2 = _position(pos, greift_an, nach_rechts, int(eintrag.get("index", 0)))
+		if lebendig and _ist.has(sid_e):
+			meter = _ist[sid_e]
+			# Ein winziges Wippen: ohne das wirken stehende Spieler wie Pfosten.
+			meter.y += sin(_zeit * 2.1 + float(_zittern.get(sid_e, 0.0))) * 0.10
+			meter.x += cos(_zeit * 1.7 + float(_zittern.get(sid_e, 0.0))) * 0.07
+		var p := _m(meter)
 		var r: float = maxf(s * 0.46, 6.0)
 		var ist_tw: bool = pos == "TW"
 		var f: Color = farbe.lightened(0.30) if ist_tw else farbe
@@ -199,6 +362,7 @@ func _zeichne_mannschaft(seite: String, s: float) -> void:
 		var versatz_y: float = (r + groesse * 1.15) if greift_an else -(r + groesse * 0.55)
 		var stelle: Vector2 = p + Vector2(-breite * 0.5, versatz_y)
 		stelle.x = clampf(stelle.x, 2.0, maxf(size.x - breite - 2.0, 2.0))
+		stelle = _freie_stelle(stelle, breite, float(groesse), greift_an)
 		draw_string(schrift, stelle + Vector2(0, 1), beschriftung,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, groesse, Color(0, 0, 0, 0.65))
 		draw_string(schrift, stelle, beschriftung, HORIZONTAL_ALIGNMENT_LEFT, -1, groesse,
