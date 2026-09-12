@@ -77,6 +77,12 @@ func _eintrag(n: Dictionary) -> Control:
 	var text := Stil.text(str(n["text"]), Stil.S_KLEIN, Stil.TEXT_MATT)
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	karte.add_child(text)
+	if str(n.get("aktion", "")) == "anliegen":
+		var asid: String = str((n.get("daten", {}) as Dictionary).get("spieler", ""))
+		if not Anliegen.fuer_spieler(Welt.daten, asid).is_empty():
+			var ak := Stil.knopf_primaer("Anhören")
+			ak.pressed.connect(func(): Anliegenfenster.oeffnen(self, asid))
+			karte.add_child(ak)
 	if str(n.get("aktion", "")) == "pressekonferenz" and Presse.offen(Welt.daten):
 		var pk := Stil.knopf_primaer("Zur Pressekonferenz")
 		pk.pressed.connect(func(): Pressefenster.oeffnen(self))

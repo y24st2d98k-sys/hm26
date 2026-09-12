@@ -141,6 +141,27 @@ func _ready() -> void:
 		await get_tree().process_frame
 	_log("   %d Wertungen gezeichnet" % Statistik.KATEGORIEN.size())
 
+	_log("— Anliegen eines Spielers —")
+	# Ein Anliegen erzwingen: einen Spieler unzufrieden machen und pruefen lassen
+	var asid: String = str(Welt.mein_verein()["kader"][4])
+	Welt.spieler(asid)["unzufriedenheit"] = 60.0
+	Anliegen.wochenpruefung(Welt.daten)
+	var offen := Anliegen.offene(Welt.daten)
+	_log("   offene Anliegen: %d" % offen.size())
+	if not offen.is_empty():
+		var eintrag: Dictionary = offen[0]
+		var af: Node = get_tree().get_first_node_in_group("anliegenfenster")
+		af.zeige(str(eintrag["spieler"]))
+		await get_tree().process_frame
+		var moeglich: Array = Anliegen.ANTWORTEN[str(eintrag["art"])]
+		var erg := Anliegen.antworten(Welt.daten, str(eintrag["spieler"]),
+			str((moeglich[0] as Dictionary)["id"]))
+		_log("   Antwort (%s): %s" % [str(eintrag["art"]), str(erg["text"])])
+		af._ergebnis(erg, Welt.spieler(str(eintrag["spieler"])))
+		await get_tree().process_frame
+		af.visible = false
+	_log("   nach Antwort offen: %d" % Anliegen.anzahl(Welt.daten))
+
 	_log("— Vertragsverhandlung —")
 	var vsid: String = str(Welt.mein_verein()["kader"][3])
 	var start := Verhandlung.starten(Welt.daten, vsid, "verlaengerung")

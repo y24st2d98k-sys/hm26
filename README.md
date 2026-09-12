@@ -360,6 +360,52 @@ herausnehmen.
 
 ---
 
+## Die echten Kader selbst pflegen
+
+Der mitgelieferte Datensatz deckt zehn Vereine ab. Wer die Bundesliga
+vollständig will, trägt sie im Bildschirm **Kaderdaten** selbst ein: links alle
+96 Vereine mit ihrem Füllstand, rechts der Kader des gewählten Vereins, Zeile
+für Zeile bearbeitbar.
+
+Für einen ganzen Kader auf einmal gibt es das CSV-Feld:
+
+```
+Vorname;Nachname;Position;Nation;Alter;Staerke
+Mathias;Gidsel;RM;dk;27;92
+Hans;Lindberg;RA;dk;40;78
+```
+
+Trennzeichen darf Semikolon, Tabulator oder Komma sein, eine Kopfzeile wird
+erkannt, Leerzeilen und `#`-Zeilen werden übersprungen. Der Parser repariert,
+was sich reparieren lässt — eine unbekannte Position wird zu RM, eine
+unbekannte Nation zu `de` — und sagt in beiden Fällen, was er getan hat, statt
+die Zeile stillschweigend wegzuwerfen.
+
+Gespeichert wird nach `user://kader_eigen.json`, also außerhalb des Projekts:
+Die Pflege überlebt jede Aktualisierung des Spiels und liegt beim Laden über
+dem mitgelieferten Datensatz. Ein Knopf schreibt alles zusammen zurück nach
+`daten/kader.json`, wenn man aus dem Projektordner spielt.
+
+**Änderungen wirken auf neu angelegte Karrieren.** Eine laufende Karriere hat
+ihre Spieler bereits im Spielstand und bleibt unberührt — sonst würden
+Statistiken, Verträge und Transferhistorie ins Leere zeigen.
+
+---
+
+## Zum Datum springen
+
+Ein Knopf in der Kopfzeile öffnet das Vorspulfenster. Entweder eine feste Marke
+— nächstes eigenes Spiel, nächster Montag, Ligastart, Winterpause,
+Transferfenster, letzter Spieltag, Saisonende — oder ein frei gewähltes Datum.
+
+Das Spiel schaltet dann Tag für Tag weiter und hält an, sobald etwas eine
+Entscheidung verlangt: die eigene Partie (die sich wahlweise mitsimulieren
+lässt), der Saisonwechsel oder der Verlust des Vereins. Eine harte Obergrenze
+von einem Kalenderjahr verhindert, dass ein falsch eingegebenes Datum das Spiel
+in eine sehr lange Schleife schickt.
+
+---
+
 ## Zwischen den Spielen
 
 * **Spielvorbereitung.** Vor jeder eigenen Partie liefert die Analyseabteilung
@@ -376,6 +422,20 @@ herausnehmen.
   Niederlagen, ein Platz an der Spitze, ein wechselwilliger Spieler. Jede
   Antwort wirkt auf Fans, Vorstand, Mannschaftsmoral — und auf die Motivation
   des Gegners, der mitliest.
+* **Spieler kommen zu Ihnen.** Wer zu wenig spielt, wer nach einem gebrochenen
+  Versprechen wartet, wessen Vertrag ausläuft, wer die Kabine anführen will
+  oder wer nicht in die Saison findet, klopft von sich aus an die Tür — mit
+  seinem Gesicht, seinem Anliegen und drei möglichen Antworten. Jedes Anliegen
+  hat eine Frist von zwei Wochen. Wer es aussitzt, verliert Moral, Vertrauen
+  und ein Stück Kabinenklima, und der Spieler erfährt es aus dem Schweigen.
+* **Vertragsverhandlung über mehrere Runden.** Der Spieler eröffnet mit einer
+  Forderung, man macht ein Angebot, er nimmt an, lässt nachbessern oder steht
+  auf. Geduld und Laune stehen sichtbar daneben. Bewertet wird das ganze Paket:
+  Prämien und eine Ablöseklausel rechnet er sich aufs Gehalt an, eine größere
+  Rolle wiegt bares Geld auf, und die Laufzeit wirkt je nach Alter in
+  verschiedene Richtungen. Das Ganze spielt in einem **3D-Verhandlungsraum**:
+  Tisch, Lampe, Wappen an der Wand — und der Spieler, dessen prozedurales
+  Gesicht als Textur in der Szene hängt. Die Beleuchtung folgt seiner Laune.
 * **Einzelgespräche mit Versprechen.** Jeder eigene Spieler hat ein Verhältnis
   zum Trainer (0–100). Welche Themen anstehen, ergibt sich aus seiner Lage:
   eine gute oder schlechte Serie, zu wenig Einsatzzeit, ein Wechselwunsch, ein
@@ -472,6 +532,9 @@ kern/
   Jugend.gd          Nachwuchsakademie: Jahrgänge, Entwicklung, Beförderung
   Praemien.gd        Erfolgsprämien: Bewertung, Auszahlung, Wirkung
   Gespraech.gd       Einzelgespräche, Verhältnis zum Trainer, Versprechen
+  Anliegen.gd        Spieler, die von sich aus etwas wollen, samt Frist
+  Verhandlung.gd     Vertragsverhandlung über mehrere Runden
+  Kaderpflege.gd     Eigene Kaderdaten, CSV-Import, Export ins Projekt
   Vorbericht.gd      Spielvorbereitung: gestufte Gegneranalyse
   Echtdaten.gd       Lader und Zwischenspeicher für die JSON-Datensätze
   KI.gd              Aufstellung, Taktik, Training, Verträge, Ausbau der KI-Vereine
@@ -480,9 +543,11 @@ ui/
   Bildschirm.gd      Grundklasse aller Bildschirme
   LiveSpiel.gd       Live-Ansicht einer Partie
   widgets/           Wappen, Portraet (Gesichter), Flagge, Symbol (Icon-Satz),
-                     NavKnopf, Spielfeld, Wurfkarte, Pokal3D, Bausteine,
-                     Spieler-, Vereins-, Bericht-, Presse- und Vorberichtsfenster
-  bildschirme/       22 Bildschirme
+                     NavKnopf, Spielfeld, Wurfkarte, Radar, Pokal3D,
+                     Verhandlungsraum (3D), Bausteine, Spieler-, Vereins-,
+                     Bericht-, Presse-, Vorbericht-, Anliegen-, Verhandlungs-
+                     und Vorspulfenster
+  bildschirme/       23 Bildschirme
 daten/               ligen.json und kader.json — die echten Vereine und Kader
 werkzeuge/           Test- und Kalibrierungsszenen
 ```
@@ -502,7 +567,7 @@ mit Verein, Trainer, Saison und Datum, damit die Spielstandsliste nichts laden m
 Felder aus einer Vorlage. Ein Spielstand aus einer älteren Version verliert
 dadurch nichts und stürzt nicht ab, wenn neue Systeme hinzukommen.
 
-**Bildschirme werden gebaut, nicht erzeugt.** Alle 22 Bildschirme hängen von
+**Bildschirme werden gebaut, nicht erzeugt.** Alle 23 Bildschirme hängen von
 Anfang an im Baum und werden nur über `visible` gewechselt. Innerhalb eines
 Bildschirms liegen dauerhafte Knoten (Kopfzeilen, Reiterleisten, Meldungszeilen)
 strikt außerhalb der Container, die bei jeder Aktualisierung geleert werden.

@@ -232,6 +232,7 @@ func tag_weiter() -> Dictionary:
 	Presse.tageswechsel(daten)
 	Gespraech.tageswechsel(daten)
 	Transfermarkt.klauseln_pruefen(daten)
+	Anliegen.tageswechsel(daten)
 
 	# Anstehende Partien
 	var heute: Array = (spiele_am_tag(t) as Array).duplicate()
@@ -396,6 +397,7 @@ func wochenrhythmus(t: int) -> void:
 	if wt == 3:  # Donnerstag: Kabine und Gerüchte
 		Kabine.wochenpuls(daten)
 		Transfermarkt.geruechtekueche(daten)
+		Anliegen.wochenpruefung(daten)
 	if wt == 0:
 		automatisch_speichern()
 
@@ -502,7 +504,7 @@ func _daten_auffrischen() -> void:
 			"lautstaerke_effekte": 75.0, "lautstaerke_atmo": 65.0},
 		"plan": {}, "international": {}, "pokale": {}, "saison_abgeschlossen": false,
 		"nationalteams": [], "turnier": Nationalteam.leeres_turnier(),
-		"pressekonferenz": {}, "versprechen": [],
+		"pressekonferenz": {}, "versprechen": [], "anliegen": [],
 	}
 	for k in vorlage.keys():
 		if not daten.has(k):

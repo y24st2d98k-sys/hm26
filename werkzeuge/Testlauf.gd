@@ -159,6 +159,8 @@ func _saison_test(dauer: int) -> void:
 		print("Vertraege mit Praemien: %d, weltweit ausgeschuettet: %s" % [mit_praemie, Stil.geld(praemiensumme)])
 		var vb := Vorbericht.erzeuge(d, Welt.mein_verein_id, str(Welt.naechstes_spiel(Welt.mein_verein_id).get("gast", Welt.mein_verein_id)))
 		print("Vorbericht-Stufe naechster Gegner: %d" % int(vb["stufe"]))
+		print("Offene Anliegen: %d, Kabinenklima: %.0f" % [Anliegen.anzahl(d),
+			float(v["stimmung_kabine"])])
 		var allstar: Dictionary = d["ligen"][lid].get("allstar", {})
 		if not allstar.is_empty():
 			var namen: Array = []

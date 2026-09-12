@@ -26,6 +26,28 @@ func aktualisieren() -> void:
 
 	_kennzahlen(v)
 
+	for e in Anliegen.offene(Welt.daten):
+		var eintrag: Dictionary = e
+		var asid: String = str(eintrag["spieler"])
+		if not Welt.daten["spieler"].has(asid):
+			continue
+		var asp: Dictionary = Welt.spieler(asid)
+		var karte := Bausteine.karte_in(bereich, "%s möchte Sie sprechen" % Spielerfabrik.voller_name(asp))
+		var zeile := Stil.hbox(12)
+		karte.add_child(zeile)
+		zeile.add_child(Portraet.fuer_spieler(asid, 44.0))
+		var spalte := Stil.vbox(2)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		zeile.add_child(spalte)
+		spalte.add_child(Stil.text(str((Anliegen.ARTEN[str(eintrag["art"])] as Dictionary)["titel"]),
+			Stil.S_NORMAL, Stil.AKZENT))
+		var rest: int = int(eintrag["frist"]) - Welt.tag()
+		spalte.add_child(Stil.matt("Antwort binnen %d Tag(en)" % maxi(rest, 0)))
+		var knopf := Stil.knopf_primaer("Anhören")
+		knopf.pressed.connect(func(): Anliegenfenster.oeffnen(self, asid))
+		zeile.add_child(knopf)
+
 	if Presse.offen(Welt.daten):
 		var pk := Bausteine.karte_in(bereich, "Pressekonferenz steht an")
 		pk.add_child(Stil.text("Die Journalisten warten auf Ihre Einschätzung vor dem nächsten Spiel.", Stil.S_KLEIN))

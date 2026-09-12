@@ -230,6 +230,10 @@ static func _antworttext(sp: Dictionary, thema: String, antwort: String, gelunge
 
 # ----------------------------------------------------------- Versprechen ---
 
+## Auch von aussen nutzbar: Anliegen legen ebenfalls Versprechen an.
+static func versprechen_anlegen(d: Dictionary, sid: String, art: String) -> void:
+	_versprechen_anlegen(d, sid, art)
+
 static func _versprechen_anlegen(d: Dictionary, sid: String, art: String) -> void:
 	if not d.has("versprechen"):
 		d["versprechen"] = []

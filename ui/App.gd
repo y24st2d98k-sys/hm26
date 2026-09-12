@@ -70,6 +70,7 @@ func _ready() -> void:
 	add_child(Pressefenster.new())
 	add_child(Vorberichtsfenster.new())
 	add_child(Verhandlungsfenster.new())
+	add_child(Anliegenfenster.new())
 	var vorspulen := Vorspulfenster.new()
 	vorspulen.vorgespult.connect(_auffrischen)
 	add_child(vorspulen)
@@ -367,6 +368,8 @@ func _kopf_auffrischen() -> void:
 	var offen: int = Welt.ungelesene_nachrichten()
 	if nav_knoepfe.has("nachrichten"):
 		nav_knoepfe["nachrichten"].setze_zaehler(offen)
+	if nav_knoepfe.has("kabine"):
+		nav_knoepfe["kabine"].setze_zaehler(Anliegen.anzahl(Welt.daten))
 	if kopf_glocke.has_meta("symbol"):
 		(kopf_glocke.get_meta("symbol") as Symbol).setze_farbe(Stil.AKZENT if offen > 0 else Stil.TEXT_MATT)
 	kopf_glocke.tooltip_text = "%d ungelesene Nachricht(en)" % offen if offen > 0 else "Nachrichten"

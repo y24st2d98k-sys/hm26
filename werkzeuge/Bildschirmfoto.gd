@@ -45,6 +45,16 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "anliegen":
+			Welt.spieler(str(Welt.mein_verein()["kader"][5]))["unzufriedenheit"] = 62.0
+			Anliegen.wochenpruefung(Welt.daten)
+			var liste := Anliegen.offene(Welt.daten)
+			if not liste.is_empty():
+				var af: Node = get_tree().get_first_node_in_group("anliegenfenster")
+				af.zeige(str((liste[0] as Dictionary)["spieler"]))
+				await _foto("%s/anliegen.png" % ordner)
+				af.visible = false
+			continue
 		if str(id) == "verhandlung":
 			var vsid: String = str(Welt.mein_verein()["kader"][2])
 			Verhandlung.starten(Welt.daten, vsid, "verlaengerung")
