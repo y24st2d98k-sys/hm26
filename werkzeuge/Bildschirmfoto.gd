@@ -45,6 +45,21 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "verhandlung":
+			var vsid: String = str(Welt.mein_verein()["kader"][2])
+			Verhandlung.starten(Welt.daten, vsid, "verlaengerung")
+			var vw: Node = get_tree().get_first_node_in_group("verhandlungsfenster")
+			vw.zeige()
+			await get_tree().process_frame
+			await get_tree().process_frame
+			await _foto("%s/verhandlung.png" % ordner)
+			# Ein zu niedriges Angebot, damit auch die Reaktion im Bild ist
+			vw._senden()
+			await get_tree().process_frame
+			await _foto("%s/verhandlung2.png" % ordner)
+			vw.visible = false
+			Verhandlung.abbrechen(Welt.daten)
+			continue
 		if str(id) == "vorspulen":
 			app.zeige("spielplan")
 			var vf: Node = get_tree().get_first_node_in_group("vorspulfenster")

@@ -69,6 +69,7 @@ func _ready() -> void:
 	add_child(Spielbericht.new())
 	add_child(Pressefenster.new())
 	add_child(Vorberichtsfenster.new())
+	add_child(Verhandlungsfenster.new())
 	var vorspulen := Vorspulfenster.new()
 	vorspulen.vorgespult.connect(_auffrischen)
 	add_child(vorspulen)

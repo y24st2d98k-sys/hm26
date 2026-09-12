@@ -391,7 +391,13 @@ func _vertrag(sp: Dictionary) -> void:
 		var praemien := _praemienzeile(neu, sp,
 			float(sp["vertrag"].get("praemie_tor", 0.0)), float(sp["vertrag"].get("praemie_sieg", 0.0)))
 		var klauselfeld := _klauselzeile(neu, sp, float(sp["vertrag"].get("ablöseklausel", 0.0)))
-		var anbieten := Stil.knopf_primaer("Angebot machen")
+		var verhandeln := Stil.knopf_primaer("An den Verhandlungstisch")
+		verhandeln.tooltip_text = "Führt die Verlängerung als Gespräch über mehrere Runden."
+		verhandeln.pressed.connect(func():
+			schliessen()
+			Verhandlungsfenster.oeffnen(self, sid, "verlaengerung"))
+		neu.add_child(verhandeln)
+		var anbieten := Stil.knopf("Direktangebot")
 		anbieten.pressed.connect(func():
 			var erg := Transfermarkt.vertrag_verlaengern(Welt.daten, sid, gehalt.value, int(jahre.value),
 				str(rolle.get_item_metadata(rolle.selected)),

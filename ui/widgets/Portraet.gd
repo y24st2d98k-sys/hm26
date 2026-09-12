@@ -36,6 +36,9 @@ var nation: String = "de"
 var trikot: Color = Color("#c8342f")
 var zweitfarbe: Color = Color("#f4f1e8")
 var ist_torwart: bool = false
+## Fuer die Verwendung als Textur in einer 3D-Szene: dort stoeren der farbige
+## Kreis und die gezeichneten Schultern, weil der Koerper aus Geometrie besteht.
+var nur_kopf: bool = false
 
 # Aus der ID abgeleitete Merkmale
 var _bereit: bool = false
@@ -126,12 +129,12 @@ func _draw() -> void:
 	if not _bereit:
 		_merkmale()
 	var o := Vector2((size.x - s) * 0.5, (size.y - s) * 0.5)
-	# Hintergrund in Vereinsfarbe, damit das Portraet auch klein sofort zuordbar ist
-	draw_circle(o + Vector2(s, s) * 0.5, s * 0.5, Color(trikot.r, trikot.g, trikot.b, 0.22))
-	draw_arc(o + Vector2(s, s) * 0.5, s * 0.5 - 0.5, 0.0, TAU, 32,
-		Color(trikot.r, trikot.g, trikot.b, 0.55), maxf(s * 0.02, 1.0), true)
-
-	_schultern(s, o)
+	if not nur_kopf:
+		# Hintergrund in Vereinsfarbe, damit das Portraet auch klein sofort zuordbar ist
+		draw_circle(o + Vector2(s, s) * 0.5, s * 0.5, Color(trikot.r, trikot.g, trikot.b, 0.22))
+		draw_arc(o + Vector2(s, s) * 0.5, s * 0.5 - 0.5, 0.0, TAU, 32,
+			Color(trikot.r, trikot.g, trikot.b, 0.55), maxf(s * 0.02, 1.0), true)
+		_schultern(s, o)
 	_hals(s, o)
 	_kopfform(s, o)
 	_ohrenform(s, o)

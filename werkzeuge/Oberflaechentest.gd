@@ -141,6 +141,29 @@ func _ready() -> void:
 		await get_tree().process_frame
 	_log("   %d Wertungen gezeichnet" % Statistik.KATEGORIEN.size())
 
+	_log("— Vertragsverhandlung —")
+	var vsid: String = str(Welt.mein_verein()["kader"][3])
+	var start := Verhandlung.starten(Welt.daten, vsid, "verlaengerung")
+	_log("   gestartet: %s" % str(start["ok"]))
+	var vfenster: Node = get_tree().get_first_node_in_group("verhandlungsfenster")
+	vfenster.zeige()
+	await get_tree().process_frame
+	# Erst ein zu niedriges Angebot, dann die Forderung übernehmen
+	var forderung: Dictionary = (Verhandlung.aktuelle(Welt.daten)["forderung"] as Dictionary).duplicate()
+	var mager := forderung.duplicate()
+	mager["gehalt"] = float(forderung["gehalt"]) * 0.55
+	var r1 := Verhandlung.anbieten(Welt.daten, mager)
+	_log("   mageres Angebot: %s — %s" % [str(r1["status"]), str(r1["text"])])
+	var r2 := Verhandlung.anbieten(Welt.daten, forderung)
+	_log("   volle Forderung: %s" % str(r2["status"]))
+	if str(r2["status"]) == "angenommen":
+		var ab := Verhandlung.abschliessen(Welt.daten)
+		_log("   Abschluss: %s" % str(ab["grund"]))
+	vfenster._zeichne()
+	await get_tree().process_frame
+	vfenster.visible = false
+	Verhandlung.abbrechen(Welt.daten)
+
 	_log("— Vorspulen —")
 	var vf: Node = get_tree().get_first_node_in_group("vorspulfenster")
 	vf.zeige()
