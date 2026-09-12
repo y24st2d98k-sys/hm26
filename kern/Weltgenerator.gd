@@ -236,6 +236,8 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 	for cid in Weltgenerator.clubs(d):
 		_fuelle_kader(d, cid)
 		_erzeuge_personal(d, cid)
+	for cid2 in clubs(d):
+		Jugend.erzeuge_jahrgang(d, cid2, Namen.wuerfel(3, 5))
 	# Rivalitaeten innerhalb der Ligen
 	_erzeuge_rivalitaeten(d)
 	# Ein Grundstock an vereinslosen Spielern
@@ -338,6 +340,7 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 			"regeneration": int(clampf(ruf / 15.0 + Namen.bereich(-1.5, 1.5), 1.0, 9.0)),
 		},
 		"kader": [],
+		"jugend": [],
 		"personal": [],
 		"taktik": standard_taktik(),
 		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": ""},

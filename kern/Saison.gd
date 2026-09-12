@@ -268,6 +268,10 @@ static func _vertraege_ablaufen(d: Dictionary) -> void:
 			continue
 		if int(sp["vertrag"].get("bis_saison", 9)) > saison:
 			continue
+		if bool(sp.get("jugendspieler", false)):
+			# Jugendvertraege verlaengern sich stillschweigend bis zum Hoechstalter.
+			sp["vertrag"]["bis_saison"] = saison + 2
+			continue
 		# Vertrag laeuft aus
 		if cid == Welt.mein_verein_id:
 			Welt.nachricht({
@@ -309,42 +313,24 @@ static func _karriereenden(d: Dictionary) -> void:
 		d["spieler"].erase(sid)
 
 static func _nachwuchs(d: Dictionary) -> void:
+	Jugend.jahreswechsel(d)
 	for cid in Weltgenerator.clubs(d):
 		var v: Dictionary = d["vereine"][cid]
 		var jugend: int = int(v["infrastruktur"]["jugendarbeit"])
-		var anzahl: int = 1 + (1 if jugend >= 5 else 0) + (1 if Namen.zufall() < 0.35 else 0)
+		var anzahl: int = 1 + (1 if jugend >= 5 else 0) + (1 if Namen.zufall() < 0.45 else 0)
+		var neue := Jugend.erzeuge_jahrgang(d, cid, anzahl)
+		if cid != Welt.mein_verein_id or neue.is_empty():
+			continue
 		var namen: Array = []
-		for i in range(anzahl):
-			var positionen: Array = Spielerfabrik.POSITIONEN
-			var pos: String = str(positionen[Namen.wuerfel(0, positionen.size() - 1)])
-			var basis: float = 22.0 + float(jugend) * 1.8 + float(v["ruf"]) * 0.14
-			var ziel: float = clampf(Namen.glocke(basis, 6.0, 14.0, 62.0), 14.0, 62.0)
-			var sid := Weltgenerator.neue_spieler_id(d)
-			var sp := Spielerfabrik.erzeuge(sid, Namen.kultur_zufall(str(v["nation"]), 0.8),
-				Namen.wuerfel(16, 18), ziel, pos, int(d["startjahr"]))
-			# Jugendarbeit hebt vor allem das Potenzial
-			sp["potenzial"] = clampf(float(sp["potenzial"]) + float(jugend) * 1.6 + Namen.bereich(-5.0, 9.0), ziel, 96.0)
-			sp["verein"] = cid
-			sp["kenntnis"] = 100.0 if cid == Welt.mein_verein_id else 30.0
-			sp["vertrag"] = {
-				"bis_saison": Welt.saison_index() + Namen.wuerfel(2, 4),
-				"gehalt": 220.0 + ziel * 6.0,
-				"rolle": "talent",
-				"ablöseklausel": 0.0,
-				"unterschrieben_saison": Welt.saison_index(),
-				"praemie_tor": 0.0, "praemie_sieg": 0.0,
-			}
-			sp["aus_eigener_jugend"] = true
-			d["spieler"][sid] = sp
-			(v["kader"] as Array).append(sid)
-			namen.append("%s (%s, Potenzial: %s)" % [Spielerfabrik.voller_name(sp),
-				Spielerfabrik.POSITION_NAME[pos], Scouting.potenzial_text(d, sid)])
-		if cid == Welt.mein_verein_id and not namen.is_empty():
-			Welt.nachricht({
-				"typ": "jugend", "wichtig": true,
-				"betreff": "Neuer Jahrgang aus der eigenen Jugend",
-				"text": "Folgende Spieler rücken in den Profikader auf: %s" % "\n• ".join(PackedStringArray(["" ] + namen)).strip_edges(),
-			})
+		for sid in neue:
+			var sp: Dictionary = d["spieler"][sid]
+			namen.append("%s (%d, %s — %s)" % [Spielerfabrik.voller_name(sp), int(sp["alter"]),
+				Spielerfabrik.POSITION_NAME[str(sp["position"])], Jugend.einschaetzung(d, sid)])
+		Welt.nachricht({
+			"typ": "jugend", "wichtig": true,
+			"betreff": "Neuer Jahrgang im Nachwuchszentrum",
+			"text": "Diese Talente sind aufgenommen worden:\n• %s" % "\n• ".join(PackedStringArray(namen)),
+		})
 
 static func _statistiken_umlegen(d: Dictionary) -> void:
 	for sid in d["spieler"].keys():

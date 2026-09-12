@@ -40,6 +40,7 @@ var abschluss_knopf: Button
 var gewaehlt_raus: String = ""
 var hinweis: Label
 var anpfiff_knopf: Button
+var ansprache_bereich: VBoxContainer
 var angepfiffen: bool = false
 var wunschtempo: int = 2
 
@@ -158,6 +159,7 @@ func _baue() -> void:
 	var rechtsbox := Stil.vbox(10)
 	rechtsbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	rechts.add_child(rechtsbox)
+	ansprache_bereich = Bausteine.karte_in(rechtsbox, "Ansprache")
 	taktik_bereich = Bausteine.karte_in(rechtsbox, "Taktik im Spiel")
 	kader_bereich = Bausteine.karte_in(rechtsbox, "Mannschaft & Wechsel")
 	stats_bereich = Bausteine.karte_in(rechtsbox, "Statistik")
@@ -191,6 +193,7 @@ func starte(spiel_id: String) -> void:
 	_setze_tempo(0)
 	hinweis.text = "Aufstellung und Taktik prüfen — dann Anpfiff."
 	_taktik_aufbauen()
+	_ansprache_aufbauen()
 	_kader_aufbauen()
 	_stats_aufbauen()
 	_szene_auffrischen()
@@ -198,6 +201,7 @@ func starte(spiel_id: String) -> void:
 
 func _anpfiff() -> void:
 	angepfiffen = true
+	_ansprache_aufbauen(false)
 	anpfiff_knopf.visible = false
 	hinweis.text = ""
 	_setze_tempo(wunschtempo)
@@ -233,7 +237,8 @@ func _schritt() -> void:
 	_szene_auffrischen(e)
 	if str(e["typ"]) == "halbzeit":
 		_setze_tempo(0)
-		hinweis.text = "Halbzeit — jetzt lassen sich Wechsel und Taktik anpassen."
+		hinweis.text = "Halbzeit — Ansprache halten, wechseln, umstellen."
+		_ansprache_aufbauen(true)
 	if str(e["typ"]) == "ende":
 		_ende()
 
@@ -260,6 +265,7 @@ func _ende() -> void:
 	uhr.stop()
 	abschluss_knopf.visible = true
 	hinweis.text = "Abpfiff."
+	_ansprache_aufbauen(false)
 	_stats_auffrischen()
 
 func _abschliessen() -> void:
@@ -370,8 +376,70 @@ func _auszeit() -> void:
 	if sim == null or fertig:
 		return
 	if sim.auszeit(mein_team):
-		hinweis.text = "Auszeit genommen — die Mannschaft sammelt sich."
+		hinweis.text = "Auszeit genommen — jetzt zählt, was Sie sagen."
+		_setze_tempo(0)
+		_ansprache_aufbauen(true)
 		_anzeige_auffrischen()
+
+## Ansprachebereich. "dringend" hebt ihn optisch hervor (Halbzeit, Auszeit).
+func _ansprache_aufbauen(dringend: bool = false) -> void:
+	if ansprache_bereich == null or sim == null:
+		return
+	Bildschirm.leeren(ansprache_bereich)
+	if fertig:
+		ansprache_bereich.add_child(Stil.matt("Das Spiel ist beendet."))
+		return
+	var gelegenheit: bool = dringend or not angepfiffen
+	if not gelegenheit:
+		ansprache_bereich.add_child(Stil.matt(
+			"Ansprachen sind vor dem Anpfiff, in der Halbzeit und in einer Auszeit möglich.", Stil.S_MINI))
+		var letzte: Array = mein_team.get("ansprachen", [])
+		if not letzte.is_empty():
+			var e: Dictionary = letzte[-1]
+			ansprache_bereich.add_child(Stil.info_zeile(
+				str(Matchsim.ANSPRACHEN[str(e["tonlage"])]["name"]),
+				"Wirkung %+.0f %%" % (float(e["wirkung"]) * 100.0),
+				Stil.GRUEN if float(e["wirkung"]) > 0.0 else Stil.ROT))
+		return
+	ansprache_bereich.add_child(Stil.text("Was sagen Sie der Mannschaft?", Stil.S_NORMAL, Stil.AKZENT))
+	var lage := Stil.matt(_lagetext(), Stil.S_MINI)
+	lage.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	ansprache_bereich.add_child(lage)
+	for tonlage in Matchsim.ANSPRACHEN.keys():
+		var eintrag: Dictionary = Matchsim.ANSPRACHEN[tonlage]
+		var k := Stil.knopf("%s — %s" % [str(eintrag["name"]), str(eintrag["beschreibung"])])
+		k.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var ton: String = str(tonlage)
+		k.pressed.connect(func():
+			var erg := sim.ansprache_halten(mein_team, ton)
+			hinweis.text = str(erg["text"])
+			_ansprache_aufbauen(false)
+			_kader_auffrischen())
+		ansprache_bereich.add_child(k)
+
+func _lagetext() -> String:
+	if sim == null:
+		return ""
+	var eigene: int = int(mein_team["tore"])
+	var fremde: int = int(gegner_team["tore"])
+	var abstand: int = eigene - fremde
+	var klima: float = float(Welt.verein(str(mein_team["cid"])).get("stimmung_kabine", 60.0))
+	var lage := ""
+	if abstand >= 5:
+		lage = "Klar vorn — die Gefahr ist Nachlässigkeit."
+	elif abstand > 0:
+		lage = "Knapp vorn, das Spiel kann noch kippen."
+	elif abstand == 0:
+		lage = "Alles offen."
+	elif abstand > -5:
+		lage = "Knapp hinten, es ist noch alles drin."
+	else:
+		lage = "Deutlich hinten — jetzt braucht es etwas Außergewöhnliches."
+	if klima < 45.0:
+		lage += " Die Kabine ist angespannt, harte Worte sind riskant."
+	elif klima > 72.0:
+		lage += " Die Mannschaft steht geschlossen hinter Ihnen."
+	return lage
 
 func _taktik_aufbauen() -> void:
 	Bildschirm.leeren(taktik_bereich)

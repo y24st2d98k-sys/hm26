@@ -11,10 +11,12 @@ const BEREICHE := [
 	{"id": "taktik", "name": "Aufstellung", "gruppe": "Verein"},
 	{"id": "training", "name": "Training", "gruppe": "Verein"},
 	{"id": "kabine", "name": "Kabine", "gruppe": "Verein"},
+	{"id": "jugend", "name": "Nachwuchs", "gruppe": "Verein"},
 	{"id": "spielplan", "name": "Spielplan", "gruppe": "Wettbewerb"},
 	{"id": "tabellen", "name": "Tabellen", "gruppe": "Wettbewerb"},
 	{"id": "pokale", "name": "Pokale & Europa", "gruppe": "Wettbewerb"},
 	{"id": "national", "name": "Nationalteams", "gruppe": "Wettbewerb"},
+	{"id": "statistik", "name": "Statistiken", "gruppe": "Wettbewerb"},
 	{"id": "transfer", "name": "Transfermarkt", "gruppe": "Markt"},
 	{"id": "scouting", "name": "Scouting", "gruppe": "Markt"},
 	{"id": "finanzen", "name": "Finanzen", "gruppe": "Führung"},
@@ -57,6 +59,7 @@ func _ready() -> void:
 	add_child(Spielerfenster.new())
 	add_child(Vereinsfenster.new())
 	add_child(Spielbericht.new())
+	add_child(Pressefenster.new())
 	live = LiveSpiel.new()
 	live.visible = false
 	add_child(live)
@@ -157,8 +160,9 @@ func _baue_navigation() -> void:
 func _baue_bildschirme() -> void:
 	var liste := {
 		"buero": BueroBildschirm, "kader": KaderBildschirm, "taktik": TaktikBildschirm,
-		"training": TrainingBildschirm, "kabine": KabinenBildschirm, "spielplan": SpielplanBildschirm,
-		"tabellen": TabellenBildschirm, "pokale": PokalBildschirm, "national": NationalBildschirm, "transfer": TransferBildschirm,
+		"training": TrainingBildschirm, "kabine": KabinenBildschirm, "jugend": JugendBildschirm, "spielplan": SpielplanBildschirm,
+		"tabellen": TabellenBildschirm, "pokale": PokalBildschirm, "national": NationalBildschirm,
+		"statistik": StatistikBildschirm, "transfer": TransferBildschirm,
 		"scouting": ScoutingBildschirm, "finanzen": FinanzBildschirm,
 		"infrastruktur": InfrastrukturBildschirm, "personal": PersonalBildschirm,
 		"vorstand": VorstandsBildschirm, "karriere": KarriereBildschirm, "medien": MedienBildschirm,

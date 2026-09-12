@@ -100,6 +100,7 @@ static func tageswechsel(d: Dictionary) -> void:
 static func wochenwechsel(d: Dictionary) -> void:
 	for cid in Weltgenerator.clubs(d):
 		_verein_trainieren(d, cid)
+	Jugend.wochenwechsel(d)
 	_alterung_pruefen(d)
 
 static func _verein_trainieren(d: Dictionary, cid: String) -> void:

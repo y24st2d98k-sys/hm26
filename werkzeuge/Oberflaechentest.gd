@@ -79,6 +79,15 @@ func _ready() -> void:
 		app.zeige(id2)
 		await get_tree().process_frame
 
+	_log("— Statistikzentrum: alle Wertungen —")
+	app.zeige("statistik")
+	var stat: Node = app.bildschirme["statistik"]
+	for kat in Statistik.KATEGORIEN.keys():
+		stat.kategorie = str(kat)
+		stat._zeichne()
+		await get_tree().process_frame
+	_log("   %d Wertungen gezeichnet" % Statistik.KATEGORIEN.size())
+
 	_log("— Speichern und Laden —")
 	if Welt.speichern(1, "Testlauf"):
 		_log("   gespeichert")

@@ -36,6 +36,13 @@ func aktualisieren() -> void:
 		Trainerkarriere.voller_name(Welt.trainer())]))
 	titelbox.add_child(Bausteine.formkurve(v["formkurve"], 6))
 
+	if Presse.offen(Welt.daten):
+		var pk := Bausteine.karte_in(bereich, "Pressekonferenz steht an")
+		pk.add_child(Stil.text("Die Journalisten warten auf Ihre Einschätzung vor dem nächsten Spiel.", Stil.S_KLEIN))
+		var pk_knopf := Stil.knopf_primaer("Zur Pressekonferenz")
+		pk_knopf.pressed.connect(func(): Pressefenster.oeffnen(self))
+		pk.add_child(pk_knopf)
+
 	var oben := Stil.hbox(12)
 	bereich.add_child(oben)
 	_naechstes_spiel(oben)

@@ -165,6 +165,10 @@ func letzte_spiele(cid: String, anzahl: int = 5, sichtweite: int = 200) -> Array
 					return liste
 	return liste
 
+## Talente im Nachwuchszentrum eines Vereins.
+func jugend(cid: String) -> Array:
+	return Jugend.liste(daten, cid)
+
 func kader(cid: String) -> Array:
 	var liste: Array = (verein(cid).get("kader", []) as Array).duplicate()
 	if liste.is_empty():
@@ -222,6 +226,7 @@ func tag_weiter() -> Dictionary:
 	Transfermarkt.tageswechsel(daten)
 	Scouting.tageswechsel(daten)
 	Nationalteam.tageswechsel(daten)
+	Presse.tageswechsel(daten)
 
 	# Anstehende Partien
 	var heute: Array = (spiele_am_tag(t) as Array).duplicate()
@@ -443,6 +448,7 @@ func _daten_auffrischen() -> void:
 		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2},
 		"plan": {}, "international": {}, "pokale": {}, "saison_abgeschlossen": false,
 		"nationalteams": [], "turnier": Nationalteam.leeres_turnier(),
+		"pressekonferenz": {},
 	}
 	for k in vorlage.keys():
 		if not daten.has(k):
@@ -460,6 +466,8 @@ func _daten_auffrischen() -> void:
 				"legenden": []}
 		if not verein_dict.has("formkurve"):
 			verein_dict["formkurve"] = []
+		if not verein_dict.has("jugend"):
+			verein_dict["jugend"] = []
 	for sp in daten.get("spieler", {}).values():
 		if not sp.has("entwicklung_log"):
 			sp["entwicklung_log"] = []

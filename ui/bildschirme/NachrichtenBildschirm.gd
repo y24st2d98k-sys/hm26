@@ -10,6 +10,7 @@ const TYPEN := {
 	"medizin": "Medizin", "kabine": "Kabine", "scouting": "Scouting", "training": "Training",
 	"wettbewerb": "Wettbewerb", "karriere": "Karriere", "auszeichnung": "Ehrungen",
 	"finanzen": "Finanzen", "jugend": "Jugend", "chronik": "Chronik",
+	"presse": "Presse", "national": "Nationalteam",
 }
 
 func aufbauen() -> void:
@@ -76,6 +77,10 @@ func _eintrag(n: Dictionary) -> Control:
 	var text := Stil.text(str(n["text"]), Stil.S_KLEIN, Stil.TEXT_MATT)
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	karte.add_child(text)
+	if str(n.get("aktion", "")) == "pressekonferenz" and Presse.offen(Welt.daten):
+		var pk := Stil.knopf_primaer("Zur Pressekonferenz")
+		pk.pressed.connect(func(): Pressefenster.oeffnen(self))
+		karte.add_child(pk)
 	var daten: Dictionary = n.get("daten", {})
 	if daten.has("spieler") and Welt.daten["spieler"].has(str(daten["spieler"])):
 		var k := Stil.knopf_flach("Spielerprofil öffnen")

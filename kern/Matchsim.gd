@@ -135,6 +135,8 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		"siebenmeter_schuetze": str(auf.get("siebenmeter", "")),
 		"sieben_gegen_sechs": false,
 		"letzte_wechselpruefung": -999.0,
+		"ansprache": 0.0,
+		"ansprachen": [],
 	}
 	var angriff: Dictionary = auf.get("angriff", {})
 	var abwehr: Dictionary = auf.get("abwehr", {})
@@ -267,6 +269,8 @@ func _angriff_simulieren() -> void:
 	_kraft_verbrauchen(a, dauer, true)
 	_kraft_verbrauchen(v, dauer, false)
 	_puls_abklingen()
+	heim["ansprache"] = float(heim["ansprache"]) * 0.965
+	gast["ansprache"] = float(gast["ansprache"]) * 0.965
 	if rng.randf() < 0.25:
 		_verletzungspruefung(a)
 		_verletzungspruefung(v)
@@ -453,6 +457,10 @@ func _paradenwert(v: Dictionary, tw: String, pos: String) -> float:
 
 func _tor(a: Dictionary, v: Dictionary, schuetze: String, pos: String, ist_7m: bool) -> Dictionary:
 	a["tore"] = int(a["tore"]) + 1
+	# Gegentor dem Torwart zuschreiben, der gerade im Tor steht
+	var kassiert := _spieler_auf(v, "TW")
+	if kassiert != "" and v["zustand"].has(kassiert):
+		v["zustand"][kassiert]["gegentore"] = int(v["zustand"][kassiert]["gegentore"]) + 1
 	a["stats"]["tore"] += 1
 	var zst: Dictionary = a["zustand"][schuetze]
 	zst["tore"] += 1
@@ -933,6 +941,72 @@ func auszeit(t: Dictionary) -> bool:
 	_warteschlange.append(_ereignis("auszeit", _seite(t), "", "Auszeit %s. Der Trainer stellt die Mannschaft neu ein." % t["name"]))
 	return true
 
+# ------------------------------------------------------------- Ansprache ---
+
+const ANSPRACHEN := {
+	"ruhig": {"name": "Ruhe bewahren", "beschreibung": "Nichts überstürzen, beim Plan bleiben."},
+	"anfeuern": {"name": "Anfeuern", "beschreibung": "Emotion, Lautstärke, alles nach vorn."},
+	"kritisieren": {"name": "Kritisieren", "beschreibung": "Klare Ansage, keine Rücksicht."},
+	"vertrauen": {"name": "Vertrauen zusichern", "beschreibung": "Rückendeckung geben, Druck nehmen."},
+}
+
+## Ansprache in der Halbzeit oder Auszeit. Wie sie ankommt, haengt von der
+## Spielsituation, dem Kabinenklima und den Charakteren auf dem Feld ab.
+## Rueckgabe: {"wirkung": float, "positiv": int, "negativ": int, "text": String}
+func ansprache_halten(t: Dictionary, tonlage: String) -> Dictionary:
+	var eigene: int = int(t["tore"])
+	var fremde: int = int(gast["tore"]) if t == heim else int(heim["tore"])
+	var abstand: int = eigene - fremde
+	var klima: float = float(daten["vereine"][t["cid"]].get("stimmung_kabine", 60.0)) / 100.0
+	var positiv := 0
+	var negativ := 0
+	for sid in alle_auf_platz(t):
+		var sp: Dictionary = daten["spieler"][sid]
+		var charakter: Dictionary = sp["charakter"]
+		var temperament: float = float(charakter.get("temperament", 10.0)) / 20.0
+		var profitum: float = float(charakter.get("profitum", 12.0)) / 20.0
+		var loyalitaet: float = float(charakter.get("loyalitaet", 12.0)) / 20.0
+		var nerven: float = float(sp["attr"]["nervenstaerke"]) / 20.0
+		var chance := 0.5
+		match tonlage:
+			"ruhig":
+				chance = 0.46 + profitum * 0.35 + nerven * 0.15 - absf(float(abstand)) * 0.01
+			"anfeuern":
+				chance = 0.44 + temperament * 0.34 + (0.18 if absi(abstand) <= 3 else -0.08)
+			"kritisieren":
+				chance = 0.30 + profitum * 0.45 - temperament * 0.25 + (0.14 if abstand < -2 else -0.06)
+			"vertrauen":
+				chance = 0.48 + loyalitaet * 0.28 + (1.0 - nerven) * 0.16
+		chance += (klima - 0.6) * 0.3
+		if Trainerkarriere.bonus_fuer(daten, str(t["cid"]), "kumpeltyp"):
+			chance += 0.06
+		if Trainerkarriere.bonus_fuer(daten, str(t["cid"]), "eiserne_hand") and tonlage == "kritisieren":
+			chance += 0.10
+		if rng.randf() < clampf(chance, 0.05, 0.95):
+			positiv += 1
+			sp["moral"] = clampf(float(sp["moral"]) + 1.2, 5.0, 100.0)
+		else:
+			negativ += 1
+			sp["moral"] = clampf(float(sp["moral"]) - 1.0, 5.0, 100.0)
+	var gesamt: int = maxi(positiv + negativ, 1)
+	var wirkung: float = clampf((float(positiv) / float(gesamt) - 0.5) * 2.0, -1.0, 1.0)
+	t["ansprache"] = clampf(float(t["ansprache"]) * 0.4 + wirkung, -1.0, 1.0)
+	(t["ansprachen"] as Array).append({"zeit": zeit, "tonlage": tonlage, "wirkung": wirkung})
+	var text := ""
+	if wirkung > 0.45:
+		text = "Die Mannschaft zieht mit — %d von %d Spielern reagieren deutlich." % [positiv, gesamt]
+	elif wirkung > 0.1:
+		text = "Die Ansprache kommt überwiegend an (%d von %d)." % [positiv, gesamt]
+	elif wirkung > -0.15:
+		text = "Gemischte Reaktionen: %d von %d nehmen es an." % [positiv, gesamt]
+	elif wirkung > -0.5:
+		text = "Das kam nicht gut an — nur %d von %d gehen mit." % [positiv, gesamt]
+	else:
+		text = "Die Kabine macht dicht. Nur %d von %d reagieren." % [positiv, gesamt]
+	_warteschlange.append(_ereignis("ansprache", _seite(t), "",
+		"%s: %s" % [str(ANSPRACHEN[tonlage]["name"]), text]))
+	return {"wirkung": wirkung, "positiv": positiv, "negativ": negativ, "text": text}
+
 # ------------------------------------------------------------- Hilfsmittel ---
 
 func _seite(t: Dictionary) -> String:
@@ -1003,6 +1077,8 @@ func _angriffskraft(a: Dictionary, v: Dictionary) -> float:
 	basis *= Kabine.teamfaktor(daten, str(a["cid"]))
 	basis *= 1.0 + Scouting.gegnervorteil(daten, str(a["cid"]), str(v["cid"]))
 	basis *= 1.0 + 0.035 * float(a["auszeit_wirkung"])
+	basis *= 1.0 + 0.055 * float(a["ansprache"])
+	basis *= 1.0 + Presse.motivation(daten, str(a["cid"]))
 	a["auszeit_wirkung"] = maxf(float(a["auszeit_wirkung"]) - 0.12, 0.0)
 	return basis
 
@@ -1023,6 +1099,7 @@ func _abwehrkraft(v: Dictionary, a: Dictionary) -> float:
 	basis *= float(MENTALITAET[str(v["taktik"]["mentalitaet"])]["abwehr"])
 	basis *= _puls_wirkung(v)
 	basis *= Kabine.teamfaktor(daten, str(v["cid"]))
+	basis *= 1.0 + 0.045 * float(v["ansprache"])
 	if Trainerkarriere.bonus_fuer(daten, str(v["cid"]), "betonmischer"):
 		basis *= 1.035
 	# Gezielte Manndeckung gegen den Hauptwerfer des Gegners

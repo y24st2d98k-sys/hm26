@@ -104,6 +104,7 @@ static func _spielerstats(d: Dictionary, m: Dictionary) -> void:
 				ziel["wuerfe"] = int(ziel["wuerfe"]) + int(z["wuerfe"])
 				ziel["assists"] = int(ziel["assists"]) + int(z["assists"])
 				ziel["paraden"] = int(ziel["paraden"]) + int(z["paraden"])
+				ziel["gegentore"] = int(ziel["gegentore"]) + int(z.get("gegentore", 0))
 				ziel["blocks"] = int(ziel["blocks"]) + int(z["blocks"])
 				ziel["ballgewinne"] = int(ziel["ballgewinne"]) + int(z["ballgewinne"])
 				ziel["technische_fehler"] = int(ziel["technische_fehler"]) + int(z["fehler"])
@@ -122,6 +123,106 @@ static func _spielerstats(d: Dictionary, m: Dictionary) -> void:
 			if str(m["art"]) == "liga" and int(z["tore"]) > 0:
 				var liste: Dictionary = d["ligen"][m["wettbewerb"]]["torschuetzen"]
 				liste[sid] = int(liste.get(sid, 0)) + int(z["tore"])
+
+## Ranglisten einer Liga über verschiedene Kategorien.
+## Jede Kategorie liefert [{sid, wert, zusatz}] absteigend sortiert.
+const KATEGORIEN := {
+	"tore": {"name": "Tore", "einheit": "", "min_spiele": 1, "torwart": false},
+	"tore_pro_spiel": {"name": "Tore je Spiel", "einheit": "", "min_spiele": 5, "torwart": false},
+	"assists": {"name": "Vorlagen", "einheit": "", "min_spiele": 1, "torwart": false},
+	"wurfquote": {"name": "Wurfquote", "einheit": "%", "min_spiele": 5, "torwart": false},
+	"siebenmeter": {"name": "Siebenmetertore", "einheit": "", "min_spiele": 1, "torwart": false},
+	"paraden": {"name": "Paraden", "einheit": "", "min_spiele": 1, "torwart": true},
+	"paradenquote": {"name": "Paradenquote", "einheit": "%", "min_spiele": 5, "torwart": true},
+	"note": {"name": "Beste Durchschnittsnote", "einheit": "", "min_spiele": 8, "torwart": false},
+	"minuten": {"name": "Einsatzzeit", "einheit": " min", "min_spiele": 1, "torwart": false},
+	"zeitstrafen": {"name": "Zeitstrafen", "einheit": "", "min_spiele": 1, "torwart": false},
+	"ballgewinne": {"name": "Ballgewinne", "einheit": "", "min_spiele": 1, "torwart": false},
+	"blocks": {"name": "Blocks", "einheit": "", "min_spiele": 1, "torwart": false},
+}
+
+static func rangliste(d: Dictionary, lid: String, kategorie: String, anzahl: int = 15) -> Array:
+	var info: Dictionary = KATEGORIEN.get(kategorie, KATEGORIEN["tore"])
+	var liste: Array = []
+	for cid in d["ligen"][lid]["vereine"]:
+		for sid in d["vereine"][cid]["kader"]:
+			var sp: Dictionary = d["spieler"][sid]
+			if bool(sp["ist_torwart"]) != bool(info["torwart"]):
+				continue
+			var st: Dictionary = sp["stats"]["saison"]
+			var spiele: int = int(st["spiele"])
+			if spiele < int(info["min_spiele"]):
+				continue
+			var wert := 0.0
+			var zusatz := ""
+			match kategorie:
+				"tore":
+					wert = float(st["tore"])
+				"tore_pro_spiel":
+					wert = float(st["tore"]) / float(spiele)
+					zusatz = "%d Tore in %d Spielen" % [int(st["tore"]), spiele]
+				"assists":
+					wert = float(st["assists"])
+				"wurfquote":
+					if int(st["wuerfe"]) < 25:
+						continue
+					wert = float(st["tore"]) / float(st["wuerfe"]) * 100.0
+					zusatz = "%d von %d" % [int(st["tore"]), int(st["wuerfe"])]
+				"siebenmeter":
+					wert = float(st["siebenmeter_tore"])
+					zusatz = "von %d Versuchen" % int(st["siebenmeter_wuerfe"])
+				"paraden":
+					wert = float(st["paraden"])
+				"paradenquote":
+					var wuerfe_aufs_tor: float = float(st["paraden"]) + float(st.get("gegentore", 0))
+					if wuerfe_aufs_tor < 40.0:
+						continue
+					wert = float(st["paraden"]) / wuerfe_aufs_tor * 100.0
+					zusatz = "%d Paraden" % int(st["paraden"])
+				"note":
+					var n: float = Spielerfabrik.note(sp)
+					if n <= 0.0:
+						continue
+					wert = 7.0 - n
+					zusatz = Stil.komma(n, 2)
+				"minuten":
+					wert = float(st["minuten"])
+				"zeitstrafen":
+					wert = float(st["zeitstrafen"])
+				"ballgewinne":
+					wert = float(st["ballgewinne"])
+				"blocks":
+					wert = float(st["blocks"])
+			if wert <= 0.0:
+				continue
+			liste.append({"sid": sid, "wert": wert, "zusatz": zusatz})
+	liste.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	return liste.slice(0, anzahl)
+
+## Mannschaftsranglisten einer Liga.
+static func team_rangliste(d: Dictionary, lid: String, kategorie: String) -> Array:
+	var liste: Array = []
+	for cid in d["ligen"][lid]["vereine"]:
+		var v: Dictionary = d["vereine"][cid]
+		var s: Dictionary = v["saison"]
+		var spiele: int = maxi(int(s["spiele"]), 1)
+		var wert := 0.0
+		match kategorie:
+			"angriff":
+				wert = float(s["tore"]) / float(spiele)
+			"abwehr":
+				wert = -float(s["gegentore"]) / float(spiele)
+			"zuschauer":
+				if int(s["heimspiele"]) <= 0:
+					continue
+				wert = float(s["zuschauer_summe"]) / float(s["heimspiele"])
+			"zeitstrafen":
+				wert = float(s["zeitstrafen"]) / float(spiele)
+		if kategorie != "abwehr" and wert <= 0.0:
+			continue
+		liste.append({"cid": cid, "wert": wert})
+	liste.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	return liste
 
 ## Torschuetzenliste einer Liga, absteigend sortiert.
 static func torjaeger(d: Dictionary, lid: String, anzahl: int = 20) -> Array:

@@ -48,6 +48,8 @@ static func suchen(d: Dictionary, filter: Dictionary, eigener_verein: String = "
 	var saison: int = Welt.saison_index()
 	for sid in d["spieler"].keys():
 		var sp: Dictionary = d["spieler"][sid]
+		if bool(sp.get("jugendspieler", false)):
+			continue
 		if str(sp["verein"]) == eigener_verein and eigener_verein != "":
 			continue
 		if filter.has("position") and str(filter["position"]) != "" and str(sp["position"]) != str(filter["position"]):
