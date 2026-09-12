@@ -170,9 +170,12 @@ func _zeile(sid: String, index: int = 0) -> Control:
 	h.offset_right = -6
 	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	knopf.add_child(h)
+	var namenszelle := Stil.hbox(5)
+	namenszelle.add_child(Flagge.fuer(str(sp["nation"]), 16.0))
+	namenszelle.add_child(Stil.text(Spielerfabrik.voller_name(sp), Stil.S_KLEIN))
 	var zellen := [
 		Bausteine.positions_abzeichen(str(sp["position"])),
-		Stil.text(Spielerfabrik.voller_name(sp), Stil.S_KLEIN),
+		namenszelle,
 		Stil.text(str(int(sp["alter"])), Stil.S_KLEIN),
 		Stil.text(Scouting.gesamt_text(Welt.daten, sid), Stil.S_KLEIN, Stil.wert_farbe(Spielerfabrik.gesamt(sp), 100.0)),
 		Stil.text(Scouting.potenzial_text(Welt.daten, sid), Stil.S_MINI, Stil.LILA),

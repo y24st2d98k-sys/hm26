@@ -51,6 +51,7 @@ func aktualisieren() -> void:
 		var sp: Dictionary = Welt.spieler(sid)
 		var zeile := Stil.hbox(8)
 		fuehrung.add_child(zeile)
+		zeile.add_child(Portraet.fuer_spieler(sid, 26.0))
 		var k := Stil.knopf_flach(Spielerfabrik.voller_name(sp))
 		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
 		zeile.add_child(k)

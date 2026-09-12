@@ -564,6 +564,7 @@ func _spielerzeile(sid: String, auf_platz: bool) -> Control:
 	var pos := Bausteine.positions_abzeichen(str(sp["position"]))
 	pos.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.add_child(pos)
+	h.add_child(Portraet.fuer_spieler(sid, 21.0))
 	var namensfeld := Stil.text(Spielerfabrik.kurz_name(sp), Stil.S_KLEIN, Stil.AKZENT if gewaehlt_raus == sid else Stil.TEXT)
 	namensfeld.custom_minimum_size = Vector2(130, 0)
 	namensfeld.mouse_filter = Control.MOUSE_FILTER_IGNORE
