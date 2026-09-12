@@ -57,6 +57,7 @@ func _draw() -> void:
 		"chronik": _buch()
 		"nachrichten": _brief()
 		"system": _diskette()
+		"daten": _datenbank()
 		"glocke": _glocke()
 		"pfeil_rechts": _pfeil_rechts()
 		"doppelpfeil": _doppelpfeil()
@@ -273,3 +274,10 @@ func _ball() -> void:
 	_kreis(0.50, 0.50, 0.36)
 	draw_arc(_p(0.50, 0.50), 0.20 * _s, 0.5, 2.7, 12, farbe, staerke * 0.8, true)
 	draw_arc(_p(0.50, 0.50), 0.20 * _s, 3.7, 5.9, 12, farbe, staerke * 0.8, true)
+
+func _datenbank() -> void:  # gestapelte Scheiben
+	_linie([Vector2(0.18, 0.26), Vector2(0.18, 0.74)])
+	_linie([Vector2(0.82, 0.26), Vector2(0.82, 0.74)])
+	for y in [0.26, 0.50, 0.74]:
+		draw_arc(_p(0.50, y), 0.32 * _s, 0.0, PI, 16, farbe, staerke, true)
+	draw_arc(_p(0.50, 0.26), 0.32 * _s, PI, TAU, 16, farbe, staerke, true)

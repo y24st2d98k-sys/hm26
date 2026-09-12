@@ -45,6 +45,21 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "vorspulen":
+			app.zeige("spielplan")
+			var vf: Node = get_tree().get_first_node_in_group("vorspulfenster")
+			vf.zeige()
+			await _foto("%s/vorspulen.png" % ordner)
+			vf.visible = false
+			continue
+		if str(id) == "daten":
+			app.zeige("daten")
+			var db: Node = app.bildschirme["daten"]
+			db.gewaehlt = "SC Magdeburg"
+			db.entwurf = []
+			db.aktualisieren()
+			await _foto("%s/daten.png" % ordner)
+			continue
 		if str(id) == "bericht":
 			var gespielt := ""
 			for mid2 in Welt.daten["spiele"].keys():

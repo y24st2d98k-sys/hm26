@@ -85,6 +85,27 @@ func _ready() -> void:
 		app.zeige(id2)
 		await get_tree().process_frame
 
+	_log("— Kaderdaten pflegen —")
+	var db: Node = app.bildschirme["daten"]
+	app.zeige("daten")
+	db.gewaehlt = "THW Kiel"
+	db.entwurf = []
+	db.aktualisieren()
+	await get_tree().process_frame
+	var eingelesen := Kaderpflege.csv_einlesen(
+		"Vorname;Nachname;Position;Nation;Alter;Staerke\n" +
+		"Test;Eins;RM;de;24;80\nTest;Zwei;XX;zz;99;500\nkaputt\n")
+	_log("   CSV: %d übernommen, %d Hinweise" % [(eingelesen["eintraege"] as Array).size(),
+		(eingelesen["meldungen"] as Array).size()])
+	Kaderpflege.setzen("THW Kiel", eingelesen["eintraege"])
+	_log("   THW Kiel jetzt %d Spieler, eigen: %s" % [Kaderpflege.kader("THW Kiel").size(),
+		str(Kaderpflege.ist_eigen("THW Kiel"))])
+	db.entwurf = []
+	db.aktualisieren()
+	await get_tree().process_frame
+	Kaderpflege.alles_verwerfen()
+	_log("   nach Verwerfen: %d Spieler" % Kaderpflege.kader("THW Kiel").size())
+
 	_log("— Einzelgespräch —")
 	var gsid: String = str(Welt.mein_verein()["kader"][1])
 	_log("   angebotene Themen: %s" % str(Gespraech.themen(Welt.daten, gsid)))
@@ -119,6 +140,19 @@ func _ready() -> void:
 		stat._zeichne()
 		await get_tree().process_frame
 	_log("   %d Wertungen gezeichnet" % Statistik.KATEGORIEN.size())
+
+	_log("— Vorspulen —")
+	var vf: Node = get_tree().get_first_node_in_group("vorspulfenster")
+	vf.zeige()
+	await get_tree().process_frame
+	var vorher_tag := Welt.tag()
+	Welt.setze_einstellung("vorspulen_simuliert", true)
+	var sprung := Welt.vorspulen(Welt.tag() + 21, true)
+	_log("   %d Tage vorgespult (%s), Tag %d -> %d" % [int(sprung["tage"]), str(sprung["grund"]),
+		vorher_tag, Welt.tag()])
+	vf._zeichne()
+	await get_tree().process_frame
+	vf.visible = false
 
 	_log("— Speichern und Laden —")
 	if Welt.speichern(1, "Testlauf"):

@@ -255,6 +255,39 @@ func tag_weiter() -> Dictionary:
 	zustand_geaendert.emit()
 	return unterbrechung
 
+## Bis zu einem Tag durchschalten. Haelt an, sobald etwas passiert, das eine
+## Entscheidung verlangt — eine eigene Partie (wenn nicht simuliert werden soll),
+## das Saisonende, der Saisonwechsel oder der Verlust des Vereins.
+## Liefert {"tage": …, "grund": …, "spiel": …} zurueck.
+func vorspulen(ziel_tag: int, eigene_simulieren: bool = true) -> Dictionary:
+	if not bereit():
+		return {"tage": 0, "grund": "kein_spielstand"}
+	var geschafft := 0
+	var verein_vorher := mein_verein_id
+	# Harte Obergrenze: ein Kalenderjahr. Sonst koennte ein falsches Zieldatum
+	# das Spiel in eine sehr lange Schleife schicken.
+	var grenze: int = mini(maxi(ziel_tag - tag(), 0), 400)
+	while geschafft < grenze:
+		var u := tag_weiter()
+		geschafft += 1
+		if u.has("art"):
+			match str(u["art"]):
+				"eigenes_spiel":
+					if not eigene_simulieren:
+						return {"tage": geschafft, "grund": "eigenes_spiel", "spiel": str(u["spiel"])}
+					partie_simulieren(str(u["spiel"]))
+					spieltag_abwickeln(tag())
+					wochenrhythmus(tag())
+					saison_pruefen(tag())
+				"saisonende":
+					return {"tage": geschafft, "grund": "saisonende"}
+				"neue_saison":
+					return {"tage": geschafft, "grund": "neue_saison"}
+		if mein_verein_id != verein_vorher:
+			return {"tage": geschafft, "grund": "verein_verloren"}
+	zustand_geaendert.emit()
+	return {"tage": geschafft, "grund": "ziel_erreicht"}
+
 ## Rechnet alle Partien eines Tages ab (ohne die des Spielers, falls schon gespielt).
 func spieltag_abwickeln(t: int) -> void:
 	var heute: Array = (spiele_am_tag(t) as Array).duplicate()

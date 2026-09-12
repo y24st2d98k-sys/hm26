@@ -53,10 +53,21 @@ static func nationen() -> Array:
 	laden()
 	return _ligen.get("nationen", [])
 
-## Echte Spieler eines Vereins (leer, wenn keine hinterlegt sind).
+## Echte Spieler eines Vereins aus dem mitgelieferten Datensatz.
+## Selbst gepflegte Kader liegen darueber — siehe Kaderpflege.kader().
 static func kader_fuer(vereinsname: String) -> Array:
 	laden()
 	return (_kader.get("kader", {}) as Dictionary).get(vereinsname, [])
+
+## Der komplette mitgelieferte Kaderdatensatz.
+static func alle_kader() -> Dictionary:
+	laden()
+	return _kader.get("kader", {})
+
+## Nach dem Bearbeiten der Daten neu einlesen.
+static func neu_laden() -> void:
+	_geladen = false
+	laden()
 
 static func kader_stand() -> String:
 	laden()
@@ -65,13 +76,24 @@ static func kader_stand() -> String:
 ## Zählt, wie viele Vereine überhaupt echte Spieler hinterlegt haben.
 static func vereine_mit_kader() -> int:
 	laden()
-	return (_kader.get("kader", {}) as Dictionary).size()
+	var namen := {}
+	for n in (_kader.get("kader", {}) as Dictionary).keys():
+		namen[n] = true
+	for n2 in Kaderpflege.eigene().keys():
+		namen[n2] = true
+	return namen.size()
 
 static func echte_spieler_gesamt() -> int:
 	laden()
 	var summe := 0
-	for liste in (_kader.get("kader", {}) as Dictionary).values():
-		summe += (liste as Array).size()
+	var gesehen := {}
+	for name in Kaderpflege.eigene().keys():
+		summe += (Kaderpflege.eigene()[name] as Array).size()
+		gesehen[name] = true
+	for name2 in (_kader.get("kader", {}) as Dictionary).keys():
+		if gesehen.has(name2):
+			continue
+		summe += ((_kader.get("kader", {}) as Dictionary)[name2] as Array).size()
 	return summe
 
 ## Wie vollständig ist die Welt mit echten Daten gefüllt?

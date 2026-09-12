@@ -448,7 +448,7 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 	for pos in Spielerfabrik.POSITIONEN:
 		belegt[pos] = 0
 	var echt_spitze := 0.0
-	for eintrag in Echtdaten.kader_fuer(str(verein["name"])):
+	for eintrag in Kaderpflege.kader(str(verein["name"])):
 		var pos_e: String = str(eintrag.get("position", "RM"))
 		if not belegt.has(pos_e):
 			pos_e = "RM"

@@ -28,6 +28,7 @@ const BEREICHE := [
 	{"id": "chronik", "name": "Chronik", "gruppe": "Umfeld"},
 	{"id": "nachrichten", "name": "Nachrichten", "gruppe": "Umfeld"},
 	{"id": "system", "name": "Spielstand", "gruppe": "Umfeld"},
+	{"id": "daten", "name": "Kaderdaten", "gruppe": "Umfeld"},
 ]
 
 var bildschirme: Dictionary = {}
@@ -68,6 +69,9 @@ func _ready() -> void:
 	add_child(Spielbericht.new())
 	add_child(Pressefenster.new())
 	add_child(Vorberichtsfenster.new())
+	var vorspulen := Vorspulfenster.new()
+	vorspulen.vorgespult.connect(_auffrischen)
+	add_child(vorspulen)
 	live = LiveSpiel.new()
 	live.visible = false
 	add_child(live)
@@ -238,6 +242,20 @@ func _baue_kopfzeile(eltern: Node) -> void:
 	kopf_glocke.set_meta("symbol", g)
 	zeile.add_child(kopf_glocke)
 
+	var spulen := Button.new()
+	spulen.flat = true
+	spulen.custom_minimum_size = Vector2(38, 34)
+	spulen.focus_mode = Control.FOCUS_NONE
+	spulen.tooltip_text = "Zu einem Datum vorspulen"
+	spulen.add_theme_stylebox_override("normal", Stil.box_leer())
+	spulen.add_theme_stylebox_override("hover", Stil.box(Stil.lasur(Stil.TEXT, 0.07), Stil.R_KLEIN))
+	spulen.add_theme_stylebox_override("pressed", Stil.box(Stil.lasur(Stil.AKZENT, 0.14), Stil.R_KLEIN))
+	spulen.pressed.connect(func(): Vorspulfenster.oeffnen(self))
+	var ssym := Symbol.neu("doppelpfeil", 19.0, Stil.TEXT_MATT)
+	ssym.set_anchors_preset(Control.PRESET_FULL_RECT)
+	spulen.add_child(ssym)
+	zeile.add_child(spulen)
+
 	weiter_knopf = Stil.knopf_primaer("Weiter")
 	weiter_knopf.pressed.connect(_weiter)
 	weiter_knopf.tooltip_text = "Einen Tag weiterschalten (Leertaste)"
@@ -268,6 +286,7 @@ func _baue_bildschirme() -> void:
 		"infrastruktur": InfrastrukturBildschirm, "personal": PersonalBildschirm,
 		"vorstand": VorstandsBildschirm, "karriere": KarriereBildschirm, "medien": MedienBildschirm,
 		"chronik": ChronikBildschirm, "nachrichten": NachrichtenBildschirm, "system": SystemBildschirm,
+		"daten": DatenBildschirm,
 	}
 	for id in liste.keys():
 		var b = liste[id].new()

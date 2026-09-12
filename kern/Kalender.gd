@@ -34,6 +34,19 @@ static func datum(tag_abs: int, startjahr: int) -> Dictionary:
 		"wochentag": posmod(tag_abs + WOCHENTAG_VERSATZ, 7),
 	}
 
+## Umkehrung von datum(): aus Tag, Monat und Jahr den absoluten Tagindex.
+## Wird fuer das Vorspulen zu einem gewaehlten Datum gebraucht.
+static func tag_aus_datum(tag_im_monat: int, monat: int, jahr: int, startjahr: int) -> int:
+	var doy := 0
+	for m in range(clampi(monat, 1, 12) - 1):
+		doy += MONATSTAGE[m]
+	doy += clampi(tag_im_monat, 1, MONATSTAGE[clampi(monat, 1, 12) - 1]) - 1
+	return (jahr - startjahr) * TAGE_IM_JAHR + doy - JULI_ERSTER
+
+## Wie viele Tage der Monat hat (ohne Schaltjahre — das Spieljahr hat 365 Tage).
+static func tage_im_monat(monat: int) -> int:
+	return MONATSTAGE[clampi(monat, 1, 12) - 1]
+
 static func text(tag_abs: int, startjahr: int, lang: bool = false) -> String:
 	var d := datum(tag_abs, startjahr)
 	if lang:
