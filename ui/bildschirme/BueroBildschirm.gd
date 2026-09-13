@@ -38,6 +38,7 @@ func aktualisieren() -> void:
 			continue
 		var asp: Dictionary = Welt.spieler(asid)
 		var karte := Bausteine.karte_in(bereich, "%s möchte Sie sprechen" % Spielerfabrik.voller_name(asp))
+		Stil.karte_betonen(karte)
 		var zeile := Stil.hbox(12)
 		karte.add_child(zeile)
 		zeile.add_child(Portraet.fuer_spieler(asid, 44.0))
@@ -59,6 +60,7 @@ func aktualisieren() -> void:
 		for a in sponsorangebote:
 			summe += float(a["wert"])
 		var sk := Bausteine.karte_in(bereich, "Sponsorenplätze sind frei")
+		Stil.karte_betonen(sk, Stil.GELB)
 		sk.add_child(Stil.text("%d Angebote über zusammen %s im Jahr liegen auf dem Tisch. Bis Sie unterschreiben, bleibt das Geld aus." % [
 			sponsorangebote.size(), Stil.geld(summe)], Stil.S_KLEIN, Stil.GELB))
 		var sk_knopf := Stil.knopf_primaer("Zu den Finanzen")
@@ -67,6 +69,7 @@ func aktualisieren() -> void:
 
 	if Presse.offen(Welt.daten):
 		var pk := Bausteine.karte_in(bereich, "Pressekonferenz steht an")
+		Stil.karte_betonen(pk)
 		pk.add_child(Stil.text("Die Journalisten warten auf Ihre Einschätzung vor dem nächsten Spiel.", Stil.S_KLEIN))
 		var pk_knopf := Stil.knopf_primaer("Zur Pressekonferenz")
 		pk_knopf.pressed.connect(func(): Pressefenster.oeffnen(self))

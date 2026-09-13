@@ -59,6 +59,10 @@ var _tag_laeuft: bool = false
 ## Wie viele Partien je Einzelbild gerechnet werden. Vier Partien sind rund
 ## hundert Millisekunden — spürbar flüssig und trotzdem zügig durch.
 const SPIELTAG_SCHEIBE := 4
+const WECHSEL_DAUER := 0.14
+const WECHSEL_HUB := 10
+const INHALT_RAND_OBEN := 16
+var _wechsel: Tween = null
 var _hilfe_schleier: Control
 var _spieltag_schleier: Control
 var _spieltag_balken: Control
@@ -67,11 +71,7 @@ var _spieltag_text: Label
 func _ready() -> void:
 	theme = Stil.theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	var hintergrund := ColorRect.new()
-	hintergrund.color = Stil.GRUND
-	hintergrund.set_anchors_preset(Control.PRESET_FULL_RECT)
-	hintergrund.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(hintergrund)
+	add_child(Stil.grundflaeche())
 
 	_baue_rahmen()
 	_baue_startbildschirm()
@@ -119,7 +119,7 @@ func _baue_rahmen() -> void:
 	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	inhalt.add_theme_constant_override("margin_left", 18)
 	inhalt.add_theme_constant_override("margin_right", 18)
-	inhalt.add_theme_constant_override("margin_top", 16)
+	inhalt.add_theme_constant_override("margin_top", INHALT_RAND_OBEN)
 	inhalt.add_theme_constant_override("margin_bottom", 16)
 	rechts.add_child(inhalt)
 	_baue_bildschirme()
@@ -128,8 +128,11 @@ func _baue_rahmen() -> void:
 func _baue_seitenleiste() -> void:
 	var navpanel := PanelContainer.new()
 	navpanel.custom_minimum_size = Vector2(212, 0)
-	navpanel.add_theme_stylebox_override("panel",
-		Stil.box_kante(Stil.FLAECHE_TIEF, "rechts", Stil.RAND))
+	var navbox := Stil.box_kante(Stil.FLAECHE_TIEF, "rechts", Stil.RAND)
+	navbox.shadow_color = Color(0, 0, 0, 0.5)
+	navbox.shadow_size = 14
+	navbox.shadow_offset = Vector2(3, 0)
+	navpanel.add_theme_stylebox_override("panel", navbox)
 	rahmen.add_child(navpanel)
 
 	var spalte := VBoxContainer.new()
@@ -209,6 +212,11 @@ func _baue_navigation() -> void:
 func _baue_kopfzeile(eltern: Node) -> void:
 	var kopfpanel := PanelContainer.new()
 	var kopfbox := Stil.box_kante(Stil.FLAECHE, "unten", Stil.RAND)
+	# Der Kopf soll über dem Inhalt liegen, nicht neben ihm. Ein Schatten nach
+	# unten trennt die Zone deutlicher als jede Linie und kostet nichts.
+	kopfbox.shadow_color = Color(0, 0, 0, 0.45)
+	kopfbox.shadow_size = 12
+	kopfbox.shadow_offset = Vector2(0, 4)
 	kopfbox.content_margin_left = 18
 	kopfbox.content_margin_right = 18
 	kopfbox.content_margin_top = 10
@@ -358,6 +366,38 @@ func zeige(id: String) -> void:
 	if nav_knoepfe.has(id):
 		nav_knoepfe[id].setze_aktiv(true)
 	_kopf_auffrischen()
+	_einblenden(bildschirme[id])
+
+## Bildschirmwechsel mit kurzer Bewegung.
+##
+## Ein harter Schnitt liest sich wie ein Formularwechsel: der Inhalt ist
+## plötzlich ein anderer, und das Auge muss sich neu sortieren. 140 ms
+## Aufblenden mit einem Hauch Aufwärtsbewegung genügen, damit der Wechsel als
+## Handlung wahrgenommen wird. Länger wäre Selbstzweck — in einer Saison
+## klickt man hier hunderte Male.
+func _einblenden(bildschirm: CanvasItem) -> void:
+	if _wechsel != null and _wechsel.is_valid():
+		_wechsel.kill()
+	bildschirm.modulate = Color(1, 1, 1, 0)
+	inhalt.add_theme_constant_override("margin_top", INHALT_RAND_OBEN + WECHSEL_HUB)
+	_wechsel = create_tween()
+	_wechsel.set_parallel(true)
+	_wechsel.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	_wechsel.tween_property(bildschirm, "modulate:a", 1.0, WECHSEL_DAUER)
+	_wechsel.tween_method(_wechsel_hub, WECHSEL_HUB, 0, WECHSEL_DAUER)
+
+func _wechsel_hub(hub: int) -> void:
+	inhalt.add_theme_constant_override("margin_top", INHALT_RAND_OBEN + hub)
+
+## Beendet laufende Übergänge sofort. Werkzeuge, die Bilder aufnehmen oder
+## Geometrie vermessen, dürfen keinen halben Frame erwischen.
+func bewegung_beenden() -> void:
+	if _wechsel != null and _wechsel.is_valid():
+		_wechsel.custom_step(WECHSEL_DAUER * 2.0)
+		_wechsel.kill()
+	_wechsel_hub(0)
+	if aktueller != "" and bildschirme.has(aktueller):
+		bildschirme[aktueller].modulate = Color(1, 1, 1, 1)
 
 func _auffrischen() -> void:
 	_kopf_auffrischen()

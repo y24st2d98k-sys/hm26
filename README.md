@@ -139,6 +139,38 @@ Projekt, keine Symbolschrift, kein fremdes Theme.
   Als gelesen gilt eine Nachricht erst, wenn man sie geöffnet hat, und nicht
   schon, wenn man am Posteingang vorbeigelaufen ist.
 
+### Wie die Oberfläche Gewicht verteilt
+
+Ein Bildschirm, auf dem alles gleich laut ist, ist ein Bildschirm ohne Aussage.
+Fünf Mittel sorgen dafür, dass das Auge eine Reihenfolge bekommt:
+
+* **Schriftschnitte statt nur Schriftgrößen.** Die Engine bringt einen Schnitt
+  mit. `FontVariation` macht daraus vier: halbfett für Werte, Knöpfe und
+  Spielernamen, fett für Überschriften und große Zahlen, einen gesperrten
+  Versalienschnitt für Etiketten — ohne Laufweite kleben Großbuchstaben — und
+  einen engen für lange Zahlenkolonnen. Kein geladenes Asset, vier Gewichte.
+* **Licht kommt von oben.** Jede erhabene Fläche bekommt eine um wenige Prozent
+  hellere Oberkante (`Stil.lichtkante`) und einen Schatten nach unten. Ohne
+  diesen einen Pixel sieht eine Karte aus wie ein aufgemalter Kasten und nicht
+  wie ein Körper, der auf dem Grund liegt.
+* **Der Grund ist nicht flach.** Hinter allem liegt ein sehr flacher radialer
+  Schein über der oberen Mitte statt einer gleichmäßigen Füllung. Bewusst sieht
+  ihn niemand; wahrgenommen wird nur, dass die Fläche eine Richtung hat.
+* **Zonen trennen sich durch Schatten, nicht durch Linien.** Seitenleiste und
+  Kopfzeile werfen einen Schatten auf den Inhalt. Damit liegen sie über ihm,
+  statt neben ihm zu stehen — der Inhalt läuft sichtbar darunter durch.
+* **Der Akzent gehört den Karten, die etwas wollen.** Im Ruhezustand trägt eine
+  Karte eine neutrale Kopfmarke und ein mattes „Öffnen ›". Nur Karten, die eine
+  Entscheidung verlangen — ein Spieleranliegen, ein offener Sponsorenplatz, die
+  anstehende Pressekonferenz — bekommen über `Stil.karte_betonen()` getönten
+  Grund, farbige linke Kante und eingefärbten Kopf. Trüge jede Karte ein
+  Signal, erkennte man neben sechs Signalen den einen echten Knopf nicht mehr.
+* **Der Wechsel ist eine Bewegung.** Ein Bildschirmwechsel blendet in 140
+  Millisekunden auf und hebt den Inhalt dabei zehn Pixel an. Länger wäre
+  Selbstzweck — man klickt in einer Saison hunderte Male. Werkzeuge, die Bilder
+  aufnehmen oder Geometrie vermessen, rufen vorher `bewegung_beenden()` auf und
+  erwischen deshalb nie einen halben Frame.
+
 ### Spielergesichter
 
 Jeder Spieler hat ein Gesicht, und zwar dauerhaft dasselbe: aus der Spieler-ID

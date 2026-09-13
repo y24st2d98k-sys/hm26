@@ -56,6 +56,50 @@ const A_NORMAL := 12
 const A_GROSS := 18
 const A_RIESIG := 26
 
+# ------------------------------------------------------------ Schriftschnitte ---
+#
+# Die Engine bringt genau einen Schnitt mit. Ohne Gewichtsunterschied klingt
+# jede Fläche gleich laut: Überschrift, Wert und Fußnote unterscheiden sich nur
+# in der Größe, und das reicht nicht, um ein Auge zu führen. FontVariation
+# erzeugt Halbfett, Fett und einen gesperrten Versalienschnitt aus derselben
+# Datei — ohne ein einziges geladenes Asset.
+
+var _schnitt_halbfett: FontVariation = null
+var _schnitt_fett: FontVariation = null
+var _schnitt_gesperrt: FontVariation = null
+var _schnitt_eng: FontVariation = null
+
+func _schnitt(embolden: float, sperrung: float) -> FontVariation:
+	var f := FontVariation.new()
+	f.base_font = ThemeDB.fallback_font
+	f.variation_embolden = embolden
+	f.spacing_glyph = int(sperrung)
+	return f
+
+## Halbfett — Werte, Knöpfe, Spielernamen.
+func schnitt_halbfett() -> FontVariation:
+	if _schnitt_halbfett == null:
+		_schnitt_halbfett = _schnitt(0.22, 0)
+	return _schnitt_halbfett
+
+## Fett — Überschriften und große Zahlen.
+func schnitt_fett() -> FontVariation:
+	if _schnitt_fett == null:
+		_schnitt_fett = _schnitt(0.48, 0)
+	return _schnitt_fett
+
+## Gesperrt — Versalien-Etiketten. Ohne Laufweite kleben Großbuchstaben.
+func schnitt_gesperrt() -> FontVariation:
+	if _schnitt_gesperrt == null:
+		_schnitt_gesperrt = _schnitt(0.20, 1)
+	return _schnitt_gesperrt
+
+## Eng — lange Zahlenkolonnen, die sonst die Spalte sprengen.
+func schnitt_eng() -> FontVariation:
+	if _schnitt_eng == null:
+		_schnitt_eng = _schnitt(0.0, -1)
+	return _schnitt_eng
+
 var _theme: Theme = null
 
 # ------------------------------------------------------------- Farbhilfen ---
@@ -81,6 +125,33 @@ func lasur(farbe: Color, deckung: float = 0.15) -> Color:
 	return Color(farbe.r, farbe.g, farbe.b, deckung)
 
 # ------------------------------------------------------------- StyleBoxen ---
+## Grundfläche mit Lichtstimmung.
+##
+## Ein gleichmäßig gefüllter Hintergrund ist der sicherste Weg, eine Oberfläche
+## billig aussehen zu lassen: echtes Licht fällt nie überall gleich. Ein sehr
+## flacher radialer Schein oben links über der Mitte genügt — bewusst sieht ihn
+## niemand, aber die Fläche bekommt eine Richtung, und alles, was darauf liegt,
+## wirkt aufgesetzt statt eingefärbt.
+func grundflaeche() -> TextureRect:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.55, 1.0])
+	g.colors = PackedColorArray([
+		GRUND.lightened(0.075), GRUND.lightened(0.018), GRUND.darkened(0.32)])
+	var t := GradientTexture2D.new()
+	t.gradient = g
+	t.width = 256
+	t.height = 256
+	t.fill = GradientTexture2D.FILL_RADIAL
+	t.fill_from = Vector2(0.40, 0.02)
+	t.fill_to = Vector2(1.30, 1.05)
+	var r := TextureRect.new()
+	r.texture = t
+	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	r.stretch_mode = TextureRect.STRETCH_SCALE
+	r.set_anchors_preset(Control.PRESET_FULL_RECT)
+	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return r
+
 func box(fuellung: Color, radius: int = R_NORMAL, randfarbe: Variant = null, randbreite: int = 1) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = fuellung
@@ -103,6 +174,16 @@ func box_erhaben(fuellung: Color, radius: int = R_NORMAL, randfarbe: Variant = n
 	sb.shadow_color = SCHATTEN
 	sb.shadow_size = 10
 	sb.shadow_offset = Vector2(0, 3)
+	lichtkante(sb)
+	return sb
+
+## Eine hellere Oberkante. Licht kommt von oben — ohne diesen einen Pixel
+## sieht jede Fläche aus wie ein aufgemalter Kasten statt wie ein Körper.
+func lichtkante(sb: StyleBoxFlat, staerke: float = 0.055) -> StyleBoxFlat:
+	sb.border_width_top = maxi(sb.border_width_top, 1)
+	# Godot kennt nur eine Randfarbe je Box. Die Oberkante wird deshalb über
+	# eine leicht aufgehellte Randfarbe angedeutet, die zum Rest noch passt.
+	sb.border_color = sb.border_color.lerp(Color(1, 1, 1, sb.border_color.a), staerke * 2.0)
 	return sb
 
 func box_leer() -> StyleBoxEmpty:
@@ -140,6 +221,7 @@ func theme() -> Theme:
 	b_normal.content_margin_right = 14
 	b_normal.content_margin_top = 7
 	b_normal.content_margin_bottom = 7
+	lichtkante(b_normal)
 	var b_hover := b_normal.duplicate() as StyleBoxFlat
 	b_hover.bg_color = FLAECHE_GLAS
 	b_hover.border_color = AKZENT_TIEF
@@ -158,6 +240,9 @@ func theme() -> Theme:
 	t.set_stylebox("pressed", "Button", b_press)
 	t.set_stylebox("disabled", "Button", b_dis)
 	t.set_stylebox("focus", "Button", b_fokus)
+	# Ein Knopf ist eine Handlung — er darf schwerer wiegen als Fließtext.
+	t.set_font("font", "Button", schnitt_halbfett())
+	t.set_font("font", "OptionButton", schnitt_halbfett())
 	t.set_color("font_color", "Button", TEXT)
 	t.set_color("font_hover_color", "Button", Color.WHITE)
 	t.set_color("font_pressed_color", "Button", AKZENT)
@@ -260,6 +345,8 @@ func titel(text_inhalt: String, stufe: int = 0, farbe: Variant = null) -> Label:
 			l.add_theme_font_size_override("font_size", S_GROSS)
 		_:
 			l.add_theme_font_size_override("font_size", S_KLEIN)
+	# Eine Überschrift ist erst dann eine, wenn sie auch schwerer wiegt.
+	l.add_theme_font_override("font", schnitt_fett())
 	l.add_theme_color_override("font_color", farbe if farbe != null else TEXT)
 	return l
 
@@ -292,6 +379,7 @@ func etikett(text_inhalt: String, farbe: Variant = null) -> Label:
 	var l := Label.new()
 	l.text = text_inhalt.to_upper()
 	l.add_theme_font_size_override("font_size", S_ETIKETT)
+	l.add_theme_font_override("font", schnitt_gesperrt())
 	l.add_theme_color_override("font_color", farbe if farbe != null else TEXT_SCHWACH)
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	return l
@@ -342,10 +430,16 @@ func karte(ueberschrift: String = "", hoch: bool = false) -> VBoxContainer:
 		aussen.add_child(kopf)
 		var punkt := Marke.new()
 		punkt.custom_minimum_size = Vector2(3, 14)
-		punkt.farbe = AKZENT
+		# Ruhezustand bewusst neutral. Wenn jede Karte einen Akzentstrich trägt,
+		# trägt keine mehr Bedeutung — der Akzent gehört den Karten, die etwas
+		# von einem wollen (siehe karte_betonen).
+		punkt.farbe = RAND_HELL
 		punkt.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		kopf.add_child(punkt)
-		kopf.add_child(etikett(ueberschrift, TEXT_MATT))
+		var kopftext := etikett(ueberschrift, TEXT_MATT)
+		kopf.add_child(kopftext)
+		p.set_meta("marke", punkt)
+		p.set_meta("kopftext", kopftext)
 		kopf.add_child(dehner())
 		var aktionen := hbox(A_MINI)
 		kopf.add_child(aktionen)
@@ -363,6 +457,25 @@ func karte(ueberschrift: String = "", hoch: bool = false) -> VBoxContainer:
 func karte_wurzel(inhalt: Node) -> Control:
 	return inhalt.get_meta("karte") as Control
 
+## Hebt eine Karte hervor, die etwas vom Spieler will.
+##
+## Auf einer Übersicht liegen Anliegen, Pressetermine und reine Auskunft
+## nebeneinander. Sind alle gleich gebaut, muss man jede lesen, um zu wissen,
+## welche eine Entscheidung verlangt. Ein getönter Grund, eine farbige linke
+## Kante und ein eingefärbter Kopf erledigen das vor dem ersten Wort.
+func karte_betonen(inhalt: Node, farbe: Variant = null) -> void:
+	var wurzel := karte_wurzel(inhalt)
+	if wurzel == null:
+		return
+	var f: Color = farbe if farbe != null else AKZENT
+	var sb := box_erhaben(FLAECHE_HOCH.lerp(f, 0.045), R_NORMAL, RAND.lerp(f, 0.30))
+	sb.border_width_left = 3
+	wurzel.add_theme_stylebox_override("panel", sb)
+	if wurzel.has_meta("marke"):
+		(wurzel.get_meta("marke") as Node).farbe = f
+	if wurzel.has_meta("kopftext"):
+		(wurzel.get_meta("kopftext") as Label).add_theme_color_override("font_color", f)
+
 ## Haengt ein Control rechts in die Kopfzeile einer Karte (Filter, kleine Knoepfe).
 func karte_aktion(inhalt: Node, steuerung: Control) -> void:
 	var wurzel := karte_wurzel(inhalt)
@@ -370,22 +483,38 @@ func karte_aktion(inhalt: Node, steuerung: Control) -> void:
 		(wurzel.get_meta("aktionen") as Node).add_child(steuerung)
 
 ## Kennzahlenkachel: Etikett, grosser Wert, Zusatzzeile.
+## Kennzahlenkachel. Drei Ebenen mit deutlich verschiedenem Gewicht: ein
+## gesperrtes Etikett, darunter der Wert als schwere Zahl, darunter die
+## Einordnung. Eine farbige Oberkante trägt die Bedeutung, ohne dass der Wert
+## selbst schreien muss — sonst leuchtet ein Bildschirm an sechs Stellen
+## gleich stark und führt das Auge nirgendwohin.
 func kachel(beschriftung: String, wert: String, hinweis: String = "", farbe: Variant = null) -> PanelContainer:
 	var p := PanelContainer.new()
 	var sb := box(FLAECHE_HOCH, R_NORMAL, RAND)
-	sb.content_margin_left = 14
-	sb.content_margin_right = 14
-	sb.content_margin_top = 11
-	sb.content_margin_bottom = 11
+	sb.content_margin_left = 15
+	sb.content_margin_right = 15
+	sb.content_margin_top = 12
+	sb.content_margin_bottom = 13
+	lichtkante(sb)
+	if farbe != null:
+		sb.border_width_top = 2
+		sb.border_color = RAND.lerp(farbe as Color, 0.40)
 	p.add_theme_stylebox_override("panel", sb)
 	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var v := vbox(2)
+	var v := vbox(1)
 	p.add_child(v)
 	v.add_child(etikett(beschriftung))
-	var w := text(wert, S_GROSS, farbe if farbe != null else TEXT)
+	var w := Label.new()
+	w.text = wert
+	w.add_theme_font_size_override("font_size", S_TITEL)
+	w.add_theme_font_override("font", schnitt_fett())
+	w.add_theme_color_override("font_color", farbe if farbe != null else TEXT)
+	w.clip_text = true
 	v.add_child(w)
 	if hinweis != "":
-		v.add_child(matt(hinweis, S_MINI))
+		var hl := matt(hinweis, S_MINI)
+		hl.clip_text = true
+		v.add_child(hl)
 	p.set_meta("wert", w)
 	return p
 
@@ -639,7 +768,7 @@ func zeilen_knopf(index: int, hervorgehoben: bool = false, hoehe: int = 29) -> B
 	var b := Button.new()
 	b.custom_minimum_size = Vector2(0, hoehe)
 	b.focus_mode = Control.FOCUS_NONE
-	var grund: Color = Color(1, 1, 1, 0.028) if index % 2 == 1 else Color(0, 0, 0, 0)
+	var grund: Color = Color(1, 1, 1, 0.038) if index % 2 == 1 else Color(0, 0, 0, 0)
 	var n := box(lasur(AKZENT, 0.10) if hervorgehoben else grund, R_MINI)
 	n.content_margin_left = 6
 	n.content_margin_right = 6

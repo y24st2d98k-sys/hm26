@@ -172,6 +172,11 @@ func _live(app: Node, ordner: String) -> void:
 	app.rahmen.visible = true
 
 func _foto(pfad: String) -> void:
+	# Übergänge zu Ende laufen lassen — sonst landet ein halb aufgeblendeter
+	# Bildschirm im Bild und man beurteilt eine Animation statt eines Entwurfs.
+	var app: Node = get_tree().get_first_node_in_group("app")
+	if app != null and app.has_method("bewegung_beenden"):
+		app.bewegung_beenden()
 	await get_tree().process_frame
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw

@@ -152,7 +152,10 @@ static func karte_zu(eltern: Node, ueberschrift: String, ziel: String,
 	eltern.add_child(wurzel)
 	if ziel == "":
 		return inhalt
-	var pfeil := Stil.knopf_flach("Öffnen ›", Stil.AKZENT)
+	# Bewusst matt: die Karte selbst ist anklickbar, der Pfeil ist nur der
+	# Hinweis darauf. In Akzentfarbe säße auf jeder Karte ein Signal, und
+	# neben sechs Signalen erkennt man den einen echten Knopf nicht mehr.
+	var pfeil := Stil.knopf_flach("Öffnen ›", Stil.TEXT_SCHWACH)
 	pfeil.tooltip_text = hinweis if hinweis != "" else "Zum vollständigen Bildschirm"
 	pfeil.pressed.connect(func(): _springe(eltern, ziel))
 	Stil.karte_aktion(inhalt, pfeil)

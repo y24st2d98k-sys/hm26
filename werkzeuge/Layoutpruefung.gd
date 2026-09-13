@@ -51,6 +51,7 @@ func _ready() -> void:
 	var breite: float = float(get_window().size.x)
 	for id in app.bildschirme.keys():
 		app.zeige(str(id))
+		app.bewegung_beenden()
 		# Zwei Bilder abwarten: Container brauchen einen Durchlauf, um ihre
 		# Kinder zu setzen, und einen zweiten für verschachtelte Container.
 		await get_tree().process_frame
