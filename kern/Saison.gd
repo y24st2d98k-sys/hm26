@@ -267,6 +267,7 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 	_wettbewerbe_zuruecksetzen(d)
 	Finanzen.saison_budgets(d)
 	Sponsoren.jahreswechsel(d, mein)
+	_dauerkarten(d, mein)
 	for cid in Weltgenerator.clubs(d):
 		Vorstand.saisonziel_festlegen(d, cid)
 		d["vereine"][cid]["vorstand"]["warnstufe"] = 0
@@ -297,6 +298,24 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 		})
 	jobangebote_erzeugen(d, mein)
 	prognose_erstellen(d, mein)
+
+## Der Dauerkartenverkauf vor der Saison. Die KI stellt vorher ihre Preise
+## auf, der Mensch hat seine im Sommer selbst gesetzt — was er dort entscheidet,
+## bestimmt hier, wie viel Geld im Voraus hereinkommt.
+static func _dauerkarten(d: Dictionary, mein: String) -> void:
+	for cid in Weltgenerator.clubs(d):
+		if cid != mein:
+			Ticketing.ki_preise(d, cid)
+		var erg := Ticketing.verkauf(d, cid)
+		if cid != mein or erg.is_empty():
+			continue
+		Welt.nachricht({
+			"typ": "finanzen", "wichtig": true,
+			"betreff": "Dauerkarten verkauft: %s" % Stil.zahl(int(erg["anzahl"])),
+			"text": "Der Vorverkauf ist abgeschlossen. %s Dauerkarten bringen %s in die Kasse. Diese Plätze sind für die Saison vergeben — an Spitzenspielen verdienen Sie dort nichts mehr dazu." % [
+				Stil.zahl(int(erg["anzahl"])), Stil.geld(float(erg["einnahme"]))],
+			"daten": {"verein": cid},
+		})
 
 static func _vertraege_ablaufen(d: Dictionary) -> void:
 	var saison: int = Welt.saison_index()

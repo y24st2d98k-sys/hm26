@@ -118,6 +118,20 @@ static func spielzeile(mid: String, eigener: String = "") -> HBoxContainer:
 	h.add_child(gast_label)
 	return h
 
+## Ein Absatz, der umbricht statt seine Karte breiter zu machen.
+##
+## Ein Label mit Umbruch reicht dafuer nicht: ohne SIZE_EXPAND_FILL meldet es
+## seinem Container die volle Textbreite als Mindestmass an, und dann waechst
+## die Karte mit dem Satz statt der Satz mit der Karte. Zusammen mit einer
+## kleinen Mindestbreite ergibt das einen Absatz, der sich der Karte fuegt.
+static func fliesstext(inhalt: String, groesse: int = Stil.S_MINI, farbe: Variant = null,
+		mindestbreite: float = 200.0) -> Label:
+	var l: Label = Stil.matt(inhalt, groesse) if farbe == null else Stil.text(inhalt, groesse, farbe)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	l.custom_minimum_size = Vector2(mindestbreite, 0)
+	return l
+
 ## Erzeugt eine Karte mit Ueberschrift und gibt den Inhaltscontainer zurueck.
 static func karte_in(eltern: Node, ueberschrift: String, hoch: bool = false) -> VBoxContainer:
 	var inhalt := Stil.karte(ueberschrift, hoch)

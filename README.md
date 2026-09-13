@@ -175,7 +175,7 @@ beim Verein einfach `"wappen": {"form": …, "muster": …, "symbol": …}`.
 
 ## Was Hallenherz eigen ist
 
-Acht Systeme, die es so nicht als Pflichtanforderung gab und die das Spiel prägen:
+Zehn Systeme, die es so nicht als Pflichtanforderung gab und die das Spiel prägen:
 
 ### Hallenpuls
 Die Atmosphäre in der Halle ist eine eigene Größe (0–100), die sich **während**
@@ -254,6 +254,22 @@ eines jungen Spielers wird zwei Saisons später daran gemessen, ob er sich
 wirklich entwickelt hat. Wer richtig lag, wird zuverlässiger: seine Berichte
 werden enger, seine Einschätzungen glaubwürdiger. Wer danebenliegt, verliert
 an Gespür — und seine Berichte sind entsprechend zu lesen.
+
+### Vier Fangruppen statt einer Zahl
+Kurve, Dauerkartenbesitzer, Familien und Loge wollen jeweils etwas anderes: die
+einen Einsatz und billige Karten, die anderen Erfolg, Komfort und Ansehen. Jede
+Gruppe zieht wöchentlich ihre eigene Bilanz aus Ergebnissen, Tabellenplatz,
+Preisen, eigenen Talenten im Kader, Härte in der Abwehr, Hallenkomfort und
+Verschuldung. Dieselbe Woche kann die Kurve begeistern und die Loge verstimmen.
+Der Bildschirm nennt bei jeder Gruppe die drei Punkte, die sie am stärksten
+bewegen — mit Vorzeichen, damit niemand raten muss.
+
+### Das Spieltagsprogramm
+Vor jedem Heimspiel steht die Frage, für wen dieser Abend gemacht wird: Fanfest,
+Familientag, Choreo, Sponsorenabend, Nachwuchstag oder Derbywoche. Jede Wahl
+kostet Geld, zieht ein anderes Publikum an und verstimmt jemand anderen. Es gibt
+kein Programm, das allen gefällt — und wer sich nie entscheidet, bekommt ein
+Publikum, das auch nie ganz da ist.
 
 ---
 
@@ -515,6 +531,106 @@ Jahre. Der Reiter *Planung* im Kader beantwortet vier Fragen:
   kommenden Saisons kosten, gemessen am Budget.
 * **Verträge und Perspektive** — alle Spieler nach Vertragsende sortiert, mit
   einer Stärkeprognose über drei Jahre aus Alterskurve und Potenzial.
+
+---
+
+## Die Halle und ihre Leute
+
+Der wirtschaftlichste Teil eines Handballvereins war lange der flachste Teil
+dieses Spiels: Zuschauer waren eine Formel, der Eintrittspreis eine Konstante,
+Geld kam herein, ohne dass jemand etwas entschieden hätte. Der Bildschirm
+**Halle & Fans** dreht das um.
+
+### Drei Kategorien, drei Publikumsarten
+
+Wie sich die Halle aufteilt, hängt am Komfort: eine einfache Halle ist fast nur
+Stehplatz, erst Ausbaustufen bringen Sitzplätze und Logen.
+
+| Kategorie | Charakter | Preisempfindlichkeit |
+| --- | --- | --- |
+| Stehplatz | Die Kurve. Trägt die Stimmung. | hoch (1,15) |
+| Sitzplatz | Das Rückgrat, erwartet Gegenwert. | mittel (0,85) |
+| Loge | Wenige Plätze, viel Geld. | gering (0,42) |
+
+Jeder Preis wird gegen einen **Marktpreis** gesetzt, der sich aus Ansehen und
+Komfort ergibt. Die Nachfrage folgt ihm mit einer Potenzfunktion je Kategorie —
+neben jedem Regler steht, um wie viel Prozent sie sich gerade verschiebt.
+Teuer bringt je Karte mehr und je Abend weniger; billig füllt die Halle, macht
+die Kurve froh und die Kasse nicht.
+
+### Dauerkarten: Sicherheit ohne Oberkante
+
+Vor jeder Saison läuft der Vorverkauf. Wie viele Karten weggehen, hängt an
+Treue, Zufriedenheit, der letzten Platzierung und vor allem am **Rabatt**, den
+Sie auf die 17 Heimspiele geben. Das Geld kommt sofort — und die Plätze sind
+für die Saison vergeben. Am Spitzenspiel verdienen Sie an einem
+Dauerkartenbesitzer keinen Cent mehr. Wer alles verkauft, hat Sicherheit ohne
+Oberkante; wer nichts verkauft, hat einen leeren Dienstagabend.
+
+Ein Dauerkartenbesitzer, dem die Saison nicht gefällt, bleibt außerdem
+gelegentlich zu Hause. Genau das sieht man dann an den leeren Blöcken.
+
+### Vier Fangruppen
+
+Statt zweier Regler, die immer in dieselbe Richtung zeigten, gibt es vier
+Gruppen mit eigenen Interessen:
+
+* **Die Kurve** — Einsatz, eigene Leute, bezahlbare Stehplätze. Verzeiht eine
+  Niederlage, keine Lauheit und keine Preiserhöhung.
+* **Dauerkartenbesitzer** — Verlässlichkeit, Tabellenplatz, ein Rabatt, der
+  seinen Namen verdient.
+* **Familien und Gelegenheitspublikum** — Komfort, Tempo im Angriff, Preise,
+  die eine vierköpfige Familie verkraftet.
+* **Loge und Geschäftspartner** — Erfolg, Ansehen, eine Halle für Gäste. Liest
+  Bilanzen und merkt sich Schulden.
+
+Jede Gruppe hat ihre eigene Stimmung, und der Bildschirm nennt bei jeder die
+drei Punkte, die sie gerade am stärksten bewegen — mit Vorzeichen. Der
+gewichtete Mittelwert schreibt weiterhin die alte Zufriedenheit fort, damit
+Merchandising, Zuschauerzahl und Hallenpuls unverändert daran hängen. Wer eine
+Gruppe dauerhaft verliert, bekommt eine Nachricht; wer eine gewinnt, auch.
+
+Der Hallenpuls hängt jetzt nicht mehr an der reinen Auslastung, sondern daran,
+wie voll die **lauten** Blöcke sind: ein ausverkaufter Stehplatzbereich trägt
+mehr als eine volle Loge.
+
+### Das Spieltagsprogramm
+
+Ein Heimspiel ist nicht nur sechzig Minuten Handball, sondern ein Abend, den
+der Verein gestaltet. Vor jedem Heimspiel lässt sich eines von sieben
+Programmen ansetzen — es gilt für diese eine Partie und wird danach
+zurückgesetzt:
+
+| Programm | Wirkung |
+| --- | --- |
+| Normalbetrieb | Kostet nichts, bewegt nichts |
+| Fanfest vor der Halle | Stehplätze +22 %, Puls +6, Kurve begeistert |
+| Familientag | Sitzplätze +28 %, Familien begeistert |
+| Choreografie unterstützen | Puls +11, die Kurve am stärksten von allem |
+| Sponsorenabend | Loge +34 %, Geschäftspartner begeistert, Kurve verstimmt |
+| Tag des Nachwuchses | Billig, wirkt nach innen, alle etwas zufriedener |
+| Derbywoche ausrufen | Alles hoch — und eine Niederlage doppelt teuer |
+
+Es gibt kein Programm, das allen gefällt: Der Sponsorenabend bringt Geld und
+ärgert die Kurve, das Fanfest macht Lärm und bringt nichts ein. Wer sich nie
+entscheidet, bekommt ein Publikum, das auch nie ganz da ist. Der Trainerstab
+schlägt vor, was gerade am dringendsten fehlt — im Büro steht der Vorschlag
+mit einem Knopf daneben.
+
+### Darlehen
+
+Bisher war die Kasse eine Wand: Was nicht drin war, ging nicht. Jetzt gibt es
+Kredite über eine bis fünf Saisons. Der **Zinssatz** hängt an Ansehen,
+bestehender Verschuldung, Laufzeit und Kassenstand (2,8 % bis 18,5 %); die
+Bank gibt höchstens 85 Prozent des Jahresetats, und der Vorstand lehnt ab,
+wenn die Wochenrate mehr als ein Fünftel des Wochenetats auffräße. Die Rate
+läuft wöchentlich, ob die Saison läuft oder nicht. Vorzeitige Ablösung ist
+möglich — die Bank verzichtet dabei auf die Hälfte der offenen Zinsen.
+
+Damit wird aus „kann ich mir das leisten?“ die interessantere Frage: „kann ich
+mir das leisten, wenn ich zwei Jahre dafür zahle?“ Auch die KI nutzt das: ein
+Verein im Minus überbrückt jetzt mit einem Kredit, statt Spieler zu
+verscherbeln.
 
 ---
 
@@ -861,7 +977,7 @@ in eine sehr lange Schleife schickt.
 | **2 Matchsimulation** | Angriffsweise Engine, 4 Deckungen × 5 Angriffsstile, individuelle Spieleranweisungen (5 im Angriff, 4 in der Abwehr), Zeitstrafen mit Unterzahl, 7-gegen-6, Auszeiten, Kabinenansprachen, Kräftehaushalt, Live-Ansicht mit gezeichnetem Feld |
 | **3 Kader** | 29 Attribute, Form, Moral, Fitness, Lastkonto, Verletzungsanfälligkeit, Persönlichkeit, Potenzial, Alterskurve, individuelle Förderprogramme, Rückennummern, Patenschaften, eigene Nachwuchsakademie |
 | **4 Transfer & Scouting** | Aktive Suche mit acht Filtern, zweistufige Verhandlung (Verein, dann Spieler), Gegenangebote, Leihen, Erfolgsprämien im Vertrag, Transferfenster mit Fristmeldungen, Scoutaufträge mit Unschärfe, gestufte Spielvorbereitung |
-| **5 Vereinsführung** | Einnahmen aus Zuschauern, einem eigenen Sponsorenmarkt mit auslaufenden Verträgen, Medien, Merchandising und Preisgeldern; sechs Ausbaubereiche; sieben Personalrollen mit messbarer Wirkung; Vorstand mit Ziel, Vertrauen, Warnstufen und Entlassung |
+| **5 Vereinsführung** | Eintrittspreise in drei Kategorien und ein Dauerkartenvorverkauf, den Sie selbst steuern; vier Fangruppen mit eigenen Erwartungen; ein Spieltagsprogramm je Heimspiel; Sponsorenmarkt mit auslaufenden Verträgen; Darlehen mit Zins, Wochenrate und Schuldendeckel; Medien, Merchandising, Preisgelder; sechs Ausbaubereiche; sieben Personalrollen mit messbarer Wirkung; Vorstand mit Ziel, Vertrauen, Warnstufen und Entlassung |
 | **6 Trainerkarriere** | Eigener Vertrag, Ruf, Stationen, Titelsammlung, Jobangebote, Handschrift mit Prägungen, dazu das Verbandsamt als zweiter Strang — alles vereinsübergreifend |
 | **7 Zeitablauf** | Tageskalender mit Vorbereitung, Trainingsalltag und Wochenrhythmus (Montag: Abrechnung, Training, Presse, Vorstand; Donnerstag: Kabine, Gerüchte), Winterpause, Transferfenster; eine Drei-Wochen-Vorschau zeigt Spiele, Fristen, Scoutberichte und Bauabschlüsse |
 | **8 Immersion** | Presse und „Hallenfunk" reagieren auf Ergebnis, Derbycharakter, Serien, Einzelleistungen und Vereinslage; Pressekonferenzen vor Pflichtspielen; Rivalitäten wachsen aus Duellen; Chronik mit Titeln, Legenden, Rekorden und Saisonverlauf |
@@ -925,6 +1041,10 @@ kern/
   Mentoring.gd       Patenschaften: Passung, Reifung, Charakterübertragung
   Einsatzzeit.gd     Zielminuten je Spieler und ihre Umsetzung im Spiel
   Talentsuche.gd     Nachwuchssichtung in sechs Regionen für die eigene Akademie
+  Ticketing.gd       Eintrittspreise, Dauerkarten, wer am Spieltag kommt
+  Fanszene.gd        Vier Fangruppen mit eigenen Erwartungen und Reaktionen
+  Darlehen.gd        Kredite: Zins, Wochenrate, Ablösung, Schuldendeckel
+  Spieltagsprogramm.gd  Was rund um das Heimspiel passiert — und was es kostet
   KI.gd              Aufstellung, Taktik, Training, Verträge, Ausbau der KI-Vereine
 ui/
   App.gd/.tscn       Rahmen: Kopfzeile, Navigation, Bildschirmwechsel
@@ -935,7 +1055,7 @@ ui/
                      Verhandlungsraum (3D), Bausteine, Spieler-, Vereins-,
                      Bericht-, Presse-, Vorbericht-, Anliegen-, Verhandlungs-,
                      Nachrichten- und Vorspulfenster
-  bildschirme/       24 Bildschirme
+  bildschirme/       25 Bildschirme
 daten/               ligen.json und kader.json — die echten Vereine und Kader
 werkzeuge/           Test- und Kalibrierungsszenen
 ```

@@ -4,6 +4,11 @@ extends Bildschirm
 ## Vorstandsstimmung, Presse und Finanzen auf einen Blick.
 
 var bereich: VBoxContainer
+## Rückmeldung der letzten Entscheidung. Als Text gehalten und nicht als Knoten:
+## der Bereich wird bei jeder Aktualisierung geleert, ein zwischengeparkter
+## Knoten würde dabei heimatlos zurückbleiben.
+var meldungstext: String = ""
+var meldung_gut: bool = true
 
 func aufbauen() -> void:
 	var scroll := ScrollContainer.new()
@@ -67,6 +72,7 @@ func aktualisieren() -> void:
 		pk_knopf.pressed.connect(func(): Pressefenster.oeffnen(self))
 		pk.add_child(pk_knopf)
 
+	_fanlage()
 	_cotrainer()
 
 	var oben := Stil.hbox(12)
@@ -84,6 +90,72 @@ func aktualisieren() -> void:
 	bereich.add_child(unten)
 	_presse(unten)
 	_finanzen(unten)
+
+## Die Fanszene, aber nur wenn sie etwas will: eine Gruppe im Unmut oder ein
+## Heimspiel ohne Programm. Eine Karte, die immer da ist, liest irgendwann
+## niemand mehr.
+func _fanlage() -> void:
+	var cid: String = Welt.mein_verein_id
+	var unruhig: Array = []
+	for g in Fanszene.GRUPPEN:
+		var wert: float = Fanszene.stimmung(Welt.daten, cid, str(g))
+		if wert <= Fanszene.PROTEST + 6.0:
+			unruhig.append({"gruppe": str(g), "wert": wert})
+	var programm: String = Spieltagsprogramm.gewaehlt(Welt.daten, cid)
+	if unruhig.is_empty() and programm != Spieltagsprogramm.STANDARD:
+		return
+	var naechstes: Dictionary = _naechstes_heimspiel()
+	if unruhig.is_empty() and naechstes.is_empty():
+		return
+	var karte := Bausteine.karte_zu(bereich, "Aus der Halle", "halle", "Zu Preisen, Fangruppen und Spieltagsprogramm")
+	for e in unruhig:
+		var info: Dictionary = Fanszene.GRUPPE[str(e["gruppe"])]
+		var zeile := Stil.hbox(10)
+		karte.add_child(zeile)
+		zeile.add_child(Stil.abzeichen(str(info["kurz"]), Stil.ROT, true))
+		var text := Stil.text("%s ist unzufrieden (%d)." % [str(info["name"]), int(float(e["wert"]))],
+			Stil.S_KLEIN, Stil.ROT)
+		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(text)
+	if not naechstes.is_empty() and programm == Spieltagsprogramm.STANDARD:
+		var gid: String = str(naechstes["gast"])
+		var rat: String = Spieltagsprogramm.vorschlag(Welt.daten, cid, gid)
+		if rat != Spieltagsprogramm.STANDARD:
+			var zeile2 := Stil.hbox(10)
+			karte.add_child(zeile2)
+			var vorschlag: Dictionary = Spieltagsprogramm.PROGRAMME[rat]
+			var t2 := Stil.text("Heimspiel gegen %s: Der Stab rät zu „%s“ (%s)." % [
+				str(Welt.verein(gid).get("name", "?")), str(vorschlag["name"]),
+				Stil.geld(Spieltagsprogramm.kosten(Welt.daten, cid, rat))], Stil.S_KLEIN, Stil.GELB)
+			t2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			zeile2.add_child(t2)
+			var knopf := Stil.knopf_primaer("Ansetzen")
+			knopf.pressed.connect(func():
+				var erg := Spieltagsprogramm.waehlen(Welt.daten, cid, rat)
+				_melde(str(erg["grund"]), bool(erg["ok"]))
+				aktualisieren())
+			zeile2.add_child(knopf)
+	if meldungstext != "":
+		karte.add_child(Stil.text(meldungstext, Stil.S_KLEIN, Stil.GRUEN if meldung_gut else Stil.ROT))
+	elif programm != Spieltagsprogramm.STANDARD:
+		karte.add_child(Stil.text("Nächstes Heimspiel: %s (%s)." % [
+			str((Spieltagsprogramm.PROGRAMME[programm] as Dictionary)["name"]),
+			Stil.geld(Spieltagsprogramm.kosten(Welt.daten, cid, programm))], Stil.S_KLEIN, Stil.GRUEN))
+
+func _melde(text: String, gut: bool = true) -> void:
+	meldungstext = text
+	meldung_gut = gut
+
+func _naechstes_heimspiel() -> Dictionary:
+	var cid: String = Welt.mein_verein_id
+	var bestes := {}
+	for mid in Welt.daten["spiele"].keys():
+		var m: Dictionary = Welt.partie(str(mid))
+		if bool(m["gespielt"]) or str(m["heim"]) != cid or int(m["tag"]) < Welt.tag():
+			continue
+		if bestes.is_empty() or int(m["tag"]) < int(bestes["tag"]):
+			bestes = m
+	return bestes
 
 ## Kennzahlenband: die sechs Zahlen, die den Zustand des Vereins beschreiben.
 ## Was dem Trainerstab zwischen zwei Spielen aufgefallen ist.

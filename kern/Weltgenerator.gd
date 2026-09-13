@@ -406,13 +406,17 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"trainer": "",
 		"stimmung_kabine": Namen.glocke(65.0, 8.0, 40.0, 90.0),
 		"formkurve": [], "siegesserie": 0, "serie_gemeldet": 0,
+		# Eintrittspreise, Fanszene, Kredite und Spieltagsprogramm werden
+		# beim ersten Zugriff gefüllt — sie brauchen den fertigen Verein.
+		"darlehen": [],
+		"spieltag": {"programm": Spieltagsprogramm.STANDARD, "letztes": Spieltagsprogramm.STANDARD, "kosten": 0.0},
 	}
 
 static func leere_vereinsstats() -> Dictionary:
 	return {
 		"spiele": 0, "siege": 0, "unentschieden": 0, "niederlagen": 0,
 		"tore": 0, "gegentore": 0, "zuschauer_summe": 0, "heimspiele": 0,
-		"zeitstrafen": 0, "serie": [],
+		"zeitstrafen": 0, "serie": [], "verkaufte_stammspieler": 0,
 		# Saisonbuchhaltung je Kategorie — Einnahmen positiv, Ausgaben negativ.
 		"finanzen": {},
 	}

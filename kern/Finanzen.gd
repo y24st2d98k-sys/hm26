@@ -21,7 +21,8 @@ const AUSBAU_STUFEN := {
 const KATEGORIE_NAME := {
 	"zuschauer": "Zuschauer", "sponsor": "Sponsoring", "tv": "Medien", "merch": "Merchandising",
 	"gehalt": "Gehälter", "betrieb": "Betrieb", "transfer": "Transfer", "reise": "Reise",
-	"preisgeld": "Preisgeld", "praemie": "Erfolgsprämien", "ausbau": "Ausbau", "sonstiges": "Sonstiges",
+	"preisgeld": "Preisgeld", "praemie": "Erfolgsprämien", "ausbau": "Ausbau",
+	"darlehen": "Darlehen", "spieltag": "Spieltag", "sonstiges": "Sonstiges",
 }
 
 static func kategorie_name(schluessel: String) -> String:
@@ -48,15 +49,22 @@ static func buchen(d: Dictionary, cid: String, betrag: float, grund: String, kat
 static func spieltag_abrechnen(d: Dictionary, m: Dictionary) -> void:
 	if str(m["art"]) == "turnier":
 		return
-	var heim: Dictionary = d["vereine"][m["heim"]]
+	var cid_heim: String = str(m["heim"])
 	var zuschauer: int = int(m["zuschauer"])
-	var preis: float = 10.0 + float(heim["halle"]["komfort"]) * 2.0 + float(heim["ruf"]) * 0.14
-	var einnahme: float = float(zuschauer) * preis
+	# Tageskarten zu den selbst gesetzten Preisen. Dauerkarten sind vor der
+	# Saison bezahlt worden und tauchen hier bewusst nicht mehr auf.
+	var aufschluesselung: Dictionary = m.get("tickets", {})
+	var einnahme := 0.0
+	if aufschluesselung.is_empty():
+		# Turnier- oder Altspielstandpartie ohne Aufschlüsselung.
+		einnahme = float(zuschauer) * Ticketing.schnittpreis(d, cid_heim)
+	else:
+		einnahme = Ticketing.tageseinnahme(d, cid_heim, aufschluesselung)
 	if str(m["art"]) == "international":
 		einnahme *= 1.25
 	elif str(m["art"]) == "test":
 		einnahme *= 0.45
-	buchen(d, str(m["heim"]), einnahme, "Eintritt %s" % Welt.wettbewerb_name(str(m["wettbewerb"])), "zuschauer")
+	buchen(d, cid_heim, einnahme, "Eintritt %s" % Welt.wettbewerb_name(str(m["wettbewerb"])), "zuschauer")
 	# Auswaertsteam: Reisekosten
 	buchen(d, str(m["gast"]), -(1400.0 + float(d["vereine"][m["gast"]]["ruf"]) * 60.0), "Reisekosten", "reise")
 	if str(m["art"]) == "international":
@@ -81,6 +89,7 @@ static func wochenabrechnung(d: Dictionary) -> void:
 		buchen(d, cid, -betrieb, "Betriebskosten", "betrieb")
 		var merch: float = float(v["fans"]["mitglieder"]) * 0.55 * (0.6 + float(v["fans"]["zufriedenheit"]) / 150.0)
 		buchen(d, cid, merch, "Merchandising", "merch")
+		Darlehen.wochenwechsel(d, cid)
 		_bauprojekt_fortschritt(d, cid)
 		if float(v["kasse"]) < 0.0:
 			_finanznot(d, cid)

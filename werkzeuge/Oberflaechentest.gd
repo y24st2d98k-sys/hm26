@@ -548,6 +548,86 @@ func _ready() -> void:
 	_log("   Härte 0/100 → %.1f %% / %.1f %% Zeitstrafen" % [
 		Matchsim.zeitstrafenquote_bei_haerte(0.0) * 100.0, Matchsim.zeitstrafenquote_bei_haerte(100.0) * 100.0])
 
+	_log("— Eintrittspreise und Dauerkarten —")
+	var t_cid: String = Welt.mein_verein_id
+	var t_sitze := Ticketing.plaetze(Welt.daten, t_cid)
+	_log("   Halle %s Plätze: %d Steh, %d Sitz, %d Loge" % [
+		Stil.zahl(int(Welt.verein(t_cid)["halle"]["kapazitaet"])),
+		int(t_sitze["steh"]), int(t_sitze["sitz"]), int(t_sitze["loge"])])
+	for kat_t in Ticketing.KATEGORIEN:
+		var kat: String = str(kat_t)
+		_log("   %-9s Markt %6s · gesetzt %6s (%s), Nachfrage %+d %%" % [
+			kat, Stil.geld(Ticketing.referenzpreis(Welt.daten, t_cid, kat)),
+			Stil.geld(Ticketing.preis(Welt.daten, t_cid, kat)),
+			Ticketing.preistext(Welt.daten, t_cid, kat),
+			int(round((Ticketing.nachfragefaktor(Welt.daten, t_cid, kat) - 1.0) * 100.0))])
+	_log("   Dauerkarten: %s verkauft, mittlerer Eintritt %s" % [
+		Stil.zahl(Ticketing.dauerkarten_gesamt(Welt.daten, t_cid)),
+		Stil.geld(Ticketing.schnittpreis(Welt.daten, t_cid))])
+	# Preis verdoppeln: die Nachfrage muss deutlich einbrechen.
+	var vorher_steh: float = Ticketing.preis(Welt.daten, t_cid, "steh")
+	var reiz_vorher := Ticketing.besucher(Welt.daten, t_cid, 1.0)
+	Ticketing.preis_setzen(Welt.daten, t_cid, "steh", vorher_steh * 2.0)
+	var reiz_teuer := Ticketing.besucher(Welt.daten, t_cid, 1.0)
+	Ticketing.preis_setzen(Welt.daten, t_cid, "steh", vorher_steh * 0.5)
+	var reiz_billig := Ticketing.besucher(Welt.daten, t_cid, 1.0)
+	_log("   Zuschauer bei halbem / normalem / doppeltem Stehplatzpreis: %d / %d / %d" % [
+		int(reiz_billig["gesamt"]), int(reiz_vorher["gesamt"]), int(reiz_teuer["gesamt"])])
+	if int(reiz_teuer["gesamt"]) >= int(reiz_vorher["gesamt"]):
+		_log("   FEHLER: ein höherer Preis bringt nicht weniger Zuschauer")
+	Ticketing.preis_setzen(Welt.daten, t_cid, "steh", vorher_steh)
+
+	_log("— Die Fanszene —")
+	Fanszene.wochenwechsel(Welt.daten, t_cid)
+	var gruende_t := Fanszene.begruendungen(Welt.daten, t_cid)
+	for g_t in Fanszene.GRUPPEN:
+		var gruppe: String = str(g_t)
+		var liste_t: Array = (gruende_t[gruppe] as Array).duplicate()
+		liste_t.sort_custom(func(a, b): return absf(float(a["wert"])) > absf(float(b["wert"])))
+		var oben_t: String = "—"
+		if not liste_t.is_empty():
+			oben_t = "%s (%+d)" % [str((liste_t[0] as Dictionary)["grund"]), int(float((liste_t[0] as Dictionary)["wert"]))]
+		_log("   %-9s %3d — wichtigster Punkt: %s" % [
+			str((Fanszene.GRUPPE[gruppe] as Dictionary)["kurz"]), int(Fanszene.stimmung(Welt.daten, t_cid, gruppe)), oben_t])
+	_log("   Gesamtstimmung %d, Pulsfaktor %.2f, Besuchsreiz %.2f" % [
+		int(Fanszene.gesamtstimmung(Welt.daten, t_cid)), Fanszene.pulsfaktor(Welt.daten, t_cid),
+		Fanszene.besuchsreiz(Welt.daten, t_cid)])
+
+	_log("— Spieltagsprogramm —")
+	var kasse_sp: float = float(Welt.verein(t_cid)["kasse"])
+	var wahl_erg := Spieltagsprogramm.waehlen(Welt.daten, t_cid, "choreo")
+	_log("   %s" % str(wahl_erg["grund"]))
+	var ultras_vorher: float = Fanszene.stimmung(Welt.daten, t_cid, "ultras")
+	var eingeloest := Spieltagsprogramm.einloesen(Welt.daten, t_cid)
+	_log("   eingelöst: %s, Puls %+d, Ultras %d → %d" % [
+		str(eingeloest["programm"]), int(float(eingeloest["puls"])), int(ultras_vorher),
+		int(Fanszene.stimmung(Welt.daten, t_cid, "ultras"))])
+	_log("   Kasse %s → %s" % [Stil.geld(kasse_sp), Stil.geld(float(Welt.verein(t_cid)["kasse"]))])
+	if Spieltagsprogramm.gewaehlt(Welt.daten, t_cid) != Spieltagsprogramm.STANDARD:
+		_log("   FEHLER: das Programm wurde nach dem Spieltag nicht zurückgesetzt")
+
+	_log("— Darlehen —")
+	var moeglich_t: float = Darlehen.hoechstbetrag(Welt.daten, t_cid)
+	_log("   Höchstbetrag %s" % Stil.geld(moeglich_t))
+	var wunsch: float = minf(moeglich_t, 200000.0)
+	if wunsch >= 25000.0:
+		var kasse_d: float = float(Welt.verein(t_cid)["kasse"])
+		var kredit_erg := Darlehen.aufnehmen(Welt.daten, t_cid, wunsch, 2, "Prüflauf")
+		_log("   %s" % str(kredit_erg["grund"]))
+		if bool(kredit_erg["ok"]):
+			if float(Welt.verein(t_cid)["kasse"]) <= kasse_d:
+				_log("   FEHLER: das Darlehen ist nicht in der Kasse angekommen")
+			_log("   Restschuld %s, Wochenlast %s" % [
+				Stil.geld(Darlehen.restschuld(Welt.daten, t_cid)),
+				Stil.geld(Darlehen.wochenlast(Welt.daten, t_cid))])
+			for _w in range(8):
+				Darlehen.wochenwechsel(Welt.daten, t_cid)
+			_log("   nach 8 Wochen Restschuld %s" % Stil.geld(Darlehen.restschuld(Welt.daten, t_cid)))
+			var ab_erg := Darlehen.abloesen(Welt.daten, t_cid, 0)
+			_log("   %s" % str(ab_erg["grund"]))
+	if Darlehen.restschuld(Welt.daten, t_cid) > 0.0:
+		_log("   verbleibende Restschuld: %s" % Stil.geld(Darlehen.restschuld(Welt.daten, t_cid)))
+
 	_log("— Alter Spielstand (fehlende Felder ergänzen) —")
 	# Einen Spielstand aus einer früheren Fassung nachstellen: alles, was neu
 	# dazugekommen ist, wieder entfernen und die Welt reparieren lassen.
@@ -558,6 +638,10 @@ func _ready() -> void:
 		(v_alt["saison"] as Dictionary).erase("finanzen")
 		(v_alt["aufstellung"] as Dictionary).erase("anweisungen")
 		(v_alt["aufstellung"] as Dictionary).erase("minuten")
+		v_alt.erase("ticketing")
+		v_alt.erase("fanszene")
+		v_alt.erase("darlehen")
+		v_alt.erase("spieltag")
 		for sid_alt in v_alt["kader"]:
 			Welt.spieler(sid_alt).erase("nummer")
 			Welt.spieler(sid_alt).erase("laufbahn")
@@ -570,6 +654,9 @@ func _ready() -> void:
 			fehlt += 1
 		if not (v_p.get("aufstellung", {}) as Dictionary).has("minuten"):
 			fehlt += 1
+		for feld_p in ["ticketing", "fanszene", "darlehen", "spieltag"]:
+			if not v_p.has(feld_p):
+				fehlt += 1
 		for sid_p in v_p["kader"]:
 			if int(Welt.spieler(sid_p).get("nummer", 0)) <= 0:
 				fehlt += 1

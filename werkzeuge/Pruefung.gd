@@ -78,6 +78,7 @@ func _alles_pruefen(d: Dictionary, soll: Dictionary) -> void:
 	_finanzen(d)
 	_spielplan(d)
 	_trikotnummern(d)
+	_halle_und_fans(d)
 
 ## Ligen behalten ihre Größe über Auf- und Abstieg hinweg.
 func _ligen(d: Dictionary, soll: Dictionary) -> void:
@@ -207,6 +208,39 @@ func _verweise(d: Dictionary) -> void:
 	for sid_k in d["spieler"].keys():
 		if bool(d["spieler"][sid_k].get("nachwuchskandidat", false)) and not in_liste.has(str(sid_k)):
 			_fehler("Nachwuchskandidat %s steht in keiner Sichtungsliste" % sid_k)
+
+## Eintrittspreise, Dauerkarten, Fanszene und Kredite bleiben im Rahmen.
+func _halle_und_fans(d: Dictionary) -> void:
+	for cid in Weltgenerator.clubs(d):
+		var v: Dictionary = d["vereine"][cid]
+		var sitze := Ticketing.plaetze(d, cid)
+		var summe := 0
+		for k in Ticketing.KATEGORIEN:
+			var kat: String = str(k)
+			summe += int(sitze[kat])
+			var preis: float = Ticketing.preis(d, cid, kat)
+			if preis <= 0.0 or is_nan(preis) or preis > Ticketing.referenzpreis(d, cid, kat) * 2.6:
+				_fehler("%s hat einen unmöglichen Preis für %s (%s)" % [str(v["name"]), kat, str(preis)])
+			var dk: int = Ticketing.dauerkarten(d, cid, kat)
+			if dk < 0 or dk > int(sitze[kat]):
+				_fehler("%s hat %d Dauerkarten für %d Plätze in %s" % [str(v["name"]), dk, int(sitze[kat]), kat])
+		if summe != int(v["halle"]["kapazitaet"]):
+			_fehler("%s: Kategorien ergeben %d statt %d Plätze" % [str(v["name"]), summe, int(v["halle"]["kapazitaet"])])
+		var s_szene := Fanszene.szene(d, cid)
+		for g in Fanszene.GRUPPEN:
+			var wert: float = float((s_szene.get(g, {}) as Dictionary).get("stimmung", -1.0))
+			if wert < 0.0 or wert > 100.0 or is_nan(wert):
+				_fehler("%s: Fangruppe %s steht bei %s" % [str(v["name"]), g, str(wert)])
+		for k2 in Darlehen.liste(d, cid):
+			var kredit: Dictionary = k2
+			if float(kredit["rest"]) < 0.0 or is_nan(float(kredit["rest"])):
+				_fehler("%s hat ein Darlehen mit Restschuld %s" % [str(v["name"]), str(kredit["rest"])])
+			if float(kredit["rate"]) <= 0.0:
+				_fehler("%s hat ein Darlehen ohne Rate" % str(v["name"]))
+		if Darlehen.restschuld(d, cid) > float(v["jahresetat"]) * 1.6:
+			_fehler("%s ist mit %s überschuldet" % [str(v["name"]), Stil.geld(Darlehen.restschuld(d, cid))])
+		if not Spieltagsprogramm.PROGRAMME.has(Spieltagsprogramm.gewaehlt(d, cid)):
+			_fehler("%s hat ein unbekanntes Spieltagsprogramm" % str(v["name"]))
 
 ## Kein Verein rutscht dauerhaft ins Bodenlose.
 func _finanzen(d: Dictionary) -> void:

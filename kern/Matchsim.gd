@@ -73,6 +73,10 @@ var _gegenstoss: bool = false
 var lauf: Dictionary = {"team": "", "tore": 0}
 var hallenpuls: float = 50.0
 var zuschauer: int = 0
+## Wie sich das Publikum auf Steh-, Sitz- und Logenplätze verteilt.
+var zuschauer_aufschluesselung: Dictionary = {}
+## Das eingelöste Spieltagsprogramm dieser Partie.
+var programm: Dictionary = {}
 var live: bool = false
 
 func _init(p_daten: Dictionary, p_spiel: Dictionary, saat: int = 0) -> void:
@@ -89,7 +93,13 @@ func vorbereiten() -> void:
 	heim = _team_zustand(str(spiel["heim"]), true)
 	gast = _team_zustand(str(spiel["gast"]), false)
 	zuschauer = _zuschauer_berechnen()
-	hallenpuls = clampf(float(daten["vereine"][spiel["heim"]]["hallenpuls_basis"]) * (0.7 + 0.3 * _auslastung()), 20.0, 95.0)
+	# Der Hallenpuls hängt nicht an der Auslastung allein: ein voller Block
+	# Stehplätze trägt mehr als eine ausverkaufte Loge, und die Stimmung der
+	# Fanszene entscheidet, ob überhaupt jemand den Mund aufmacht.
+	hallenpuls = clampf(float(daten["vereine"][spiel["heim"]]["hallenpuls_basis"])
+		* (0.66 + 0.34 * _stimmungsanteil())
+		* Fanszene.pulsfaktor(daten, str(spiel["heim"]))
+		+ float(programm.get("puls", 0.0)), 15.0, 98.0)
 	angriffsrecht = "heim" if rng.randf() < 0.5 else "gast"
 	zeit = 0.0
 	beendet = false
@@ -100,18 +110,34 @@ func _auslastung() -> float:
 	var kap: float = maxf(float(daten["vereine"][spiel["heim"]]["halle"]["kapazitaet"]), 1.0)
 	return clampf(float(zuschauer) / kap, 0.0, 1.0)
 
+## Wie voll die lauten Blöcke sind. Fällt auf die reine Auslastung zurück,
+## wenn keine Aufschlüsselung vorliegt (Turnierspiele, alte Spielstände).
+func _stimmungsanteil() -> float:
+	if zuschauer_aufschluesselung.is_empty():
+		return _auslastung()
+	return Ticketing.pulsanteil(zuschauer_aufschluesselung)
+
+## Wer heute kommt. Die Rechnung liegt in kern/Ticketing.gd — hier steht nur,
+## was diese eine Partie daran verschiebt: der Gegner, das Derby, der
+## Wettbewerb und das Spieltagsprogramm.
 func _zuschauer_berechnen() -> int:
-	var v: Dictionary = daten["vereine"][spiel["heim"]]
+	var cid: String = str(spiel["heim"])
 	var g: Dictionary = daten["vereine"][spiel["gast"]]
-	var kap: int = int(v["halle"]["kapazitaet"])
-	var basis: float = 0.36 + float(v["fans"]["zufriedenheit"]) / 260.0 + float(v["fans"]["treue"]) / 320.0
-	basis += clampf((float(g["ruf"]) - 45.0) / 300.0, -0.05, 0.18)
-	if float((v["rivalen"] as Dictionary).get(g["id"], 0.0)) > 50.0:
-		basis += 0.14
+	var reiz: float = 1.0
+	reiz += clampf((float(g["ruf"]) - 45.0) / 220.0, -0.14, 0.4)
+	if float((daten["vereine"][cid]["rivalen"] as Dictionary).get(g["id"], 0.0)) > 50.0:
+		reiz += 0.22
 	if str(spiel["art"]) == "international":
-		basis += 0.1
-	basis *= rng.randf_range(0.9, 1.08)
-	return int(clampf(basis, 0.15, 1.0) * float(kap))
+		reiz += 0.16
+	elif str(spiel["art"]) == "test":
+		reiz -= 0.3
+	reiz *= Fanszene.besuchsreiz(daten, cid)
+	# Das Spieltagsprogramm wird hier eingelöst: einmal je Heimspiel, mit
+	# Kosten, Wirkung aufs Publikum und Nachhall in der Fanszene.
+	programm = Spieltagsprogramm.einloesen(daten, cid)
+	zuschauer_aufschluesselung = Ticketing.besucher(daten, cid, reiz,
+		rng.randf_range(0.93, 1.06), programm.get("reiz", {}))
+	return int(zuschauer_aufschluesselung["gesamt"])
 
 func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 	var verein: Dictionary = daten["vereine"][cid]
@@ -1332,6 +1358,11 @@ func _spielende() -> void:
 	spiel["tore_gast"] = int(gast["tore"])
 	spiel["gespielt"] = true
 	spiel["zuschauer"] = zuschauer
+	# Die Aufschlüsselung braucht die Abrechnung: nur Tageskarten bringen am
+	# Spieltag noch Geld, Dauerkarten sind längst bezahlt.
+	spiel["tickets"] = zuschauer_aufschluesselung.duplicate(true)
+	if not programm.is_empty() and str(programm.get("programm", "")) != Spieltagsprogramm.STANDARD:
+		spiel["programm"] = str(programm["programm"])
 	_warteschlange.append(_ereignis("ende", "", "", "Schlusssirene: %s %d:%d %s" % [
 		heim["kurz"], heim["tore"], gast["tore"], gast["kurz"]]))
 	if bool(spiel.get("ko", false)) and int(heim["tore"]) == int(gast["tore"]) and str(spiel["hinspiel"]) == "":

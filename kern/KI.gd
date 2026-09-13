@@ -133,8 +133,16 @@ static func wochenlogik(d: Dictionary) -> void:
 		# Guenstig und sichert die Zusage, dass jede Nummer im Kader
 		# eindeutig ist — unabhaengig davon, wie ein Spieler hereinkam.
 		Trikot.kader_nummerieren(d, cid)
+		# Die Fanszene lebt in jedem Verein, auch in denen der KI: sie
+		# bestimmt Zuschauer, Merchandising und Hallenpuls.
+		Fanszene.wochenwechsel(d, cid)
 		if bool(d["vereine"][cid].get("ist_mensch", false)):
+			Fanszene.meldungen_pruefen(d, cid)
 			continue
+		if Namen.zufall() < 0.06:
+			Ticketing.ki_preise(d, cid)
+		if Namen.zufall() < 0.12:
+			Darlehen.ki_pruefen(d, cid)
 		_trainingsplan(d, cid)
 		_vertraege_pflegen(d, cid)
 		kader_auffuellen(d, cid)

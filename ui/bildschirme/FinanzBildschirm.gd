@@ -45,6 +45,9 @@ func aktualisieren() -> void:
 	lage.add_child(Bausteine.wertzeile("Gehaltsauslastung", minf(auslastung, 150.0), 150.0,
 		"%d %% des Gehaltsbudgets sind gebunden." % int(auslastung)))
 	lage.add_child(Stil.info_zeile("Jahresetat", Stil.geld(float(v["jahresetat"]))))
+	var schuld: float = Darlehen.restschuld(Welt.daten, cid)
+	lage.add_child(Stil.info_zeile("Restschuld", Stil.geld(schuld) if schuld > 0.0 else "schuldenfrei",
+		Stil.ROT if schuld > float(v["jahresetat"]) * 0.4 else (Stil.TEXT_MATT if schuld <= 0.0 else Stil.TEXT)))
 
 	var einnahmen := Bausteine.karte_in(oben, "Wöchentliche Einnahmen")
 	Stil.karte_wurzel(einnahmen).size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -54,12 +57,21 @@ func aktualisieren() -> void:
 	einnahmen.add_child(Stil.trenner())
 	einnahmen.add_child(Stil.info_zeile("Zuschauerschnitt", Stil.zahl(int(float(u["zuschauer_schnitt"])))))
 	einnahmen.add_child(Stil.info_zeile("Hallenkapazität", Stil.zahl(int(v["halle"]["kapazitaet"]))))
+	einnahmen.add_child(Stil.info_zeile("Dauerkarten", Stil.zahl(Ticketing.dauerkarten_gesamt(Welt.daten, cid)),
+		Stil.BLAU))
+	einnahmen.add_child(Stil.info_zeile("Mittlerer Eintritt", Stil.geld(Ticketing.schnittpreis(Welt.daten, cid))))
+	var zu_halle := Stil.knopf_flach("Preise und Fans ›", Stil.AKZENT)
+	zu_halle.pressed.connect(func(): wechsel_zu("halle"))
+	einnahmen.add_child(zu_halle)
 
 	var ausgaben := Bausteine.karte_in(oben, "Wöchentliche Ausgaben")
 	Stil.karte_wurzel(ausgaben).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ausgaben.add_child(Stil.info_zeile("Spielergehälter", Stil.geld(-float(u["gehalt_spieler"])), Stil.ROT))
 	ausgaben.add_child(Stil.info_zeile("Personalgehälter", Stil.geld(-float(u["gehalt_personal"])), Stil.ROT))
 	ausgaben.add_child(Stil.info_zeile("Betriebskosten", Stil.geld(-float(u["betrieb"])), Stil.ROT))
+	var kreditrate: float = Darlehen.wochenlast(Welt.daten, cid)
+	ausgaben.add_child(Stil.info_zeile("Kreditraten", Stil.geld(-kreditrate),
+		Stil.ROT if kreditrate > 0.0 else Stil.TEXT_MATT))
 	var praemien_zugesagt := 0.0
 	for sid in v["kader"]:
 		var vertrag: Dictionary = Welt.spieler(sid).get("vertrag", {})
@@ -71,7 +83,7 @@ func aktualisieren() -> void:
 	ausgaben.add_child(Stil.info_zeile("Prämien diese Saison",
 		Stil.geld(-Praemien.saisonsumme(Welt.daten, cid))))
 	ausgaben.add_child(Stil.trenner())
-	var saldo: float = float(u["sponsoring"]) + float(u["tv"]) + float(u["merch"]) - float(u["gehalt_spieler"]) - float(u["gehalt_personal"]) - float(u["betrieb"]) - praemien_zugesagt
+	var saldo: float = float(u["sponsoring"]) + float(u["tv"]) + float(u["merch"]) - float(u["gehalt_spieler"]) - float(u["gehalt_personal"]) - float(u["betrieb"]) - praemien_zugesagt - kreditrate
 	ausgaben.add_child(Stil.info_zeile("Saldo ohne Spieltage", Stil.geld(saldo), Stil.GRUEN if saldo > 0.0 else Stil.ROT))
 
 	_sponsoren(cid, v)

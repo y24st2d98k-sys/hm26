@@ -345,6 +345,13 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		Finanzen.buchen(d, von, ablöse, "Transfererlös %s" % Spielerfabrik.voller_name(sp), "transfer")
 		aufstellung_saeubern(d, von, sid)
+		# Die Kurve merkt sich, wer verkauft wurde. Ein Ergänzungsspieler
+		# interessiert niemanden, ein Leistungsträger schon.
+		var rolle_alt: String = str((sp.get("vertrag", {}) as Dictionary).get("rolle", "rotation"))
+		if rolle_alt in ["leistungstraeger", "stammspieler"]:
+			var saison_alt: Dictionary = (d["vereine"][von] as Dictionary).get("saison", {})
+			if not saison_alt.is_empty():
+				saison_alt["verkaufte_stammspieler"] = int(saison_alt.get("verkaufte_stammspieler", 0)) + 1
 	if nach != "" and d["vereine"].has(nach):
 		(d["vereine"][nach]["kader"] as Array).append(sid)
 		Trikot.vergeben(d, nach, sid)

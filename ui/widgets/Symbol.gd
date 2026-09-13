@@ -51,6 +51,7 @@ func _draw() -> void:
 		"scouting": _lupe()
 		"finanzen": _muenze()
 		"infrastruktur": _halle()
+		"halle": _publikum()
 		"personal": _ausweis()
 		"vorstand": _stuhl()
 		"karriere": _medaille()
@@ -199,6 +200,17 @@ func _halle() -> void:
 	_linie([Vector2(0.14, 0.84), Vector2(0.14, 0.48), Vector2(0.50, 0.22),
 		Vector2(0.86, 0.48), Vector2(0.86, 0.84)])
 	_kasten(0.40, 0.58, 0.20, 0.26)
+
+func _publikum() -> void:  # Tribuene mit Koepfen und erhobenen Armen
+	# Ansteigende Reihen
+	_linie([Vector2(0.08, 0.86), Vector2(0.30, 0.86), Vector2(0.30, 0.70),
+		Vector2(0.56, 0.70), Vector2(0.56, 0.54), Vector2(0.92, 0.54)])
+	# Drei Zuschauer, der vordere mit erhobenen Armen
+	_kreis(0.19, 0.72, 0.075)
+	_kreis(0.43, 0.56, 0.075)
+	_kreis(0.72, 0.40, 0.075)
+	_linie([Vector2(0.63, 0.30), Vector2(0.67, 0.42)], false, staerke * 0.9)
+	_linie([Vector2(0.81, 0.30), Vector2(0.77, 0.42)], false, staerke * 0.9)
 
 func _ausweis() -> void:
 	_kasten(0.10, 0.24, 0.80, 0.56)

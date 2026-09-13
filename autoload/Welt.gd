@@ -45,6 +45,13 @@ func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0, ec
 			Vorstand.saisonziel_festlegen(daten, cid)
 	Spielplan.erzeuge_saison(daten)
 	Finanzen.saison_budgets(daten)
+	# Der Dauerkartenvorverkauf der ersten Saison. Für die KI-Vereine mit
+	# ihren Marktpreisen, für den eigenen Verein mit dem Standard — wer daran
+	# etwas ändern will, tut es ab dem nächsten Sommer.
+	for cid_dk in Weltgenerator.clubs(daten):
+		if cid_dk != verein_id:
+			Ticketing.ki_preise(daten, str(cid_dk))
+		Ticketing.verkauf(daten, str(cid_dk))
 	laeuft = true
 	nachricht({
 		"typ": "verein",
@@ -551,6 +558,18 @@ func _daten_auffrischen() -> void:
 		if not verein_dict.has("siegesserie"):
 			verein_dict["siegesserie"] = 0
 			verein_dict["serie_gemeldet"] = 0
+		if not verein_dict.has("darlehen"):
+			verein_dict["darlehen"] = []
+		if not verein_dict.has("spieltag"):
+			verein_dict["spieltag"] = {"programm": Spieltagsprogramm.STANDARD,
+				"letztes": Spieltagsprogramm.STANDARD, "kosten": 0.0}
+		# Eintrittspreise und Fanszene entstehen beim ersten Zugriff aus dem
+		# Verein selbst — dafür genügt es, einmal danach zu fragen.
+		Ticketing.daten(daten, str(verein_cid))
+		Ticketing.nachtragen(daten, str(verein_cid))
+		Fanszene.szene(daten, str(verein_cid))
+		if not (verein_dict.get("saison", {}) as Dictionary).has("verkaufte_stammspieler"):
+			(verein_dict.get("saison", {}) as Dictionary)["verkaufte_stammspieler"] = 0
 		if not verein_dict.has("jugend"):
 			verein_dict["jugend"] = []
 		if not verein_dict.has("mentoring"):
