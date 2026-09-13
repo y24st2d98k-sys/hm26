@@ -58,6 +58,9 @@ const FLAGGEN := {
 	# Kuba: Streifen mit rotem Keil am Mast — dieselbe Abstraktion wie bei
 	# Tschechien und Bosnien.
 	"cu": {"art": Art.VIERTEL, "farben": [B, W, R]},
+	"lt": {"art": Art.WAAGERECHT, "farben": [G, GR, R]},
+	# Algerien: gruene und weisse Haelfte, wie Katar mit zwei Feldern gebaut.
+	"dz": {"art": Art.SENKRECHT, "farben": [GR, W, W]},
 }
 
 var nation: String = "de"
