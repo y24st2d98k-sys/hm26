@@ -1,2679 +1,3162 @@
 {
-	"version": 1,
-	"stand": "September 2026 — Kader 2026/27",
-	"hinweis": "Aufgeführt sind die belegten Kader zum genannten Stand. Nummer, Name, Position, Nation und Geburtsjahr stammen aus den Vereins- und Ligaangaben; das Alter ist zum 1. September 2026 gerechnet. Die Stärke ist ein Schätzwert für die Simulation und keine Tatsachenbehauptung — sie ordnet einen Spieler auf einer Skala ein, auf der der Bundesliga-MVP bei 96 und ein Nachwuchsspieler bei etwa 56 steht. Vereine ohne vollständigen Kader werden vom Spiel auf Sollstärke aufgefüllt; erfundene Spieler übernehmen die fehlenden Positionen. Positionen: TW, LA, RL, RM, RR, RA, KM. Nationen als Kürzel wie in Namen.KULTUR_NAME.",
-	"kader": {
-		"SC Magdeburg": [
-			{
-				"nummer": 1,
-				"vorname": "Dominik",
-				"nachname": "Kuzmanović",
-				"position": "TW",
-				"nation": "hr",
-				"alter": 24,
-				"staerke": 82
-			},
-			{
-				"nummer": 12,
-				"vorname": "Matej",
-				"nachname": "Mandić",
-				"position": "TW",
-				"nation": "hr",
-				"alter": 24,
-				"staerke": 80
-			},
-			{
-				"nummer": 4,
-				"vorname": "Malte",
-				"nachname": "Elze",
-				"position": "KM",
-				"nation": "de",
-				"alter": 18,
-				"staerke": 58
-			},
-			{
-				"nummer": 6,
-				"vorname": "Matthias",
-				"nachname": "Musche",
-				"position": "LA",
-				"nation": "de",
-				"alter": 34,
-				"staerke": 85
-			},
-			{
-				"nummer": 7,
-				"vorname": "Felix",
-				"nachname": "Claar",
-				"position": "RM",
-				"nation": "se",
-				"alter": 29,
-				"staerke": 86
-			},
-			{
-				"nummer": 8,
-				"vorname": "Tim",
-				"nachname": "Thielicke",
-				"position": "RM",
-				"nation": "de",
-				"alter": 18,
-				"staerke": 56
-			},
-			{
-				"nummer": 9,
-				"vorname": "Oskar",
-				"nachname": "Vind Rasmussen",
-				"position": "RA",
-				"nation": "dk",
-				"alter": 26,
-				"staerke": 79
-			},
-			{
-				"nummer": 10,
-				"vorname": "Gísli Þorgeir",
-				"nachname": "Kristjánsson",
-				"position": "RM",
-				"nation": "is",
-				"alter": 27,
-				"staerke": 91
-			},
-			{
-				"nummer": 11,
-				"vorname": "Daniel",
-				"nachname": "Pettersson",
-				"position": "RA",
-				"nation": "se",
-				"alter": 34,
-				"staerke": 82
-			},
-			{
-				"nummer": 14,
-				"vorname": "Ómar Ingi",
-				"nachname": "Magnússon",
-				"position": "RR",
-				"nation": "is",
-				"alter": 29,
-				"staerke": 90
-			},
-			{
-				"nummer": 15,
-				"vorname": "Antonio",
-				"nachname": "Serradilla Cuenca",
-				"position": "RL",
-				"nation": "es",
-				"alter": 27,
-				"staerke": 78
-			},
-			{
-				"nummer": 19,
-				"vorname": "Elvar Örn",
-				"nachname": "Jónsson",
-				"position": "RL",
-				"nation": "is",
-				"alter": 29,
-				"staerke": 81
-			},
-			{
-				"nummer": 20,
-				"vorname": "Philipp",
-				"nachname": "Weber",
-				"position": "RM",
-				"nation": "de",
-				"alter": 33,
-				"staerke": 83
-			},
-			{
-				"nummer": 21,
-				"vorname": "Albin",
-				"nachname": "Lagergren",
-				"position": "RR",
-				"nation": "se",
-				"alter": 33,
-				"staerke": 82
-			},
-			{
-				"nummer": 22,
-				"vorname": "Lukas",
-				"nachname": "Mertens",
-				"position": "LA",
-				"nation": "de",
-				"alter": 30,
-				"staerke": 84
-			},
-			{
-				"nummer": 23,
-				"vorname": "Magnus",
-				"nachname": "Saugstrup",
-				"position": "KM",
-				"nation": "dk",
-				"alter": 30,
-				"staerke": 87
-			},
-			{
-				"nummer": 54,
-				"vorname": "Oscar",
-				"nachname": "Bergendahl",
-				"position": "KM",
-				"nation": "se",
-				"alter": 31,
-				"staerke": 82
-			}
-		],
-		"THW Kiel": [
-			{
-				"nummer": 1,
-				"vorname": "Gonzalo",
-				"nachname": "Pérez de Vargas",
-				"position": "TW",
-				"nation": "es",
-				"alter": 35,
-				"staerke": 87
-			},
-			{
-				"nummer": 33,
-				"vorname": "Andreas",
-				"nachname": "Wolff",
-				"position": "TW",
-				"nation": "de",
-				"alter": 35,
-				"staerke": 89
-			},
-			{
-				"nummer": 36,
-				"vorname": "Tobias",
-				"nachname": "Dengler",
-				"position": "TW",
-				"nation": "de",
-				"alter": 18,
-				"staerke": 52
-			},
-			{
-				"nummer": 3,
-				"vorname": "Jarnes",
-				"nachname": "Faust",
-				"position": "RA",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 72
-			},
-			{
-				"nummer": 4,
-				"vorname": "Domagoj",
-				"nachname": "Duvnjak",
-				"position": "RM",
-				"nation": "hr",
-				"alter": 38,
-				"staerke": 80
-			},
-			{
-				"nummer": 6,
-				"vorname": "Harald",
-				"nachname": "Reinkind",
-				"position": "RR",
-				"nation": "no",
-				"alter": 34,
-				"staerke": 84
-			},
-			{
-				"nummer": 7,
-				"vorname": "Julian",
-				"nachname": "Köster",
-				"position": "RL",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 86
-			},
-			{
-				"nummer": 11,
-				"vorname": "Emil",
-				"nachname": "Wernsdorf Madsen",
-				"position": "RR",
-				"nation": "dk",
-				"alter": 25,
-				"staerke": 81
-			},
-			{
-				"nummer": 20,
-				"vorname": "Lukas",
-				"nachname": "Laube",
-				"position": "KM",
-				"nation": "ch",
-				"alter": 26,
-				"staerke": 76
-			},
-			{
-				"nummer": 21,
-				"vorname": "Eric",
-				"nachname": "Johansson",
-				"position": "RL",
-				"nation": "se",
-				"alter": 26,
-				"staerke": 84
-			},
-			{
-				"nummer": 22,
-				"vorname": "Rasmus",
-				"nachname": "Ankermann",
-				"position": "RM",
-				"nation": "de",
-				"alter": 19,
-				"staerke": 58
-			},
-			{
-				"nummer": 23,
-				"vorname": "Rune",
-				"nachname": "Dahmke",
-				"position": "LA",
-				"nation": "de",
-				"alter": 33,
-				"staerke": 79
-			},
-			{
-				"nummer": 24,
-				"vorname": "Lukas",
-				"nachname": "Zerbe",
-				"position": "RA",
-				"nation": "de",
-				"alter": 30,
-				"staerke": 80
-			},
-			{
-				"nummer": 32,
-				"vorname": "Ben",
-				"nachname": "Szilágyi",
-				"position": "LA",
-				"nation": "at",
-				"alter": 19,
-				"staerke": 60
-			},
-			{
-				"nummer": 35,
-				"vorname": "Domen",
-				"nachname": "Makuc",
-				"position": "RM",
-				"nation": "si",
-				"alter": 26,
-				"staerke": 83
-			},
-			{
-				"nummer": 61,
-				"vorname": "Hendrik",
-				"nachname": "Pekeler",
-				"position": "KM",
-				"nation": "de",
-				"alter": 35,
-				"staerke": 85
-			},
-			{
-				"nummer": 71,
-				"vorname": "Elias",
-				"nachname": "Ellefsen á Skipagøtu",
-				"position": "RM",
-				"nation": "fo",
-				"alter": 24,
-				"staerke": 82
-			},
-			{
-				"nummer": 74,
-				"vorname": "Vincent",
-				"nachname": "Büchner",
-				"position": "LA",
-				"nation": "de",
-				"alter": 28,
-				"staerke": 77
-			},
-			{
-				"nummer": 93,
-				"vorname": "Veron",
-				"nachname": "Načinović",
-				"position": "KM",
-				"nation": "hr",
-				"alter": 26,
-				"staerke": 79
-			}
-		],
-		"SG Flensburg-Handewitt": [
-			{
-				"nummer": 1,
-				"vorname": "Benjamin",
-				"nachname": "Burić",
-				"position": "TW",
-				"nation": "ba",
-				"alter": 35,
-				"staerke": 82
-			},
-			{
-				"nummer": 16,
-				"vorname": "Cătălin",
-				"nachname": "Haidu",
-				"position": "TW",
-				"nation": "ro",
-				"alter": 19,
-				"staerke": 55
-			},
-			{
-				"nummer": 30,
-				"vorname": "Simon",
-				"nachname": "Möller",
-				"position": "TW",
-				"nation": "se",
-				"alter": 26,
-				"staerke": 79
-			},
-			{
-				"nummer": 2,
-				"vorname": "Simon",
-				"nachname": "Pytlick",
-				"position": "RM",
-				"nation": "dk",
-				"alter": 25,
-				"staerke": 90
-			},
-			{
-				"nummer": 5,
-				"vorname": "Niclas",
-				"nachname": "Kirkeløkke",
-				"position": "RR",
-				"nation": "dk",
-				"alter": 32,
-				"staerke": 83
-			},
-			{
-				"nummer": 14,
-				"vorname": "Emil",
-				"nachname": "Siersbæk Bergholt",
-				"position": "KM",
-				"nation": "dk",
-				"alter": 29,
-				"staerke": 80
-			},
-			{
-				"nummer": 17,
-				"vorname": "Marko",
-				"nachname": "Grgić",
-				"position": "RL",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 79
-			},
-			{
-				"nummer": 18,
-				"vorname": "Moritz",
-				"nachname": "Detlefsen",
-				"position": "KM",
-				"nation": "de",
-				"alter": 18,
-				"staerke": 56
-			},
-			{
-				"nummer": 23,
-				"vorname": "Kent Robin",
-				"nachname": "Tønnesen",
-				"position": "RR",
-				"nation": "no",
-				"alter": 35,
-				"staerke": 80
-			},
-			{
-				"nummer": 27,
-				"vorname": "Aksel",
-				"nachname": "Horgen",
-				"position": "RA",
-				"nation": "no",
-				"alter": 30,
-				"staerke": 79
-			},
-			{
-				"nummer": 28,
-				"vorname": "Patrick",
-				"nachname": "Volz",
-				"position": "LA",
-				"nation": "de",
-				"alter": 27,
-				"staerke": 74
-			},
-			{
-				"nummer": 31,
-				"vorname": "Emil",
-				"nachname": "Manfeldt Jakobsen",
-				"position": "LA",
-				"nation": "dk",
-				"alter": 28,
-				"staerke": 87
-			},
-			{
-				"nummer": 41,
-				"vorname": "Arnar Freyr",
-				"nachname": "Arnarsson",
-				"position": "KM",
-				"nation": "is",
-				"alter": 30,
-				"staerke": 80
-			},
-			{
-				"nummer": 43,
-				"vorname": "Blaž",
-				"nachname": "Blagotinšek",
-				"position": "KM",
-				"nation": "si",
-				"alter": 32,
-				"staerke": 81
-			},
-			{
-				"nummer": 44,
-				"vorname": "Aymeric",
-				"nachname": "Minne",
-				"position": "RM",
-				"nation": "fr",
-				"alter": 29,
-				"staerke": 83
-			},
-			{
-				"nummer": 63,
-				"vorname": "Domen",
-				"nachname": "Novak",
-				"position": "RA",
-				"nation": "si",
-				"alter": 28,
-				"staerke": 79
-			},
-			{
-				"nummer": 64,
-				"vorname": "Lasse",
-				"nachname": "Kjær Møller",
-				"position": "RL",
-				"nation": "dk",
-				"alter": 30,
-				"staerke": 84
-			},
-			{
-				"nummer": 77,
-				"vorname": "Luca",
-				"nachname": "Witzke",
-				"position": "RM",
-				"nation": "de",
-				"alter": 27,
-				"staerke": 83
-			}
-		],
-		"Füchse Berlin": [
-			{
-				"nummer": 1,
-				"vorname": "Lasse",
-				"nachname": "Ludwig",
-				"position": "TW",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 76
-			},
-			{
-				"nummer": 12,
-				"vorname": "Andreas",
-				"nachname": "Palicka",
-				"position": "TW",
-				"nation": "se",
-				"alter": 40,
-				"staerke": 84
-			},
-			{
-				"nummer": 3,
-				"vorname": "Fabian",
-				"nachname": "Wiede",
-				"position": "RR",
-				"nation": "de",
-				"alter": 32,
-				"staerke": 82
-			},
-			{
-				"nummer": 5,
-				"vorname": "Max",
-				"nachname": "Darj",
-				"position": "KM",
-				"nation": "se",
-				"alter": 34,
-				"staerke": 81
-			},
-			{
-				"nummer": 6,
-				"vorname": "Leo",
-				"nachname": "Prantner",
-				"position": "RA",
-				"nation": "it",
-				"alter": 24,
-				"staerke": 76
-			},
-			{
-				"nummer": 9,
-				"vorname": "Frederik",
-				"nachname": "Simak",
-				"position": "RL",
-				"nation": "de",
-				"alter": 28,
-				"staerke": 79
-			},
-			{
-				"nummer": 14,
-				"vorname": "Aitor",
-				"nachname": "Ariño",
-				"position": "LA",
-				"nation": "es",
-				"alter": 33,
-				"staerke": 82
-			},
-			{
-				"nummer": 15,
-				"vorname": "Tobias",
-				"nachname": "Grøndahl",
-				"position": "RM",
-				"nation": "no",
-				"alter": 25,
-				"staerke": 79
-			},
-			{
-				"nummer": 17,
-				"vorname": "Nils",
-				"nachname": "Lichtlein",
-				"position": "RM",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 86
-			},
-			{
-				"nummer": 19,
-				"vorname": "Mathias",
-				"nachname": "Gidsel",
-				"position": "RR",
-				"nation": "dk",
-				"alter": 27,
-				"staerke": 96
-			},
-			{
-				"nummer": 20,
-				"vorname": "Tim",
-				"nachname": "Freihöfer",
-				"position": "LA",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 82
-			},
-			{
-				"nummer": 24,
-				"vorname": "Lauro",
-				"nachname": "Pichiri",
-				"position": "RL",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 66
-			},
-			{
-				"nummer": 25,
-				"vorname": "Matthes",
-				"nachname": "Langhoff",
-				"position": "RL",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 78
-			},
-			{
-				"nummer": 30,
-				"vorname": "Aymeric",
-				"nachname": "Zaepfel",
-				"position": "RL",
-				"nation": "fr",
-				"alter": 24,
-				"staerke": 76
-			},
-			{
-				"nummer": 34,
-				"vorname": "Hákun",
-				"nachname": "West av Teigum",
-				"position": "RA",
-				"nation": "fo",
-				"alter": 24,
-				"staerke": 79
-			},
-			{
-				"nummer": 93,
-				"vorname": "Mijajlo",
-				"nachname": "Marsenić",
-				"position": "KM",
-				"nation": "rs",
-				"alter": 33,
-				"staerke": 83
-			}
-		],
-		"Rhein-Neckar Löwen": [
-			{
-				"nummer": 29,
-				"vorname": "David",
-				"nachname": "Späth",
-				"position": "TW",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 84
-			},
-			{
-				"nummer": 20,
-				"vorname": "Mike",
-				"nachname": "Jensen",
-				"position": "TW",
-				"nation": "dk",
-				"alter": 31,
-				"staerke": 79
-			},
-			{
-				"nummer": 65,
-				"vorname": "Luca",
-				"nachname": "Zapp",
-				"position": "TW",
-				"nation": "de",
-				"alter": 19,
-				"staerke": 55
-			},
-			{
-				"nummer": 77,
-				"vorname": "Dani",
-				"nachname": "Baijens",
-				"position": "RM",
-				"nation": "nl",
-				"alter": 28,
-				"staerke": 81
-			},
-			{
-				"nummer": 35,
-				"vorname": "Kentin",
-				"nachname": "Mahé",
-				"position": "RM",
-				"nation": "fr",
-				"alter": 35,
-				"staerke": 81
-			},
-			{
-				"nummer": 25,
-				"vorname": "Haukur",
-				"nachname": "Þrastarson",
-				"position": "RM",
-				"nation": "is",
-				"alter": 25,
-				"staerke": 82
-			},
-			{
-				"nummer": 45,
-				"vorname": "Halil",
-				"nachname": "Jaganjac",
-				"position": "RL",
-				"nation": "hr",
-				"alter": 28,
-				"staerke": 80
-			},
-			{
-				"nummer": 78,
-				"vorname": "Edwin",
-				"nachname": "Aspenbäck",
-				"position": "RR",
-				"nation": "se",
-				"alter": 26,
-				"staerke": 78
-			},
-			{
-				"nummer": 9,
-				"vorname": "Jacob",
-				"nachname": "Lassen",
-				"position": "RR",
-				"nation": "dk",
-				"alter": 30,
-				"staerke": 79
-			},
-			{
-				"nummer": 8,
-				"vorname": "Tim",
-				"nachname": "Nothdurft",
-				"position": "LA",
-				"nation": "de",
-				"alter": 29,
-				"staerke": 77
-			},
-			{
-				"nummer": 11,
-				"vorname": "Niclas",
-				"nachname": "Mierzwa",
-				"position": "LA",
-				"nation": "ch",
-				"alter": 19,
-				"staerke": 60
-			},
-			{
-				"nummer": 19,
-				"vorname": "Marius",
-				"nachname": "Steinhauser",
-				"position": "RA",
-				"nation": "de",
-				"alter": 33,
-				"staerke": 76
-			},
-			{
-				"nummer": 14,
-				"vorname": "Gino",
-				"nachname": "Steenaerts",
-				"position": "RA",
-				"nation": "ch",
-				"alter": 21,
-				"staerke": 68
-			},
-			{
-				"nummer": 80,
-				"vorname": "Jannik",
-				"nachname": "Kohlbacher",
-				"position": "KM",
-				"nation": "de",
-				"alter": 31,
-				"staerke": 84
-			},
-			{
-				"nummer": 41,
-				"vorname": "Elias",
-				"nachname": "Ciudad Benitez",
-				"position": "KM",
-				"nation": "de",
-				"alter": 20,
-				"staerke": 62
-			},
-			{
-				"nummer": 21,
-				"vorname": "Aron",
-				"nachname": "Seesing",
-				"position": "KM",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 72
-			}
-		],
-		"MT Melsungen": [
-			{
-				"nummer": 16,
-				"vorname": "Nebojša",
-				"nachname": "Simić",
-				"position": "TW",
-				"nation": "me",
-				"alter": 33,
-				"staerke": 84
-			},
-			{
-				"nummer": 32,
-				"vorname": "Kristóf",
-				"nachname": "Palasics",
-				"position": "TW",
-				"nation": "hu",
-				"alter": 24,
-				"staerke": 78
-			},
-			{
-				"nummer": 2,
-				"vorname": "Rubén",
-				"nachname": "Marchán",
-				"position": "KM",
-				"nation": "es",
-				"alter": 31,
-				"staerke": 78
-			},
-			{
-				"nummer": 4,
-				"vorname": "Nikolaj",
-				"nachname": "Enderleit",
-				"position": "RR",
-				"nation": "dk",
-				"alter": 29,
-				"staerke": 79
-			},
-			{
-				"nummer": 5,
-				"vorname": "Leander",
-				"nachname": "Altena",
-				"position": "RM",
-				"nation": "de",
-				"alter": 20,
-				"staerke": 64
-			},
-			{
-				"nummer": 6,
-				"vorname": "Erik",
-				"nachname": "Balenciaga",
-				"position": "RM",
-				"nation": "es",
-				"alter": 33,
-				"staerke": 81
-			},
-			{
-				"nummer": 7,
-				"vorname": "David",
-				"nachname": "Mandić",
-				"position": "LA",
-				"nation": "hr",
-				"alter": 28,
-				"staerke": 80
-			},
-			{
-				"nummer": 8,
-				"vorname": "Adrián",
-				"nachname": "Sipos",
-				"position": "KM",
-				"nation": "hu",
-				"alter": 36,
-				"staerke": 78
-			},
-			{
-				"nummer": 10,
-				"vorname": "Dainis",
-				"nachname": "Krištopāns",
-				"position": "RR",
-				"nation": "lv",
-				"alter": 35,
-				"staerke": 82
-			},
-			{
-				"nummer": 11,
-				"vorname": "Dimitri",
-				"nachname": "Ignatow",
-				"position": "RA",
-				"nation": "de",
-				"alter": 27,
-				"staerke": 78
-			},
-			{
-				"nummer": 13,
-				"vorname": "Leon",
-				"nachname": "Stehl",
-				"position": "RA",
-				"nation": "de",
-				"alter": 20,
-				"staerke": 62
-			},
-			{
-				"nummer": 14,
-				"vorname": "Johannes",
-				"nachname": "Golla",
-				"position": "KM",
-				"nation": "de",
-				"alter": 28,
-				"staerke": 86
-			},
-			{
-				"nummer": 18,
-				"vorname": "Florian",
-				"nachname": "Drosten",
-				"position": "LA",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 70
-			},
-			{
-				"nummer": 19,
-				"vorname": "Reynir Þór",
-				"nachname": "Stefánsson",
-				"position": "RM",
-				"nation": "is",
-				"alter": 21,
-				"staerke": 66
-			},
-			{
-				"nummer": 24,
-				"vorname": "Daniel",
-				"nachname": "Dujshebaev",
-				"position": "RL",
-				"nation": "es",
-				"alter": 29,
-				"staerke": 86
-			},
-			{
-				"nummer": 25,
-				"vorname": "Olle",
-				"nachname": "Forsell Schefvert",
-				"position": "RL",
-				"nation": "se",
-				"alter": 33,
-				"staerke": 79
-			},
-			{
-				"nummer": 26,
-				"vorname": "René-Daniel",
-				"nachname": "Andrei",
-				"position": "RL",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 72
-			},
-			{
-				"nummer": 28,
-				"vorname": "Luca",
-				"nachname": "Sigrist",
-				"position": "RM",
-				"nation": "ch",
-				"alter": 20,
-				"staerke": 62
-			},
-			{
-				"nummer": 31,
-				"vorname": "Dariel",
-				"nachname": "García Rivera",
-				"position": "LA",
-				"nation": "cu",
-				"alter": 29,
-				"staerke": 76
-			},
-			{
-				"nummer": 33,
-				"vorname": "Aaron",
-				"nachname": "Mensing",
-				"position": "RL",
-				"nation": "dk",
-				"alter": 28,
-				"staerke": 78
-			},
-			{
-				"nummer": 73,
-				"vorname": "Timo",
-				"nachname": "Kastening",
-				"position": "RA",
-				"nation": "de",
-				"alter": 31,
-				"staerke": 84
-			}
-		],
-		"FC Barcelona": [
-			{
-				"vorname": "Emil",
-				"nachname": "Nielsen",
-				"position": "TW",
-				"nation": "dk",
-				"alter": 29,
-				"staerke": 92
-			},
-			{
-				"vorname": "Aleix",
-				"nachname": "Gómez",
-				"position": "RA",
-				"nation": "es",
-				"alter": 29,
-				"staerke": 88
-			},
-			{
-				"vorname": "Blaž",
-				"nachname": "Janc",
-				"position": "RA",
-				"nation": "si",
-				"alter": 30,
-				"staerke": 87
-			},
-			{
-				"vorname": "Luis",
-				"nachname": "Frade",
-				"position": "KM",
-				"nation": "es",
-				"alter": 27,
-				"staerke": 83
-			},
-			{
-				"vorname": "Melvyn",
-				"nachname": "Richardson",
-				"position": "RL",
-				"nation": "fr",
-				"alter": 29,
-				"staerke": 85
-			},
-			{
-				"vorname": "Timothey",
-				"nachname": "N'Guessan",
-				"position": "RL",
-				"nation": "fr",
-				"alter": 34,
-				"staerke": 80
-			},
-			{
-				"vorname": "Dika",
-				"nachname": "Mem",
-				"position": "RR",
-				"nation": "fr",
-				"alter": 29,
-				"staerke": 92
-			}
-		],
-		"Aalborg Håndbold": [
-			{
-				"vorname": "Niklas",
-				"nachname": "Landin",
-				"position": "TW",
-				"nation": "dk",
-				"alter": 37,
-				"staerke": 88
-			},
-			{
-				"vorname": "Simon",
-				"nachname": "Hald",
-				"position": "KM",
-				"nation": "dk",
-				"alter": 31,
-				"staerke": 83
-			},
-			{
-				"vorname": "Lukas",
-				"nachname": "Sandell",
-				"position": "RM",
-				"nation": "se",
-				"alter": 29,
-				"staerke": 82
-			}
-		],
-		"Paris Saint-Germain Handball": [
-			{
-				"vorname": "Jannick",
-				"nachname": "Green",
-				"position": "TW",
-				"nation": "dk",
-				"alter": 37,
-				"staerke": 84
-			},
-			{
-				"vorname": "Mathieu",
-				"nachname": "Grébille",
-				"position": "LA",
-				"nation": "fr",
-				"alter": 33,
-				"staerke": 80
-			},
-			{
-				"vorname": "Ferran",
-				"nachname": "Solé",
-				"position": "RA",
-				"nation": "es",
-				"alter": 34,
-				"staerke": 84
-			},
-			{
-				"vorname": "Elohim",
-				"nachname": "Prandi",
-				"position": "RL",
-				"nation": "fr",
-				"alter": 28,
-				"staerke": 90
-			},
-			{
-				"vorname": "Luc",
-				"nachname": "Steins",
-				"position": "RM",
-				"nation": "nl",
-				"alter": 32,
-				"staerke": 86
-			},
-			{
-				"vorname": "Dainis",
-				"nachname": "Krištopāns",
-				"position": "RR",
-				"nation": "lv",
-				"alter": 34,
-				"staerke": 84
-			}
-		],
-		"Industria Kielce": [
-			{
-				"vorname": "Dejan",
-				"nachname": "Milosavljev",
-				"position": "TW",
-				"nation": "rs",
-				"alter": 30,
-				"staerke": 87
-			},
-			{
-				"vorname": "Arciom",
-				"nachname": "Karalek",
-				"position": "KM",
-				"nation": "by",
-				"alter": 31,
-				"staerke": 82
-			},
-			{
-				"vorname": "Szymon",
-				"nachname": "Sićko",
-				"position": "RL",
-				"nation": "pl",
-				"alter": 28,
-				"staerke": 83
-			},
-			{
-				"vorname": "Haniel",
-				"nachname": "Langaro",
-				"position": "RL",
-				"nation": "br",
-				"alter": 32,
-				"staerke": 80
-			},
-			{
-				"vorname": "Alex",
-				"nachname": "Dujshebaev",
-				"position": "RR",
-				"nation": "es",
-				"alter": 34,
-				"staerke": 86
-			}
-		],
-		"VfL Gummersbach": [
-			{
-				"nummer": 1,
-				"vorname": "Ignacio",
-				"nachname": "Biosca García",
-				"position": "TW",
-				"nation": "es",
-				"alter": 31,
-				"staerke": 82
-			},
-			{
-				"nummer": 16,
-				"vorname": "Bertram",
-				"nachname": "Obling",
-				"position": "TW",
-				"nation": "dk",
-				"alter": 30,
-				"staerke": 79
-			},
-			{
-				"nummer": 4,
-				"vorname": "Elliði Snær",
-				"nachname": "Viðarsson",
-				"position": "KM",
-				"nation": "is",
-				"alter": 27,
-				"staerke": 80
-			},
-			{
-				"nummer": 5,
-				"vorname": "Tilen",
-				"nachname": "Kodrin",
-				"position": "LA",
-				"nation": "si",
-				"alter": 32,
-				"staerke": 78
-			},
-			{
-				"nummer": 6,
-				"vorname": "Miloš",
-				"nachname": "Vujović",
-				"position": "LA",
-				"nation": "me",
-				"alter": 32,
-				"staerke": 77
-			},
-			{
-				"nummer": 8,
-				"vorname": "Lukas",
-				"nachname": "Blohme",
-				"position": "RA",
-				"nation": "de",
-				"alter": 31,
-				"staerke": 78
-			},
-			{
-				"nummer": 10,
-				"vorname": "Alex",
-				"nachname": "Dujshebaev",
-				"position": "RR",
-				"nation": "es",
-				"alter": 33,
-				"staerke": 88
-			},
-			{
-				"nummer": 11,
-				"vorname": "Mathis",
-				"nachname": "Häseler",
-				"position": "RA",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 76
-			},
-			{
-				"nummer": 14,
-				"vorname": "Teitur Örn",
-				"nachname": "Einarsson",
-				"position": "RR",
-				"nation": "is",
-				"alter": 27,
-				"staerke": 80
-			},
-			{
-				"nummer": 15,
-				"vorname": "Miro",
-				"nachname": "Schluroff",
-				"position": "RL",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 76
-			},
-			{
-				"nummer": 20,
-				"vorname": "Ludvig",
-				"nachname": "Hallbäck",
-				"position": "RM",
-				"nation": "se",
-				"alter": 25,
-				"staerke": 84
-			},
-			{
-				"nummer": 23,
-				"vorname": "Nikola",
-				"nachname": "Roganović",
-				"position": "RL",
-				"nation": "se",
-				"alter": 20,
-				"staerke": 64
-			},
-			{
-				"nummer": 27,
-				"vorname": "Kristjan",
-				"nachname": "Horžen",
-				"position": "KM",
-				"nation": "si",
-				"alter": 26,
-				"staerke": 80
-			},
-			{
-				"nummer": 30,
-				"vorname": "Tom",
-				"nachname": "Kiesler",
-				"position": "RL",
-				"nation": "de",
-				"alter": 25,
-				"staerke": 75
-			},
-			{
-				"nummer": 31,
-				"vorname": "Kay",
-				"nachname": "Smits",
-				"position": "RR",
-				"nation": "nl",
-				"alter": 29,
-				"staerke": 88
-			},
-			{
-				"nummer": 34,
-				"vorname": "Garðar Ingi",
-				"nachname": "Sindrason",
-				"position": "RM",
-				"nation": "is",
-				"alter": 19,
-				"staerke": 58
-			},
-			{
-				"nummer": 66,
-				"vorname": "Štěpán",
-				"nachname": "Zeman",
-				"position": "KM",
-				"nation": "cz",
-				"alter": 29,
-				"staerke": 76
-			}
-		],
-		"TBV Lemgo Lippe": [
-			{
-				"nummer": 1,
-				"vorname": "Constantin",
-				"nachname": "Möstl",
-				"position": "TW",
-				"nation": "at",
-				"alter": 26,
-				"staerke": 82
-			},
-			{
-				"nummer": 12,
-				"vorname": "Linus",
-				"nachname": "Borreck",
-				"position": "TW",
-				"nation": "de",
-				"alter": 20,
-				"staerke": 62
-			},
-			{
-				"nummer": 94,
-				"vorname": "Domenico",
-				"nachname": "Ebner",
-				"position": "TW",
-				"nation": "it",
-				"alter": 32,
-				"staerke": 74
-			},
-			{
-				"nummer": 2,
-				"vorname": "Lukas",
-				"nachname": "Hutecek",
-				"position": "RL",
-				"nation": "at",
-				"alter": 26,
-				"staerke": 84
-			},
-			{
-				"nummer": 3,
-				"vorname": "Nicolai",
-				"nachname": "Theilinger",
-				"position": "RR",
-				"nation": "de",
-				"alter": 34,
-				"staerke": 76
-			},
-			{
-				"nummer": 4,
-				"vorname": "Samuel",
-				"nachname": "Zehnder",
-				"position": "LA",
-				"nation": "ch",
-				"alter": 26,
-				"staerke": 78
-			},
-			{
-				"nummer": 7,
-				"vorname": "Jan",
-				"nachname": "Mudrow",
-				"position": "RL",
-				"nation": "de",
-				"alter": 19,
-				"staerke": 58
-			},
-			{
-				"nummer": 9,
-				"vorname": "Christian",
-				"nachname": "O'Sullivan",
-				"position": "RM",
-				"nation": "no",
-				"alter": 35,
-				"staerke": 80
-			},
-			{
-				"nummer": 14,
-				"vorname": "Bobby",
-				"nachname": "Schagen",
-				"position": "RA",
-				"nation": "nl",
-				"alter": 36,
-				"staerke": 76
-			},
-			{
-				"nummer": 18,
-				"vorname": "Levin",
-				"nachname": "Wanner",
-				"position": "RA",
-				"nation": "ch",
-				"alter": 26,
-				"staerke": 75
-			},
-			{
-				"nummer": 21,
-				"vorname": "Leve",
-				"nachname": "Carstensen",
-				"position": "LA",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 72
-			},
-			{
-				"nummer": 22,
-				"vorname": "Adam",
-				"nachname": "Nyfjäll",
-				"position": "KM",
-				"nation": "se",
-				"alter": 34,
-				"staerke": 78
-			},
-			{
-				"nummer": 23,
-				"vorname": "Tim",
-				"nachname": "Suton",
-				"position": "RM",
-				"nation": "de",
-				"alter": 30,
-				"staerke": 77
-			},
-			{
-				"nummer": 24,
-				"vorname": "Joël",
-				"nachname": "Willecke",
-				"position": "KM",
-				"nation": "ch",
-				"alter": 22,
-				"staerke": 68
-			},
-			{
-				"nummer": 25,
-				"vorname": "Niels",
-				"nachname": "Versteijnen",
-				"position": "RR",
-				"nation": "nl",
-				"alter": 26,
-				"staerke": 79
-			},
-			{
-				"nummer": 26,
-				"vorname": "Jānis Pavels",
-				"nachname": "Valkovskis",
-				"position": "RL",
-				"nation": "lv",
-				"alter": 21,
-				"staerke": 70
-			},
-			{
-				"nummer": 28,
-				"vorname": "Hendrik",
-				"nachname": "Wagner",
-				"position": "RL",
-				"nation": "de",
-				"alter": 29,
-				"staerke": 76
-			}
-		],
-		"Frisch Auf Göppingen": [
-			{
-				"nummer": 1,
-				"vorname": "Julian",
-				"nachname": "Buchele",
-				"position": "TW",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 74
-			},
-			{
-				"nummer": 12,
-				"vorname": "Kristian",
-				"nachname": "Sæverås",
-				"position": "TW",
-				"nation": "no",
-				"alter": 30,
-				"staerke": 84
-			},
-			{
-				"nummer": 79,
-				"vorname": "Titus",
-				"nachname": "Lewe",
-				"position": "TW",
-				"nation": "de",
-				"alter": 18,
-				"staerke": 52
-			},
-			{
-				"nummer": 2,
-				"vorname": "Oskar",
-				"nachname": "Neudeck",
-				"position": "RL",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 72
-			},
-			{
-				"nummer": 5,
-				"vorname": "Rutger",
-				"nachname": "ten Velde",
-				"position": "LA",
-				"nation": "nl",
-				"alter": 29,
-				"staerke": 76
-			},
-			{
-				"nummer": 7,
-				"vorname": "Victor",
-				"nachname": "Kløve",
-				"position": "RL",
-				"nation": "dk",
-				"alter": 24,
-				"staerke": 74
-			},
-			{
-				"nummer": 9,
-				"vorname": "Max Christoph",
-				"nachname": "Beneke",
-				"position": "RR",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 78
-			},
-			{
-				"nummer": 17,
-				"vorname": "Tim",
-				"nachname": "Goßner",
-				"position": "RA",
-				"nation": "de",
-				"alter": 20,
-				"staerke": 62
-			},
-			{
-				"nummer": 18,
-				"vorname": "Fynn",
-				"nachname": "Hofele",
-				"position": "RA",
-				"nation": "de",
-				"alter": 20,
-				"staerke": 62
-			},
-			{
-				"nummer": 21,
-				"vorname": "Sascha",
-				"nachname": "Brodbeck",
-				"position": "KM",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 64
-			},
-			{
-				"nummer": 22,
-				"vorname": "Erik",
-				"nachname": "Persson",
-				"position": "RR",
-				"nation": "se",
-				"alter": 28,
-				"staerke": 78
-			},
-			{
-				"nummer": 23,
-				"vorname": "Ole",
-				"nachname": "Pregler",
-				"position": "RM",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 74
-			},
-			{
-				"nummer": 24,
-				"vorname": "Marcel",
-				"nachname": "Schiller",
-				"position": "LA",
-				"nation": "de",
-				"alter": 35,
-				"staerke": 79
-			},
-			{
-				"nummer": 25,
-				"vorname": "Ludvig",
-				"nachname": "Jurmala Åström",
-				"position": "KM",
-				"nation": "se",
-				"alter": 26,
-				"staerke": 76
-			},
-			{
-				"nummer": 27,
-				"vorname": "Oskar",
-				"nachname": "Sunnefeldt",
-				"position": "RL",
-				"nation": "se",
-				"alter": 28,
-				"staerke": 77
-			},
-			{
-				"nummer": 28,
-				"vorname": "Franko",
-				"nachname": "Lastro",
-				"position": "RA",
-				"nation": "at",
-				"alter": 23,
-				"staerke": 72
-			},
-			{
-				"nummer": 33,
-				"vorname": "Ýmir Örn",
-				"nachname": "Gíslason",
-				"position": "KM",
-				"nation": "is",
-				"alter": 29,
-				"staerke": 82
-			},
-			{
-				"nummer": 40,
-				"vorname": "Elias",
-				"nachname": "Newel",
-				"position": "RM",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 68
-			},
-			{
-				"nummer": 42,
-				"vorname": "Martin",
-				"nachname": "Hanne",
-				"position": "RL",
-				"nation": "de",
-				"alter": 25,
-				"staerke": 73
-			}
-		],
-		"Handball Sport Verein Hamburg": [
-			{
-				"nummer": 16,
-				"vorname": "Robin",
-				"nachname": "Haug",
-				"position": "TW",
-				"nation": "no",
-				"alter": 28,
-				"staerke": 80
-			},
-			{
-				"nummer": 30,
-				"vorname": "Norwin",
-				"nachname": "Pein",
-				"position": "TW",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 70
-			},
-			{
-				"nummer": 74,
-				"vorname": "Leon",
-				"nachname": "Nowottny",
-				"position": "TW",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 64
-			},
-			{
-				"nummer": 2,
-				"vorname": "Toma",
-				"nachname": "Gadza",
-				"position": "RR",
-				"nation": "de",
-				"alter": 18,
-				"staerke": 54
-			},
-			{
-				"nummer": 5,
-				"vorname": "Oliver",
-				"nachname": "Norlyk",
-				"position": "RR",
-				"nation": "dk",
-				"alter": 26,
-				"staerke": 78
-			},
-			{
-				"nummer": 6,
-				"vorname": "Elias",
-				"nachname": "Kofler",
-				"position": "RM",
-				"nation": "at",
-				"alter": 26,
-				"staerke": 80
-			},
-			{
-				"nummer": 11,
-				"vorname": "Nicolaj",
-				"nachname": "Jørgensen",
-				"position": "RM",
-				"nation": "dk",
-				"alter": 26,
-				"staerke": 78
-			},
-			{
-				"nummer": 14,
-				"vorname": "Mahmoud",
-				"nachname": "El-Shobaky",
-				"position": "RL",
-				"nation": "eg",
-				"alter": 19,
-				"staerke": 60
-			},
-			{
-				"nummer": 15,
-				"vorname": "Dominik",
-				"nachname": "Axmann",
-				"position": "RM",
-				"nation": "de",
-				"alter": 27,
-				"staerke": 76
-			},
-			{
-				"nummer": 17,
-				"vorname": "Kaj",
-				"nachname": "Geenen",
-				"position": "LA",
-				"nation": "nl",
-				"alter": 23,
-				"staerke": 72
-			},
-			{
-				"nummer": 21,
-				"vorname": "Frederik",
-				"nachname": "Bo Andersen",
-				"position": "RA",
-				"nation": "dk",
-				"alter": 27,
-				"staerke": 78
-			},
-			{
-				"nummer": 22,
-				"vorname": "Noah",
-				"nachname": "Beyer",
-				"position": "LA",
-				"nation": "de",
-				"alter": 29,
-				"staerke": 75
-			},
-			{
-				"nummer": 23,
-				"vorname": "Einar Þorsteinn",
-				"nachname": "Ólafsson",
-				"position": "RL",
-				"nation": "is",
-				"alter": 24,
-				"staerke": 76
-			},
-			{
-				"nummer": 24,
-				"vorname": "Nicolai",
-				"nachname": "Daling",
-				"position": "RR",
-				"nation": "no",
-				"alter": 24,
-				"staerke": 73
-			},
-			{
-				"nummer": 31,
-				"vorname": "Levin",
-				"nachname": "Unbehaun",
-				"position": "RA",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 66
-			},
-			{
-				"nummer": 33,
-				"vorname": "Moritz",
-				"nachname": "Sauter",
-				"position": "RM",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 72
-			},
-			{
-				"nummer": 42,
-				"vorname": "Jan",
-				"nachname": "Schmidt",
-				"position": "KM",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 66
-			},
-			{
-				"nummer": 77,
-				"vorname": "Alem",
-				"nachname": "Hadžić",
-				"position": "RM",
-				"nation": "mk",
-				"alter": 19,
-				"staerke": 56
-			},
-			{
-				"nummer": 81,
-				"vorname": "Martin",
-				"nachname": "Hernes Hovde",
-				"position": "KM",
-				"nation": "no",
-				"alter": 24,
-				"staerke": 77
-			}
-		],
-		"TSV Hannover-Burgdorf": [
-			{
-				"nummer": 16,
-				"vorname": "Simon",
-				"nachname": "Gade",
-				"position": "TW",
-				"nation": "dk",
-				"alter": 29,
-				"staerke": 81
-			},
-			{
-				"nummer": 35,
-				"vorname": "Joel",
-				"nachname": "Birlehm",
-				"position": "TW",
-				"nation": "de",
-				"alter": 29,
-				"staerke": 80
-			},
-			{
-				"nummer": 7,
-				"vorname": "Leif",
-				"nachname": "Tissier",
-				"position": "RM",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 80
-			},
-			{
-				"nummer": 9,
-				"vorname": "Vilhelm",
-				"nachname": "Poulsen",
-				"position": "RR",
-				"nation": "fo",
-				"alter": 27,
-				"staerke": 77
-			},
-			{
-				"nummer": 10,
-				"vorname": "Renārs",
-				"nachname": "Uščins",
-				"position": "RR",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 82
-			},
-			{
-				"nummer": 11,
-				"vorname": "Sebastian",
-				"nachname": "Heymann",
-				"position": "RL",
-				"nation": "de",
-				"alter": 28,
-				"staerke": 82
-			},
-			{
-				"nummer": 17,
-				"vorname": "August",
-				"nachname": "Pedersen",
-				"position": "LA",
-				"nation": "no",
-				"alter": 32,
-				"staerke": 78
-			},
-			{
-				"nummer": 22,
-				"vorname": "Marian",
-				"nachname": "Michalczik",
-				"position": "RM",
-				"nation": "de",
-				"alter": 29,
-				"staerke": 80
-			},
-			{
-				"nummer": 26,
-				"vorname": "Jonathan",
-				"nachname": "Edvardsson",
-				"position": "RM",
-				"nation": "se",
-				"alter": 29,
-				"staerke": 76
-			},
-			{
-				"nummer": 39,
-				"vorname": "Lukas",
-				"nachname": "Stutzke",
-				"position": "RL",
-				"nation": "de",
-				"alter": 28,
-				"staerke": 79
-			},
-			{
-				"nummer": 48,
-				"vorname": "Sigvaldi",
-				"nachname": "Guðjónsson",
-				"position": "RA",
-				"nation": "is",
-				"alter": 32,
-				"staerke": 79
-			},
-			{
-				"nummer": 54,
-				"vorname": "Justus",
-				"nachname": "Fischer",
-				"position": "KM",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 78
-			},
-			{
-				"nummer": 55,
-				"vorname": "Tim",
-				"nachname": "Zechel",
-				"position": "KM",
-				"nation": "de",
-				"alter": 29,
-				"staerke": 77
-			},
-			{
-				"nummer": 56,
-				"vorname": "Hannes",
-				"nachname": "Feise",
-				"position": "LA",
-				"nation": "de",
-				"alter": 30,
-				"staerke": 75
-			},
-			{
-				"nummer": 58,
-				"vorname": "Daniel",
-				"nachname": "Weber",
-				"position": "RA",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 68
-			},
-			{
-				"nummer": 80,
-				"vorname": "Luis",
-				"nachname": "Rodriguez",
-				"position": "KM",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 64
-			}
-		],
-		"TVB Stuttgart": [
-			{
-				"nummer": 1,
-				"vorname": "Mateusz",
-				"nachname": "Kornecki",
-				"position": "TW",
-				"nation": "pl",
-				"alter": 32,
-				"staerke": 79
-			},
-			{
-				"nummer": 12,
-				"vorname": "Mohamed",
-				"nachname": "El-Tayar",
-				"position": "TW",
-				"nation": "eg",
-				"alter": 30,
-				"staerke": 77
-			},
-			{
-				"nummer": 21,
-				"vorname": "Jorick",
-				"nachname": "Pol",
-				"position": "TW",
-				"nation": "nl",
-				"alter": 22,
-				"staerke": 66
-			},
-			{
-				"nummer": 3,
-				"vorname": "Max",
-				"nachname": "Häfner",
-				"position": "RM",
-				"nation": "de",
-				"alter": 30,
-				"staerke": 77
-			},
-			{
-				"nummer": 5,
-				"vorname": "Philipp",
-				"nachname": "Ahouansou",
-				"position": "RL",
-				"nation": "de",
-				"alter": 25,
-				"staerke": 74
-			},
-			{
-				"nummer": 7,
-				"vorname": "Kasper",
-				"nachname": "Thorsen Lien",
-				"position": "RA",
-				"nation": "no",
-				"alter": 25,
-				"staerke": 75
-			},
-			{
-				"nummer": 8,
-				"vorname": "Max",
-				"nachname": "Heydecke",
-				"position": "KM",
-				"nation": "de",
-				"alter": 19,
-				"staerke": 58
-			},
-			{
-				"nummer": 10,
-				"vorname": "Darío",
-				"nachname": "Sanz de Nicolás",
-				"position": "LA",
-				"nation": "es",
-				"alter": 22,
-				"staerke": 72
-			},
-			{
-				"nummer": 15,
-				"vorname": "Simone",
-				"nachname": "Mengon",
-				"position": "RL",
-				"nation": "it",
-				"alter": 26,
-				"staerke": 75
-			},
-			{
-				"nummer": 17,
-				"vorname": "Samuel",
-				"nachname": "Röthlisberger",
-				"position": "KM",
-				"nation": "ch",
-				"alter": 30,
-				"staerke": 79
-			},
-			{
-				"nummer": 19,
-				"vorname": "Linus",
-				"nachname": "Schmid",
-				"position": "RL",
-				"nation": "de",
-				"alter": 19,
-				"staerke": 58
-			},
-			{
-				"nummer": 22,
-				"vorname": "Torben",
-				"nachname": "Matzken",
-				"position": "RM",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 74
-			},
-			{
-				"nummer": 25,
-				"vorname": "Patrick",
-				"nachname": "Zieker",
-				"position": "LA",
-				"nation": "de",
-				"alter": 32,
-				"staerke": 79
-			},
-			{
-				"nummer": 27,
-				"vorname": "Philipp",
-				"nachname": "Meyer",
-				"position": "RL",
-				"nation": "de",
-				"alter": 29,
-				"staerke": 74
-			},
-			{
-				"nummer": 30,
-				"vorname": "Marco",
-				"nachname": "Mengon",
-				"position": "RL",
-				"nation": "it",
-				"alter": 26,
-				"staerke": 78
-			},
-			{
-				"nummer": 34,
-				"vorname": "Kai",
-				"nachname": "Häfner",
-				"position": "RR",
-				"nation": "de",
-				"alter": 37,
-				"staerke": 78
-			},
-			{
-				"nummer": 39,
-				"vorname": "Malte",
-				"nachname": "Donker",
-				"position": "RR",
-				"nation": "de",
-				"alter": 28,
-				"staerke": 75
-			},
-			{
-				"nummer": 57,
-				"vorname": "Jakob",
-				"nachname": "Nigg",
-				"position": "RA",
-				"nation": "at",
-				"alter": 23,
-				"staerke": 70
-			},
-			{
-				"nummer": 70,
-				"vorname": "Mohamed",
-				"nachname": "Darmoul",
-				"position": "RM",
-				"nation": "tn",
-				"alter": 28,
-				"staerke": 76
-			}
-		],
-		"Bergischer HC": [
-			{
-				"nummer": 1,
-				"vorname": "Christopher",
-				"nachname": "Rudeck",
-				"position": "TW",
-				"nation": "de",
-				"alter": 31,
-				"staerke": 79
-			},
-			{
-				"nummer": 16,
-				"vorname": "Louis",
-				"nachname": "Oberosler",
-				"position": "TW",
-				"nation": "at",
-				"alter": 23,
-				"staerke": 68
-			},
-			{
-				"nummer": 94,
-				"vorname": "Kristian",
-				"nachname": "van der Merwe",
-				"position": "TW",
-				"nation": "dk",
-				"alter": 32,
-				"staerke": 76
-			},
-			{
-				"nummer": 3,
-				"vorname": "Gabriel",
-				"nachname": "da Rocha Viana",
-				"position": "LA",
-				"nation": "pt",
-				"alter": 24,
-				"staerke": 70
-			},
-			{
-				"nummer": 6,
-				"vorname": "Soeren",
-				"nachname": "Servos",
-				"position": "RL",
-				"nation": "de",
-				"alter": 20,
-				"staerke": 58
-			},
-			{
-				"nummer": 7,
-				"vorname": "Lukas",
-				"nachname": "Becher",
-				"position": "LA",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 74
-			},
-			{
-				"nummer": 8,
-				"vorname": "Nico",
-				"nachname": "Schöttle",
-				"position": "RL",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 70
-			},
-			{
-				"nummer": 9,
-				"vorname": "Justus",
-				"nachname": "Püttmann",
-				"position": "RA",
-				"nation": "de",
-				"alter": 19,
-				"staerke": 55
-			},
-			{
-				"nummer": 10,
-				"vorname": "Fynn",
-				"nachname": "Hangstein",
-				"position": "RM",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 76
-			},
-			{
-				"nummer": 14,
-				"vorname": "Gerdas",
-				"nachname": "Babarskas",
-				"position": "RL",
-				"nation": "lt",
-				"alter": 32,
-				"staerke": 77
-			},
-			{
-				"nummer": 15,
-				"vorname": "Lars",
-				"nachname": "Kooij",
-				"position": "KM",
-				"nation": "nl",
-				"alter": 26,
-				"staerke": 76
-			},
-			{
-				"nummer": 17,
-				"vorname": "Tim",
-				"nachname": "Hilding",
-				"position": "RM",
-				"nation": "se",
-				"alter": 26,
-				"staerke": 74
-			},
-			{
-				"nummer": 18,
-				"vorname": "Yannick",
-				"nachname": "Fraatz",
-				"position": "RA",
-				"nation": "de",
-				"alter": 27,
-				"staerke": 74
-			},
-			{
-				"nummer": 19,
-				"vorname": "Tomáš",
-				"nachname": "Babák",
-				"position": "RM",
-				"nation": "cz",
-				"alter": 32,
-				"staerke": 77
-			},
-			{
-				"nummer": 23,
-				"vorname": "Janik",
-				"nachname": "Schrader",
-				"position": "RR",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 74
-			},
-			{
-				"nummer": 28,
-				"vorname": "Tom",
-				"nachname": "Bergner",
-				"position": "KM",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 73
-			},
-			{
-				"nummer": 46,
-				"vorname": "Julian",
-				"nachname": "Fuchs",
-				"position": "RA",
-				"nation": "de",
-				"alter": 25,
-				"staerke": 72
-			},
-			{
-				"nummer": 53,
-				"vorname": "Sören",
-				"nachname": "Steinhaus",
-				"position": "RM",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 68
-			},
-			{
-				"nummer": 77,
-				"vorname": "Johannes",
-				"nachname": "Wasielewski",
-				"position": "RR",
-				"nation": "de",
-				"alter": 28,
-				"staerke": 75
-			}
-		],
-		"ThSV Eisenach": [
-			{
-				"nummer": 1,
-				"vorname": "Matija",
-				"nachname": "Špikić",
-				"position": "TW",
-				"nation": "hr",
-				"alter": 30,
-				"staerke": 78
-			},
-			{
-				"nummer": 12,
-				"vorname": "Silvio",
-				"nachname": "Heinevetter",
-				"position": "TW",
-				"nation": "de",
-				"alter": 41,
-				"staerke": 74
-			},
-			{
-				"nummer": 20,
-				"vorname": "Bastian",
-				"nachname": "Freitag",
-				"position": "TW",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 60
-			},
-			{
-				"nummer": 25,
-				"vorname": "Mats",
-				"nachname": "Grupe",
-				"position": "TW",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 68
-			},
-			{
-				"nummer": 3,
-				"vorname": "Oskar",
-				"nachname": "Joelsson",
-				"position": "RL",
-				"nation": "se",
-				"alter": 26,
-				"staerke": 75
-			},
-			{
-				"nummer": 4,
-				"vorname": "Elias",
-				"nachname": "Scholtes",
-				"position": "RR",
-				"nation": "de",
-				"alter": 23,
-				"staerke": 70
-			},
-			{
-				"nummer": 6,
-				"vorname": "Aleksandar",
-				"nachname": "Čaprić",
-				"position": "RL",
-				"nation": "hr",
-				"alter": 22,
-				"staerke": 68
-			},
-			{
-				"nummer": 11,
-				"vorname": "Gian",
-				"nachname": "Attenhofer",
-				"position": "RA",
-				"nation": "ch",
-				"alter": 24,
-				"staerke": 72
-			},
-			{
-				"nummer": 14,
-				"vorname": "Peter",
-				"nachname": "Walz",
-				"position": "KM",
-				"nation": "de",
-				"alter": 32,
-				"staerke": 76
-			},
-			{
-				"nummer": 15,
-				"vorname": "David",
-				"nachname": "Móré",
-				"position": "LA",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 68
-			},
-			{
-				"nummer": 21,
-				"vorname": "Moritz",
-				"nachname": "Ende",
-				"position": "RA",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 74
-			},
-			{
-				"nummer": 22,
-				"vorname": "Felix",
-				"nachname": "Aellen",
-				"position": "RM",
-				"nation": "ch",
-				"alter": 22,
-				"staerke": 70
-			},
-			{
-				"nummer": 30,
-				"vorname": "Dominik",
-				"nachname": "Solák",
-				"position": "RL",
-				"nation": "cz",
-				"alter": 29,
-				"staerke": 75
-			},
-			{
-				"nummer": 41,
-				"vorname": "Vukašin",
-				"nachname": "Antonijević",
-				"position": "RM",
-				"nation": "rs",
-				"alter": 22,
-				"staerke": 69
-			},
-			{
-				"nummer": 44,
-				"vorname": "Stephan",
-				"nachname": "Seitz",
-				"position": "RR",
-				"nation": "de",
-				"alter": 24,
-				"staerke": 71
-			},
-			{
-				"nummer": 52,
-				"vorname": "Justin",
-				"nachname": "Kurch",
-				"position": "KM",
-				"nation": "de",
-				"alter": 27,
-				"staerke": 74
-			},
-			{
-				"nummer": 66,
-				"vorname": "Jannis",
-				"nachname": "Schneibel",
-				"position": "RM",
-				"nation": "de",
-				"alter": 26,
-				"staerke": 74
-			},
-			{
-				"nummer": 91,
-				"vorname": "Felix",
-				"nachname": "Montebovi",
-				"position": "LA",
-				"nation": "se",
-				"alter": 20,
-				"staerke": 62
-			},
-			{
-				"nummer": 94,
-				"vorname": "Marec",
-				"nachname": "Stupka",
-				"position": "RA",
-				"nation": "de",
-				"alter": 19,
-				"staerke": 54
-			},
-			{
-				"nummer": 99,
-				"vorname": "Tillman",
-				"nachname": "Leu",
-				"position": "KM",
-				"nation": "de",
-				"alter": 25,
-				"staerke": 71
-			}
-		],
-		"HC Erlangen": [
-			{
-				"nummer": 0,
-				"vorname": "Rubens",
-				"nachname": "Pierre",
-				"position": "TW",
-				"nation": "fr",
-				"alter": 27,
-				"staerke": 74
-			},
-			{
-				"nummer": 96,
-				"vorname": "Khalifa",
-				"nachname": "Ghedbane",
-				"position": "TW",
-				"nation": "dz",
-				"alter": 29,
-				"staerke": 80
-			},
-			{
-				"nummer": 99,
-				"vorname": "Tin",
-				"nachname": "Herceg",
-				"position": "TW",
-				"nation": "hr",
-				"alter": 22,
-				"staerke": 66
-			},
-			{
-				"nummer": 21,
-				"vorname": "Christopher",
-				"nachname": "Bissel",
-				"position": "LA",
-				"nation": "de",
-				"alter": 30,
-				"staerke": 77
-			},
-			{
-				"nummer": 7,
-				"vorname": "Yannik",
-				"nachname": "Bialowas",
-				"position": "LA",
-				"nation": "de",
-				"alter": 25,
-				"staerke": 72
-			},
-			{
-				"nummer": 44,
-				"vorname": "Christoph",
-				"nachname": "Steinert",
-				"position": "RA",
-				"nation": "de",
-				"alter": 36,
-				"staerke": 78
-			},
-			{
-				"nummer": 95,
-				"vorname": "Tim",
-				"nachname": "Gömmel",
-				"position": "RA",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 62
-			},
-			{
-				"nummer": 10,
-				"vorname": "Florian",
-				"nachname": "Scheerer",
-				"position": "KM",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 66
-			},
-			{
-				"nummer": 18,
-				"vorname": "Sebastian",
-				"nachname": "Firnhaber",
-				"position": "KM",
-				"nation": "de",
-				"alter": 32,
-				"staerke": 79
-			},
-			{
-				"nummer": 25,
-				"vorname": "Lukas",
-				"nachname": "Frank",
-				"position": "KM",
-				"nation": "de",
-				"alter": 18,
-				"staerke": 54
-			},
-			{
-				"nummer": 77,
-				"vorname": "Maciej",
-				"nachname": "Gębala",
-				"position": "KM",
-				"nation": "pl",
-				"alter": 32,
-				"staerke": 78
-			},
-			{
-				"nummer": 0,
-				"vorname": "Hans-Lukas",
-				"nachname": "Willax",
-				"position": "KM",
-				"nation": "de",
-				"alter": 20,
-				"staerke": 57
-			},
-			{
-				"nummer": 4,
-				"vorname": "Andri Már",
-				"nachname": "Rúnarsson",
-				"position": "RM",
-				"nation": "is",
-				"alter": 24,
-				"staerke": 73
-			},
-			{
-				"nummer": 0,
-				"vorname": "Eloy",
-				"nachname": "Morante Maldonado",
-				"position": "RM",
-				"nation": "de",
-				"alter": 28,
-				"staerke": 74
-			},
-			{
-				"nummer": 6,
-				"vorname": "Marek",
-				"nachname": "Nissen",
-				"position": "RL",
-				"nation": "de",
-				"alter": 25,
-				"staerke": 73
-			},
-			{
-				"nummer": 8,
-				"vorname": "Sander",
-				"nachname": "Øverjordet",
-				"position": "RM",
-				"nation": "no",
-				"alter": 30,
-				"staerke": 76
-			},
-			{
-				"nummer": 0,
-				"vorname": "Frieder",
-				"nachname": "Bandlow",
-				"position": "RR",
-				"nation": "de",
-				"alter": 25,
-				"staerke": 70
-			},
-			{
-				"nummer": 37,
-				"vorname": "Lucca",
-				"nachname": "Bialowas",
-				"position": "RM",
-				"nation": "de",
-				"alter": 22,
-				"staerke": 68
-			},
-			{
-				"nummer": 39,
-				"vorname": "Tobias",
-				"nachname": "Buck",
-				"position": "RL",
-				"nation": "de",
-				"alter": 21,
-				"staerke": 63
-			},
-			{
-				"nummer": 73,
-				"vorname": "Viggó",
-				"nachname": "Kristjánsson",
-				"position": "RR",
-				"nation": "is",
-				"alter": 32,
-				"staerke": 80
-			},
-			{
-				"nummer": 0,
-				"vorname": "Maxsim",
-				"nachname": "Lochman",
-				"position": "RR",
-				"nation": "de",
-				"alter": 18,
-				"staerke": 54
-			}
-		]
-	}
+  "version": 1,
+  "stand": "September 2026 — Kader 2026/27",
+  "hinweis": "Aufgeführt sind die belegten Kader zum genannten Stand. Nummer, Name, Position, Nation und Geburtsjahr stammen aus den Vereins- und Ligaangaben; das Alter ist zum 1. September 2026 gerechnet. Die Stärke ist ein Schätzwert für die Simulation und keine Tatsachenbehauptung — sie ordnet einen Spieler auf einer Skala ein, auf der der Bundesliga-MVP bei 96 und ein Nachwuchsspieler bei etwa 56 steht. Vereine ohne vollständigen Kader werden vom Spiel auf Sollstärke aufgefüllt; erfundene Spieler übernehmen die fehlenden Positionen. Positionen: TW, LA, RL, RM, RR, RA, KM. Nationen als Kürzel wie in Namen.KULTUR_NAME.",
+  "kader": {
+    "Aalborg Håndbold": [
+      {
+        "vorname": "Niklas",
+        "nachname": "Landin",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 37,
+        "staerke": 88
+      },
+      {
+        "vorname": "Simon",
+        "nachname": "Hald",
+        "position": "KM",
+        "nation": "dk",
+        "alter": 31,
+        "staerke": 83
+      },
+      {
+        "vorname": "Lukas",
+        "nachname": "Sandell",
+        "position": "RM",
+        "nation": "se",
+        "alter": 29,
+        "staerke": 82
+      }
+    ],
+    "Bergischer HC": [
+      {
+        "nummer": 1,
+        "vorname": "Christopher",
+        "nachname": "Rudeck",
+        "position": "TW",
+        "nation": "de",
+        "alter": 31,
+        "staerke": 79
+      },
+      {
+        "nummer": 16,
+        "vorname": "Louis",
+        "nachname": "Oberosler",
+        "position": "TW",
+        "nation": "at",
+        "alter": 23,
+        "staerke": 68
+      },
+      {
+        "nummer": 94,
+        "vorname": "Kristian",
+        "nachname": "van der Merwe",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 32,
+        "staerke": 76
+      },
+      {
+        "nummer": 3,
+        "vorname": "Gabriel",
+        "nachname": "da Rocha Viana",
+        "position": "LA",
+        "nation": "pt",
+        "alter": 24,
+        "staerke": 70
+      },
+      {
+        "nummer": 6,
+        "vorname": "Soeren",
+        "nachname": "Servos",
+        "position": "RL",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 58
+      },
+      {
+        "nummer": 7,
+        "vorname": "Lukas",
+        "nachname": "Becher",
+        "position": "LA",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 74
+      },
+      {
+        "nummer": 8,
+        "vorname": "Nico",
+        "nachname": "Schöttle",
+        "position": "RL",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 70
+      },
+      {
+        "nummer": 9,
+        "vorname": "Justus",
+        "nachname": "Püttmann",
+        "position": "RA",
+        "nation": "de",
+        "alter": 19,
+        "staerke": 55
+      },
+      {
+        "nummer": 10,
+        "vorname": "Fynn",
+        "nachname": "Hangstein",
+        "position": "RM",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 76
+      },
+      {
+        "nummer": 14,
+        "vorname": "Gerdas",
+        "nachname": "Babarskas",
+        "position": "RL",
+        "nation": "lt",
+        "alter": 32,
+        "staerke": 77
+      },
+      {
+        "nummer": 15,
+        "vorname": "Lars",
+        "nachname": "Kooij",
+        "position": "KM",
+        "nation": "nl",
+        "alter": 26,
+        "staerke": 76
+      },
+      {
+        "nummer": 17,
+        "vorname": "Tim",
+        "nachname": "Hilding",
+        "position": "RM",
+        "nation": "se",
+        "alter": 26,
+        "staerke": 74
+      },
+      {
+        "nummer": 18,
+        "vorname": "Yannick",
+        "nachname": "Fraatz",
+        "position": "RA",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 74
+      },
+      {
+        "nummer": 19,
+        "vorname": "Tomáš",
+        "nachname": "Babák",
+        "position": "RM",
+        "nation": "cz",
+        "alter": 32,
+        "staerke": 77
+      },
+      {
+        "nummer": 23,
+        "vorname": "Janik",
+        "nachname": "Schrader",
+        "position": "RR",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 74
+      },
+      {
+        "nummer": 28,
+        "vorname": "Tom",
+        "nachname": "Bergner",
+        "position": "KM",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 73
+      },
+      {
+        "nummer": 46,
+        "vorname": "Julian",
+        "nachname": "Fuchs",
+        "position": "RA",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 72
+      },
+      {
+        "nummer": 53,
+        "vorname": "Sören",
+        "nachname": "Steinhaus",
+        "position": "RM",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 68
+      },
+      {
+        "nummer": 77,
+        "vorname": "Johannes",
+        "nachname": "Wasielewski",
+        "position": "RR",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 75
+      }
+    ],
+    "FC Barcelona": [
+      {
+        "vorname": "Emil",
+        "nachname": "Nielsen",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 29,
+        "staerke": 92
+      },
+      {
+        "vorname": "Aleix",
+        "nachname": "Gómez",
+        "position": "RA",
+        "nation": "es",
+        "alter": 29,
+        "staerke": 88
+      },
+      {
+        "vorname": "Blaž",
+        "nachname": "Janc",
+        "position": "RA",
+        "nation": "si",
+        "alter": 30,
+        "staerke": 87
+      },
+      {
+        "vorname": "Luis",
+        "nachname": "Frade",
+        "position": "KM",
+        "nation": "es",
+        "alter": 27,
+        "staerke": 83
+      },
+      {
+        "vorname": "Melvyn",
+        "nachname": "Richardson",
+        "position": "RL",
+        "nation": "fr",
+        "alter": 29,
+        "staerke": 85
+      },
+      {
+        "vorname": "Timothey",
+        "nachname": "N'Guessan",
+        "position": "RL",
+        "nation": "fr",
+        "alter": 34,
+        "staerke": 80
+      },
+      {
+        "vorname": "Dika",
+        "nachname": "Mem",
+        "position": "RR",
+        "nation": "fr",
+        "alter": 29,
+        "staerke": 92
+      }
+    ],
+    "Frisch Auf Göppingen": [
+      {
+        "nummer": 1,
+        "vorname": "Julian",
+        "nachname": "Buchele",
+        "position": "TW",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 74
+      },
+      {
+        "nummer": 12,
+        "vorname": "Kristian",
+        "nachname": "Sæverås",
+        "position": "TW",
+        "nation": "no",
+        "alter": 30,
+        "staerke": 84
+      },
+      {
+        "nummer": 79,
+        "vorname": "Titus",
+        "nachname": "Lewe",
+        "position": "TW",
+        "nation": "de",
+        "alter": 18,
+        "staerke": 52
+      },
+      {
+        "nummer": 2,
+        "vorname": "Oskar",
+        "nachname": "Neudeck",
+        "position": "RL",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 72
+      },
+      {
+        "nummer": 5,
+        "vorname": "Rutger",
+        "nachname": "ten Velde",
+        "position": "LA",
+        "nation": "nl",
+        "alter": 29,
+        "staerke": 76
+      },
+      {
+        "nummer": 7,
+        "vorname": "Victor",
+        "nachname": "Kløve",
+        "position": "RL",
+        "nation": "dk",
+        "alter": 24,
+        "staerke": 74
+      },
+      {
+        "nummer": 9,
+        "vorname": "Max Christoph",
+        "nachname": "Beneke",
+        "position": "RR",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 78
+      },
+      {
+        "nummer": 17,
+        "vorname": "Tim",
+        "nachname": "Goßner",
+        "position": "RA",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 62
+      },
+      {
+        "nummer": 18,
+        "vorname": "Fynn",
+        "nachname": "Hofele",
+        "position": "RA",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 62
+      },
+      {
+        "nummer": 21,
+        "vorname": "Sascha",
+        "nachname": "Brodbeck",
+        "position": "KM",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 64
+      },
+      {
+        "nummer": 22,
+        "vorname": "Erik",
+        "nachname": "Persson",
+        "position": "RR",
+        "nation": "se",
+        "alter": 28,
+        "staerke": 78
+      },
+      {
+        "nummer": 23,
+        "vorname": "Ole",
+        "nachname": "Pregler",
+        "position": "RM",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 74
+      },
+      {
+        "nummer": 24,
+        "vorname": "Marcel",
+        "nachname": "Schiller",
+        "position": "LA",
+        "nation": "de",
+        "alter": 35,
+        "staerke": 79
+      },
+      {
+        "nummer": 25,
+        "vorname": "Ludvig",
+        "nachname": "Jurmala Åström",
+        "position": "KM",
+        "nation": "se",
+        "alter": 26,
+        "staerke": 76
+      },
+      {
+        "nummer": 27,
+        "vorname": "Oskar",
+        "nachname": "Sunnefeldt",
+        "position": "RL",
+        "nation": "se",
+        "alter": 28,
+        "staerke": 77
+      },
+      {
+        "nummer": 28,
+        "vorname": "Franko",
+        "nachname": "Lastro",
+        "position": "RA",
+        "nation": "at",
+        "alter": 23,
+        "staerke": 72
+      },
+      {
+        "nummer": 33,
+        "vorname": "Ýmir Örn",
+        "nachname": "Gíslason",
+        "position": "KM",
+        "nation": "is",
+        "alter": 29,
+        "staerke": 82
+      },
+      {
+        "nummer": 40,
+        "vorname": "Elias",
+        "nachname": "Newel",
+        "position": "RM",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 68
+      },
+      {
+        "nummer": 42,
+        "vorname": "Martin",
+        "nachname": "Hanne",
+        "position": "RL",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 73
+      }
+    ],
+    "Füchse Berlin": [
+      {
+        "nummer": 1,
+        "vorname": "Lasse",
+        "nachname": "Ludwig",
+        "position": "TW",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 76
+      },
+      {
+        "nummer": 12,
+        "vorname": "Andreas",
+        "nachname": "Palicka",
+        "position": "TW",
+        "nation": "se",
+        "alter": 40,
+        "staerke": 84
+      },
+      {
+        "nummer": 3,
+        "vorname": "Fabian",
+        "nachname": "Wiede",
+        "position": "RR",
+        "nation": "de",
+        "alter": 32,
+        "staerke": 82
+      },
+      {
+        "nummer": 5,
+        "vorname": "Max",
+        "nachname": "Darj",
+        "position": "KM",
+        "nation": "se",
+        "alter": 34,
+        "staerke": 81
+      },
+      {
+        "nummer": 6,
+        "vorname": "Leo",
+        "nachname": "Prantner",
+        "position": "RA",
+        "nation": "it",
+        "alter": 24,
+        "staerke": 76
+      },
+      {
+        "nummer": 9,
+        "vorname": "Frederik",
+        "nachname": "Simak",
+        "position": "RL",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 79
+      },
+      {
+        "nummer": 14,
+        "vorname": "Aitor",
+        "nachname": "Ariño",
+        "position": "LA",
+        "nation": "es",
+        "alter": 33,
+        "staerke": 82
+      },
+      {
+        "nummer": 15,
+        "vorname": "Tobias",
+        "nachname": "Grøndahl",
+        "position": "RM",
+        "nation": "no",
+        "alter": 25,
+        "staerke": 79
+      },
+      {
+        "nummer": 17,
+        "vorname": "Nils",
+        "nachname": "Lichtlein",
+        "position": "RM",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 86
+      },
+      {
+        "nummer": 19,
+        "vorname": "Mathias",
+        "nachname": "Gidsel",
+        "position": "RR",
+        "nation": "dk",
+        "alter": 27,
+        "staerke": 96
+      },
+      {
+        "nummer": 20,
+        "vorname": "Tim",
+        "nachname": "Freihöfer",
+        "position": "LA",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 82
+      },
+      {
+        "nummer": 24,
+        "vorname": "Lauro",
+        "nachname": "Pichiri",
+        "position": "RL",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 66
+      },
+      {
+        "nummer": 25,
+        "vorname": "Matthes",
+        "nachname": "Langhoff",
+        "position": "RL",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 78
+      },
+      {
+        "nummer": 30,
+        "vorname": "Aymeric",
+        "nachname": "Zaepfel",
+        "position": "RL",
+        "nation": "fr",
+        "alter": 24,
+        "staerke": 76
+      },
+      {
+        "nummer": 34,
+        "vorname": "Hákun",
+        "nachname": "West av Teigum",
+        "position": "RA",
+        "nation": "fo",
+        "alter": 24,
+        "staerke": 79
+      },
+      {
+        "nummer": 93,
+        "vorname": "Mijajlo",
+        "nachname": "Marsenić",
+        "position": "KM",
+        "nation": "rs",
+        "alter": 33,
+        "staerke": 83
+      }
+    ],
+    "HBW Balingen-Weilstetten": [
+      {
+        "nummer": 16,
+        "vorname": "Vladimir",
+        "nachname": "Cupara",
+        "position": "TW",
+        "nation": "rs",
+        "alter": 32,
+        "staerke": 79
+      },
+      {
+        "nummer": 12,
+        "vorname": "Daniel",
+        "nachname": "Rebmann",
+        "position": "TW",
+        "nation": "de",
+        "alter": 32,
+        "staerke": 75
+      },
+      {
+        "nummer": 72,
+        "vorname": "Magnus",
+        "nachname": "Bierfreund",
+        "position": "TW",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 61
+      },
+      {
+        "nummer": 4,
+        "vorname": "Tim",
+        "nachname": "Matthes",
+        "position": "LA",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 71
+      },
+      {
+        "nummer": 50,
+        "vorname": "Lion",
+        "nachname": "Zacharias",
+        "position": "LA",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 65
+      },
+      {
+        "nummer": 20,
+        "vorname": "Mischa",
+        "nachname": "Locher",
+        "position": "LA",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 59
+      },
+      {
+        "nummer": 6,
+        "vorname": "Mex",
+        "nachname": "Raguse",
+        "position": "RL",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 70
+      },
+      {
+        "nummer": 8,
+        "vorname": "Magnus",
+        "nachname": "Grupe",
+        "position": "RL",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 68
+      },
+      {
+        "nummer": 94,
+        "vorname": "Georg",
+        "nachname": "Pöhle",
+        "position": "RM",
+        "nation": "de",
+        "alter": 31,
+        "staerke": 73
+      },
+      {
+        "nummer": 34,
+        "vorname": "Yonatan",
+        "nachname": "Dayan",
+        "position": "RM",
+        "nation": "il",
+        "alter": 26,
+        "staerke": 72
+      },
+      {
+        "nummer": 7,
+        "vorname": "Elias",
+        "nachname": "Huber",
+        "position": "RM",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 68
+      },
+      {
+        "nummer": 55,
+        "vorname": "Csaba",
+        "nachname": "Leimeter",
+        "position": "RR",
+        "nation": "hu",
+        "alter": 31,
+        "staerke": 74
+      },
+      {
+        "nummer": 13,
+        "vorname": "Merlin",
+        "nachname": "Fuß",
+        "position": "RR",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 70
+      },
+      {
+        "nummer": 30,
+        "vorname": "Sascha",
+        "nachname": "Pfattheicher",
+        "position": "RA",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 71
+      },
+      {
+        "nummer": 24,
+        "vorname": "Elias",
+        "nachname": "Fügel",
+        "position": "RA",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 67
+      },
+      {
+        "nummer": 99,
+        "vorname": "Stefan",
+        "nachname": "Bauer",
+        "position": "KM",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 72
+      },
+      {
+        "nummer": 28,
+        "vorname": "Tobias",
+        "nachname": "Heinzelmann",
+        "position": "KM",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 69
+      },
+      {
+        "nummer": 21,
+        "vorname": "Till",
+        "nachname": "Wente",
+        "position": "KM",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 67
+      },
+      {
+        "nummer": 11,
+        "vorname": "Bennet",
+        "nachname": "Strobel",
+        "position": "KM",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 57
+      }
+    ],
+    "HC Erlangen": [
+      {
+        "nummer": 0,
+        "vorname": "Rubens",
+        "nachname": "Pierre",
+        "position": "TW",
+        "nation": "fr",
+        "alter": 27,
+        "staerke": 74
+      },
+      {
+        "nummer": 96,
+        "vorname": "Khalifa",
+        "nachname": "Ghedbane",
+        "position": "TW",
+        "nation": "dz",
+        "alter": 29,
+        "staerke": 80
+      },
+      {
+        "nummer": 99,
+        "vorname": "Tin",
+        "nachname": "Herceg",
+        "position": "TW",
+        "nation": "hr",
+        "alter": 22,
+        "staerke": 66
+      },
+      {
+        "nummer": 21,
+        "vorname": "Christopher",
+        "nachname": "Bissel",
+        "position": "LA",
+        "nation": "de",
+        "alter": 30,
+        "staerke": 77
+      },
+      {
+        "nummer": 7,
+        "vorname": "Yannik",
+        "nachname": "Bialowas",
+        "position": "LA",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 72
+      },
+      {
+        "nummer": 44,
+        "vorname": "Christoph",
+        "nachname": "Steinert",
+        "position": "RA",
+        "nation": "de",
+        "alter": 36,
+        "staerke": 78
+      },
+      {
+        "nummer": 95,
+        "vorname": "Tim",
+        "nachname": "Gömmel",
+        "position": "RA",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 62
+      },
+      {
+        "nummer": 10,
+        "vorname": "Florian",
+        "nachname": "Scheerer",
+        "position": "KM",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 66
+      },
+      {
+        "nummer": 18,
+        "vorname": "Sebastian",
+        "nachname": "Firnhaber",
+        "position": "KM",
+        "nation": "de",
+        "alter": 32,
+        "staerke": 79
+      },
+      {
+        "nummer": 25,
+        "vorname": "Lukas",
+        "nachname": "Frank",
+        "position": "KM",
+        "nation": "de",
+        "alter": 18,
+        "staerke": 54
+      },
+      {
+        "nummer": 77,
+        "vorname": "Maciej",
+        "nachname": "Gębala",
+        "position": "KM",
+        "nation": "pl",
+        "alter": 32,
+        "staerke": 78
+      },
+      {
+        "nummer": 0,
+        "vorname": "Hans-Lukas",
+        "nachname": "Willax",
+        "position": "KM",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 57
+      },
+      {
+        "nummer": 4,
+        "vorname": "Andri Már",
+        "nachname": "Rúnarsson",
+        "position": "RM",
+        "nation": "is",
+        "alter": 24,
+        "staerke": 73
+      },
+      {
+        "nummer": 0,
+        "vorname": "Eloy",
+        "nachname": "Morante Maldonado",
+        "position": "RM",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 74
+      },
+      {
+        "nummer": 6,
+        "vorname": "Marek",
+        "nachname": "Nissen",
+        "position": "RL",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 73
+      },
+      {
+        "nummer": 8,
+        "vorname": "Sander",
+        "nachname": "Øverjordet",
+        "position": "RM",
+        "nation": "no",
+        "alter": 30,
+        "staerke": 76
+      },
+      {
+        "nummer": 0,
+        "vorname": "Frieder",
+        "nachname": "Bandlow",
+        "position": "RR",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 70
+      },
+      {
+        "nummer": 37,
+        "vorname": "Lucca",
+        "nachname": "Bialowas",
+        "position": "RM",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 68
+      },
+      {
+        "nummer": 39,
+        "vorname": "Tobias",
+        "nachname": "Buck",
+        "position": "RL",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 63
+      },
+      {
+        "nummer": 73,
+        "vorname": "Viggó",
+        "nachname": "Kristjánsson",
+        "position": "RR",
+        "nation": "is",
+        "alter": 32,
+        "staerke": 80
+      },
+      {
+        "nummer": 0,
+        "vorname": "Maxsim",
+        "nachname": "Lochman",
+        "position": "RR",
+        "nation": "de",
+        "alter": 18,
+        "staerke": 54
+      }
+    ],
+    "HSG Wetzlar": [
+      {
+        "nummer": 1,
+        "vorname": "Bart",
+        "nachname": "Ravensbergen",
+        "position": "TW",
+        "nation": "nl",
+        "alter": 33,
+        "staerke": 78
+      },
+      {
+        "nummer": 16,
+        "vorname": "László",
+        "nachname": "Bartucz",
+        "position": "TW",
+        "nation": "hu",
+        "alter": 34,
+        "staerke": 77
+      },
+      {
+        "nummer": 12,
+        "vorname": "Hendrik",
+        "nachname": "Pantel",
+        "position": "TW",
+        "nation": "nl",
+        "alter": 20,
+        "staerke": 60
+      },
+      {
+        "nummer": 23,
+        "vorname": "Martí",
+        "nachname": "Soler Biescas",
+        "position": "LA",
+        "nation": "es",
+        "alter": 23,
+        "staerke": 71
+      },
+      {
+        "nummer": 79,
+        "vorname": "Ahmed",
+        "nachname": "Nafea",
+        "position": "LA",
+        "nation": "eg",
+        "alter": 29,
+        "staerke": 75
+      },
+      {
+        "nummer": 19,
+        "vorname": "Doruk",
+        "nachname": "Pehlivan",
+        "position": "RL",
+        "nation": "tr",
+        "alter": 28,
+        "staerke": 74
+      },
+      {
+        "nummer": 22,
+        "vorname": "Jona",
+        "nachname": "Schoch",
+        "position": "RL",
+        "nation": "de",
+        "alter": 32,
+        "staerke": 74
+      },
+      {
+        "nummer": 32,
+        "vorname": "Nikolaj",
+        "nachname": "Læsø",
+        "position": "RL",
+        "nation": "dk",
+        "alter": 29,
+        "staerke": 76
+      },
+      {
+        "nummer": 7,
+        "vorname": "Dominik",
+        "nachname": "Mappes",
+        "position": "RM",
+        "nation": "de",
+        "alter": 31,
+        "staerke": 77
+      },
+      {
+        "nummer": 34,
+        "vorname": "Paul",
+        "nachname": "Kompenhans",
+        "position": "RM",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 68
+      },
+      {
+        "nummer": 5,
+        "vorname": "Tristan",
+        "nachname": "Kirschner",
+        "position": "RR",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 67
+      },
+      {
+        "nummer": 9,
+        "vorname": "Niklas",
+        "nachname": "Theiß",
+        "position": "RR",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 68
+      },
+      {
+        "nummer": 13,
+        "vorname": "Tomáš",
+        "nachname": "Piroch",
+        "position": "RR",
+        "nation": "cz",
+        "alter": 26,
+        "staerke": 73
+      },
+      {
+        "nummer": 20,
+        "vorname": "David Cyrill",
+        "nachname": "Akakpo",
+        "position": "RA",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 74
+      },
+      {
+        "nummer": 10,
+        "vorname": "Josip",
+        "nachname": "Šimić",
+        "position": "KM",
+        "nation": "hr",
+        "alter": 26,
+        "staerke": 74
+      },
+      {
+        "nummer": 11,
+        "vorname": "Petter",
+        "nachname": "Øverby",
+        "position": "KM",
+        "nation": "no",
+        "alter": 34,
+        "staerke": 78
+      },
+      {
+        "nummer": 33,
+        "vorname": "Georg",
+        "nachname": "Löwen",
+        "position": "KM",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 66
+      }
+    ],
+    "Handball Sport Verein Hamburg": [
+      {
+        "nummer": 16,
+        "vorname": "Robin",
+        "nachname": "Haug",
+        "position": "TW",
+        "nation": "no",
+        "alter": 28,
+        "staerke": 80
+      },
+      {
+        "nummer": 30,
+        "vorname": "Norwin",
+        "nachname": "Pein",
+        "position": "TW",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 70
+      },
+      {
+        "nummer": 74,
+        "vorname": "Leon",
+        "nachname": "Nowottny",
+        "position": "TW",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 64
+      },
+      {
+        "nummer": 2,
+        "vorname": "Toma",
+        "nachname": "Gadza",
+        "position": "RR",
+        "nation": "de",
+        "alter": 18,
+        "staerke": 54
+      },
+      {
+        "nummer": 5,
+        "vorname": "Oliver",
+        "nachname": "Norlyk",
+        "position": "RR",
+        "nation": "dk",
+        "alter": 26,
+        "staerke": 78
+      },
+      {
+        "nummer": 6,
+        "vorname": "Elias",
+        "nachname": "Kofler",
+        "position": "RM",
+        "nation": "at",
+        "alter": 26,
+        "staerke": 80
+      },
+      {
+        "nummer": 11,
+        "vorname": "Nicolaj",
+        "nachname": "Jørgensen",
+        "position": "RM",
+        "nation": "dk",
+        "alter": 26,
+        "staerke": 78
+      },
+      {
+        "nummer": 14,
+        "vorname": "Mahmoud",
+        "nachname": "El-Shobaky",
+        "position": "RL",
+        "nation": "eg",
+        "alter": 19,
+        "staerke": 60
+      },
+      {
+        "nummer": 15,
+        "vorname": "Dominik",
+        "nachname": "Axmann",
+        "position": "RM",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 76
+      },
+      {
+        "nummer": 17,
+        "vorname": "Kaj",
+        "nachname": "Geenen",
+        "position": "LA",
+        "nation": "nl",
+        "alter": 23,
+        "staerke": 72
+      },
+      {
+        "nummer": 21,
+        "vorname": "Frederik",
+        "nachname": "Bo Andersen",
+        "position": "RA",
+        "nation": "dk",
+        "alter": 27,
+        "staerke": 78
+      },
+      {
+        "nummer": 22,
+        "vorname": "Noah",
+        "nachname": "Beyer",
+        "position": "LA",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 75
+      },
+      {
+        "nummer": 23,
+        "vorname": "Einar Þorsteinn",
+        "nachname": "Ólafsson",
+        "position": "RL",
+        "nation": "is",
+        "alter": 24,
+        "staerke": 76
+      },
+      {
+        "nummer": 24,
+        "vorname": "Nicolai",
+        "nachname": "Daling",
+        "position": "RR",
+        "nation": "no",
+        "alter": 24,
+        "staerke": 73
+      },
+      {
+        "nummer": 31,
+        "vorname": "Levin",
+        "nachname": "Unbehaun",
+        "position": "RA",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 66
+      },
+      {
+        "nummer": 33,
+        "vorname": "Moritz",
+        "nachname": "Sauter",
+        "position": "RM",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 72
+      },
+      {
+        "nummer": 42,
+        "vorname": "Jan",
+        "nachname": "Schmidt",
+        "position": "KM",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 66
+      },
+      {
+        "nummer": 77,
+        "vorname": "Alem",
+        "nachname": "Hadžić",
+        "position": "RM",
+        "nation": "mk",
+        "alter": 19,
+        "staerke": 56
+      },
+      {
+        "nummer": 81,
+        "vorname": "Martin",
+        "nachname": "Hernes Hovde",
+        "position": "KM",
+        "nation": "no",
+        "alter": 24,
+        "staerke": 77
+      }
+    ],
+    "Industria Kielce": [
+      {
+        "vorname": "Dejan",
+        "nachname": "Milosavljev",
+        "position": "TW",
+        "nation": "rs",
+        "alter": 30,
+        "staerke": 87
+      },
+      {
+        "vorname": "Arciom",
+        "nachname": "Karalek",
+        "position": "KM",
+        "nation": "by",
+        "alter": 31,
+        "staerke": 82
+      },
+      {
+        "vorname": "Szymon",
+        "nachname": "Sićko",
+        "position": "RL",
+        "nation": "pl",
+        "alter": 28,
+        "staerke": 83
+      },
+      {
+        "vorname": "Haniel",
+        "nachname": "Langaro",
+        "position": "RL",
+        "nation": "br",
+        "alter": 32,
+        "staerke": 80
+      },
+      {
+        "vorname": "Alex",
+        "nachname": "Dujshebaev",
+        "position": "RR",
+        "nation": "es",
+        "alter": 34,
+        "staerke": 86
+      }
+    ],
+    "MT Melsungen": [
+      {
+        "nummer": 16,
+        "vorname": "Nebojša",
+        "nachname": "Simić",
+        "position": "TW",
+        "nation": "me",
+        "alter": 33,
+        "staerke": 84
+      },
+      {
+        "nummer": 32,
+        "vorname": "Kristóf",
+        "nachname": "Palasics",
+        "position": "TW",
+        "nation": "hu",
+        "alter": 24,
+        "staerke": 78
+      },
+      {
+        "nummer": 2,
+        "vorname": "Rubén",
+        "nachname": "Marchán",
+        "position": "KM",
+        "nation": "es",
+        "alter": 31,
+        "staerke": 78
+      },
+      {
+        "nummer": 4,
+        "vorname": "Nikolaj",
+        "nachname": "Enderleit",
+        "position": "RR",
+        "nation": "dk",
+        "alter": 29,
+        "staerke": 79
+      },
+      {
+        "nummer": 5,
+        "vorname": "Leander",
+        "nachname": "Altena",
+        "position": "RM",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 64
+      },
+      {
+        "nummer": 6,
+        "vorname": "Erik",
+        "nachname": "Balenciaga",
+        "position": "RM",
+        "nation": "es",
+        "alter": 33,
+        "staerke": 81
+      },
+      {
+        "nummer": 7,
+        "vorname": "David",
+        "nachname": "Mandić",
+        "position": "LA",
+        "nation": "hr",
+        "alter": 28,
+        "staerke": 80
+      },
+      {
+        "nummer": 8,
+        "vorname": "Adrián",
+        "nachname": "Sipos",
+        "position": "KM",
+        "nation": "hu",
+        "alter": 36,
+        "staerke": 78
+      },
+      {
+        "nummer": 10,
+        "vorname": "Dainis",
+        "nachname": "Krištopāns",
+        "position": "RR",
+        "nation": "lv",
+        "alter": 35,
+        "staerke": 82
+      },
+      {
+        "nummer": 11,
+        "vorname": "Dimitri",
+        "nachname": "Ignatow",
+        "position": "RA",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 78
+      },
+      {
+        "nummer": 13,
+        "vorname": "Leon",
+        "nachname": "Stehl",
+        "position": "RA",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 62
+      },
+      {
+        "nummer": 14,
+        "vorname": "Johannes",
+        "nachname": "Golla",
+        "position": "KM",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 86
+      },
+      {
+        "nummer": 18,
+        "vorname": "Florian",
+        "nachname": "Drosten",
+        "position": "LA",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 70
+      },
+      {
+        "nummer": 19,
+        "vorname": "Reynir Þór",
+        "nachname": "Stefánsson",
+        "position": "RM",
+        "nation": "is",
+        "alter": 21,
+        "staerke": 66
+      },
+      {
+        "nummer": 24,
+        "vorname": "Daniel",
+        "nachname": "Dujshebaev",
+        "position": "RL",
+        "nation": "es",
+        "alter": 29,
+        "staerke": 86
+      },
+      {
+        "nummer": 25,
+        "vorname": "Olle",
+        "nachname": "Forsell Schefvert",
+        "position": "RL",
+        "nation": "se",
+        "alter": 33,
+        "staerke": 79
+      },
+      {
+        "nummer": 26,
+        "vorname": "René-Daniel",
+        "nachname": "Andrei",
+        "position": "RL",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 72
+      },
+      {
+        "nummer": 28,
+        "vorname": "Luca",
+        "nachname": "Sigrist",
+        "position": "RM",
+        "nation": "ch",
+        "alter": 20,
+        "staerke": 62
+      },
+      {
+        "nummer": 31,
+        "vorname": "Dariel",
+        "nachname": "García Rivera",
+        "position": "LA",
+        "nation": "cu",
+        "alter": 29,
+        "staerke": 76
+      },
+      {
+        "nummer": 33,
+        "vorname": "Aaron",
+        "nachname": "Mensing",
+        "position": "RL",
+        "nation": "dk",
+        "alter": 28,
+        "staerke": 78
+      },
+      {
+        "nummer": 73,
+        "vorname": "Timo",
+        "nachname": "Kastening",
+        "position": "RA",
+        "nation": "de",
+        "alter": 31,
+        "staerke": 84
+      }
+    ],
+    "Paris Saint-Germain Handball": [
+      {
+        "vorname": "Jannick",
+        "nachname": "Green",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 37,
+        "staerke": 84
+      },
+      {
+        "vorname": "Mathieu",
+        "nachname": "Grébille",
+        "position": "LA",
+        "nation": "fr",
+        "alter": 33,
+        "staerke": 80
+      },
+      {
+        "vorname": "Ferran",
+        "nachname": "Solé",
+        "position": "RA",
+        "nation": "es",
+        "alter": 34,
+        "staerke": 84
+      },
+      {
+        "vorname": "Elohim",
+        "nachname": "Prandi",
+        "position": "RL",
+        "nation": "fr",
+        "alter": 28,
+        "staerke": 90
+      },
+      {
+        "vorname": "Luc",
+        "nachname": "Steins",
+        "position": "RM",
+        "nation": "nl",
+        "alter": 32,
+        "staerke": 86
+      },
+      {
+        "vorname": "Dainis",
+        "nachname": "Krištopāns",
+        "position": "RR",
+        "nation": "lv",
+        "alter": 34,
+        "staerke": 84
+      }
+    ],
+    "Rhein-Neckar Löwen": [
+      {
+        "nummer": 29,
+        "vorname": "David",
+        "nachname": "Späth",
+        "position": "TW",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 84
+      },
+      {
+        "nummer": 20,
+        "vorname": "Mike",
+        "nachname": "Jensen",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 31,
+        "staerke": 79
+      },
+      {
+        "nummer": 65,
+        "vorname": "Luca",
+        "nachname": "Zapp",
+        "position": "TW",
+        "nation": "de",
+        "alter": 19,
+        "staerke": 55
+      },
+      {
+        "nummer": 77,
+        "vorname": "Dani",
+        "nachname": "Baijens",
+        "position": "RM",
+        "nation": "nl",
+        "alter": 28,
+        "staerke": 81
+      },
+      {
+        "nummer": 35,
+        "vorname": "Kentin",
+        "nachname": "Mahé",
+        "position": "RM",
+        "nation": "fr",
+        "alter": 35,
+        "staerke": 81
+      },
+      {
+        "nummer": 25,
+        "vorname": "Haukur",
+        "nachname": "Þrastarson",
+        "position": "RM",
+        "nation": "is",
+        "alter": 25,
+        "staerke": 82
+      },
+      {
+        "nummer": 45,
+        "vorname": "Halil",
+        "nachname": "Jaganjac",
+        "position": "RL",
+        "nation": "hr",
+        "alter": 28,
+        "staerke": 80
+      },
+      {
+        "nummer": 78,
+        "vorname": "Edwin",
+        "nachname": "Aspenbäck",
+        "position": "RR",
+        "nation": "se",
+        "alter": 26,
+        "staerke": 78
+      },
+      {
+        "nummer": 9,
+        "vorname": "Jacob",
+        "nachname": "Lassen",
+        "position": "RR",
+        "nation": "dk",
+        "alter": 30,
+        "staerke": 79
+      },
+      {
+        "nummer": 8,
+        "vorname": "Tim",
+        "nachname": "Nothdurft",
+        "position": "LA",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 77
+      },
+      {
+        "nummer": 11,
+        "vorname": "Niclas",
+        "nachname": "Mierzwa",
+        "position": "LA",
+        "nation": "ch",
+        "alter": 19,
+        "staerke": 60
+      },
+      {
+        "nummer": 19,
+        "vorname": "Marius",
+        "nachname": "Steinhauser",
+        "position": "RA",
+        "nation": "de",
+        "alter": 33,
+        "staerke": 76
+      },
+      {
+        "nummer": 14,
+        "vorname": "Gino",
+        "nachname": "Steenaerts",
+        "position": "RA",
+        "nation": "ch",
+        "alter": 21,
+        "staerke": 68
+      },
+      {
+        "nummer": 80,
+        "vorname": "Jannik",
+        "nachname": "Kohlbacher",
+        "position": "KM",
+        "nation": "de",
+        "alter": 31,
+        "staerke": 84
+      },
+      {
+        "nummer": 41,
+        "vorname": "Elias",
+        "nachname": "Ciudad Benitez",
+        "position": "KM",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 62
+      },
+      {
+        "nummer": 21,
+        "vorname": "Aron",
+        "nachname": "Seesing",
+        "position": "KM",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 72
+      }
+    ],
+    "SC Magdeburg": [
+      {
+        "nummer": 1,
+        "vorname": "Dominik",
+        "nachname": "Kuzmanović",
+        "position": "TW",
+        "nation": "hr",
+        "alter": 24,
+        "staerke": 82
+      },
+      {
+        "nummer": 12,
+        "vorname": "Matej",
+        "nachname": "Mandić",
+        "position": "TW",
+        "nation": "hr",
+        "alter": 24,
+        "staerke": 80
+      },
+      {
+        "nummer": 4,
+        "vorname": "Malte",
+        "nachname": "Elze",
+        "position": "KM",
+        "nation": "de",
+        "alter": 18,
+        "staerke": 58
+      },
+      {
+        "nummer": 6,
+        "vorname": "Matthias",
+        "nachname": "Musche",
+        "position": "LA",
+        "nation": "de",
+        "alter": 34,
+        "staerke": 85
+      },
+      {
+        "nummer": 7,
+        "vorname": "Felix",
+        "nachname": "Claar",
+        "position": "RM",
+        "nation": "se",
+        "alter": 29,
+        "staerke": 86
+      },
+      {
+        "nummer": 8,
+        "vorname": "Tim",
+        "nachname": "Thielicke",
+        "position": "RM",
+        "nation": "de",
+        "alter": 18,
+        "staerke": 56
+      },
+      {
+        "nummer": 9,
+        "vorname": "Oskar",
+        "nachname": "Vind Rasmussen",
+        "position": "RA",
+        "nation": "dk",
+        "alter": 26,
+        "staerke": 79
+      },
+      {
+        "nummer": 10,
+        "vorname": "Gísli Þorgeir",
+        "nachname": "Kristjánsson",
+        "position": "RM",
+        "nation": "is",
+        "alter": 27,
+        "staerke": 91
+      },
+      {
+        "nummer": 11,
+        "vorname": "Daniel",
+        "nachname": "Pettersson",
+        "position": "RA",
+        "nation": "se",
+        "alter": 34,
+        "staerke": 82
+      },
+      {
+        "nummer": 14,
+        "vorname": "Ómar Ingi",
+        "nachname": "Magnússon",
+        "position": "RR",
+        "nation": "is",
+        "alter": 29,
+        "staerke": 90
+      },
+      {
+        "nummer": 15,
+        "vorname": "Antonio",
+        "nachname": "Serradilla Cuenca",
+        "position": "RL",
+        "nation": "es",
+        "alter": 27,
+        "staerke": 78
+      },
+      {
+        "nummer": 19,
+        "vorname": "Elvar Örn",
+        "nachname": "Jónsson",
+        "position": "RL",
+        "nation": "is",
+        "alter": 29,
+        "staerke": 81
+      },
+      {
+        "nummer": 20,
+        "vorname": "Philipp",
+        "nachname": "Weber",
+        "position": "RM",
+        "nation": "de",
+        "alter": 33,
+        "staerke": 83
+      },
+      {
+        "nummer": 21,
+        "vorname": "Albin",
+        "nachname": "Lagergren",
+        "position": "RR",
+        "nation": "se",
+        "alter": 33,
+        "staerke": 82
+      },
+      {
+        "nummer": 22,
+        "vorname": "Lukas",
+        "nachname": "Mertens",
+        "position": "LA",
+        "nation": "de",
+        "alter": 30,
+        "staerke": 84
+      },
+      {
+        "nummer": 23,
+        "vorname": "Magnus",
+        "nachname": "Saugstrup",
+        "position": "KM",
+        "nation": "dk",
+        "alter": 30,
+        "staerke": 87
+      },
+      {
+        "nummer": 54,
+        "vorname": "Oscar",
+        "nachname": "Bergendahl",
+        "position": "KM",
+        "nation": "se",
+        "alter": 31,
+        "staerke": 82
+      }
+    ],
+    "SG BBM Bietigheim": [
+      {
+        "nummer": 12,
+        "vorname": "Martin",
+        "nachname": "Tomovski",
+        "position": "TW",
+        "nation": "mk",
+        "alter": 29,
+        "staerke": 75
+      },
+      {
+        "nummer": 96,
+        "vorname": "Jan",
+        "nachname": "Hrdlička",
+        "position": "TW",
+        "nation": "cz",
+        "alter": 30,
+        "staerke": 74
+      },
+      {
+        "nummer": 31,
+        "vorname": "Alexander",
+        "nachname": "Pfeifer",
+        "position": "LA",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 70
+      },
+      {
+        "nummer": 41,
+        "vorname": "Till",
+        "nachname": "Hermann",
+        "position": "LA",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 70
+      },
+      {
+        "nummer": 3,
+        "vorname": "Nikola",
+        "nachname": "Vlahovic",
+        "position": "RL",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 70
+      },
+      {
+        "nummer": 23,
+        "vorname": "Marcus",
+        "nachname": "Norrbrink",
+        "position": "RL",
+        "nation": "se",
+        "alter": 25,
+        "staerke": 71
+      },
+      {
+        "nummer": 14,
+        "vorname": "Fynn-Luca",
+        "nachname": "Nicolaus",
+        "position": "RL",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 66
+      },
+      {
+        "nummer": 10,
+        "vorname": "Jonáš",
+        "nachname": "Josef",
+        "position": "RL",
+        "nation": "cz",
+        "alter": 22,
+        "staerke": 65
+      },
+      {
+        "nummer": 24,
+        "vorname": "Maxim",
+        "nachname": "Orlov",
+        "position": "RM",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 68
+      },
+      {
+        "nummer": 44,
+        "vorname": "Mathias",
+        "nachname": "Larson",
+        "position": "RM",
+        "nation": "dk",
+        "alter": 25,
+        "staerke": 70
+      },
+      {
+        "nummer": 7,
+        "vorname": "Dominik",
+        "nachname": "Claus",
+        "position": "RR",
+        "nation": "de",
+        "alter": 30,
+        "staerke": 73
+      },
+      {
+        "nummer": 33,
+        "vorname": "Djibril",
+        "nachname": "M'Bengue",
+        "position": "RR",
+        "nation": "de",
+        "alter": 34,
+        "staerke": 74
+      },
+      {
+        "nummer": 6,
+        "vorname": "Lukas",
+        "nachname": "Wucherpfennig",
+        "position": "RA",
+        "nation": "de",
+        "alter": 31,
+        "staerke": 71
+      },
+      {
+        "nummer": 29,
+        "vorname": "Moritz",
+        "nachname": "Strosack",
+        "position": "RA",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 69
+      },
+      {
+        "nummer": 5,
+        "vorname": "Nico",
+        "nachname": "Bacani",
+        "position": "RA",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 63
+      },
+      {
+        "nummer": 18,
+        "vorname": "Fabian",
+        "nachname": "Wiederstein",
+        "position": "KM",
+        "nation": "de",
+        "alter": 31,
+        "staerke": 72
+      },
+      {
+        "nummer": 36,
+        "vorname": "Jonathan",
+        "nachname": "Fischer",
+        "position": "KM",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 69
+      }
+    ],
+    "SG Flensburg-Handewitt": [
+      {
+        "nummer": 1,
+        "vorname": "Benjamin",
+        "nachname": "Burić",
+        "position": "TW",
+        "nation": "ba",
+        "alter": 35,
+        "staerke": 82
+      },
+      {
+        "nummer": 16,
+        "vorname": "Cătălin",
+        "nachname": "Haidu",
+        "position": "TW",
+        "nation": "ro",
+        "alter": 19,
+        "staerke": 55
+      },
+      {
+        "nummer": 30,
+        "vorname": "Simon",
+        "nachname": "Möller",
+        "position": "TW",
+        "nation": "se",
+        "alter": 26,
+        "staerke": 79
+      },
+      {
+        "nummer": 2,
+        "vorname": "Simon",
+        "nachname": "Pytlick",
+        "position": "RM",
+        "nation": "dk",
+        "alter": 25,
+        "staerke": 90
+      },
+      {
+        "nummer": 5,
+        "vorname": "Niclas",
+        "nachname": "Kirkeløkke",
+        "position": "RR",
+        "nation": "dk",
+        "alter": 32,
+        "staerke": 83
+      },
+      {
+        "nummer": 14,
+        "vorname": "Emil",
+        "nachname": "Siersbæk Bergholt",
+        "position": "KM",
+        "nation": "dk",
+        "alter": 29,
+        "staerke": 80
+      },
+      {
+        "nummer": 17,
+        "vorname": "Marko",
+        "nachname": "Grgić",
+        "position": "RL",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 79
+      },
+      {
+        "nummer": 18,
+        "vorname": "Moritz",
+        "nachname": "Detlefsen",
+        "position": "KM",
+        "nation": "de",
+        "alter": 18,
+        "staerke": 56
+      },
+      {
+        "nummer": 23,
+        "vorname": "Kent Robin",
+        "nachname": "Tønnesen",
+        "position": "RR",
+        "nation": "no",
+        "alter": 35,
+        "staerke": 80
+      },
+      {
+        "nummer": 27,
+        "vorname": "Aksel",
+        "nachname": "Horgen",
+        "position": "RA",
+        "nation": "no",
+        "alter": 30,
+        "staerke": 79
+      },
+      {
+        "nummer": 28,
+        "vorname": "Patrick",
+        "nachname": "Volz",
+        "position": "LA",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 74
+      },
+      {
+        "nummer": 31,
+        "vorname": "Emil",
+        "nachname": "Manfeldt Jakobsen",
+        "position": "LA",
+        "nation": "dk",
+        "alter": 28,
+        "staerke": 87
+      },
+      {
+        "nummer": 41,
+        "vorname": "Arnar Freyr",
+        "nachname": "Arnarsson",
+        "position": "KM",
+        "nation": "is",
+        "alter": 30,
+        "staerke": 80
+      },
+      {
+        "nummer": 43,
+        "vorname": "Blaž",
+        "nachname": "Blagotinšek",
+        "position": "KM",
+        "nation": "si",
+        "alter": 32,
+        "staerke": 81
+      },
+      {
+        "nummer": 44,
+        "vorname": "Aymeric",
+        "nachname": "Minne",
+        "position": "RM",
+        "nation": "fr",
+        "alter": 29,
+        "staerke": 83
+      },
+      {
+        "nummer": 63,
+        "vorname": "Domen",
+        "nachname": "Novak",
+        "position": "RA",
+        "nation": "si",
+        "alter": 28,
+        "staerke": 79
+      },
+      {
+        "nummer": 64,
+        "vorname": "Lasse",
+        "nachname": "Kjær Møller",
+        "position": "RL",
+        "nation": "dk",
+        "alter": 30,
+        "staerke": 84
+      },
+      {
+        "nummer": 77,
+        "vorname": "Luca",
+        "nachname": "Witzke",
+        "position": "RM",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 83
+      }
+    ],
+    "TBV Lemgo Lippe": [
+      {
+        "nummer": 1,
+        "vorname": "Constantin",
+        "nachname": "Möstl",
+        "position": "TW",
+        "nation": "at",
+        "alter": 26,
+        "staerke": 82
+      },
+      {
+        "nummer": 12,
+        "vorname": "Linus",
+        "nachname": "Borreck",
+        "position": "TW",
+        "nation": "de",
+        "alter": 20,
+        "staerke": 62
+      },
+      {
+        "nummer": 94,
+        "vorname": "Domenico",
+        "nachname": "Ebner",
+        "position": "TW",
+        "nation": "it",
+        "alter": 32,
+        "staerke": 74
+      },
+      {
+        "nummer": 2,
+        "vorname": "Lukas",
+        "nachname": "Hutecek",
+        "position": "RL",
+        "nation": "at",
+        "alter": 26,
+        "staerke": 84
+      },
+      {
+        "nummer": 3,
+        "vorname": "Nicolai",
+        "nachname": "Theilinger",
+        "position": "RR",
+        "nation": "de",
+        "alter": 34,
+        "staerke": 76
+      },
+      {
+        "nummer": 4,
+        "vorname": "Samuel",
+        "nachname": "Zehnder",
+        "position": "LA",
+        "nation": "ch",
+        "alter": 26,
+        "staerke": 78
+      },
+      {
+        "nummer": 7,
+        "vorname": "Jan",
+        "nachname": "Mudrow",
+        "position": "RL",
+        "nation": "de",
+        "alter": 19,
+        "staerke": 58
+      },
+      {
+        "nummer": 9,
+        "vorname": "Christian",
+        "nachname": "O'Sullivan",
+        "position": "RM",
+        "nation": "no",
+        "alter": 35,
+        "staerke": 80
+      },
+      {
+        "nummer": 14,
+        "vorname": "Bobby",
+        "nachname": "Schagen",
+        "position": "RA",
+        "nation": "nl",
+        "alter": 36,
+        "staerke": 76
+      },
+      {
+        "nummer": 18,
+        "vorname": "Levin",
+        "nachname": "Wanner",
+        "position": "RA",
+        "nation": "ch",
+        "alter": 26,
+        "staerke": 75
+      },
+      {
+        "nummer": 21,
+        "vorname": "Leve",
+        "nachname": "Carstensen",
+        "position": "LA",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 72
+      },
+      {
+        "nummer": 22,
+        "vorname": "Adam",
+        "nachname": "Nyfjäll",
+        "position": "KM",
+        "nation": "se",
+        "alter": 34,
+        "staerke": 78
+      },
+      {
+        "nummer": 23,
+        "vorname": "Tim",
+        "nachname": "Suton",
+        "position": "RM",
+        "nation": "de",
+        "alter": 30,
+        "staerke": 77
+      },
+      {
+        "nummer": 24,
+        "vorname": "Joël",
+        "nachname": "Willecke",
+        "position": "KM",
+        "nation": "ch",
+        "alter": 22,
+        "staerke": 68
+      },
+      {
+        "nummer": 25,
+        "vorname": "Niels",
+        "nachname": "Versteijnen",
+        "position": "RR",
+        "nation": "nl",
+        "alter": 26,
+        "staerke": 79
+      },
+      {
+        "nummer": 26,
+        "vorname": "Jānis Pavels",
+        "nachname": "Valkovskis",
+        "position": "RL",
+        "nation": "lv",
+        "alter": 21,
+        "staerke": 70
+      },
+      {
+        "nummer": 28,
+        "vorname": "Hendrik",
+        "nachname": "Wagner",
+        "position": "RL",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 76
+      }
+    ],
+    "THW Kiel": [
+      {
+        "nummer": 1,
+        "vorname": "Gonzalo",
+        "nachname": "Pérez de Vargas",
+        "position": "TW",
+        "nation": "es",
+        "alter": 35,
+        "staerke": 87
+      },
+      {
+        "nummer": 33,
+        "vorname": "Andreas",
+        "nachname": "Wolff",
+        "position": "TW",
+        "nation": "de",
+        "alter": 35,
+        "staerke": 89
+      },
+      {
+        "nummer": 36,
+        "vorname": "Tobias",
+        "nachname": "Dengler",
+        "position": "TW",
+        "nation": "de",
+        "alter": 18,
+        "staerke": 52
+      },
+      {
+        "nummer": 3,
+        "vorname": "Jarnes",
+        "nachname": "Faust",
+        "position": "RA",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 72
+      },
+      {
+        "nummer": 4,
+        "vorname": "Domagoj",
+        "nachname": "Duvnjak",
+        "position": "RM",
+        "nation": "hr",
+        "alter": 38,
+        "staerke": 80
+      },
+      {
+        "nummer": 6,
+        "vorname": "Harald",
+        "nachname": "Reinkind",
+        "position": "RR",
+        "nation": "no",
+        "alter": 34,
+        "staerke": 84
+      },
+      {
+        "nummer": 7,
+        "vorname": "Julian",
+        "nachname": "Köster",
+        "position": "RL",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 86
+      },
+      {
+        "nummer": 11,
+        "vorname": "Emil",
+        "nachname": "Wernsdorf Madsen",
+        "position": "RR",
+        "nation": "dk",
+        "alter": 25,
+        "staerke": 81
+      },
+      {
+        "nummer": 20,
+        "vorname": "Lukas",
+        "nachname": "Laube",
+        "position": "KM",
+        "nation": "ch",
+        "alter": 26,
+        "staerke": 76
+      },
+      {
+        "nummer": 21,
+        "vorname": "Eric",
+        "nachname": "Johansson",
+        "position": "RL",
+        "nation": "se",
+        "alter": 26,
+        "staerke": 84
+      },
+      {
+        "nummer": 22,
+        "vorname": "Rasmus",
+        "nachname": "Ankermann",
+        "position": "RM",
+        "nation": "de",
+        "alter": 19,
+        "staerke": 58
+      },
+      {
+        "nummer": 23,
+        "vorname": "Rune",
+        "nachname": "Dahmke",
+        "position": "LA",
+        "nation": "de",
+        "alter": 33,
+        "staerke": 79
+      },
+      {
+        "nummer": 24,
+        "vorname": "Lukas",
+        "nachname": "Zerbe",
+        "position": "RA",
+        "nation": "de",
+        "alter": 30,
+        "staerke": 80
+      },
+      {
+        "nummer": 32,
+        "vorname": "Ben",
+        "nachname": "Szilágyi",
+        "position": "LA",
+        "nation": "at",
+        "alter": 19,
+        "staerke": 60
+      },
+      {
+        "nummer": 35,
+        "vorname": "Domen",
+        "nachname": "Makuc",
+        "position": "RM",
+        "nation": "si",
+        "alter": 26,
+        "staerke": 83
+      },
+      {
+        "nummer": 61,
+        "vorname": "Hendrik",
+        "nachname": "Pekeler",
+        "position": "KM",
+        "nation": "de",
+        "alter": 35,
+        "staerke": 85
+      },
+      {
+        "nummer": 71,
+        "vorname": "Elias",
+        "nachname": "Ellefsen á Skipagøtu",
+        "position": "RM",
+        "nation": "fo",
+        "alter": 24,
+        "staerke": 82
+      },
+      {
+        "nummer": 74,
+        "vorname": "Vincent",
+        "nachname": "Büchner",
+        "position": "LA",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 77
+      },
+      {
+        "nummer": 93,
+        "vorname": "Veron",
+        "nachname": "Načinović",
+        "position": "KM",
+        "nation": "hr",
+        "alter": 26,
+        "staerke": 79
+      }
+    ],
+    "TSV Hannover-Burgdorf": [
+      {
+        "nummer": 16,
+        "vorname": "Simon",
+        "nachname": "Gade",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 29,
+        "staerke": 81
+      },
+      {
+        "nummer": 35,
+        "vorname": "Joel",
+        "nachname": "Birlehm",
+        "position": "TW",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 80
+      },
+      {
+        "nummer": 7,
+        "vorname": "Leif",
+        "nachname": "Tissier",
+        "position": "RM",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 80
+      },
+      {
+        "nummer": 9,
+        "vorname": "Vilhelm",
+        "nachname": "Poulsen",
+        "position": "RR",
+        "nation": "fo",
+        "alter": 27,
+        "staerke": 77
+      },
+      {
+        "nummer": 10,
+        "vorname": "Renārs",
+        "nachname": "Uščins",
+        "position": "RR",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 82
+      },
+      {
+        "nummer": 11,
+        "vorname": "Sebastian",
+        "nachname": "Heymann",
+        "position": "RL",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 82
+      },
+      {
+        "nummer": 17,
+        "vorname": "August",
+        "nachname": "Pedersen",
+        "position": "LA",
+        "nation": "no",
+        "alter": 32,
+        "staerke": 78
+      },
+      {
+        "nummer": 22,
+        "vorname": "Marian",
+        "nachname": "Michalczik",
+        "position": "RM",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 80
+      },
+      {
+        "nummer": 26,
+        "vorname": "Jonathan",
+        "nachname": "Edvardsson",
+        "position": "RM",
+        "nation": "se",
+        "alter": 29,
+        "staerke": 76
+      },
+      {
+        "nummer": 39,
+        "vorname": "Lukas",
+        "nachname": "Stutzke",
+        "position": "RL",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 79
+      },
+      {
+        "nummer": 48,
+        "vorname": "Sigvaldi",
+        "nachname": "Guðjónsson",
+        "position": "RA",
+        "nation": "is",
+        "alter": 32,
+        "staerke": 79
+      },
+      {
+        "nummer": 54,
+        "vorname": "Justus",
+        "nachname": "Fischer",
+        "position": "KM",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 78
+      },
+      {
+        "nummer": 55,
+        "vorname": "Tim",
+        "nachname": "Zechel",
+        "position": "KM",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 77
+      },
+      {
+        "nummer": 56,
+        "vorname": "Hannes",
+        "nachname": "Feise",
+        "position": "LA",
+        "nation": "de",
+        "alter": 30,
+        "staerke": 75
+      },
+      {
+        "nummer": 58,
+        "vorname": "Daniel",
+        "nachname": "Weber",
+        "position": "RA",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 68
+      },
+      {
+        "nummer": 80,
+        "vorname": "Luis",
+        "nachname": "Rodriguez",
+        "position": "KM",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 64
+      }
+    ],
+    "TVB Stuttgart": [
+      {
+        "nummer": 1,
+        "vorname": "Mateusz",
+        "nachname": "Kornecki",
+        "position": "TW",
+        "nation": "pl",
+        "alter": 32,
+        "staerke": 79
+      },
+      {
+        "nummer": 12,
+        "vorname": "Mohamed",
+        "nachname": "El-Tayar",
+        "position": "TW",
+        "nation": "eg",
+        "alter": 30,
+        "staerke": 77
+      },
+      {
+        "nummer": 21,
+        "vorname": "Jorick",
+        "nachname": "Pol",
+        "position": "TW",
+        "nation": "nl",
+        "alter": 22,
+        "staerke": 66
+      },
+      {
+        "nummer": 3,
+        "vorname": "Max",
+        "nachname": "Häfner",
+        "position": "RM",
+        "nation": "de",
+        "alter": 30,
+        "staerke": 77
+      },
+      {
+        "nummer": 5,
+        "vorname": "Philipp",
+        "nachname": "Ahouansou",
+        "position": "RL",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 74
+      },
+      {
+        "nummer": 7,
+        "vorname": "Kasper",
+        "nachname": "Thorsen Lien",
+        "position": "RA",
+        "nation": "no",
+        "alter": 25,
+        "staerke": 75
+      },
+      {
+        "nummer": 8,
+        "vorname": "Max",
+        "nachname": "Heydecke",
+        "position": "KM",
+        "nation": "de",
+        "alter": 19,
+        "staerke": 58
+      },
+      {
+        "nummer": 10,
+        "vorname": "Darío",
+        "nachname": "Sanz de Nicolás",
+        "position": "LA",
+        "nation": "es",
+        "alter": 22,
+        "staerke": 72
+      },
+      {
+        "nummer": 15,
+        "vorname": "Simone",
+        "nachname": "Mengon",
+        "position": "RL",
+        "nation": "it",
+        "alter": 26,
+        "staerke": 75
+      },
+      {
+        "nummer": 17,
+        "vorname": "Samuel",
+        "nachname": "Röthlisberger",
+        "position": "KM",
+        "nation": "ch",
+        "alter": 30,
+        "staerke": 79
+      },
+      {
+        "nummer": 19,
+        "vorname": "Linus",
+        "nachname": "Schmid",
+        "position": "RL",
+        "nation": "de",
+        "alter": 19,
+        "staerke": 58
+      },
+      {
+        "nummer": 22,
+        "vorname": "Torben",
+        "nachname": "Matzken",
+        "position": "RM",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 74
+      },
+      {
+        "nummer": 25,
+        "vorname": "Patrick",
+        "nachname": "Zieker",
+        "position": "LA",
+        "nation": "de",
+        "alter": 32,
+        "staerke": 79
+      },
+      {
+        "nummer": 27,
+        "vorname": "Philipp",
+        "nachname": "Meyer",
+        "position": "RL",
+        "nation": "de",
+        "alter": 29,
+        "staerke": 74
+      },
+      {
+        "nummer": 30,
+        "vorname": "Marco",
+        "nachname": "Mengon",
+        "position": "RL",
+        "nation": "it",
+        "alter": 26,
+        "staerke": 78
+      },
+      {
+        "nummer": 34,
+        "vorname": "Kai",
+        "nachname": "Häfner",
+        "position": "RR",
+        "nation": "de",
+        "alter": 37,
+        "staerke": 78
+      },
+      {
+        "nummer": 39,
+        "vorname": "Malte",
+        "nachname": "Donker",
+        "position": "RR",
+        "nation": "de",
+        "alter": 28,
+        "staerke": 75
+      },
+      {
+        "nummer": 57,
+        "vorname": "Jakob",
+        "nachname": "Nigg",
+        "position": "RA",
+        "nation": "at",
+        "alter": 23,
+        "staerke": 70
+      },
+      {
+        "nummer": 70,
+        "vorname": "Mohamed",
+        "nachname": "Darmoul",
+        "position": "RM",
+        "nation": "tn",
+        "alter": 28,
+        "staerke": 76
+      }
+    ],
+    "ThSV Eisenach": [
+      {
+        "nummer": 1,
+        "vorname": "Matija",
+        "nachname": "Špikić",
+        "position": "TW",
+        "nation": "hr",
+        "alter": 30,
+        "staerke": 78
+      },
+      {
+        "nummer": 12,
+        "vorname": "Silvio",
+        "nachname": "Heinevetter",
+        "position": "TW",
+        "nation": "de",
+        "alter": 41,
+        "staerke": 74
+      },
+      {
+        "nummer": 20,
+        "vorname": "Bastian",
+        "nachname": "Freitag",
+        "position": "TW",
+        "nation": "de",
+        "alter": 21,
+        "staerke": 60
+      },
+      {
+        "nummer": 25,
+        "vorname": "Mats",
+        "nachname": "Grupe",
+        "position": "TW",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 68
+      },
+      {
+        "nummer": 3,
+        "vorname": "Oskar",
+        "nachname": "Joelsson",
+        "position": "RL",
+        "nation": "se",
+        "alter": 26,
+        "staerke": 75
+      },
+      {
+        "nummer": 4,
+        "vorname": "Elias",
+        "nachname": "Scholtes",
+        "position": "RR",
+        "nation": "de",
+        "alter": 23,
+        "staerke": 70
+      },
+      {
+        "nummer": 6,
+        "vorname": "Aleksandar",
+        "nachname": "Čaprić",
+        "position": "RL",
+        "nation": "hr",
+        "alter": 22,
+        "staerke": 68
+      },
+      {
+        "nummer": 11,
+        "vorname": "Gian",
+        "nachname": "Attenhofer",
+        "position": "RA",
+        "nation": "ch",
+        "alter": 24,
+        "staerke": 72
+      },
+      {
+        "nummer": 14,
+        "vorname": "Peter",
+        "nachname": "Walz",
+        "position": "KM",
+        "nation": "de",
+        "alter": 32,
+        "staerke": 76
+      },
+      {
+        "nummer": 15,
+        "vorname": "David",
+        "nachname": "Móré",
+        "position": "LA",
+        "nation": "de",
+        "alter": 22,
+        "staerke": 68
+      },
+      {
+        "nummer": 21,
+        "vorname": "Moritz",
+        "nachname": "Ende",
+        "position": "RA",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 74
+      },
+      {
+        "nummer": 22,
+        "vorname": "Felix",
+        "nachname": "Aellen",
+        "position": "RM",
+        "nation": "ch",
+        "alter": 22,
+        "staerke": 70
+      },
+      {
+        "nummer": 30,
+        "vorname": "Dominik",
+        "nachname": "Solák",
+        "position": "RL",
+        "nation": "cz",
+        "alter": 29,
+        "staerke": 75
+      },
+      {
+        "nummer": 41,
+        "vorname": "Vukašin",
+        "nachname": "Antonijević",
+        "position": "RM",
+        "nation": "rs",
+        "alter": 22,
+        "staerke": 69
+      },
+      {
+        "nummer": 44,
+        "vorname": "Stephan",
+        "nachname": "Seitz",
+        "position": "RR",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 71
+      },
+      {
+        "nummer": 52,
+        "vorname": "Justin",
+        "nachname": "Kurch",
+        "position": "KM",
+        "nation": "de",
+        "alter": 27,
+        "staerke": 74
+      },
+      {
+        "nummer": 66,
+        "vorname": "Jannis",
+        "nachname": "Schneibel",
+        "position": "RM",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 74
+      },
+      {
+        "nummer": 91,
+        "vorname": "Felix",
+        "nachname": "Montebovi",
+        "position": "LA",
+        "nation": "se",
+        "alter": 20,
+        "staerke": 62
+      },
+      {
+        "nummer": 94,
+        "vorname": "Marec",
+        "nachname": "Stupka",
+        "position": "RA",
+        "nation": "de",
+        "alter": 19,
+        "staerke": 54
+      },
+      {
+        "nummer": 99,
+        "vorname": "Tillman",
+        "nachname": "Leu",
+        "position": "KM",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 71
+      }
+    ],
+    "VfL Gummersbach": [
+      {
+        "nummer": 1,
+        "vorname": "Ignacio",
+        "nachname": "Biosca García",
+        "position": "TW",
+        "nation": "es",
+        "alter": 31,
+        "staerke": 82
+      },
+      {
+        "nummer": 16,
+        "vorname": "Bertram",
+        "nachname": "Obling",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 30,
+        "staerke": 79
+      },
+      {
+        "nummer": 4,
+        "vorname": "Elliði Snær",
+        "nachname": "Viðarsson",
+        "position": "KM",
+        "nation": "is",
+        "alter": 27,
+        "staerke": 80
+      },
+      {
+        "nummer": 5,
+        "vorname": "Tilen",
+        "nachname": "Kodrin",
+        "position": "LA",
+        "nation": "si",
+        "alter": 32,
+        "staerke": 78
+      },
+      {
+        "nummer": 6,
+        "vorname": "Miloš",
+        "nachname": "Vujović",
+        "position": "LA",
+        "nation": "me",
+        "alter": 32,
+        "staerke": 77
+      },
+      {
+        "nummer": 8,
+        "vorname": "Lukas",
+        "nachname": "Blohme",
+        "position": "RA",
+        "nation": "de",
+        "alter": 31,
+        "staerke": 78
+      },
+      {
+        "nummer": 10,
+        "vorname": "Alex",
+        "nachname": "Dujshebaev",
+        "position": "RR",
+        "nation": "es",
+        "alter": 33,
+        "staerke": 88
+      },
+      {
+        "nummer": 11,
+        "vorname": "Mathis",
+        "nachname": "Häseler",
+        "position": "RA",
+        "nation": "de",
+        "alter": 24,
+        "staerke": 76
+      },
+      {
+        "nummer": 14,
+        "vorname": "Teitur Örn",
+        "nachname": "Einarsson",
+        "position": "RR",
+        "nation": "is",
+        "alter": 27,
+        "staerke": 80
+      },
+      {
+        "nummer": 15,
+        "vorname": "Miro",
+        "nachname": "Schluroff",
+        "position": "RL",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 76
+      },
+      {
+        "nummer": 20,
+        "vorname": "Ludvig",
+        "nachname": "Hallbäck",
+        "position": "RM",
+        "nation": "se",
+        "alter": 25,
+        "staerke": 84
+      },
+      {
+        "nummer": 23,
+        "vorname": "Nikola",
+        "nachname": "Roganović",
+        "position": "RL",
+        "nation": "se",
+        "alter": 20,
+        "staerke": 64
+      },
+      {
+        "nummer": 27,
+        "vorname": "Kristjan",
+        "nachname": "Horžen",
+        "position": "KM",
+        "nation": "si",
+        "alter": 26,
+        "staerke": 80
+      },
+      {
+        "nummer": 30,
+        "vorname": "Tom",
+        "nachname": "Kiesler",
+        "position": "RL",
+        "nation": "de",
+        "alter": 25,
+        "staerke": 75
+      },
+      {
+        "nummer": 31,
+        "vorname": "Kay",
+        "nachname": "Smits",
+        "position": "RR",
+        "nation": "nl",
+        "alter": 29,
+        "staerke": 88
+      },
+      {
+        "nummer": 34,
+        "vorname": "Garðar Ingi",
+        "nachname": "Sindrason",
+        "position": "RM",
+        "nation": "is",
+        "alter": 19,
+        "staerke": 58
+      },
+      {
+        "nummer": 66,
+        "vorname": "Štěpán",
+        "nachname": "Zeman",
+        "position": "KM",
+        "nation": "cz",
+        "alter": 29,
+        "staerke": 76
+      }
+    ]
+  }
 }

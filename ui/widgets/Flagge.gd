@@ -6,7 +6,7 @@ extends Control
 ## Die Rezepte sind bewusst schlicht gehalten: bei 16 bis 22 Pixel Kantenlaenge
 ## zaehlt nur, dass man die Herkunft auf einen Blick erkennt.
 
-enum Art { WAAGERECHT, SENKRECHT, NORDKREUZ, KREUZ, MITTELBALKEN, VIERTEL, EINFARBIG }
+enum Art { WAAGERECHT, SENKRECHT, NORDKREUZ, KREUZ, MITTELBALKEN, VIERTEL, EINFARBIG, MOND, RANDSTREIFEN }
 
 const R := Color("#d7202f")
 const W := Color("#f4f6f8")
@@ -61,6 +61,11 @@ const FLAGGEN := {
 	"lt": {"art": Art.WAAGERECHT, "farben": [G, GR, R]},
 	# Algerien: gruene und weisse Haelfte, wie Katar mit zwei Feldern gebaut.
 	"dz": {"art": Art.SENKRECHT, "farben": [GR, W, W]},
+	# Tuerkei: roter Grund mit weissem Mond. Ohne eigene Art waere sie von
+	# Tunesien nicht zu unterscheiden, deren Emblem mittig sitzt.
+	"tr": {"art": Art.MOND, "farben": [R, W]},
+	# Israel: weisser Grund mit zwei blauen Streifen am Rand.
+	"il": {"art": Art.RANDSTREIFEN, "farben": [W, B]},
 }
 
 var nation: String = "de"
@@ -112,6 +117,15 @@ func _draw() -> void:
 		Art.MITTELBALKEN:
 			draw_rect(Rect2(0, 0, b, h), farben[0], true)
 			draw_rect(Rect2(0, h * 0.25, b, h * 0.5), farben[1], true)
+		Art.MOND:
+			draw_rect(Rect2(0, 0, b, h), farben[0], true)
+			draw_circle(Vector2(b * 0.40, h * 0.5), h * 0.30, farben[1])
+			draw_circle(Vector2(b * 0.48, h * 0.5), h * 0.24, farben[0])
+		Art.RANDSTREIFEN:
+			draw_rect(Rect2(0, 0, b, h), farben[0], true)
+			var sd: float = maxf(h * 0.16, 1.0)
+			draw_rect(Rect2(0, h * 0.18, b, sd), farben[1], true)
+			draw_rect(Rect2(0, h * 0.82 - sd, b, sd), farben[1], true)
 		Art.VIERTEL:
 			draw_rect(Rect2(0, 0, b, h * 0.5), farben[0], true)
 			draw_rect(Rect2(0, h * 0.5, b, h * 0.5), farben[1], true)

@@ -71,7 +71,7 @@ ohne `kapazitaet` leitet es sie aus dem Ruf ab, und so weiter. Zwingend ist nur 
   "stand": "September 2026",
   "kader": {
     "THW Kiel": [
-      {"vorname": "Andreas", "nachname": "Wolff", "position": "TW",
+      {"nummer": 33, "vorname": "Andreas", "nachname": "Wolff", "position": "TW",
        "nation": "de", "alter": 35, "staerke": 90}
     ]
   }
@@ -82,6 +82,7 @@ Der Schlüssel ist der **exakte Vereinsname** aus `ligen.json`.
 
 | Feld | Bedeutung |
 |---|---|
+| `nummer` | Rückennummer. Weglassen oder `0` setzen, dann vergibt das Spiel eine freie. |
 | `position` | `TW`, `LA`, `RL`, `RM`, `RR`, `RA` oder `KM` |
 | `nation` | Kürzel wie in `Namen.KULTUR_NAME` (`de`, `dk`, `is`, `hr`, `fo`, …) |
 | `alter` | Alter zum Karrierestart |
@@ -101,9 +102,14 @@ unter der Stärke des besten echten Spielers, damit sie die Leistungsträger nic
 
 * **Verlässlich:** Vereinsnamen, Ligazugehörigkeit und Ligagrößen der Saison 2026/27.
 * **Näherung:** Hallennamen, Kapazitäten, Gründungsjahre, Vereinsfarben, alle Ruf-Werte.
-* **Lückenhaft:** die Kader. Hinterlegt sind Spieler, die sich zum genannten Stand
-  belegen ließen — bei weitem nicht alle. Alter und Stärke sind Schätzwerte für die
-  Simulation, keine Tatsachenbehauptungen über die Personen.
+* **Vollständig:** die Kader aller 18 Bundesligisten — 327 Spieler, kein einziger
+  ergänzt. Wer im Spiel für einen deutschen Erstligisten auf dem Bogen steht, steht
+  dort auch in Wirklichkeit.
+* **Lückenhaft:** alle übrigen Ligen. Dort sind nur einzelne Spieler hinterlegt,
+  den Rest füllt das Spiel auf.
+* **Schätzwerte, keine Tatsachenbehauptungen:** Alter und Stärke. Das Alter ist zum
+  1. September 2026 gerechnet, die Stärke ordnet einen Spieler nur für die
+  Simulation ein.
 
 Kader veralten mit jedem Transferfenster. Die Dateien sind bewusst so einfach
 gehalten, dass sie sich ohne Programmierkenntnisse pflegen lassen.
