@@ -322,6 +322,16 @@ func _ersatz_fuer(pool: Array, belegt: Array, pos: String) -> String:
 			best = sid
 	return best
 
+## Wie sehr sich einer als Siebenmeterschuetze anbietet. Der im Datensatz
+## hinterlegte Stammschuetze setzt sich immer durch — sonst muesste sein
+## Attributwert kuenstlich hoch stehen, und genau der sagt im Spiel aus, wie
+## oft er trifft. Ein Verein ohne hinterlegten Schuetzen waehlt wie bisher.
+func _siebenmetereignung(sp: Dictionary) -> float:
+	var w: float = float(sp["attr"]["siebenmeter"]) * 2.0 + float(sp["attr"]["nervenstaerke"])
+	if bool(sp.get("stammschuetze", false)):
+		w += 100.0
+	return w
+
 func _bester_siebenmeter(t: Dictionary) -> String:
 	var best := ""
 	var bw := -1.0
@@ -329,7 +339,7 @@ func _bester_siebenmeter(t: Dictionary) -> String:
 		var sp: Dictionary = daten["spieler"][sid]
 		if bool(sp["ist_torwart"]):
 			continue
-		var w: float = float(sp["attr"]["siebenmeter"]) * 2.0 + float(sp["attr"]["nervenstaerke"])
+		var w: float = _siebenmetereignung(sp)
 		if w > bw:
 			bw = w
 			best = sid
@@ -1001,7 +1011,7 @@ func _bester_auf_platz_siebenmeter(a: Dictionary) -> String:
 		if sid == "":
 			continue
 		var sp: Dictionary = daten["spieler"][sid]
-		var w: float = float(sp["attr"]["siebenmeter"]) * 2.0 + float(sp["attr"]["nervenstaerke"])
+		var w: float = _siebenmetereignung(sp)
 		if w > bw:
 			bw = w
 			best = sid

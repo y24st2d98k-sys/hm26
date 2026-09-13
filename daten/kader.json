@@ -376,7 +376,11 @@
         "position": "LA",
         "nation": "de",
         "alter": 35,
-        "staerke": 79
+        "staerke": 80,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 17.5
+        }
       },
       {
         "nummer": 25,
@@ -531,7 +535,11 @@
         "position": "LA",
         "nation": "de",
         "alter": 24,
-        "staerke": 82
+        "staerke": 82,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 15.9
+        }
       },
       {
         "nummer": 24,
@@ -1160,7 +1168,7 @@
         "position": "RM",
         "nation": "dk",
         "alter": 26,
-        "staerke": 78
+        "staerke": 80
       },
       {
         "nummer": 14,
@@ -1196,7 +1204,11 @@
         "position": "RA",
         "nation": "dk",
         "alter": 27,
-        "staerke": 78
+        "staerke": 81,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 17.7
+        }
       },
       {
         "nummer": 22,
@@ -1205,7 +1217,11 @@
         "position": "LA",
         "nation": "de",
         "alter": 29,
-        "staerke": 75
+        "staerke": 79,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 17.3
+        }
       },
       {
         "nummer": 23,
@@ -1241,7 +1257,7 @@
         "position": "RM",
         "nation": "de",
         "alter": 23,
-        "staerke": 72
+        "staerke": 77
       },
       {
         "nummer": 42,
@@ -1429,7 +1445,11 @@
         "position": "LA",
         "nation": "de",
         "alter": 22,
-        "staerke": 70
+        "staerke": 74,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 17.0
+        }
       },
       {
         "nummer": 19,
@@ -1607,7 +1627,11 @@
         "position": "RM",
         "nation": "is",
         "alter": 25,
-        "staerke": 82
+        "staerke": 83,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 16.7
+        }
       },
       {
         "nummer": 45,
@@ -1679,7 +1703,7 @@
         "position": "KM",
         "nation": "de",
         "alter": 31,
-        "staerke": 84
+        "staerke": 86
       },
       {
         "nummer": 41,
@@ -1789,7 +1813,11 @@
         "position": "RR",
         "nation": "is",
         "alter": 29,
-        "staerke": 90
+        "staerke": 90,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 13.0
+        }
       },
       {
         "nummer": 15,
@@ -2042,7 +2070,7 @@
         "nummer": 2,
         "vorname": "Simon",
         "nachname": "Pytlick",
-        "position": "RM",
+        "position": "RL",
         "nation": "dk",
         "alter": 25,
         "staerke": 90
@@ -2069,10 +2097,10 @@
         "nummer": 17,
         "vorname": "Marko",
         "nachname": "Grgić",
-        "position": "RL",
+        "position": "RM",
         "nation": "de",
         "alter": 22,
-        "staerke": 79
+        "staerke": 81
       },
       {
         "nummer": 18,
@@ -2117,7 +2145,11 @@
         "position": "LA",
         "nation": "dk",
         "alter": 28,
-        "staerke": 87
+        "staerke": 87,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 19.0
+        }
       },
       {
         "nummer": 41,
@@ -2227,7 +2259,11 @@
         "position": "LA",
         "nation": "ch",
         "alter": 26,
-        "staerke": 78
+        "staerke": 78,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 16.1
+        }
       },
       {
         "nummer": 7,
@@ -2290,7 +2326,7 @@
         "position": "RM",
         "nation": "de",
         "alter": 30,
-        "staerke": 77
+        "staerke": 82
       },
       {
         "nummer": 24,
@@ -2308,7 +2344,7 @@
         "position": "RR",
         "nation": "nl",
         "alter": 26,
-        "staerke": 79
+        "staerke": 82
       },
       {
         "nummer": 26,
@@ -2445,7 +2481,11 @@
         "position": "RA",
         "nation": "de",
         "alter": 30,
-        "staerke": 80
+        "staerke": 80,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 17.6
+        }
       },
       {
         "nummer": 32,
@@ -2481,7 +2521,7 @@
         "position": "RM",
         "nation": "fo",
         "alter": 24,
-        "staerke": 82
+        "staerke": 85
       },
       {
         "nummer": 74,
@@ -2564,7 +2604,11 @@
         "position": "LA",
         "nation": "no",
         "alter": 32,
-        "staerke": 78
+        "staerke": 82,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 14.8
+        }
       },
       {
         "nummer": 22,
@@ -2692,7 +2736,7 @@
         "position": "RL",
         "nation": "de",
         "alter": 25,
-        "staerke": 74
+        "staerke": 77
       },
       {
         "nummer": 7,
@@ -2791,7 +2835,11 @@
         "position": "RR",
         "nation": "de",
         "alter": 37,
-        "staerke": 78
+        "staerke": 84,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 15.6
+        }
       },
       {
         "nummer": 39,
@@ -2928,7 +2976,11 @@
         "position": "RM",
         "nation": "ch",
         "alter": 22,
-        "staerke": 70
+        "staerke": 78,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 17.3
+        }
       },
       {
         "nummer": 30,
@@ -3047,7 +3099,11 @@
         "position": "LA",
         "nation": "me",
         "alter": 32,
-        "staerke": 77
+        "staerke": 78,
+        "stammschuetze": true,
+        "attribute": {
+          "siebenmeter": 17.7
+        }
       },
       {
         "nummer": 8,
@@ -3092,7 +3148,7 @@
         "position": "RL",
         "nation": "de",
         "alter": 26,
-        "staerke": 76
+        "staerke": 79
       },
       {
         "nummer": 20,

@@ -228,6 +228,27 @@ static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String,
 	# Gidsel die 19 und nicht irgendeine.
 	if int(eintrag.get("nummer", 0)) > 0:
 		sp["nummer"] = int(eintrag["nummer"])
+	# Einzelne Attribute aus dem Datensatz. Gedacht fuer das eine Merkmal, das
+	# einen Spieler ausmacht und das die Zielstaerke allein nicht hergibt: Kai
+	# Haefner hat in einer Saison 133 Siebenmeter verwandelt, mehr als jeder
+	# andere um Laengen. Wuerfelt man ihm den Wert wie jedem anderen aus, wirft
+	# in Stuttgart irgendwer. Nach _auf_zielstaerke gesetzt, damit die
+	# Angleichung den Wert nicht wieder wegskaliert.
+	# Wer die Siebenmeter wirft, ist eine Rolle im Verein und keine Frage der
+	# Wurftechnik allein. Frueher entschied das allein der Attributwert — dann
+	# muss man ihn hochdrehen, damit der Richtige wirft, und verliert genau
+	# damit die Angabe, wie gut er trifft. Beides steht jetzt getrennt da:
+	# "stammschuetze" sagt wer, "attribute.siebenmeter" sagt wie gut.
+	if bool(eintrag.get("stammschuetze", false)):
+		sp["stammschuetze"] = true
+	var werte: Dictionary = eintrag.get("attribute", {})
+	for name in werte.keys():
+		if not (sp["attr"] as Dictionary).has(name):
+			push_warning("Unbekanntes Attribut '%s' bei %s" % [name, sp["nachname"]])
+			continue
+		sp["attr"][name] = clampf(float(werte[name]), 1.0, 20.0)
+	if not werte.is_empty():
+		staerke_verwerfen(sp)
 	# Bei echten Spielern ist die Zielstärke gesetzt, nicht gewürfelt: Potenzial
 	# darf sie nur bei jungen Spielern deutlich übersteigen.
 	if alter_jahre >= 28:
