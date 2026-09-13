@@ -665,6 +665,36 @@ den ersten zehn eine frühe Entscheidung.
 Die Szenen überleben die Kurzfassung: auch von einer fremden Partie, von der
 der Spielstand nur noch das Ergebnis aufhebt, bleiben sie erhalten.
 
+## Echte Kader
+
+`daten/kader.json` hält die belegten Kader. Fünf Bundesligisten sind für die
+Saison 2026/27 vollständig hinterlegt — Magdeburg, Füchse Berlin, Flensburg,
+Gummersbach und Lemgo — mit Rückennummer, Name, Position, Nation und Alter zum
+1. September 2026.
+
+Die **Stärke ist ein Schätzwert für die Simulation**, keine Tatsachenbehauptung.
+Sie ordnet einen Spieler auf einer Skala ein, auf der der Bundesliga-MVP bei 96
+und ein Nachwuchsspieler bei etwa 56 steht.
+
+### Kein Auffüllen belegter Kader
+
+`KADER_SOLL` beschreibt, was ein *erfundener* Verein braucht: drei Torhüter,
+drei Rückraumspieler je Seite, 19 Mann. Ein echter Bundesligakader sieht anders
+aus — Magdeburg hat zwei Torhüter, vier Spieler für die Rückraummitte und je
+zwei für außen. Wer den auf `KADER_SOLL` auffüllt, stellt drei erfundene Spieler
+neben siebzehn echte, und im Kaderbildschirm stehen Namen, die es nicht gibt,
+zwischen denen, die es gibt.
+
+Für einen belegten Kader (ab vierzehn Spielern) gilt deshalb nur noch, was die
+Simulation zwingend braucht: zwei Torhüter, mindestens einer auf jeder
+Feldposition, mindestens sechzehn Mann gegen Verletzungspech. Die fünf
+gepflegten Kader kommen damit ohne einen einzigen erfundenen Spieler aus. Kiel
+bekommt genau einen, weil im hinterlegten Kader kein Rechtsaußen steht — das
+ist die Lücke, nicht das Verfahren.
+
+Die Rückennummern aus dem Datensatz werden übernommen: Gidsel trägt die 19,
+Kristjánsson die 10, Pytlick die 2.
+
 ## Wer wechselt wohin — und wer nicht
 
 Diesem Spiel fehlte der Begriff der **Bindung**. Ein Spieler war eine Stärke
@@ -1314,6 +1344,33 @@ genau hin. `werkzeuge/Layoutpruefung.tscn` spielt eine Vierteljahressaison,
 * Beschriftungen, die breiter sind als ihr Platz (also abgeschnitten werden),
   wobei bewusst gekürzte Texte nur als Hinweis gelten
 * Klickflächen unter 22 Pixeln Höhe
+* **Spalten, die nicht fluchten.** Zeilen, die als HBox gebaut sind, geben
+  ihren Zellen nur eine *Mindest*breite. Eine Zelle mit etwas mehr Inhalt — ein
+  zweites Statusabzeichen genügt — wächst darüber hinaus und schiebt den Rest
+  der Zeile nach rechts. Im Kaderbildschirm standen dadurch einzelne Zeilen
+  sichtbar versetzt zu allen anderen, und keine der übrigen Prüfungen bemerkte
+  es: nichts ragte über den Rand, kein Text war zu breit, jede Zeile für sich
+  war in Ordnung. Die Prüfung vergleicht deshalb Zeilen *untereinander*.
+
+### Der Prüflauf stellt den ungünstigsten Fall her
+
+Eine Layoutprüfung findet nur, was der gerade vorliegende Spielstand hergibt.
+Genau der Fehler, der zu der Spaltenprüfung geführt hat, tritt erst auf, wenn
+ein Spieler zwei oder drei Statusabzeichen trägt — und ob nach neunzig
+simulierten Tagen zufällig einer verletzt *und* überlastet ist, entscheidet der
+Zufall. Ein Test, der nur manchmal prüft, prüft nicht.
+
+Der Lauf setzt deshalb vorher drei Spieler des eigenen Kaders auf alles
+gleichzeitig, was ein Abzeichen erzeugt, und gibt ihnen einen langen Namen.
+Wie lang, ist selbst eine Messfrage: der erste Versuch nahm einen 51 Zeichen
+langen Fantasienamen und meldete daraufhin 129 Fehler — richtig gemessen, aber
+am wirklichen Kader vorbei, denn der längste Name im Datensatz ist „Gísli
+Þorgeir Kristjánsson" mit 26 Zeichen. Ein Test, der Fälle erfindet, die es
+nicht gibt, erzeugt Arbeit statt Erkenntnis. Dreißig Zeichen sind die ehrliche
+Obergrenze.
+
+Gegengeprüft wurde die Prüfung selbst: mit dem alten Code meldet sie
+„Spalte 4 verrutscht: x=821 statt x=318", mit dem neuen nichts.
 
 Der aktuelle Stand: **0 Layoutfehler, 0 Hinweise.** Der Lauf davor meldete 294
 zu kleine Klickflächen — flache Knöpfe waren 19 Pixel hoch und damit in einer

@@ -40,6 +40,7 @@ func _ready() -> void:
 			Welt.wochenrhythmus(Welt.tag())
 			Welt.saison_pruefen(Welt.tag())
 	_log("Geprüft am %s" % Welt.datum_text())
+	_schlimmsten_fall_herstellen()
 
 	get_window().size = Vector2i(1680, 945)
 	var app: Node = load("res://ui/App.tscn").instantiate()
@@ -72,10 +73,91 @@ func _ready() -> void:
 	get_tree().quit()
 
 func _pruefe(knoten: Node, fensterbreite: float, befunde: Array) -> void:
+	_spalten_pruefen(knoten, befunde)
 	for kind in knoten.get_children():
 		if kind is Control and kind.visible:
 			_pruefe_control(kind, fensterbreite, befunde)
 		_pruefe(kind, fensterbreite, befunde)
+
+## Fluchten die Spalten einer Tabelle?
+##
+## Zeilen, die als HBox gebaut sind, geben ihren Zellen nur eine
+## Mindestbreite. Das ist ein Minimum, kein Maximum: eine Zelle mit etwas mehr
+## Inhalt — ein zweites Statusabzeichen genuegt — waechst darueber hinaus und
+## schiebt den Rest der Zeile nach rechts. Im Kaderbildschirm standen dadurch
+## einzelne Zeilen sichtbar versetzt zu allen anderen, und keine der bisherigen
+## Pruefungen hat es bemerkt: nichts ragte ueber den Rand, kein Text war zu
+## breit fuer sein Feld, jede Zeile fuer sich war in Ordnung.
+##
+## Diese Pruefung vergleicht deshalb Zeilen untereinander. Geschwister-HBoxen
+## mit gleich vielen Zellen muessen ihre Zellen an denselben x-Positionen
+## haben.
+const SPALTEN_TOLERANZ := 2.0
+
+## Erkennt eine gebaute Tabellenzeile daran, dass jede Zelle eine Spaltenbreite
+## mitbringt. Wer Breiten angibt, will Spalten — eine gewoehnliche Zeile aus
+## Etikett, Text und Knopf tut das nicht, und die darf ruhig unterschiedlich
+## breit sein.
+## Die Tabellenzeile in diesem Knoten — er selbst, oder die einzige HBox
+## hoechstens zwei Ebenen darunter.
+func _zeile_in(knoten: Node) -> Node:
+	if knoten is HBoxContainer and (knoten as Control).visible \
+			and knoten.get_child_count() >= 4:
+		return knoten
+	if not (knoten is Control) or not (knoten as Control).visible:
+		return null
+	for tiefe in range(2):
+		if knoten.get_child_count() != 1:
+			return null
+		knoten = knoten.get_child(0)
+		if knoten is HBoxContainer and (knoten as Control).visible \
+				and knoten.get_child_count() >= 4:
+			return knoten
+		if not (knoten is Control):
+			return null
+	return null
+
+func _hat_spaltenbreiten(zeile: Node) -> bool:
+	for kind in zeile.get_children():
+		var c := kind as Control
+		if c == null or c.custom_minimum_size.x <= 0.0:
+			return false
+	return true
+
+func _spalten_pruefen(eltern: Node, befunde: Array) -> void:
+	var zeilen: Array = []
+	for kind in eltern.get_children():
+		# Eine Tabellenzeile steckt oft in einem Knopf oder einem Panel — der
+		# erste Entwurf suchte nur nach Geschwister-HBoxen und fand deshalb
+		# ausgerechnet den Kaderbildschirm nicht, in dem jede Zeile ein
+		# anklickbarer Knopf ist.
+		var z := _zeile_in(kind)
+		if z != null:
+			zeilen.append(z)
+	if zeilen.size() < 3:
+		return
+	# Nur Zeilen mit gleicher Zellenzahl vergleichen — alles andere ist keine
+	# Tabelle, sondern eine Liste verschiedener Dinge.
+	var muster: int = (zeilen[0] as Node).get_child_count()
+	var gleich: Array = []
+	for z in zeilen:
+		if (z as Node).get_child_count() == muster and _hat_spaltenbreiten(z):
+			gleich.append(z)
+	if gleich.size() < 3:
+		return
+	var erste: Node = gleich[0]
+	for i in range(1, gleich.size()):
+		var z: Node = gleich[i]
+		for sp in range(muster):
+			var a := erste.get_child(sp) as Control
+			var b := z.get_child(sp) as Control
+			if a == null or b == null or not a.visible or not b.visible:
+				continue
+			if absf(a.position.x - b.position.x) > SPALTEN_TOLERANZ:
+				fehler += 1
+				befunde.append("Spalte %d verrutscht: %s steht bei x=%.0f, in der ersten Zeile bei x=%.0f" % [
+					sp + 1, _beschreibe(b), b.position.x, a.position.x])
+				return
 
 func _pruefe_control(c: Control, fensterbreite: float, befunde: Array) -> void:
 	var rechts: float = c.global_position.x + c.size.x
@@ -114,3 +196,41 @@ func _beschreibe(c: Control) -> String:
 func _kurz(t: String) -> String:
 	var eine_zeile := t.replace("\n", " ")
 	return eine_zeile if eine_zeile.length() <= 42 else eine_zeile.substr(0, 40) + "…"
+
+## Stellt den Zustand her, in dem am meisten in eine Zeile muss.
+##
+## Eine Layoutpruefung findet nur, was der gerade vorliegende Spielstand
+## hergibt. Der Fehler, der zu dieser Pruefung gefuehrt hat — verrutschte
+## Spalten im Kaderbildschirm — tritt erst auf, wenn ein Spieler zwei oder drei
+## Statusabzeichen traegt, und ob nach 90 simulierten Tagen zufaellig einer
+## verletzt und ueberlastet ist, entscheidet der Zufall. Ein Test, der nur
+## manchmal prueft, prueft nicht.
+##
+## Deshalb wird der ungünstigste Fall hergestellt: die ersten Spieler des
+## eigenen Kaders bekommen alles gleichzeitig, was ein Abzeichen erzeugt, und
+## dazu die laengsten Namen.
+func _schlimmsten_fall_herstellen() -> void:
+	if Welt.mein_verein_id == "":
+		return
+	var kader: Array = Welt.mein_verein()["kader"]
+	for i in range(mini(3, kader.size())):
+		var sp: Dictionary = Welt.spieler(str(kader[i]))
+		# Genau die Form, die Medizin.verletzen() anlegt — ein von Hand
+		# zusammengesteckter Eintrag ohne "rest" liess verletzungstext()
+		# auflaufen, und der Test meldete einen Fehler, den es im Spiel nicht
+		# gibt.
+		sp["verletzung"] = {"art": "Muskelfaserriss", "tage": 12, "rest": 12.0,
+			"schwere": 2, "im_spiel": false, "seit_tag": Welt.tag()}
+		sp["last"] = 88.0
+		sp["transferwunsch"] = true
+		sp["auf_transferliste"] = true
+		sp["bei_nationalmannschaft"] = true
+		sp["vertrag"]["bis_saison"] = Welt.saison_index()
+		# Ein langer, aber realistischer Name. Der erste Versuch nahm einen
+		# 51 Zeichen langen Fantasienamen und meldete daraufhin 129 Fehler —
+		# richtig gemessen, aber am wirklichen Kader vorbei: der laengste Name
+		# im Datensatz ist "Gísli Þorgeir Kristjánsson" mit 26 Zeichen. Ein
+		# Test, der Faelle erfindet, die es nicht gibt, erzeugt Arbeit statt
+		# Erkenntnis. Dreissig Zeichen sind die ehrliche Obergrenze.
+		sp["vorname"] = "Maximilian"
+		sp["nachname"] = "Löwenstein-Wertheim"

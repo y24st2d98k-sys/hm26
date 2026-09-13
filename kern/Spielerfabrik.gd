@@ -117,6 +117,24 @@ static func abwehr_eignung(spieler: Dictionary, platz: String) -> float:
 ## Verteilung der Positionen in einem normalen Kader.
 const KADER_SOLL := {"TW": 3, "LA": 2, "RL": 3, "RM": 3, "RR": 3, "RA": 2, "KM": 3}
 
+## Was ein Verein mit hinterlegtem echtem Kader noch braucht.
+##
+## KADER_SOLL beschreibt, was ein erfundener Verein braucht: drei Torhueter,
+## drei Rueckraumspieler je Seite. Ein echter Bundesligakader sieht anders aus.
+## Magdeburg hat zwei Torhueter, vier Spieler fuer die Rueckraummitte und je
+## zwei fuer aussen — wer den auf KADER_SOLL auffuellt, stellt drei erfundene
+## Spieler neben siebzehn echte, und im Kaderbildschirm stehen Namen, die es
+## nicht gibt, zwischen denen, die es gibt. Genau das war zu sehen.
+##
+## Fuer einen belegten Kader gilt deshalb nur noch, was die Simulation
+## zwingend braucht: zwei Torhueter und mindestens einer auf jeder
+## Feldposition, dazu eine Mindestgroesse gegen Verletzungspech.
+const ECHT_MINDEST := {"TW": 2, "LA": 1, "RL": 1, "RM": 1, "RR": 1, "RA": 1, "KM": 1}
+## Ab so vielen echten Spielern gilt der Kader als belegt.
+const ECHT_AB := 14
+## So gross muss auch ein belegter Kader mindestens werden.
+const ECHT_GESAMT := 16
+
 # -------------------------------------------------------------- Erzeugung ---
 
 ## Erzeugt einen Spieler. ziel_gesamt ist der angestrebte Gesamtwert (0..100).
@@ -205,6 +223,11 @@ static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String,
 	sp["nachname"] = str(eintrag.get("nachname", sp["nachname"]))
 	sp["nation"] = nation
 	sp["echt"] = true
+	# Die Rueckennummer aus dem Datensatz. Trikot.vergeben() respektiert eine
+	# schon gesetzte Nummer, solange sie im Verein frei ist — damit traegt
+	# Gidsel die 19 und nicht irgendeine.
+	if int(eintrag.get("nummer", 0)) > 0:
+		sp["nummer"] = int(eintrag["nummer"])
 	# Bei echten Spielern ist die Zielstärke gesetzt, nicht gewürfelt: Potenzial
 	# darf sie nur bei jungen Spielern deutlich übersteigen.
 	if alter_jahre >= 28:

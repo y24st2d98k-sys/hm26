@@ -257,6 +257,31 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 
 ## Baut einen Verein aus einem Eintrag des Datensatzes. Fehlende Angaben
 ## werden wie bei einem erfundenen Verein ergänzt.
+## Was einem belegten Kader noch fehlt: die Mindestbesetzung je Position, und
+## danach so lange die duennste Position, bis die Mindestgroesse erreicht ist.
+static func _echt_soll(belegt: Dictionary, echte: int) -> Dictionary:
+	var soll := {}
+	var gesamt := echte
+	for pos in Spielerfabrik.ECHT_MINDEST.keys():
+		var mindest: int = int(Spielerfabrik.ECHT_MINDEST[pos])
+		soll[pos] = maxi(int(belegt.get(pos, 0)), mindest)
+		gesamt += maxi(mindest - int(belegt.get(pos, 0)), 0)
+	# Notfalls auffuellen, bis der Kader eine Saison uebersteht.
+	while gesamt < Spielerfabrik.ECHT_GESAMT:
+		var duennste := ""
+		var wenigste := 999
+		for pos2 in soll.keys():
+			if pos2 == "TW":
+				continue
+			if int(soll[pos2]) < wenigste:
+				wenigste = int(soll[pos2])
+				duennste = str(pos2)
+		if duennste == "":
+			break
+		soll[duennste] = int(soll[duennste]) + 1
+		gesamt += 1
+	return soll
+
 static func _verein_aus_datensatz(d: Dictionary, cid: String, eintrag: Dictionary,
 		nid: String, lid: String, vergeben: Dictionary) -> Dictionary:
 	var nation: Dictionary = d["nationen"][nid]
@@ -504,8 +529,14 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 		(verein["kader"] as Array).append(sid_e)
 		belegt[pos_e] = int(belegt[pos_e]) + 1
 		echt_spitze = maxf(echt_spitze, Spielerfabrik.gesamt(sp_e))
-	for pos in Spielerfabrik.KADER_SOLL.keys():
-		var anzahl: int = maxi(int(Spielerfabrik.KADER_SOLL[pos]) - int(belegt.get(pos, 0)), 0)
+	# Ein belegter Kader wird nur noch auf das Noetige ergaenzt, ein leerer auf
+	# volle Sollstaerke.
+	var echte: int = (verein["kader"] as Array).size()
+	var soll: Dictionary = Spielerfabrik.KADER_SOLL
+	if echte >= Spielerfabrik.ECHT_AB:
+		soll = _echt_soll(belegt, echte)
+	for pos in soll.keys():
+		var anzahl: int = maxi(int(soll[pos]) - int(belegt.get(pos, 0)), 0)
 		for i in range(anzahl):
 			# Stammspieler stark, Ersatz schwaecher, dazu ein Talent. Echte Spieler
 			# besetzen bereits die vorderen Ränge, Ergänzungen rücken dahinter.

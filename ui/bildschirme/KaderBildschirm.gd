@@ -238,7 +238,12 @@ func _zeile(sid: String, index: int) -> Control:
 				var box := Stil.hbox(5)
 				box.add_child(Portraet.fuer_spieler(sid, 22.0))
 				box.add_child(Flagge.fuer(str(sp["nation"]), 16.0))
-				box.add_child(Stil.text(str(e["wert"]), Stil.S_KLEIN))
+				# Der Name gibt nach, die Abzeichen nicht: lieber ein
+				# abgeschnittener Name als eine verrutschte Zeile.
+				var nl := Stil.text(str(e["wert"]), Stil.S_KLEIN)
+				nl.clip_text = true
+				nl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				box.add_child(nl)
 				box.add_child(Bausteine.status_zeichen(sid))
 				zelle = box
 			"balken":
@@ -257,12 +262,29 @@ func _zeile(sid: String, index: int) -> Control:
 				zelle = Stil.text("%d J." % maxi(rest, 0), Stil.S_KLEIN, Stil.ROT if rest <= 0 else Stil.TEXT_MATT)
 			_:
 				zelle = Stil.text(str(e["wert"]), Stil.S_KLEIN)
-		# Nur die Spaltenbreite vorgeben — die Mindesthoehe gehoert der Zelle
-		# selbst (Balken und Abzeichen bringen ihre eigene mit).
-		zelle.custom_minimum_size.x = breite
 		zelle.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		h.add_child(zelle)
+		h.add_child(_gefasst(zelle, breite))
 	return knopf
+
+## Fasst eine Zelle auf genau die Spaltenbreite ein.
+##
+## custom_minimum_size allein reicht nicht: es ist ein Minimum, und eine HBox
+## laesst ein Kind darueber hinauswachsen, wenn dessen Inhalt mehr verlangt.
+## Bei einem Spieler mit zwei Statusabzeichen sprengte die Namenszelle damit
+## ihre Spalte und schob die ganze Zeile nach rechts — im Kaderbildschirm
+## standen einzelne Zeilen sichtbar versetzt zu allen anderen.
+##
+## Ein blosses Control uebernimmt die Mindestgroesse seiner Kinder nicht. Es
+## haelt die Breite also fest, egal was darin liegt, und schneidet ab, was
+## nicht hineinpasst.
+func _gefasst(zelle: Control, breite: float) -> Control:
+	var fassung := Control.new()
+	fassung.custom_minimum_size = Vector2(breite, zelle.get_combined_minimum_size().y)
+	fassung.clip_contents = true
+	fassung.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	zelle.set_anchors_preset(Control.PRESET_FULL_RECT)
+	fassung.add_child(zelle)
+	return fassung
 
 # ------------------------------------------------------------- Planung ---
 
