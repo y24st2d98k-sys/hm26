@@ -431,9 +431,55 @@ func _erster_anwurf_heim() -> bool:
 			return str(e["team"]) == "heim"
 	return true
 
+## Ab wie vielen Sekunden vor Schluss der Spielstand das Verhalten aendert.
+const SCHLUSSPHASE := 900.0
+const DRUCK_LEER := {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0, "abwehr": 1.0}
+## Wie stark ein Torabstand treibt. Ein Tor ist aufholbar, sechs sind es in
+## zehn Minuten nicht mehr — und wer gar nicht mehr herankommt, verwaltet auch
+## nicht mehr, sondern spielt zu Ende.
+const ABSTAND_GEWICHT := [0.0, 1.0, 0.9, 0.7, 0.5, 0.3, 0.15]
+const R_TEMPO := 34.0
+const R_RISIKO := 5.0
+const R_ANGRIFF := 0.16
+const F_ANGRIFF := -0.14
+
+## Wie eine Mannschaft auf den Spielstand reagiert.
+##
+## Bis hierher tat sie das gar nicht: wer in der 58. Minute acht Tore hinten
+## lag, spielte genauso wie beim 2:2 in der fuenften, und wer zehn vorn lag,
+## warf weiter drauf. Beides ist kein Handball, und beides war messbar — die
+## Bundesligarunde der Simulation endete in 7,5 Prozent der Partien
+## unentschieden, die echte Saison 2025/26 in 13,4 Prozent.
+##
+## Die Reaktion beginnt eine Viertelstunde vor Schluss und waechst bis zur
+## Sirene. Ein Tor Rueckstand treibt am staerksten; wer zweistellig hinten
+## liegt, spielt die Partie zu Ende, statt sie zu drehen.
+func _spielstandsdruck(t: Dictionary) -> Dictionary:
+	var rest: float = SPIELZEIT - zeit
+	if rest >= SCHLUSSPHASE:
+		return DRUCK_LEER
+	# Nicht linear: in der 51. Minute aendert ein Tor Rueckstand wenig, in der
+	# 59. alles.
+	var naehe: float = pow(clampf(1.0 - rest / SCHLUSSPHASE, 0.0, 1.0), 1.2)
+	var diff: int = int(t["tore"]) - (int(gast["tore"]) if t == heim else int(heim["tore"]))
+	if diff == 0:
+		return DRUCK_LEER
+	var staerke: float = naehe * _abstandsgewicht(absi(diff))
+	if diff < 0:
+		return {"tempo": R_TEMPO * staerke, "risiko": R_RISIKO * staerke,
+			"angriff": 1.0 + R_ANGRIFF * staerke, "abwehr": 1.0}
+	return {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0 + F_ANGRIFF * staerke, "abwehr": 1.0}
+
+func _abstandsgewicht(abstand: int) -> float:
+	if abstand >= ABSTAND_GEWICHT.size():
+		return float(ABSTAND_GEWICHT[ABSTAND_GEWICHT.size() - 1])
+	return float(ABSTAND_GEWICHT[abstand])
+
 func _angriffsdauer(a: Dictionary) -> float:
 	var t: Dictionary = a["taktik"]
-	var tempo: float = clampf(float(t["tempo"]) + float(MENTALITAET[str(t["mentalitaet"])]["tempo"]), 0.0, 100.0)
+	var druck: Dictionary = _spielstandsdruck(a)
+	var tempo: float = clampf(float(t["tempo"]) + float(MENTALITAET[str(t["mentalitaet"])]["tempo"])
+		+ float(druck["tempo"]), 0.0, 100.0)
 	var basis: float = 40.5 - 0.19 * tempo
 	# Zeitspiel: wer fuehrt und langsam spielt, zieht die Angriffe in die Laenge
 	var diff: int = int(a["tore"]) - (int(gast["tore"]) if a == heim else int(heim["tore"]))
@@ -504,7 +550,8 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 			diff += 6.0
 
 	# Technischer Fehler / Ballgewinn der Abwehr
-	var risiko: float = clampf(float(a["taktik"]["risiko"]) + float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["risiko"]), 0.0, 100.0)
+	var risiko: float = clampf(float(a["taktik"]["risiko"]) + float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["risiko"])
+		+ float(_spielstandsdruck(a)["risiko"]), 0.0, 100.0)
 	var p_fehler: float = clampf(0.185 - diff * 0.0008 + (risiko - 50.0) * 0.0009, 0.09, 0.26) * float(td["ballgewinn"])
 	p_fehler *= _anweisungsmittel(a, "angriff_auf", "angriff", "fehler")
 	if a["sieben_gegen_sechs"]:
@@ -1523,6 +1570,7 @@ func _angriffskraft(a: Dictionary, v: Dictionary) -> float:
 	var gegen: String = str(v["taktik"]["abwehr"])
 	basis *= float((ANGRIFF_GEGEN_DECKUNG.get(stil, {}) as Dictionary).get(gegen, 1.0))
 	basis *= float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["angriff"])
+	basis *= float(_spielstandsdruck(a)["angriff"])
 	basis *= _puls_wirkung(a)
 	basis *= float(a["teamfaktor"])
 	basis *= 1.0 + Scouting.gegnervorteil(daten, str(a["cid"]), str(v["cid"]))
@@ -1552,6 +1600,7 @@ func _abwehrkraft(v: Dictionary, a: Dictionary) -> float:
 		gewicht += 1.0
 	var basis: float = summe / maxf(gewicht, 1.0)
 	basis *= float(MENTALITAET[str(v["taktik"]["mentalitaet"])]["abwehr"])
+	basis *= float(_spielstandsdruck(v)["abwehr"])
 	basis *= _puls_wirkung(v)
 	basis *= float(v["teamfaktor"])
 	basis *= 1.0 + 0.045 * float(v["ansprache"])

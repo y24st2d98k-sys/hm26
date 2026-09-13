@@ -21,6 +21,8 @@ func _ready() -> void:
 			_wirkungstest()
 		"langzeit":
 			_langzeit_test(1100)
+		"hbl":
+			_bundesliga_test()
 		_:
 			_spiele_test(args.size() > 1 and str(args[1]) == "rollen")
 	print("Dauer: %d ms" % (Time.get_ticks_msec() - start))
@@ -209,6 +211,64 @@ func _spiele_test(mit_rollen: bool = false) -> void:
 	print("Durchschnittlicher Torabstand: %.1f" % (abstand_summe / n))
 	print("Partien mit 10+ Toren Unterschied: %.1f %%" % (deutlich / n * 100.0))
 	print("Partien mit hoechstens 2 Toren Unterschied: %.1f %%" % (knapp / n * 100.0))
+
+## Eine komplette Bundesligarunde gegen die Wirklichkeit. Der allgemeine
+## Spieletest nimmt die ersten 300 Ligapartien der Welt, egal aus welcher Liga
+## — brauchbar fuer Trends, aber nicht vergleichbar mit einer echten Tabelle.
+## Hier laufen genau die 306 Partien der Handball-Bundesliga, und daneben
+## stehen die Werte der Saison 2025/26 aus daten/ligen.json.
+const HBL_TORE_JE_SPIEL := 60.4
+const HBL_UNENTSCHIEDEN := 13.4
+
+func _bundesliga_test() -> void:
+	Welt.daten = Weltgenerator.erzeuge(2026, 999)
+	Welt.mein_verein_id = ""
+	var d := Welt.daten
+	Spielplan.erzeuge_saison(d)
+	var partien: Array = []
+	for mid in d["spiele"].keys():
+		var m: Dictionary = d["spiele"][mid]
+		if str(m["art"]) == "liga" and str(m.get("wettbewerb", "")) == "l_de1":
+			partien.append(mid)
+	var tore := 0
+	var heimtore := 0
+	var unentschieden := 0
+	var heimsiege := 0
+	var abstand_summe := 0
+	var knapp := 0
+	var deutlich := 0
+	for mid in partien:
+		var m: Dictionary = d["spiele"][mid]
+		var sim := Matchsim.new(d, m, 0)
+		sim.vorbereiten()
+		sim.schnell_simulieren()
+		var h: int = int(m["tore_heim"])
+		var g: int = int(m["tore_gast"])
+		tore += h + g
+		heimtore += h
+		var abstand: int = absi(h - g)
+		abstand_summe += abstand
+		if abstand <= 2:
+			knapp += 1
+		if abstand >= 10:
+			deutlich += 1
+		if h == g:
+			unentschieden += 1
+		elif h > g:
+			heimsiege += 1
+	var n := float(partien.size())
+	if n < 1.0:
+		print("Keine Bundesligapartien gefunden.")
+		return
+	print("Handball-Bundesliga: %d Partien" % partien.size())
+	print("Tore pro Spiel:      %5.1f   (Wirklichkeit 2025/26: %.1f)" % [tore / n, HBL_TORE_JE_SPIEL])
+	print("Unentschieden:       %5.1f %% (Wirklichkeit 2025/26: %.1f %%)" % [
+		unentschieden / n * 100.0, HBL_UNENTSCHIEDEN])
+	print("Heimsiegquote:       %5.1f %%" % (heimsiege / n * 100.0))
+	print("Heim- / Gasttore:    %5.1f / %.1f" % [heimtore / n, (tore - heimtore) / n])
+	print("Torabstand im Mittel:%5.1f" % (abstand_summe / n))
+	print("Hoechstens 2 Tore:   %5.1f %%" % (knapp / n * 100.0))
+	print("10 Tore und mehr:    %5.1f %%" % (deutlich / n * 100.0))
 
 func _saison_test(dauer: int) -> void:
 	Welt.neues_spiel("c_001", {"vorname": "Test", "nachname": "Trainer", "hintergrund": "taktiker"}, 2024)
