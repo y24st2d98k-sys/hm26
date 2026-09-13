@@ -404,6 +404,12 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 	if str(m["heim"]) == mein_verein_id or str(m["gast"]) == mein_verein_id:
 		Medien.spielbericht(daten, m, mein_verein_id)
 		Vorstand.nach_spiel(daten, mein_verein_id, m)
+		# Ein Sieg schweisst zusammen, eine Klatsche zerlegt. Das gilt fuer
+		# jedes Paar in der Kabine, nicht nur fuer den Mittelwert.
+		var heim_ist_meiner: bool = str(m["heim"]) == mein_verein_id
+		var eigene: int = int(m["tore_heim"]) if heim_ist_meiner else int(m["tore_gast"])
+		var fremde: int = int(m["tore_gast"]) if heim_ist_meiner else int(m["tore_heim"])
+		Beziehungen.nach_spiel(daten, mein_verein_id, eigene > fremde, eigene - fremde)
 	else:
 		# Alles verbucht — fremde Partien brauchen die Einzelheiten nicht mehr.
 		m["bericht"] = Matchsim.bericht_schlank(m["bericht"])

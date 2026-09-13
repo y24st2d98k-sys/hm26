@@ -33,6 +33,18 @@ static func hat_paten(d: Dictionary, cid: String, sid: String) -> bool:
 			return true
 	return false
 
+## Ob die beiden ein Paar bilden — in welcher Richtung auch immer.
+static func sind_paar(d: Dictionary, a: String, b: String) -> bool:
+	var cid: String = str(d["spieler"].get(a, {}).get("verein", ""))
+	if cid == "":
+		return false
+	for paar in paare(d, cid):
+		var m: String = str(paar["mentor"])
+		var sch: String = str(paar["schueler"])
+		if (m == a and sch == b) or (m == b and sch == a):
+			return true
+	return false
+
 static func ist_pate(d: Dictionary, cid: String, sid: String) -> bool:
 	for paar in paare(d, cid):
 		if str(paar["mentor"]) == sid:

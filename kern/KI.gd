@@ -247,12 +247,23 @@ static func _kaderschnitt(d: Dictionary, cid: String) -> float:
 
 ## Fuellt Luecken im Kader mit vereinslosen Spielern.
 ## Ohne das wuerde der Markt sich mit Spielern fuellen, die niemand mehr holt.
+## Ab hier greift der Vorstand auch im eigenen Verein ein.
+##
+## Unterhalb dieser Kadergroesse laesst sich keine Saison mehr bestreiten:
+## sieben auf der Platte, ein paar auf der Bank, und jede Verletzung wird zur
+## Krise. Ein echter Vorstand sieht dabei nicht zu.
+const NOTKADER := 13
+
 static func kader_auffuellen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	# Eine Nationalmannschaft nominiert, sie verpflichtet nicht: sonst wuerden
 	# ihr vereinslose Spieler zugeschlagen, die danach keinem Verein mehr
 	# gehoeren und aus dem Transfermarkt verschwinden.
-	if bool(v.get("ist_mensch", false)) or bool(v.get("ist_nationalteam", false)):
+	if bool(v.get("ist_nationalteam", false)):
+		return
+	if bool(v.get("ist_mensch", false)):
+		# Der eigene Kader ist Sache des Trainers — bis er nicht mehr reicht.
+		_notkader_sichern(d, cid)
 		return
 	for _versuch in range(8):
 		var kader: Array = v["kader"]
@@ -276,6 +287,47 @@ static func kader_auffuellen(d: Dictionary, cid: String) -> void:
 		var sp: Dictionary = d["spieler"][kandidat]
 		var gehalt: float = Finanzen.gehaltswunsch(d, cid, sp)
 		Transfermarkt.transfer_durchfuehren(d, kandidat, cid, 0.0, gehalt, Namen.wuerfel(1, 3), "rotation")
+
+## Der Vorstand greift ein, wenn der eigene Kader nicht mehr spielfaehig ist.
+##
+## Bis hierher galt: der eigene Verein gehoert dem Trainer, die Automatik
+## haelt sich heraus. Das ist richtig — solange ein Kader dasteht. Wer drei
+## Saisons keine Vertraege verlaengert, steht am Ende mit acht Spielern da,
+## und dieser Zustand ist nicht schwer, sondern kaputt: man kann nicht mehr
+## aufstellen, und kein Knopf im Spiel fuehrt zurueck.
+##
+## Der Vorstand verpflichtet deshalb ablosefreie Spieler bis zur Notgrenze —
+## nicht die besten, sondern die, die zu haben sind — und sagt es einem.
+static func _notkader_sichern(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	var fehlt_torwart: bool = _anzahl_auf(d, cid, "TW") == 0
+	if (v["kader"] as Array).size() >= NOTKADER and not fehlt_torwart:
+		return
+	var geholt: Array = []
+	for _versuch in range(6):
+		var kader: Array = v["kader"]
+		var ohne_tw: bool = _anzahl_auf(d, cid, "TW") == 0
+		if kader.size() >= NOTKADER and not ohne_tw:
+			break
+		var pos: String = "TW" if ohne_tw else _fehlende_position(d, cid)
+		if pos == "":
+			pos = schwaechste_position(d, cid)
+		var kandidat := _bester_freier(d, cid, pos, true)
+		if kandidat == "":
+			kandidat = _notverpflichtung(d, cid, pos)
+		if kandidat == "":
+			break
+		var sp: Dictionary = d["spieler"][kandidat]
+		Transfermarkt.transfer_durchfuehren(d, kandidat, cid, 0.0,
+			Finanzen.gehaltswunsch(d, cid, sp), 1, "ergaenzung")
+		geholt.append(Spielerfabrik.voller_name(sp))
+	if geholt.is_empty():
+		return
+	Welt.nachricht({
+		"typ": "verein", "wichtig": true,
+		"betreff": "Der Vorstand hat nachverpflichtet",
+		"text": "Der Kader war nicht mehr spielfähig. Der Vorstand hat ohne Rücksprache %s verpflichtet — ablösefrei, Einjahresverträge.\n\nDas ist kein Ersatz für Kaderplanung: Verträge laufen aus, und wer sie nicht verlängert, bekommt am Ende, was übrig ist." % ", ".join(geholt),
+	})
 
 ## Wie viele Spieler der Verein auf einer Position hat.
 static func _anzahl_auf(d: Dictionary, cid: String, pos: String) -> int:

@@ -23,8 +23,27 @@ static func wortfuehrer(d: Dictionary, cid: String, anzahl: int = 3) -> Array:
 	liste.sort_custom(func(a, b): return einfluss(d, a) > einfluss(d, b))
 	return liste.slice(0, anzahl)
 
-## Gruppen in der Kabine: nach Herkunft und nach Altersschicht.
+## Gruppen in der Kabine.
+##
+## Fuer den eigenen Verein kommen sie aus dem Beziehungsgeflecht — aus
+## tatsaechlichen Bindungen also. Fuer fremde Vereine bleibt es bei der
+## Einteilung nach Herkunft und Alter: dort gibt es kein Netz, und fuer eine
+## Zeile im Scoutingbericht reicht das Etikett.
 static func gruppen(d: Dictionary, cid: String) -> Array:
+	if cid == Welt.mein_verein_id:
+		var aus_netz: Array = []
+		for c in Beziehungen.cliquen(d, cid):
+			var anfuehrer: String = str((c as Dictionary)["anfuehrer"])
+			aus_netz.append({
+				"art": "clique",
+				"bezeichnung": "Der Kreis um %s" % Spielerfabrik.kurz_name(d["spieler"][anfuehrer]),
+				"mitglieder": (c as Dictionary)["mitglieder"],
+			})
+		if not aus_netz.is_empty():
+			return aus_netz
+	return _gruppen_nach_etikett(d, cid)
+
+static func _gruppen_nach_etikett(d: Dictionary, cid: String) -> Array:
 	var nach_nation := {}
 	var jung: Array = []
 	var alt: Array = []
@@ -77,6 +96,11 @@ static func klima_berechnen(d: Dictionary, cid: String) -> float:
 		basis += 3.0
 	if Trainerkarriere.bonus_fuer(d, cid, "eiserne_hand"):
 		basis += 2.0
+	# Das Beziehungsgeflecht — aber nur fuer den eigenen Verein. Fuer 135
+	# fremde Kabinen ein Netz aus je 190 Paaren zu fuehren waere Rechenzeit
+	# und Speicher fuer etwas, das niemand anschaut.
+	if cid == Welt.mein_verein_id:
+		basis += (Beziehungen.geschlossenheit(d, cid) - 50.0) * 0.30
 	return clampf(basis, 5.0, 100.0)
 
 ## Leistungsfaktor, den die Simulation auf die Mannschaft anwendet.
@@ -91,7 +115,9 @@ static func wochenpuls(d: Dictionary) -> void:
 		v["stimmung_kabine"] = lerpf(float(v.get("stimmung_kabine", 60.0)), klima_berechnen(d, cid), 0.3)
 		_unzufriedenheit_pflegen(d, cid)
 		if cid == Welt.mein_verein_id:
+			Beziehungen.wochenwechsel(d, cid)
 			_ereignis_pruefen(d, cid)
+			_konflikt_melden(d, cid)
 
 static func _unzufriedenheit_pflegen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
@@ -154,6 +180,36 @@ static func _ereignis_pruefen(d: Dictionary, cid: String) -> void:
 		})
 		for sid in v["kader"]:
 			d["spieler"][sid]["moral"] = clampf(float(d["spieler"][sid]["moral"]) + Namen.bereich(0.3, 1.8), 5.0, 100.0)
+
+## Meldet einen neuen offenen Konflikt — einmal je Paar, nicht jede Woche.
+##
+## Ein Zerwuerfnis, das woechentlich dieselbe Nachricht erzeugt, liest man
+## zweimal und ueberblaettert es danach. Es soll einmal auffallen und dann in
+## der Kabine stehen, bis man etwas tut.
+static func _konflikt_melden(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	var gemeldet: Array = v.get("konflikte_gemeldet", [])
+	var noch_offen: Array = []
+	for k in Beziehungen.konflikte(d, cid):
+		var eintrag: Dictionary = k
+		var schluessel := Beziehungen.schluessel(str(eintrag["a"]), str(eintrag["b"]))
+		noch_offen.append(schluessel)
+		if gemeldet.has(schluessel):
+			continue
+		var sa: Dictionary = d["spieler"][str(eintrag["a"])]
+		var sb: Dictionary = d["spieler"][str(eintrag["b"])]
+		Welt.nachricht({
+			"typ": "kabine", "wichtig": true,
+			"betreff": "Zerwürfnis: %s und %s" % [Spielerfabrik.kurz_name(sa), Spielerfabrik.kurz_name(sb)],
+			"text": "%s\n\nIn der Kabine gehen die beiden einander aus dem Weg. Auf dem Feld kostet das Abstimmung. In der Kabine können Sie eine Aussprache ansetzen oder die beiden vorerst trennen." % str(eintrag["grund"]),
+		})
+	# Beigelegte Konflikte duerfen wieder gemeldet werden, wenn sie
+	# zurueckkommen.
+	var behalten: Array = []
+	for s2 in gemeldet:
+		if noch_offen.has(str(s2)):
+			behalten.append(str(s2))
+	v["konflikte_gemeldet"] = behalten + noch_offen.filter(func(x): return not behalten.has(x))
 
 ## Einzelgespraech mit einem Spieler (vier Tonlagen mit unterschiedlichem Risiko).
 static func gespraech(d: Dictionary, sid: String, tonlage: String) -> Dictionary:

@@ -384,6 +384,9 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"vertrautheit": {},
 		"spielbuch": {},
 		"gegnerplan": {},
+		# Das Beziehungsgeflecht wird nur fuer den Verein des Spielers
+		# gefuehrt und entsteht dort beim ersten Zugriff.
+		"beziehungen": {},
 		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": "", "anweisungen": {}, "minuten": {}},
 		"mentoring": [],
 		"trainingslager": {},

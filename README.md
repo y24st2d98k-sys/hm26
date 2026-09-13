@@ -408,6 +408,96 @@ dauerhaft gespeichert.
 
 ---
 
+## Das Beziehungsgeflecht
+
+Eine Mannschaft war ein Mittelwert: Moral, Teamgeist und Unzufriedenheit
+wurden über den Kader gemittelt, und daraus fiel eine Zahl. Die Gruppen in der
+Kabine leiteten sich aus Nationalität und Alter ab — also aus Etiketten. Zwei
+Spieler konnten sich nicht verstehen und nicht ausstehen; es gab schlicht kein
+Zwischen-ihnen.
+
+Jetzt hat jedes Paar einen Wert von −100 bis +100, und dieser Wert entsteht
+aus Dingen, die man selbst zu verantworten hat:
+
+* **Positionsrivalität.** Zwei Ehrgeizige auf derselben Position, von denen
+  nur einer spielt. Das ist der schärfste Konflikt im Handball und entsteht
+  direkt aus der Kaderplanung: wer zwei starke Rückraum-Linke mit 84 und 83
+  verpflichtet, hat nicht Tiefe gekauft, sondern eine Auseinandersetzung — und
+  muss sie führen. Sie vertieft sich Woche für Woche, solange nur einer
+  aufläuft.
+* **Charakter.** Zwei Hitzköpfe reiben sich, zwei Profis verstehen sich ohne
+  Worte, ähnliche Loyalität heißt ähnliche Einstellung zum Verein. Die vier
+  Achsen der Persönlichkeit waren immer da — hier wirken sie zum ersten Mal
+  zwischen Spielern statt nur in ihnen.
+* **Herkunft und Alter.** Dieselbe Sprache und derselbe Jahrgang machen vieles
+  leichter. Nicht alles, aber etwas.
+* **Gemeinsame Zeit auf dem Feld.** Wer zusammen spielt, wächst zusammen.
+* **Patenschaften.** Die stärkste positive Bindung, die es im Kader gibt.
+* **Siege.** Ein Sieg schweißt zusammen, eine Klatsche zerlegt.
+
+Dazu eine Prise Zufall, abgeleitet aus den beiden Spieler-IDs: dieselben zwei
+Spieler bekommen immer denselben Wert, aber nicht jedes Paar mit gleichem
+Profil denselben. Menschen sind nicht ihre Merkmale.
+
+### Was daraus folgt
+
+**Cliquen** sind Gruppen, die deutlich enger miteinander sind als der Rest.
+Jede hat einen Anführer — den mit dem größten Einfluss in der Kabine.
+
+**Zerwürfnisse** sind Paare unter −46. Sie melden sich einmal im Posteingang
+und stehen dann in der Kabine, bis man etwas tut: eine **Aussprache** ansetzen
+(sie kann gelingen oder entgleisen — der Ausgang hängt daran, wie sehr die
+beiden auf den Trainer hören und wie hitzig sie sind) oder die beiden
+**getrennt halten** (entschärft die Lage, und keiner der beiden findet es
+gut).
+
+**Auf dem Feld** kostet jedes Zerwürfnis in derselben Sieben 3,5 Prozent mehr
+technische Fehler. Nicht die Wurfstärke — die Abstimmung: zwei, die einander
+aus dem Weg gehen, spielen sich den Ball nicht in den Lauf.
+
+**Im Klima** geht die Geschlossenheit des Kaders in das Kabinenklima ein und
+damit in den Teamfaktor der Simulation. Ein offener Konflikt wiegt dabei
+schwerer als der Mittelwert zeigt: eine Mannschaft mit einem Zerwürfnis und
+sonst guter Stimmung ist keine durchschnittliche Mannschaft, sie ist eine mit
+einem Problem.
+
+### Drei Dinge, die gemessen und korrigiert wurden
+
+Die Zahlen dieses Systems sind nicht geraten, sondern über eine ganze
+Karrieresaison ausgemessen und dreimal nachgezogen worden:
+
+1. **Cliquen über Zusammenhangskomponenten kippen.** Wenn A mit B befreundet
+   ist, B mit C und C mit D, hängen alle vier zusammen, obwohl A und D
+   einander kaum kennen. In einem Kader, in dem die halbe Mannschaft dieselbe
+   Sprache spricht, ist am Ende jeder mit jedem verbunden. Der erste Lauf
+   lieferte genau das: eine Clique aus siebzehn von neunzehn Spielern — also
+   die Mannschaft, umständlich beschrieben. Ersetzt durch ein Verfahren, das
+   vom engsten Paar aus wächst und nur aufnimmt, wer zur *ganzen* Gruppe
+   passt.
+2. **Ohne Sättigung läuft das Netz davon.** Die erste Messung über eine Saison
+   ergab einen Median von 91 und 84 Prozent Freundschaften. Eine Mannschaft,
+   in der sich alle gleich gut verstehen, ist wieder ein Mittelwert — nur mit
+   mehr Rechenaufwand. Jetzt wird jede Bewegung von der Mitte weg gedämpft:
+   die ersten Wochen einer Freundschaft tragen mehr als die fünfzigste.
+   Bewegungen zur Mitte hin werden nicht gedämpft, sonst wäre eine Versöhnung
+   schwerer, nur weil man vorher zerstritten war.
+3. **Eine feste Cliquenschwelle misst das Falsche.** In einer frisch
+   zusammengestellten Mannschaft, in der alle bei zehn stehen, fände sie
+   nichts, obwohl es engere und losere Verhältnisse gibt; in einer, die drei
+   Jahre zusammenspielt und im Schnitt bei fünfzig steht, wäre der ganze Kader
+   eine Clique. Die Schwelle liegt jetzt siebzehn Punkte über dem
+   Kaderschnitt. Gemessen über drei Zeitpunkte einer Saison ergibt das
+   durchgehend zwei Kreise aus drei bis fünf Spielern.
+
+### Nur der eigene Verein
+
+Gepflegt wird das Netz ausschließlich für die eigene Mannschaft. Was in
+fremden Kabinen zwischen zwei Ersatztorhütern vorgeht, schaut niemand an, und
+für 135 Vereine je 190 Paare durch jeden Spielstand zu schleppen wäre reine
+Verschwendung. Der Graph entsteht beim ersten Zugriff aus stabilen
+Eigenschaften — wechselt man den Verein, baut er sich für den neuen ebenso
+auf.
+
 ## Das Spielbuch
 
 Bis zu diesem Punkt entschied die Simulation jeden Angriff aus Reglern und
@@ -575,7 +665,20 @@ Kulisse. Die letzten drei Tage sind jetzt anders:
 * Abgebende Vereine werden weicher — bis zu 16 Prozent unter der normalen
   Ablöseforderung. Wer den Spieler jetzt nicht ziehen lässt, hat ihn ein
   halbes Jahr an der Backe und bekommt gar nichts.
-* Die Computertrainer kaufen täglich statt einmal die Woche.
+* Auch zwischendurch handeln noch Vereine, in kleinerem Umfang als in der
+  regulären Wochenrunde: höchstens fünf Abschlüsse je Deadline-Tag statt
+  vierzehn. Der erste Entwurf ließ an jedem der drei Tage dieselbe volle Runde
+  laufen und verdreifachte damit das Transfervolumen — ein Deadline-Tag ist
+  aber keine zweite Transferwoche.
+* Kein Computerverein kauft, wenn weniger als sechs Wochenlöhne in der Kasse
+  sind. Das Transferbudget ist eine Planungsgröße und sagt nichts darüber, ob
+  morgen die Gehälter gedeckt sind; ohne diese Schranke kauften sich Vereine
+  über Jahre in die Überschuldung — nicht an der Ablöse, sondern an den
+  Gehältern, die daran hängen.
+
+Über 1.100 simulierte Tage stehen am Ende zwischen sieben und siebzehn von 136
+Vereinen im Minus, je nach Spielverlauf. Diese Streuung gab es vorher genauso;
+beide Schranken sind Plausibilitätsgrenzen, keine gemessene Korrektur.
 * Der Posteingang bekommt jeden Abend die Bilanz des Tages mit den größten
   Wechseln der Liga.
 * Der Transfermarkt trägt einen roten Kopf statt eines grünen.
@@ -591,6 +694,21 @@ Im Inland bleibt es bei null. Eine Busfahrt zum Nachbarn kostet nichts, was
 nicht schon im Hallenpuls steckt — beides zu zählen hieße, den Heimvorteil
 doppelt zu berechnen, und genau das hat in der Messung die Heimsiegquote von
 55 auf 64 Prozent getrieben, bevor es wieder herausgenommen wurde.
+
+## Der Vorstand als letztes Netz
+
+Der eigene Kader gehört dem Trainer, und die Automatik hält sich heraus. Das
+ist richtig — solange ein Kader dasteht. Wer drei Saisons lang keine Verträge
+verlängert, steht am Ende mit acht Spielern da, und dieser Zustand ist nicht
+schwer, sondern kaputt: man kann nicht mehr aufstellen, und kein Knopf im
+Spiel führt zurück.
+
+Fällt der Kader unter dreizehn Spieler oder steht kein Torwart mehr unter
+Vertrag, verpflichtet der Vorstand ablösefreie Spieler bis zur Notgrenze —
+nicht die besten, sondern die, die zu haben sind, mit Einjahresverträgen — und
+sagt es einem deutlich. Aufgefallen ist die Lücke, weil der Integritätslauf
+über 1.100 Tage genau dorthin lief: „SC Magdeburg hat nur 8 Spieler im
+Kader“.
 
 ## Die Ruhmeshalle
 

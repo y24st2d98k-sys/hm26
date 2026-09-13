@@ -45,6 +45,26 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "geflecht":
+			# Das Beziehungsgeflecht braucht Zeit: Cliquen und Zerwuerfnisse
+			# entstehen ueber eine Saison, nicht in drei Monaten. Deshalb hier
+			# noch einmal weitersimulieren.
+			var bis: int = Welt.tag() + 240
+			while Welt.tag() < bis:
+				var u2 := Welt.tag_weiter()
+				if u2.has("art") and str(u2["art"]) == "eigenes_spiel":
+					Welt.partie_simulieren(str(u2["spiel"]))
+					Welt.spieltag_abwickeln(Welt.tag())
+					Welt.wochenrhythmus(Welt.tag())
+					Welt.saison_pruefen(Welt.tag())
+			# Beim Weitersimulieren faengt die App ein faelliges eigenes Spiel
+			# ab und schaltet auf die Live-Ansicht um. Fuer das Bild muss der
+			# Rahmen zurueck.
+			app.live.visible = false
+			app.rahmen.visible = true
+			app.zeige("kabine")
+			await _foto("%s/geflecht.png" % ordner)
+			continue
 		if str(id) == "matchplan":
 			# Der Matchplan steht weit unten auf dem Taktikbildschirm.
 			app.zeige("taktik")

@@ -3,6 +3,11 @@ extends Bildschirm
 ## Die Kabine: Klima, Wortführer, Gruppen und Unzufriedenheit.
 
 var bereich: VBoxContainer
+## Die letzte Rueckmeldung als Text, nicht als Knoten. Eine Aussprache baut
+## den Bildschirm neu auf, und ein Label, das dabei mitgeloescht wird,
+## verschwaende genau in dem Moment, in dem es etwas zu sagen hat.
+var meldungstext := ""
+var meldung_gut := true
 
 func aufbauen() -> void:
 	var scroll := ScrollContainer.new()
@@ -22,7 +27,12 @@ func aktualisieren() -> void:
 		return
 	var cid := Welt.mein_verein_id
 	var v: Dictionary = Welt.verein(cid)
-	bereich.add_child(Stil.titel("Die Kabine", 0))
+	var titelzeile := Stil.hbox(12)
+	bereich.add_child(titelzeile)
+	titelzeile.add_child(Stil.titel("Die Kabine", 0))
+	if meldungstext != "":
+		titelzeile.add_child(Stil.text(meldungstext, Stil.S_KLEIN,
+			Stil.GRUEN if meldung_gut else Stil.ROT))
 	bereich.add_child(Stil.matt("Eine Mannschaft ist kein Attributdurchschnitt. Wortführer, Gruppen und persönliche Zufriedenheit entscheiden mit, wie viel vom Kader auf dem Feld ankommt.", Stil.S_KLEIN))
 
 	var oben := Stil.hbox(12)
@@ -79,20 +89,7 @@ func aktualisieren() -> void:
 		aktualisieren())
 	kapzeile.add_child(wahl)
 
-	var gruppen := Kabine.gruppen(Welt.daten, cid)
-	var gruppenkarte := Bausteine.karte_in(bereich, "Gruppen in der Mannschaft")
-	if gruppen.is_empty():
-		gruppenkarte.add_child(Stil.matt("Derzeit bilden sich keine erkennbaren Gruppen — der Kader ist gemischt."))
-	else:
-		for g in gruppen:
-			var zeile := Stil.hbox(8)
-			gruppenkarte.add_child(zeile)
-			zeile.add_child(Stil.abzeichen(str(g["bezeichnung"]), Stil.TUERKIS))
-			var namen: Array = []
-			for sid3 in (g["mitglieder"] as Array).slice(0, 8):
-				namen.append(Spielerfabrik.kurz_name(Welt.spieler(sid3)))
-			zeile.add_child(Stil.matt(", ".join(namen), Stil.S_KLEIN))
-
+	_geflecht(cid)
 	_patenschaften(cid, v)
 
 	var unzufrieden := Bausteine.karte_in(bereich, "Zufriedenheit im Kader")
@@ -200,3 +197,95 @@ func _klimatext(wert: float) -> String:
 	elif wert >= 42.0:
 		return "Angespannt. Einzelne Spieler ziehen sich zurück, die Hierarchie wackelt."
 	return "Die Kabine ist zerfallen. Ohne Eingriff wird das auf dem Feld sichtbar."
+
+
+# -------------------------------------------------------- Das Geflecht ---
+
+## Cliquen und Konflikte.
+##
+## Die alte Gruppeneinteilung kam aus Nationalität und Alter — also aus
+## Etiketten. Sie behauptete, drei Dänen bildeten eine Gruppe, weil sie Dänen
+## sind. Was hier steht, kommt aus tatsächlichen Bindungen; dass die oft
+## entlang der Sprache verlaufen, ist ein Ergebnis und keine Annahme.
+func _geflecht(cid: String) -> void:
+	var karte := Bausteine.karte_in(bereich, "Das Geflecht")
+	var geschlossen := Beziehungen.geschlossenheit(Welt.daten, cid)
+	var kopf := Stil.hbox(10)
+	karte.add_child(kopf)
+	kopf.add_child(Stil.etikett("Geschlossenheit"))
+	kopf.add_child(Stil.balken(geschlossen, 100.0, 140, Stil.prozent_farbe(geschlossen)))
+	kopf.add_child(Stil.text("%d" % int(geschlossen), Stil.S_KLEIN, Stil.prozent_farbe(geschlossen)))
+	kopf.add_child(Stil.dehner())
+	kopf.add_child(Stil.matt("Geht in das Kabinenklima ein — und damit in die Leistung auf dem Feld.",
+		Stil.S_MINI))
+
+	var cliquen := Beziehungen.cliquen(Welt.daten, cid)
+	if cliquen.is_empty():
+		karte.add_child(Stil.matt(
+			"Es haben sich keine festen Kreise gebildet. Das ist kein Mangel — eine Mannschaft ohne Cliquen hat auch keine Lager.",
+			Stil.S_KLEIN))
+	else:
+		karte.add_child(Stil.trenner())
+		for c in cliquen:
+			var g: Dictionary = c
+			var zeile := Stil.hbox(8)
+			karte.add_child(zeile)
+			var chef: Dictionary = Welt.spieler(str(g["anfuehrer"]))
+			zeile.add_child(Stil.abzeichen("%d Spieler" % (g["mitglieder"] as Array).size(), Stil.TUERKIS))
+			var knopf := Stil.knopf_flach("um %s" % Spielerfabrik.kurz_name(chef))
+			var chef_id: String = str(g["anfuehrer"])
+			knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, chef_id))
+			zeile.add_child(knopf)
+			var namen: Array = []
+			for sid in (g["mitglieder"] as Array):
+				if str(sid) != chef_id:
+					namen.append(Spielerfabrik.kurz_name(Welt.spieler(str(sid))))
+			zeile.add_child(Bausteine.fliesstext("mit " + ", ".join(namen), Stil.S_KLEIN))
+			zeile.add_child(Stil.abzeichen(Beziehungen.stufe_text(float(g["staerke"])),
+				Stil.prozent_farbe(50.0 + float(g["staerke"]) * 0.5)))
+
+	var konflikte := Beziehungen.konflikte(Welt.daten, cid)
+	if konflikte.is_empty():
+		return
+	karte.add_child(Stil.trenner())
+	karte.add_child(Stil.etikett("Offene Zerwürfnisse"))
+	karte.add_child(Stil.matt(
+		"Zwei Zerstrittene in derselben Sieben kosten Abstimmung: die Fehlerquote steigt. Eine Aussprache kann helfen — oder entgleisen.",
+		Stil.S_MINI))
+	for k in konflikte:
+		var e: Dictionary = k
+		var a: String = str(e["a"])
+		var b: String = str(e["b"])
+		var zeile := Stil.hbox(8)
+		karte.add_child(zeile)
+		zeile.add_child(Stil.marke_strich(Stil.ROT, 3, 20))
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(spalte)
+		spalte.add_child(Stil.text("%s und %s" % [
+			Spielerfabrik.voller_name(Welt.spieler(a)),
+			Spielerfabrik.voller_name(Welt.spieler(b))], Stil.S_KLEIN, Stil.ROT))
+		spalte.add_child(Stil.matt(str(e["grund"]), Stil.S_MINI))
+		var reden := Stil.knopf_primaer("Aussprache")
+		reden.tooltip_text = "Beide an einen Tisch. Gelingt sie, ist es besprochen; misslingt sie, steht es schlechter als vorher."
+		reden.pressed.connect(func():
+			var erg := Beziehungen.aussprache(Welt.daten, cid, a, b)
+			_melde(str(erg["grund"]), bool(erg["ok"]))
+			Welt.zustand_geaendert.emit()
+			aktualisieren())
+		zeile.add_child(reden)
+		var trennen := Stil.knopf("Getrennt halten")
+		trennen.tooltip_text = "Kein Kontakt im Training. Entschärft die Lage, und keiner der beiden findet es gut."
+		trennen.pressed.connect(func():
+			var erg2 := Beziehungen.getrennt_halten(Welt.daten, cid, a, b)
+			_melde(str(erg2["grund"]), true)
+			aktualisieren())
+		zeile.add_child(trennen)
+
+
+## Rückmeldung neben der Überschrift. Sie überlebt den Neuaufbau des
+## Bildschirms, weil sie sonst genau in dem Moment verschwände, in dem sie
+## etwas zu sagen hat: eine Aussprache baut den Bildschirm neu auf.
+func _melde(text: String, gut: bool = true) -> void:
+	meldungstext = text
+	meldung_gut = gut

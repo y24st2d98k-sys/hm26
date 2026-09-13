@@ -208,6 +208,8 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		# Der Matchplan gegen genau diesen Gegner. Wird in vorbereiten()
 		# gesetzt, weil er erst dort feststeht.
 		"gegnerplan": {},
+		# Reibung in der Sieben: wie viel Abstimmung zwei Zerstrittene auf dem
+		# Feld kosten. Wird bei jedem Wechsel neu bestimmt (siehe cache).
 		# Cache für alles, was sich erst mit einem Wechsel ändert.
 		"cache": {},
 	}
@@ -504,6 +506,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	# zweites Mal, und zwar umgekehrt.
 	p_fehler /= maxf(float(a["vertraut_angriff"]), 0.5)
 	p_fehler *= float(zug.get("fehler", 1.0))
+	p_fehler *= _reibung(a)
 	if rng.randf() < p_fehler:
 		return _ballverlust(a, v)
 
@@ -670,6 +673,30 @@ func _kreisschub(a: Dictionary) -> float:
 	if n == 0:
 		return 1.0
 	return summe / float(n)
+
+## Wie sehr sich die aktuelle Sieben im Weg steht.
+##
+## Ein Zerwuerfnis in der Kabine ist nur dann eines, wenn es auf der Platte
+## etwas kostet. Zwei Spieler, die einander aus dem Weg gehen, spielen sich
+## den Ball nicht in den Lauf: das kostet Abstimmung, nicht Koennen — deshalb
+## trifft es die Fehlerquote und die Vorlagen, nicht die Wurfstaerke.
+##
+## Nur fuer den eigenen Verein: fremde Kabinen fuehren kein Netz.
+func _reibung(t: Dictionary) -> float:
+	var cache: Dictionary = t["cache"]
+	if cache.has("reibung"):
+		return cache["reibung"]
+	var r := 1.0
+	if str(t["cid"]) == Welt.mein_verein_id:
+		var auf: Array = aktuell_auf_platz(t)
+		var streit := 0
+		for i in range(auf.size()):
+			for j in range(i + 1, auf.size()):
+				if Beziehungen.wert(daten, str(t["cid"]), str(auf[i]), str(auf[j])) <= Beziehungen.KONFLIKT:
+					streit += 1
+		r = 1.0 + float(streit) * 0.035
+	cache["reibung"] = r
+	return r
 
 ## Deckungswerte der Taktik, verschoben durch die Abwehranweisungen.
 func _deckungswerte(v: Dictionary) -> Dictionary:

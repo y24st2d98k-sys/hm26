@@ -188,8 +188,9 @@ static func tageswechsel(d: Dictionary) -> void:
 	if Kalender.wochentag(int(d["tag"])) == 1:
 		_ki_transferrunde(d)
 	if ist_deadline(d):
-		# An den letzten Tagen laeuft der Markt heiss, statt einmal die Woche.
-		_ki_transferrunde(d)
+		# An den letzten Tagen handeln auch zwischendurch noch Vereine — in
+		# kleinerem Umfang als in der regulaeren Wochenrunde.
+		_ki_transferrunde(d, true)
 		_deadline_bilanz(d)
 	_deadline_hinweis(d)
 
@@ -626,19 +627,27 @@ static func vertrag_aufloesen(d: Dictionary, sid: String) -> Dictionary:
 
 # ------------------------------------------------------------- KI-Markt ---
 
-static func _ki_transferrunde(d: Dictionary) -> void:
+static func _ki_transferrunde(d: Dictionary, dringlich: bool = false) -> void:
 	if not fenster_offen(d):
 		return
 	var vereine: Array = Weltgenerator.clubs(d)
 	vereine.shuffle()
 	var geschaefte := 0
+	# Ein Deadline-Tag ist keine zweite volle Transferwoche. Der erste Versuch
+	# liess an jedem der drei Tage dieselbe Runde laufen wie montags — das
+	# verdreifachte das Volumen und trieb die Zahl der Vereine mit negativer
+	# Kasse ueber drei Saisons von 2 auf 15. Dringlichkeit heisst hier: ein
+	# paar Vereine handeln noch, nicht alle noch einmal.
+	var deckel: int = 5 if dringlich else 14
+	var neigung: float = 0.14 if dringlich else 0.35
 	for cid in vereine:
 		if cid == Welt.mein_verein_id:
-			_angebot_fuer_eigene_spieler(d, cid)
+			if not dringlich:
+				_angebot_fuer_eigene_spieler(d, cid)
 			continue
-		if geschaefte > 14:
+		if geschaefte > deckel:
 			break
-		if Namen.zufall() > 0.35:
+		if Namen.zufall() > neigung:
 			continue
 		if _ki_verstaerkung(d, cid):
 			geschaefte += 1
@@ -647,6 +656,15 @@ static func _ki_verstaerkung(d: Dictionary, cid: String) -> bool:
 	var v: Dictionary = d["vereine"][cid]
 	var budget: float = float(v["transferbudget"])
 	if budget < 25000.0:
+		return false
+	# Wer knapp bei Kasse ist, kauft nicht.
+	#
+	# Das Transferbudget ist eine Planungsgroesse und sagt nichts darueber,
+	# ob morgen die Gehaelter gedeckt sind. Ohne diese Schranke kauften
+	# Computervereine sich ueber Jahre in die Ueberschuldung — nicht durch die
+	# Abloese, sondern durch die Gehaelter, die daran haengen. Sechs
+	# Wochenloehne muessen in der Kasse bleiben.
+	if float(v["kasse"]) < float(v.get("gehaltsbudget", 0.0)) * 6.0:
 		return false
 	var schwaeche := schwaechste_position(d, cid)
 	if schwaeche == "":
