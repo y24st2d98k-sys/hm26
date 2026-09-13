@@ -95,7 +95,7 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 	}
 	var echt: bool = echte_welt and Echtdaten.verfuegbar()
 	d["echte_welt"] = echt
-	d["datenstand"] = Echtdaten.stand() if echt else ""
+	d["datenstand"] = Echtdaten.datenstand() if echt else ""
 
 	if echt:
 		_nationen_aus_datensatz(d)

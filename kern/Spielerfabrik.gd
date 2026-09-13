@@ -253,6 +253,11 @@ static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String,
 	# darf sie nur bei jungen Spielern deutlich übersteigen.
 	if alter_jahre >= 28:
 		sp["potenzial"] = clampf(ziel + 1.0, ziel, 99.0)
+	# Woher dieser Spieler kommt. Ohne diese Spur liesse sich ein spaeter
+	# nachgelieferter Datensatz nicht mehr einspielen: das Spiel wuesste dann
+	# nicht, welcher Teil der heutigen Werte aus den Daten stammt und welcher
+	# aus drei Saisons Training. Siehe Echtdaten.abgleich().
+	sp["datenspur"] = {"staerke": ziel, "attribute": werte.duplicate()}
 	return sp
 
 static func leere_statistik() -> Dictionary:
@@ -273,6 +278,15 @@ static func leere_saisonstats() -> Dictionary:
 		"note_summe": 0.0, "noten": 0, "spieler_des_spiels": 0, "titel": 0,
 		"praemien": 0.0, "allstar": 0,
 	}
+
+## Zieht einen fertigen Spieler auf eine neue Zielstaerke. Gebraucht, wenn ein
+## nachgelieferter Datensatz die Staerke eines Spielers verschiebt, ohne dass
+## er neu erzeugt werden darf — seine Laufbahn, sein Vertrag und seine
+## Beziehungen sollen ja bleiben. Siehe Echtdaten.abgleich().
+static func auf_staerke_ziehen(spieler: Dictionary, ziel: float) -> void:
+	_auf_zielstaerke(spieler["attr"], str(spieler["position"]), ziel)
+	staerke_verwerfen(spieler)
+	spieler["potenzial"] = maxf(float(spieler.get("potenzial", ziel)), ziel)
 
 ## Zieht die leistungsrelevanten Attribute so zurecht, dass der Gesamtwert die
 ## vorgegebene Zielstärke trifft. Ohne diesen Schritt liegt das Ergebnis der

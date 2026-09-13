@@ -17,6 +17,10 @@ const PROJEKTDATEI := "res://daten/kader.json"
 
 const POSITIONEN := ["TW", "LA", "RL", "RM", "RR", "RA", "KM"]
 const FELDER := ["vorname", "nachname", "position", "nation", "alter", "staerke"]
+## Angaben ueber die CSV-Grundfelder hinaus. Sie kommen nicht aus der CSV,
+## sondern aus dem Datenbildschirm oder aus daten/kader.json, und duerfen beim
+## Normieren nicht verlorengehen.
+const ZUSATZFELDER := ["nummer", "attribute", "stammschuetze"]
 
 static var _eigene: Dictionary = {}
 static var _geladen: bool = false
@@ -139,7 +143,7 @@ static func pruefen(e: Dictionary) -> Array:
 
 ## Einen Eintrag in die erwartete Form bringen.
 static func normieren(e: Dictionary) -> Dictionary:
-	return {
+	var n := {
 		"vorname": str(e.get("vorname", "")).strip_edges(),
 		"nachname": str(e.get("nachname", "")).strip_edges(),
 		"position": str(e.get("position", "RM")).strip_edges().to_upper(),
@@ -147,6 +151,23 @@ static func normieren(e: Dictionary) -> Dictionary:
 		"alter": clampi(int(e.get("alter", 25)), 16, 44),
 		"staerke": clampi(int(e.get("staerke", 60)), 20, 99),
 	}
+	# Alles, was ueber die sechs Grundangaben hinausgeht, muss das Normieren
+	# ueberleben. Sonst loescht ein Klick auf "Kader sichern" die Rueckennummer
+	# und jedes von Hand gesetzte Attribut — genau die Arbeit also, die man
+	# hier vorher gemacht hat.
+	var nummer: int = clampi(int(e.get("nummer", 0)), 0, 99)
+	if nummer > 0:
+		n["nummer"] = nummer
+	if bool(e.get("stammschuetze", false)) and n["position"] != "TW":
+		n["stammschuetze"] = true
+	var werte: Dictionary = e.get("attribute", {})
+	var sauber := {}
+	for name in werte.keys():
+		if Spielerfabrik.ATTR_LABEL.has(str(name)):
+			sauber[str(name)] = clampf(float(werte[name]), 1.0, 20.0)
+	if not sauber.is_empty():
+		n["attribute"] = sauber
+	return n
 
 # ----------------------------------------------------------------- CSV ---
 

@@ -87,6 +87,52 @@ Der Schlüssel ist der **exakte Vereinsname** aus `ligen.json`.
 | `nation` | Kürzel wie in `Namen.KULTUR_NAME` (`de`, `dk`, `is`, `hr`, `fo`, …) |
 | `alter` | Alter zum Karrierestart |
 | `staerke` | Gesamtstärke 0–100. Das Spiel würfelt die Einzelattribute passend zur Position aus und rechnet sie so zurecht, dass dieser Wert getroffen wird. |
+| `attribute` | Einzelne Attribute festschreiben, statt sie auswürfeln zu lassen. Siehe unten. |
+| `stammschuetze` | `true` heißt: dieser Spieler wirft die Siebenmeter seines Vereins, solange er auf dem Feld steht. |
+
+### Einzelne Attribute festschreiben
+
+```json
+{"nummer": 7, "vorname": "Kai", "nachname": "Häfner", "position": "RR",
+ "nation": "de", "alter": 36, "staerke": 84,
+ "stammschuetze": true,
+ "attribute": {"siebenmeter": 15.6, "nervenstaerke": 17}}
+```
+
+Erlaubt ist jeder Attributname aus `Spielerfabrik.ATTR_LABEL` — die Technik-,
+Athletik-, Abwehr- und Mentalwerte der Feldspieler und die acht Torwartwerte.
+Werte von 1 bis 20.
+
+**Sparsam setzen.** Was nicht dasteht, würfelt das Spiel aus der Zielstärke
+aus, und genau diese Streuung macht aus zwei gleich starken Spielern zwei
+verschiedene. Festschreiben lohnt sich für das eine Merkmal, das einen Spieler
+ausmacht — der Siebenmeterspezialist, der Abwehrchef, der Torwart mit der
+außergewöhnlichen Fußabwehr —, nicht für alle zwanzig.
+
+`stammschuetze` und `attribute.siebenmeter` gehören zusammen, sagen aber
+Verschiedenes: das eine, **wer** wirft, das andere, **wie gut** er trifft. Ohne
+diese Trennung müsste man den Attributwert hochdrehen, damit der Richtige
+antritt, und behauptete damit eine Trefferquote, die nicht stimmt.
+
+### Ein neuer Datensatz erreicht laufende Karrieren
+
+Wer `kader.json` austauscht, muss keine Karriere neu anfangen. Beim nächsten
+Laden vergleicht der Spielstand seinen Datenstand mit dem der Dateien und zieht
+nach, was sich geändert hat.
+
+Dabei wird **verschoben, nicht gesetzt**: steigt eine Stärke im Datensatz von
+78 auf 84, gewinnt der Spieler sechs Punkte auf seinen jetzigen Wert. Wer sich
+im Spiel von 78 auf 82 entwickelt hat, steht danach bei 88 — die Entwicklung
+aus dem Spiel bleibt also drin. Einzelne `attribute` gelten dagegen
+unmittelbar, denn wer einen Wert von Hand setzt, meint genau diesen Wert.
+Position, Rückennummer und Siebenmeterschütze werden übernommen.
+
+Damit der Abgleich anspringt, muss `stand` in der Datei sich ändern — er ist
+das Kennzeichen, an dem der Spielstand erkennt, dass etwas Neues vorliegt.
+Zugeordnet wird über Vor- und Nachnamen; zwei gleichnamige Spieler bleiben
+außen vor, weil sich nicht entscheiden ließe, wer gemeint ist.
+
+Geprüft wird das von `werkzeuge/Datenabgleichtest.tscn`.
 
 Grobe Einordnung für `staerke`: 90+ Weltklasse, 80–89 Nationalmannschaft,
 70–79 Erstligastammspieler, 60–69 Ergänzung, unter 55 Talent oder Zweitliga.

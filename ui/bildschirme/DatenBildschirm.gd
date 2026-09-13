@@ -6,8 +6,13 @@ extends Bildschirm
 ## Kader des gewählten Vereins: Zeile für Zeile bearbeitbar, dazu ein Feld für
 ## CSV, mit dem sich ein kompletter Kader in einem Rutsch einfügen lässt.
 ##
-## Änderungen gelten für **neu angelegte** Karrieren. Eine laufende Karriere hat
-## ihre Spieler bereits im Spielstand und bleibt unberührt.
+## Änderungen erreichen auch laufende Karrieren: beim nächsten Laden gleicht der
+## Spielstand sich mit dem Datensatz ab und zieht nach, was sich geändert hat,
+## ohne die Entwicklung aus dem Spiel zu verwerfen (siehe Echtdaten.abgleich()).
+##
+## Neben den Grunddaten lässt sich hier jedes einzelne Attribut festschreiben.
+## Was nicht gesetzt ist, würfelt das Spiel aus der Zielstärke aus — gesetzt
+## wird also nur, was einen Spieler wirklich ausmacht, und nicht alles.
 
 var vereinsliste: VBoxContainer
 var kaderbereich: VBoxContainer
@@ -18,6 +23,8 @@ var csv_feld: TextEdit
 var gewaehlt: String = ""
 var suche: String = ""
 var entwurf: Array = []
+## Welche Zeile ihren Attributbereich offen hat. -1 heisst: keine.
+var offen: int = -1
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -27,7 +34,7 @@ func aufbauen() -> void:
 	var kopf := Stil.hbox(12)
 	v.add_child(kopf)
 	kopf.add_child(Stil.kopfzeile("Kaderdaten",
-		"Echte Spieler eintragen. Wirkt auf neu angelegte Karrieren."))
+		"Echte Spieler eintragen. Laufende Karrieren ziehen beim nächsten Laden nach."))
 	kopf.add_child(Stil.dehner())
 	var projekt := Stil.knopf_geist("Ins Projekt schreiben", Stil.TUERKIS)
 	projekt.tooltip_text = "Übernimmt Ihre Pflege in den Projektdatensatz. Nur möglich, wenn das Spiel aus dem Projektordner läuft."
@@ -40,6 +47,7 @@ func aufbauen() -> void:
 	verwerfen.pressed.connect(func():
 		Kaderpflege.alles_verwerfen()
 		entwurf = []
+		offen = -1
 		_melde("Eigene Pflege verworfen.")
 		aktualisieren())
 	kopf.add_child(verwerfen)
@@ -129,6 +137,7 @@ func _vereine_zeichnen() -> void:
 		knopf.pressed.connect(func():
 			gewaehlt = name
 			entwurf = []
+			offen = -1
 			_vereine_zeichnen()
 			_kader_zeichnen())
 		var h := Stil.hbox(8)
@@ -159,6 +168,7 @@ func _kader_zeichnen() -> void:
 		return
 	if entwurf.is_empty():
 		entwurf = []
+		offen = -1
 		for e in Kaderpflege.kader(gewaehlt):
 			entwurf.append((e as Dictionary).duplicate())
 	kopfzeile.text = "%s — %d Spieler" % [gewaehlt, entwurf.size()]
@@ -183,14 +193,16 @@ func _kader_zeichnen() -> void:
 	var tabelle := Bausteine.karte_in(kaderbereich, "Spieler")
 	var kopf := Stil.hbox(6)
 	tabelle.add_child(kopf)
-	for spalte in [["Vorname", 150], ["Nachname", 170], ["Pos", 70], ["Nation", 70],
-			["Alter", 70], ["Stärke", 80], ["", 40]]:
+	for spalte in [["Nr", 56], ["Vorname", 140], ["Nachname", 160], ["Pos", 70], ["Nation", 70],
+			["Alter", 66], ["Stärke", 74], ["Attribute", 108], ["", 40]]:
 		var l := Stil.etikett(str(spalte[0]))
 		l.custom_minimum_size = Vector2(float(spalte[1]), 0)
 		kopf.add_child(l)
 	tabelle.add_child(Stil.trenner())
 	for i in range(entwurf.size()):
 		tabelle.add_child(_spielerzeile(i))
+		if offen == i:
+			tabelle.add_child(_attributbereich(entwurf[i]))
 	if entwurf.is_empty():
 		tabelle.add_child(Stil.matt("Noch keine Spieler eingetragen."))
 
@@ -199,8 +211,9 @@ func _kader_zeichnen() -> void:
 func _spielerzeile(index: int) -> HBoxContainer:
 	var e: Dictionary = entwurf[index]
 	var zeile := Stil.hbox(6)
-	zeile.add_child(_textfeld(e, "vorname", 150))
-	zeile.add_child(_textfeld(e, "nachname", 170))
+	zeile.add_child(_zahlenfeld(e, "nummer", 0, 99, 56))
+	zeile.add_child(_textfeld(e, "vorname", 140))
+	zeile.add_child(_textfeld(e, "nachname", 160))
 
 	var pos := OptionButton.new()
 	pos.custom_minimum_size = Vector2(70, 0)
@@ -224,8 +237,19 @@ func _spielerzeile(index: int) -> HBoxContainer:
 	nation.item_selected.connect(func(i): e["nation"] = str(nation.get_item_metadata(i)))
 	zeile.add_child(nation)
 
-	zeile.add_child(_zahlenfeld(e, "alter", 16, 44, 70))
-	zeile.add_child(_zahlenfeld(e, "staerke", 20, 99, 80))
+	zeile.add_child(_zahlenfeld(e, "alter", 16, 44, 66))
+	zeile.add_child(_zahlenfeld(e, "staerke", 20, 99, 74))
+
+	var gesetzt: int = (e.get("attribute", {}) as Dictionary).size()
+	var attr := Stil.knopf_geist(
+		"%d gesetzt" % gesetzt if gesetzt > 0 else "ausgewürfelt",
+		Stil.TUERKIS if gesetzt > 0 else Stil.TEXT_MATT)
+	attr.custom_minimum_size = Vector2(108, 0)
+	attr.tooltip_text = "Einzelne Attribute festschreiben. Was hier leer bleibt, würfelt das Spiel aus der Zielstärke."
+	attr.pressed.connect(func():
+		offen = -1 if offen == index else index
+		_kader_zeichnen())
+	zeile.add_child(attr)
 
 	var weg := Stil.knopf_geist("✕", Stil.ROT)
 	weg.custom_minimum_size = Vector2(40, 0)
@@ -235,6 +259,83 @@ func _spielerzeile(index: int) -> HBoxContainer:
 		_kader_zeichnen())
 	zeile.add_child(weg)
 	return zeile
+
+## Der aufgeklappte Attributbereich eines Spielers.
+##
+## Nur was gesetzt ist, steht im Datensatz. Ein Feld auf 0 loescht den Eintrag
+## wieder — dann wuerfelt das Spiel den Wert aus der Zielstaerke, so wie bei
+## jedem anderen. Das ist wichtig: wer alle 20 Attribute festschreibt, nimmt
+## dem Spieler jede Streuung und macht aus zwei gleich starken Spielern
+## dieselbe Person.
+func _attributbereich(e: Dictionary) -> Control:
+	var rahmen := Stil.vbox(8)
+	rahmen.add_theme_constant_override("margin_left", 16)
+	var werte: Dictionary = e.get("attribute", {})
+	var ist_tw: bool = str(e.get("position", "")) == "TW"
+
+	var kopf := Stil.hbox(8)
+	kopf.add_child(Stil.matt("Gesetzte Werte gelten unverändert, leere Felder würfelt das Spiel aus."))
+	kopf.add_child(Stil.dehner())
+	if str(e.get("position", "")) != "TW":
+		var stamm := CheckBox.new()
+		stamm.text = "Siebenmeterschütze"
+		stamm.tooltip_text = "Er wirft die Siebenmeter seines Vereins, solange er auf dem Feld steht."
+		stamm.button_pressed = bool(e.get("stammschuetze", false))
+		stamm.toggled.connect(func(an):
+			if an:
+				e["stammschuetze"] = true
+			else:
+				e.erase("stammschuetze"))
+		kopf.add_child(stamm)
+	var leeren := Stil.knopf_geist("Alle zurücksetzen", Stil.ROT)
+	leeren.pressed.connect(func():
+		e.erase("attribute")
+		_kader_zeichnen())
+	kopf.add_child(leeren)
+	rahmen.add_child(kopf)
+
+	var gruppen: Array = [["Technik", Spielerfabrik.ATTR_TECHNIK], ["Athletik", Spielerfabrik.ATTR_ATHLETIK],
+		["Mental", Spielerfabrik.ATTR_MENTAL]]
+	if ist_tw:
+		gruppen.push_front(["Torwart", Spielerfabrik.ATTR_TORWART])
+	else:
+		gruppen.insert(2, ["Abwehr", Spielerfabrik.ATTR_DEFENSIV])
+	for gruppe in gruppen:
+		rahmen.add_child(Stil.etikett(str(gruppe[0])))
+		var gitter := GridContainer.new()
+		gitter.columns = 3
+		gitter.add_theme_constant_override("h_separation", 12)
+		gitter.add_theme_constant_override("v_separation", 4)
+		for name in (gruppe[1] as Array):
+			gitter.add_child(_attributfeld(e, werte, str(name)))
+		rahmen.add_child(gitter)
+	rahmen.add_child(Stil.trenner())
+	return rahmen
+
+func _attributfeld(e: Dictionary, werte: Dictionary, name: String) -> Control:
+	var reihe := Stil.hbox(6)
+	var l := Stil.matt(str(Spielerfabrik.ATTR_LABEL.get(name, name)))
+	l.custom_minimum_size = Vector2(150, 0)
+	reihe.add_child(l)
+	var feld := SpinBox.new()
+	feld.min_value = 0
+	feld.max_value = 20
+	feld.step = 1
+	feld.custom_minimum_size = Vector2(74, 0)
+	feld.value = float(werte.get(name, 0.0))
+	feld.tooltip_text = "0 heißt: nicht gesetzt."
+	feld.value_changed.connect(func(w):
+		var tabelle: Dictionary = e.get("attribute", {})
+		if w <= 0.0:
+			tabelle.erase(name)
+		else:
+			tabelle[name] = w
+		if tabelle.is_empty():
+			e.erase("attribute")
+		else:
+			e["attribute"] = tabelle)
+	reihe.add_child(feld)
+	return reihe
 
 func _textfeld(e: Dictionary, schluessel: String, breite: float) -> LineEdit:
 	var f := LineEdit.new()

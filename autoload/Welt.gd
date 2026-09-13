@@ -760,4 +760,40 @@ func _daten_auffrischen() -> void:
 				st["praemien"] = 0.0
 			if not st.is_empty() and not st.has("allstar"):
 				st["allstar"] = 0
+	_datensatz_nachziehen()
 	daten["version"] = DATENVERSION
+
+## Ein neuer Datensatz erreicht auch laufende Karrieren.
+##
+## Bis hierher wirkte jede Korrektur an daten/kader.json nur auf neue
+## Spielstaende: wer eine Staerke nachzog oder ein Attribut ergaenzte, musste
+## seine Karriere wegwerfen, um die Aenderung zu sehen. Jetzt genuegt es, die
+## Datei auszutauschen — beim naechsten Laden zieht der Spielstand nach.
+##
+## Verschoben wird nur, was aus den Daten stammt. Wer sich im Spiel entwickelt
+## hat, behaelt seine Entwicklung; siehe Echtdaten.abgleich().
+func _datensatz_nachziehen() -> void:
+	if not bool(daten.get("echte_welt", false)):
+		return
+	if str(daten.get("datenstand", "")) == Echtdaten.datenstand():
+		return
+	var bericht := Echtdaten.abgleich(daten)
+	if int(bericht["spieler"]) <= 0:
+		return
+	var teile: Array = []
+	if int(bericht["staerke"]) > 0:
+		teile.append("%d Stärken" % int(bericht["staerke"]))
+	if int(bericht["attribute"]) > 0:
+		teile.append("%d Attribute" % int(bericht["attribute"]))
+	if int(bericht["position"]) > 0:
+		teile.append("%d Positionen" % int(bericht["position"]))
+	if int(bericht["nummer"]) > 0:
+		teile.append("%d Rückennummern" % int(bericht["nummer"]))
+	nachricht({
+		"typ": "verein", "wichtig": false,
+		"betreff": "Neuer Datenstand eingespielt",
+		"text": "Der Datensatz wurde von „%s\" auf „%s\" aktualisiert. Nachgezogen wurden %s bei %d Spielern, darunter %s. Entwicklung aus dem Spiel bleibt erhalten — verschoben wurde nur, was der Datensatz vorgibt." % [
+			str(bericht["stand_alt"]), str(bericht["stand_neu"]),
+			", ".join(teile) if not teile.is_empty() else "Angaben",
+			int(bericht["spieler"]), ", ".join(bericht["namen"])],
+	})
