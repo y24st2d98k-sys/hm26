@@ -277,6 +277,10 @@ static func _verein_aus_datensatz(d: Dictionary, cid: String, eintrag: Dictionar
 	verein["halle"]["name"] = str(eintrag.get("halle", verein["halle"]["name"]))
 	verein["halle"]["kapazitaet"] = int(eintrag.get("kapazitaet", verein["halle"]["kapazitaet"]))
 	_wappen_setzen(verein, eintrag)
+	# Echte Rivalitaeten stehen im Datensatz, als Kuerzel. Aufgeloest wird das
+	# erst, wenn alle Vereine angelegt sind — vorher gibt es die IDs nicht.
+	if eintrag.has("rivalen"):
+		verein["rivalen_kurz"] = (eintrag["rivalen"] as Dictionary).duplicate()
 	return verein
 
 ## Das Wappen eines echten Vereins: seine tatsaechlichen Farben, sein Kuerzel und
@@ -760,12 +764,16 @@ static func _erzeuge_freie_spieler(d: Dictionary, anzahl: int) -> void:
 		d["spieler"][sid] = sp
 
 static func _erzeuge_rivalitaeten(d: Dictionary) -> void:
+	_echte_rivalitaeten(d)
 	for lid in d["ligen"].keys():
 		var vereine: Array = (d["ligen"][lid]["vereine"] as Array).duplicate()
 		vereine.shuffle()
 		for i in range(0, vereine.size() - 1, 2):
 			var a: String = vereine[i]
 			var b: String = vereine[i + 1]
+			# Wo schon eine echte Rivalitaet steht, wird nicht gewuerfelt.
+			if (d["vereine"][a]["rivalen"] as Dictionary).has(b):
+				continue
 			var staerke: float = Namen.bereich(45.0, 85.0)
 			(d["vereine"][a]["rivalen"] as Dictionary)[b] = staerke
 			(d["vereine"][b]["rivalen"] as Dictionary)[a] = staerke
@@ -777,6 +785,32 @@ static func _erzeuge_rivalitaeten(d: Dictionary) -> void:
 				if str(va["ort"]).substr(0, 4) == str(vb["ort"]).substr(0, 4):
 					(va["rivalen"] as Dictionary)[vb["id"]] = maxf(float((va["rivalen"] as Dictionary).get(vb["id"], 0.0)), 70.0)
 					(vb["rivalen"] as Dictionary)[va["id"]] = maxf(float((vb["rivalen"] as Dictionary).get(va["id"], 0.0)), 70.0)
+
+## Loest die im Datensatz hinterlegten Rivalitaeten auf.
+##
+## Bis hierher wuerfelte das Spiel Rivalitaeten aus: zufaellige Paare je Liga
+## plus gleiche Ortsendung. Fuer eine erfundene Welt ist das richtig, fuer eine
+## echte falsch — dort ist das Nordderby zwischen Kiel und Flensburg keine
+## Frage des Zufalls. Und es hat Folgen: an der Rivalitaet haengt, ob ein
+## Fuehrungsspieler zum Konkurrenten wechselt (siehe kern/Wechselbereitschaft.gd),
+## wie viele Zuschauer kommen und wie die Halle klingt.
+static func _echte_rivalitaeten(d: Dictionary) -> void:
+	var nach_kurz := {}
+	for cid in d["vereine"].keys():
+		nach_kurz[str(d["vereine"][cid]["kurz"])] = str(cid)
+	for cid2 in d["vereine"].keys():
+		var v: Dictionary = d["vereine"][cid2]
+		var vorgabe: Dictionary = v.get("rivalen_kurz", {})
+		if vorgabe.is_empty():
+			continue
+		for kurz in vorgabe.keys():
+			var ziel: String = str(nach_kurz.get(str(kurz), ""))
+			if ziel == "" or ziel == str(cid2):
+				continue
+			var staerke: float = float(vorgabe[kurz])
+			(v["rivalen"] as Dictionary)[ziel] = staerke
+			(d["vereine"][ziel]["rivalen"] as Dictionary)[str(cid2)] = staerke
+		v.erase("rivalen_kurz")
 
 # ----------------------------------------------------------- Wettbewerbe ---
 

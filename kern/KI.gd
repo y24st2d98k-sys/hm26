@@ -178,6 +178,11 @@ static func wochenlogik(d: Dictionary) -> void:
 		Fanszene.wochenwechsel(d, cid)
 		if bool(d["vereine"][cid].get("ist_mensch", false)):
 			Fanszene.meldungen_pruefen(d, cid)
+			# Das Notnetz gehoert in den Wochenlauf, nicht nur an Spieltage
+			# und den Saisonwechsel. Der Integritaetslauf hat gezeigt, warum:
+			# eine gezogene Abloeseklausel raeumt mitten in der Saison ab, und
+			# bis zum naechsten Pruefzeitpunkt kann viel passieren.
+			_notkader_sichern(d, cid)
 			continue
 		if Namen.zufall() < 0.06:
 			Ticketing.ki_preise(d, cid)

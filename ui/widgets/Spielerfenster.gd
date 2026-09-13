@@ -482,6 +482,28 @@ func _angebotsbereich(sp: Dictionary) -> void:
 	var gehaltswunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(Welt.mein_verein().get("ruf", 50.0)))
 	karte.add_child(Stil.matt("Geschätzte Ablöseforderung: %s · Gehaltsvorstellung: %s pro Woche" % [
 		"ablösefrei" if frei else Stil.geld(forderung), Stil.geld(gehaltswunsch)], Stil.S_KLEIN))
+	# Wie fest er an seinem Verein haengt. Das ist die Zahl, die vorher fehlte
+	# und ohne die man nicht einschaetzen kann, ob ein Angebot Aussicht hat.
+	if not frei:
+		var b := Wechselbereitschaft.bindung(Welt.daten, sid)
+		var bz := Stil.hbox(8)
+		karte.add_child(bz)
+		bz.add_child(Stil.etikett("Bindung an den Verein"))
+		bz.add_child(Stil.balken(b, 100.0, 110, Stil.prozent_farbe(100.0 - b)))
+		bz.add_child(Stil.text(Wechselbereitschaft.bindung_text(b), Stil.S_KLEIN,
+			Stil.prozent_farbe(100.0 - b)))
+		if Welt.mein_verein_id != "":
+			var abschlag := Wechselbereitschaft.rivalitaetsabschlag(Welt.daten, sid, Welt.mein_verein_id)
+			if abschlag > 0.20:
+				bz.add_child(Stil.abzeichen("Rivale — er kommt nicht", Stil.ROT))
+			elif not Wechselbereitschaft.ansprechbar(Welt.daten, sid, Welt.mein_verein_id,
+					"stammspieler", gehaltswunsch * 1.15):
+				bz.add_child(Stil.abzeichen("sieht bei uns keine Perspektive", Stil.GELB))
+
+	# Vorvertrag: möglich auch bei geschlossenem Fenster, deshalb steht er vor
+	# der Fenstersperre.
+	_vorvertragszeile(karte, sid, sp, gehaltswunsch)
+
 	if not Transfermarkt.fenster_offen(Welt.daten):
 		karte.add_child(Stil.text("Das Transferfenster ist derzeit geschlossen.", Stil.S_KLEIN, Stil.ROT))
 		return
@@ -883,3 +905,52 @@ func _zusatzklauseln(eltern: Node, sp: Dictionary) -> Dictionary:
 	abstieg.toggled.connect(func(_an): rechnen.call())
 	rechnen.call()
 	return {"weiterverkauf": verkauf, "einsatz": einsatz, "treue": treue, "abstieg": abstieg}
+
+
+## Der Vertrag für die kommende Saison.
+##
+## Im Handball ist das der Normalfall: Wechsel werden Monate vor dem Sommer
+## bekanntgegeben. Ein Spieler, dessen Vertrag im Sommer endet, unterschreibt
+## jetzt und spielt die Saison bei seinem alten Verein zu Ende — ablösefrei,
+## und der abgebende Verein wird nicht gefragt.
+func _vorvertragszeile(karte: Node, sid: String, sp: Dictionary, gehaltswunsch: float) -> void:
+	var vv: Dictionary = sp.get("vorvertrag", {})
+	if not vv.is_empty():
+		karte.add_child(Stil.info_zeile("Unterschrieben für die kommende Saison bei",
+			str(Welt.verein(str(vv["verein"])).get("name", "?")), Stil.AKZENT))
+		return
+	if str(sp.get("verein", "")) == Welt.mein_verein_id:
+		return
+	var erlaubt := Vorvertrag.moeglich(Welt.daten, sid)
+	if not bool(erlaubt["ok"]):
+		# Nur erwähnen, wenn es überhaupt um einen auslaufenden Vertrag geht —
+		# sonst stünde der Hinweis bei jedem Spieler der Welt.
+		if Vorvertrag.laeuft_aus(Welt.daten, sid):
+			karte.add_child(Stil.matt(str(erlaubt["grund"]), Stil.S_MINI))
+		return
+	var zeile := Stil.hbox(8)
+	karte.add_child(zeile)
+	zeile.add_child(Stil.abzeichen("VERTRAG LÄUFT AUS", Stil.GELB))
+	zeile.add_child(Bausteine.fliesstext(
+		"Ablösefrei für die kommende Saison zu binden. Er spielt die laufende Saison bei seinem Verein zu Ende.",
+		Stil.S_MINI, null, 260.0))
+	zeile.add_child(Stil.matt("Gehalt"))
+	var gehalt := SpinBox.new()
+	gehalt.min_value = 100
+	gehalt.max_value = 200000
+	gehalt.step = 50
+	gehalt.value = round(gehaltswunsch * 1.1)
+	gehalt.custom_minimum_size = Vector2(130, 0)
+	zeile.add_child(gehalt)
+	zeile.add_child(Stil.matt("Jahre"))
+	var jahre := SpinBox.new()
+	jahre.min_value = 1
+	jahre.max_value = 5
+	jahre.value = 3
+	zeile.add_child(jahre)
+	var senden := Stil.knopf_primaer("Vorvertrag anbieten")
+	senden.pressed.connect(func():
+		var erg := Transfermarkt.angebot_abgeben(Welt.daten, sid, 0.0, gehalt.value,
+			int(jahre.value), "stammspieler", "vorvertrag")
+		_melde(str(erg["grund"]), bool(erg["ok"])))
+	zeile.add_child(senden)

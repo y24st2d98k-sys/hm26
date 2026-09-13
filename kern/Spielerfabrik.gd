@@ -183,6 +183,8 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 		"laufbahn": [],
 		"unzufriedenheit": 0.0,
 		"beziehung": 50.0,
+		# Zusage fuer die kommende Saison (siehe kern/Vorvertrag.gd).
+		"vorvertrag": {},
 		"transferwunsch": false,
 		"nationalspieler": 0,
 		"trainingsfokus": "",

@@ -260,6 +260,10 @@ static func europapokal_feiern(d: Dictionary, wid: String) -> void:
 
 static func neue_saison(d: Dictionary, mein: String) -> void:
 	KI.vertragsrunde(d)
+	# Zuerst die Zusagen fuer die kommende Saison einloesen, dann die
+	# Vertraege ablaufen lassen. Andersherum waere der Spieler schon
+	# vereinslos und die Zusage ginge ins Leere.
+	Vorvertrag.einloesen(d)
 	_vertraege_ablaufen(d)
 	_karriereenden(d)
 	_nachwuchs(d)

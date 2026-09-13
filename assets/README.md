@@ -16,12 +16,39 @@ assets/wappen/THW.png     → THW Kiel
 assets/wappen/PSG.png     → Paris Saint-Germain Handball
 ```
 
-Erlaubte Endungen: `png`, `svg`, `jpg`, `webp`. Quadratisch und mit
-transparentem Hintergrund sieht am besten aus; 256 × 256 Pixel reichen
-vollkommen, das Spiel zeigt die Wappen zwischen 16 und 50 Pixeln an.
+Erlaubte Endungen: `png`, `svg`, `jpg`, `webp`. Das Seitenverhältnis ist egal —
+das Logo wird eingepasst, nicht verzerrt: die längere Kante füllt das Feld, die
+kürzere sitzt mittig. 256 Pixel an der längeren Kante reichen vollkommen, das
+Spiel zeigt die Wappen zwischen 16 und 50 Pixeln an und verkleinert mit
+Mipmaps, damit nichts flimmert.
+
+Wichtig ist der **transparente Hintergrund** und dass das Logo auf dunklem
+Grund lesbar bleibt. Ein Logo, das für weißes Papier gezeichnet wurde — dunkle
+Linien ohne Fläche — verschwindet in der Oberfläche. Solche Logos vorher mit
+einer hellen Fläche hinterlegen.
 
 Für welche Vereine ein Logo fehlt, ist unproblematisch: dort wird weiterhin
 das gezeichnete Wappen aus Vereinsfarben und Kürzel benutzt.
+
+## Eigene Schrift — `assets/schrift/`
+
+Die Engine bringt genau einen Schriftschnitt mit. Das Spiel fettet ihn bei
+Bedarf synthetisch nach, aber nur sehr maßvoll: Godot versetzt dafür die
+Kontur nach außen, und ab etwa 0.08 überschneidet sie sich mit sich selbst —
+dann bekommen große Zahlen Sporne an den Ecken und zugelaufene Punzen. Für
+einen echten Fettschnitt braucht es eine Datei.
+
+```
+assets/schrift/normal.ttf     → Grundschrift
+assets/schrift/halbfett.ttf   → Werte, Knöpfe, Spielernamen, Etiketten
+assets/schrift/fett.ttf       → Überschriften und große Zahlen
+```
+
+Erlaubte Endungen: `ttf`, `otf`, `woff2`, `woff`. Liegt eine Datei da, wird die
+synthetische Fettung für diesen Schnitt abgeschaltet — sie wäre dann nicht nur
+überflüssig, sondern schädlich. Fehlt eine Datei, bleibt es beim
+Engine-Schnitt. Gut geeignet sind Schriften mit klaren Ziffern und schmalen
+Punzen, etwa Inter, Barlow oder Archivo.
 
 ## Klänge — `assets/klang/`
 

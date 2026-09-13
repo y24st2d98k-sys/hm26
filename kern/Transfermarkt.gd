@@ -144,6 +144,13 @@ static func angebot_abgeben(d: Dictionary, sid: String, ablöse: float, gehalt: 
 		return {"ok": false, "grund": "Das Transferfenster ist geschlossen."}
 	var sp: Dictionary = d["spieler"][sid]
 	var v: Dictionary = d["vereine"][cid]
+	if art == "vorvertrag":
+		var erlaubt := Vorvertrag.moeglich(d, sid)
+		if not bool(erlaubt["ok"]):
+			return erlaubt
+		# Ein Vorvertrag ist immer abloesefrei: der abgebende Verein wird
+		# nicht gefragt, weil er nichts zu vergeben hat.
+		ablöse = 0.0
 	if art == "kauf" and ablöse > float(v["transferbudget"]) + float(v["kasse"]):
 		return {"ok": false, "grund": "Ablöse und Budget passen nicht zusammen."}
 	if (v["kader"] as Array).size() >= 26:
@@ -187,6 +194,9 @@ static func tageswechsel(d: Dictionary) -> void:
 	d["transfermarkt"]["angebote"] = behalten
 	if Kalender.wochentag(int(d["tag"])) == 1:
 		_ki_transferrunde(d)
+		# Auslaufende Vertraege werden das ganze Jahr ueber gesichert, nicht
+		# nur im offenen Fenster.
+		Vorvertrag.ki_runde(d)
 	if ist_deadline(d):
 		# An den letzten Tagen handeln auch zwischendurch noch Vereine — in
 		# kleinerem Umfang als in der regulaeren Wochenrunde.
@@ -245,7 +255,10 @@ static func _angebot_bearbeiten(d: Dictionary, a: Dictionary) -> void:
 		return
 	var status: String = str(a["status"])
 	if status == "offen":
-		if str(a["von"]) == "":
+		# Beim Vorvertrag gibt es nichts mit dem abgebenden Verein zu
+		# besprechen: der Spieler ist im Sommer ohnehin frei, eine Abloese
+		# steht nicht zur Debatte. Es entscheidet allein der Spieler.
+		if str(a["von"]) == "" or str(a.get("art", "")) == "vorvertrag":
 			a["status"] = "verein_einig"
 			_spielerverhandlung(d, a)
 			return
@@ -258,6 +271,12 @@ static func _vereinsverhandlung(d: Dictionary, a: Dictionary) -> void:
 	var sp: Dictionary = d["spieler"][sid]
 	var von: String = str(a["von"])
 	var verkaeufer: Dictionary = d["vereine"][von]
+	if unverkaeuflich(d, sid):
+		a["status"] = "abgelehnt"
+		a["antwort"] = "%s gibt %s nicht ab — der Kader gäbe es nicht her." % [
+			str(verkaeufer["name"]), Spielerfabrik.kurz_name(sp)]
+		_melde(d, a, "Verein lehnt ab", a["antwort"])
+		return
 	var forderung: float = ablösevorstellung(d, sid)
 	var geboten: float = float(a["ablöse"])
 	var not_verkauf: bool = float(verkaeufer["kasse"]) < 0.0
@@ -288,6 +307,30 @@ static func _vereinsverhandlung(d: Dictionary, a: Dictionary) -> void:
 		a["antwort"] = "%s lehnt das Angebot deutlich ab." % verkaeufer["name"]
 		_melde(d, a, "Angebot abgelehnt", a["antwort"])
 
+## Spieler, die ein Verein nicht abgeben kann, ohne handlungsunfaehig zu
+## werden: der letzte Torwart und jeder, der den Kader unter die Notgrenze
+## druecken wuerde.
+##
+## Das ist keine Feinheit, sondern eine Regel, die jeder Verein kennt: den
+## einzigen Torhueter verkauft man nicht, egal was geboten wird. Der
+## Integritaetslauf ueber 1.100 Tage hat den Fall gefunden — ein
+## Zweitligist stand nach einem Transfer ohne Torwart da.
+static func unverkaeuflich(d: Dictionary, sid: String) -> bool:
+	var sp: Dictionary = d["spieler"].get(sid, {})
+	var cid: String = str(sp.get("verein", ""))
+	if cid == "" or not d["vereine"].has(cid):
+		return false
+	var kader: Array = d["vereine"][cid]["kader"]
+	if kader.size() <= KI.NOTKADER:
+		return true
+	if not bool(sp.get("ist_torwart", false)):
+		return false
+	var torhueter := 0
+	for anderer in kader:
+		if bool(d["spieler"][anderer].get("ist_torwart", false)):
+			torhueter += 1
+	return torhueter <= 1
+
 static func _hat_ersatz(d: Dictionary, cid: String, sid: String) -> bool:
 	var sp: Dictionary = d["spieler"][sid]
 	var pos: String = str(sp["position"])
@@ -307,7 +350,7 @@ static func _spielerverhandlung(d: Dictionary, a: Dictionary) -> void:
 	var kaeufer: Dictionary = d["vereine"][nach]
 	var wunsch: float = Finanzen.gehaltswunsch(d, nach, sp)
 	var geboten: float = float(a["gehalt"])
-	var attraktivitaet := _attraktivitaet(d, sp, nach, str(a["rolle"]))
+	var attraktivitaet := _attraktivitaet(d, sp, nach, str(a["rolle"]), geboten)
 	var schwelle: float = wunsch * clampf(1.12 - attraktivitaet * 0.28, 0.78, 1.25)
 	# Zugesagte Erfolgsprämien ersetzen einen Teil des Festgehalts.
 	schwelle -= Praemien.gehaltsersatz(d, sp, float(a.get("praemie_tor", 0.0)), float(a.get("praemie_sieg", 0.0)), nach)
@@ -322,31 +365,18 @@ static func _spielerverhandlung(d: Dictionary, a: Dictionary) -> void:
 		_melde(d, a, "Gehaltsforderung von %s" % Spielerfabrik.voller_name(sp), a["antwort"])
 	else:
 		a["status"] = "abgelehnt"
-		a["antwort"] = "%s sieht keine sportliche Perspektive bei diesem Angebot." % Spielerfabrik.voller_name(sp)
+		a["antwort"] = Wechselbereitschaft.absage_grund(d, sid, nach)
+		Wechselbereitschaft.abfuhr_merken(d, sid, nach)
 		_melde(d, a, "Spieler lehnt ab", a["antwort"])
 
 ## 0..1 — wie attraktiv ist ein Wechsel fuer den Spieler?
-static func _attraktivitaet(d: Dictionary, sp: Dictionary, ziel: String, rolle: String) -> float:
-	var neu: Dictionary = d["vereine"][ziel]
-	var alt_ruf: float = 30.0
-	if str(sp["verein"]) != "" and d["vereine"].has(str(sp["verein"])):
-		alt_ruf = float(d["vereine"][str(sp["verein"])]["ruf"])
-	var wert := 0.4
-	wert += clampf((float(neu["ruf"]) - alt_ruf) / 60.0, -0.35, 0.45)
-	var rollen_wert: float = {"leistungstraeger": 0.22, "stammspieler": 0.14, "rotation": 0.0, "ergaenzung": -0.16, "talent": 0.04}.get(rolle, 0.0)
-	# Schwache Spieler freuen sich ueber grosse Rollen, starke erwarten sie
-	var eigen: float = Spielerfabrik.gesamt(sp)
-	var kaderstaerke := _kaderstaerke(d, ziel)
-	wert += rollen_wert * (1.4 if eigen < kaderstaerke else 0.7)
-	if bool(sp.get("transferwunsch", false)):
-		wert += 0.18
-	var loyalitaet: float = float(sp["charakter"].get("loyalitaet", 12.0)) / 20.0
-	wert -= loyalitaet * 0.12
-	if str(sp["nation"]) == str(neu["nation"]):
-		wert += 0.06
-	if str(d.get("trainer", {}).get("verein", "")) == ziel:
-		wert += clampf(float(d["trainer"]["ruf"]) / 300.0, 0.0, 0.3)
-	return clampf(wert, 0.0, 1.0)
+##
+## Die Rechnung liegt in kern/Wechselbereitschaft.gd, weil sie nicht nur hier
+## gebraucht wird: bevor ein Verein ueberhaupt anruft, muss er dieselbe Frage
+## stellen koennen.
+static func _attraktivitaet(d: Dictionary, sp: Dictionary, ziel: String, rolle: String,
+		gehalt: float = -1.0) -> float:
+	return Wechselbereitschaft.zielwert(d, str(sp["id"]), ziel, rolle, gehalt)
 
 static func _kaderstaerke(d: Dictionary, cid: String) -> float:
 	var summe := 0.0
@@ -386,6 +416,19 @@ static func zurueckziehen(d: Dictionary, angebots_id: String) -> void:
 # ------------------------------------------------------------- Vollziehen ---
 
 static func _transfer_vollziehen(d: Dictionary, a: Dictionary) -> void:
+	# Ein Vorvertrag wechselt niemanden: er hinterlegt eine Zusage, die erst
+	# zum Saisonwechsel eingeloest wird.
+	if str(a.get("art", "")) == "vorvertrag":
+		var erlaubt := Vorvertrag.moeglich(d, str(a["spieler"]))
+		if not bool(erlaubt["ok"]):
+			a["status"] = "abgelehnt"
+			a["antwort"] = str(erlaubt["grund"])
+			return
+		Vorvertrag.schliessen(d, str(a["spieler"]), str(a["nach"]),
+			float(a["gehalt"]), int(a["laufzeit"]), str(a["rolle"]))
+		a["status"] = "abgeschlossen"
+		a["antwort"] = "Unterschrieben — er kommt zum Saisonwechsel."
+		return
 	var sid: String = str(a["spieler"])
 	var nach: String = str(a["nach"])
 	var ablöse: float = float(a["ablöse"])
@@ -539,6 +582,12 @@ static func _klausel_versuchen(d: Dictionary, sid: String, sp: Dictionary, klaus
 	if Namen.zufall() > 0.02:
 		return
 	var von: String = str(sp["verein"])
+	# Auch eine Klausel raeumt keinen Kader leer. Sie ist eine harte Zusage,
+	# aber ein Verein, der danach ohne Torwart oder ohne Mannschaft dastuende,
+	# ist kein schwerer Spielstand, sondern ein kaputter — und keine Klausel
+	# der Welt fuehrt aus ihm heraus.
+	if unverkaeuflich(d, sid):
+		return
 	var staerke: float = Spielerfabrik.gesamt(sp)
 	var interessenten: Array = []
 	for cid in Weltgenerator.clubs(d):
@@ -677,6 +726,8 @@ static func _ki_verstaerkung(d: Dictionary, cid: String) -> bool:
 			continue
 		if Spielerfabrik.gesamt(sp) < kaderstaerke + 3.0:
 			continue
+		if unverkaeuflich(d, sid):
+			continue
 		var preis := ablösevorstellung(d, sid)
 		if preis > budget:
 			continue
@@ -684,9 +735,22 @@ static func _ki_verstaerkung(d: Dictionary, cid: String) -> bool:
 		if gehalt * 52.0 > float(v["gehaltsbudget"]) * 52.0 * 0.18:
 			continue
 		if str(sp["verein"]) == Welt.mein_verein_id:
+			# Auch hier erst pruefen, ob der Spieler zusagen wuerde. Das ist
+			# die zweite und groessere Quelle der Angebotsflut gewesen: jeder
+			# Verein, der sich verstaerken wollte und dabei auf einen Spieler
+			# des Menschen stiess, hat geboten — unabhaengig davon, ob der
+			# jemals gewechselt waere.
+			if _offene_eingehende(d) >= EINGEHEND_MAX:
+				continue
+			if Wechselbereitschaft.hat_abfuhr(d, sid, cid):
+				continue
+			var paket := _werbepaket(d, cid, sid, gehalt)
+			if not Wechselbereitschaft.ansprechbar(d, sid, cid,
+					str(paket["rolle"]), float(paket["gehalt"])):
+				continue
 			_angebot_an_spieler(d, cid, sid, preis, gehalt)
 			return true
-		if _attraktivitaet(d, sp, cid, "stammspieler") < 0.42:
+		if _attraktivitaet(d, sp, cid, "stammspieler", gehalt) < 0.42:
 			continue
 		transfer_durchfuehren(d, sid, cid, preis, gehalt, Namen.wuerfel(2, 4), "stammspieler")
 		return true
@@ -711,8 +775,41 @@ static func schwaechste_position(d: Dictionary, cid: String) -> String:
 	return schwaechste
 
 ## Ein KI-Verein bietet fuer einen Spieler des menschlichen Trainers.
+## Was ein Verein bieten muss, um diesen Spieler zu bekommen.
+##
+## Bisher bot jeder dasselbe: Stammspieler zum Standardgehalt. Damit war ein
+## Wechsel entweder von vornherein attraktiv oder von vornherein aussichtslos,
+## und ein Verein hatte keine Möglichkeit, um jemanden zu werben. Wer einen
+## Führungsspieler holen will, bietet ihm die Rolle des Führungsspielers und
+## legt beim Gehalt drauf — und genau daran scheitert es dann auch, wenn er
+## es sich nicht leisten kann.
+static func _werbepaket(d: Dictionary, kaeufer: String, sid: String, grundgehalt: float) -> Dictionary:
+	var sp: Dictionary = d["spieler"][sid]
+	var v: Dictionary = d["vereine"][kaeufer]
+	var eigen: float = Spielerfabrik.gesamt(sp)
+	var kader := _kaderstaerke(d, kaeufer)
+	# Wer deutlich besser ist als der Schnitt, bekommt die grosse Rolle.
+	var rolle := "stammspieler"
+	if eigen >= kader + 6.0:
+		rolle = "leistungstraeger"
+	elif eigen < kader - 4.0:
+		rolle = "rotation"
+	var gehalt := grundgehalt
+	# So lange draufpacken, bis er zusagen wuerde — hoechstens die Haelfte
+	# obendrauf, und nie ueber das, was der Verein tragen kann.
+	var decke: float = float(v["gehaltsbudget"]) * 0.20
+	for _stufe in range(5):
+		if Wechselbereitschaft.ansprechbar(d, sid, kaeufer, rolle, gehalt):
+			break
+		var naechstes: float = gehalt * 1.12
+		if naechstes > grundgehalt * 1.5 or naechstes > decke:
+			break
+		gehalt = naechstes
+	return {"rolle": rolle, "gehalt": gehalt}
+
 static func _angebot_an_spieler(d: Dictionary, kaeufer: String, sid: String, ablöse: float, gehalt: float) -> void:
 	var sp: Dictionary = d["spieler"][sid]
+	var paket := _werbepaket(d, kaeufer, sid, gehalt)
 	var angebot := {
 		"id": _neue_angebots_id(d),
 		"art": "kauf",
@@ -720,9 +817,9 @@ static func _angebot_an_spieler(d: Dictionary, kaeufer: String, sid: String, abl
 		"von": str(sp["verein"]),
 		"nach": kaeufer,
 		"ablöse": ablöse * Namen.bereich(0.85, 1.15),
-		"gehalt": gehalt,
+		"gehalt": float(paket["gehalt"]),
 		"laufzeit": Namen.wuerfel(2, 4),
-		"rolle": "stammspieler",
+		"rolle": str(paket["rolle"]),
 		"status": "eingegangen",
 		"richtung": "eingehend",
 		"frist_tag": int(d["tag"]) + Namen.wuerfel(3, 6),
@@ -738,8 +835,24 @@ static func _angebot_an_spieler(d: Dictionary, kaeufer: String, sid: String, abl
 		"daten": {"angebot": str(angebot["id"]), "spieler": sid},
 	})
 
+## Wie viele unbeantwortete Angebote gleichzeitig hoechstens hereinkommen.
+##
+## Ohne Deckel liegen bei einem Spitzenverein zweistellig viele gleichzeitig
+## im Posteingang, und keines davon ist mehr eine Nachricht.
+const EINGEHEND_MAX := 3
+
+static func _offene_eingehende(d: Dictionary) -> int:
+	var n := 0
+	for a in d["transfermarkt"]["angebote"]:
+		if str((a as Dictionary).get("richtung", "")) == "eingehend" \
+				and str((a as Dictionary)["status"]) == "eingegangen":
+			n += 1
+	return n
+
 static func _angebot_fuer_eigene_spieler(d: Dictionary, cid: String) -> void:
 	if Namen.zufall() > 0.3:
+		return
+	if _offene_eingehende(d) >= EINGEHEND_MAX:
 		return
 	var kader: Array = d["vereine"][cid]["kader"]
 	if kader.is_empty():
@@ -747,6 +860,8 @@ static func _angebot_fuer_eigene_spieler(d: Dictionary, cid: String) -> void:
 	var sid: String = str(kader[Namen.wuerfel(0, kader.size() - 1)])
 	var sp: Dictionary = d["spieler"][sid]
 	if Spielerfabrik.gesamt(sp) < 55.0 and not bool(sp.get("auf_transferliste", false)):
+		return
+	if unverkaeuflich(d, sid):
 		return
 	var interessenten: Array = []
 	for anderer in Weltgenerator.clubs(d):
@@ -756,6 +871,16 @@ static func _angebot_fuer_eigene_spieler(d: Dictionary, cid: String) -> void:
 		if float(av["ruf"]) < Spielerfabrik.gesamt(sp) - 18.0:
 			continue
 		if float(av["transferbudget"]) < float(sp["wert"]) * 0.8:
+			continue
+		# Die Frage, die vorher niemand stellte: wuerde er dort ueberhaupt
+		# unterschreiben? Ohne sie gingen 210 Angebote in zwei Saisons ein,
+		# von denen der Spieler 201 ablehnte — richtig abgelehnt, aber sinnlos
+		# gestellt.
+		if Wechselbereitschaft.hat_abfuhr(d, sid, str(anderer)):
+			continue
+		var paket := _werbepaket(d, str(anderer), sid, Finanzen.gehaltswunsch(d, str(anderer), sp))
+		if not Wechselbereitschaft.ansprechbar(d, sid, str(anderer),
+				str(paket["rolle"]), float(paket["gehalt"])):
 			continue
 		interessenten.append(anderer)
 	if interessenten.is_empty():
@@ -771,9 +896,11 @@ static func eingehendes_angebot_entscheiden(d: Dictionary, angebots_id: String, 
 		if annehmen:
 			var sid: String = str(a["spieler"])
 			var sp: Dictionary = d["spieler"][sid]
-			if _attraktivitaet(d, sp, str(a["nach"]), str(a["rolle"])) < 0.3 and not bool(sp.get("transferwunsch", false)):
+			if _attraktivitaet(d, sp, str(a["nach"]), str(a["rolle"]), float(a["gehalt"])) < 0.30 \
+					and not bool(sp.get("transferwunsch", false)):
 				a["status"] = "abgelehnt"
-				return {"ok": false, "grund": "%s lehnt den Wechsel ab." % Spielerfabrik.voller_name(sp)}
+				Wechselbereitschaft.abfuhr_merken(d, sid, str(a["nach"]))
+				return {"ok": false, "grund": Wechselbereitschaft.absage_grund(d, sid, str(a["nach"]))}
 			transfer_durchfuehren(d, sid, str(a["nach"]), float(a["ablöse"]), float(a["gehalt"]), int(a["laufzeit"]), str(a["rolle"]))
 			a["status"] = "abgeschlossen"
 			return {"ok": true, "grund": "Der Transfer ist vollzogen."}
@@ -811,3 +938,91 @@ static func geruechtekueche(d: Dictionary) -> void:
 			(d["transfermarkt"]["gerüchte"] as Array).resize(60)
 		if Namen.zufall() < 0.35:
 			Medien.geruecht(d, text)
+
+# --------------------------------------- Verhandeln über ein Angebot ---
+#
+# Bisher war ein eingehendes Angebot ein Ja-Nein-Knopf. Das ist genau die
+# Situation, in der ein Sportdirektor eigentlich zum Hörer greift: der Preis
+# stimmt nicht, aber reden kann man. Wer nur ablehnen kann, verhandelt nicht,
+# er verwaltet.
+
+## Wie weit über der gebotenen Ablöse eine Nachforderung noch besprochen wird.
+const NACHFORDERUNG_MAX := 2.2
+
+## Fordert für ein eingehendes Angebot eine höhere Ablöse.
+##
+## Der Käufer entscheidet sofort: er zahlt, er kommt entgegen, oder er steigt
+## aus. Wie weit er geht, hängt daran, wie sehr er den Spieler braucht und was
+## er sich leisten kann — nicht am Zufall allein.
+static func gegenforderung_stellen(d: Dictionary, angebots_id: String, forderung: float) -> Dictionary:
+	for a in d["transfermarkt"]["angebote"]:
+		if str(a["id"]) != angebots_id:
+			continue
+		if str(a["richtung"]) != "eingehend" or str(a["status"]) != "eingegangen":
+			return {"ok": false, "grund": "Über dieses Angebot lässt sich nicht mehr verhandeln."}
+		var sid: String = str(a["spieler"])
+		var sp: Dictionary = d["spieler"][sid]
+		var kaeufer: Dictionary = d["vereine"][str(a["nach"])]
+		var geboten: float = float(a["ablöse"])
+		if forderung <= geboten:
+			return {"ok": false, "grund": "Das wäre keine Nachforderung."}
+		if forderung > geboten * NACHFORDERUNG_MAX:
+			a["status"] = "abgelehnt"
+			a["antwort"] = "%s hält die Forderung für unseriös und zieht das Angebot zurück." % str(kaeufer["name"])
+			Wechselbereitschaft.abfuhr_merken(d, sid, str(a["nach"]))
+			return {"ok": false, "grund": a["antwort"]}
+		# Was der Käufer höchstens zu zahlen bereit ist: sein Budget, gedeckelt
+		# durch den Wert des Spielers für ihn.
+		var eigen: float = Spielerfabrik.gesamt(sp)
+		var luecke: float = maxf(eigen - _kaderstaerke(d, str(a["nach"])), 0.0)
+		var schmerzgrenze: float = minf(
+			float(kaeufer["transferbudget"]),
+			ablösevorstellung(d, sid) * (1.15 + clampf(luecke / 20.0, 0.0, 0.55)))
+		if forderung <= schmerzgrenze:
+			a["ablöse"] = forderung
+			a["antwort"] = "%s geht mit: %s." % [str(kaeufer["name"]), Stil.geld(forderung)]
+			return {"ok": true, "grund": "%s\n\nDas Angebot liegt jetzt bei %s — Sie können es annehmen." % [
+				a["antwort"], Stil.geld(forderung)]}
+		if schmerzgrenze > geboten * 1.04:
+			# Teilweises Entgegenkommen: der Käufer legt nach, aber nicht bis
+			# zur Forderung. Jetzt liegt der Ball wieder beim Verkäufer.
+			a["ablöse"] = schmerzgrenze
+			a["antwort"] = "%s bietet nach: %s. Mehr geht nicht." % [
+				str(kaeufer["name"]), Stil.geld(schmerzgrenze)]
+			return {"ok": true, "grund": "%s\n\nAnnehmen oder ablehnen." % a["antwort"]}
+		a["status"] = "abgelehnt"
+		a["antwort"] = "%s kann nicht nachlegen und zieht das Angebot zurück." % str(kaeufer["name"])
+		Wechselbereitschaft.abfuhr_merken(d, sid, str(a["nach"]))
+		return {"ok": false, "grund": a["antwort"]}
+	return {"ok": false, "grund": "Angebot nicht gefunden."}
+
+## Was der Käufer voraussichtlich noch zahlen würde — als Orientierung für die
+## Oberfläche, damit man nicht ins Blaue fordert.
+static func schmerzgrenze_schaetzen(d: Dictionary, angebots_id: String) -> float:
+	for a in d["transfermarkt"]["angebote"]:
+		if str(a["id"]) != angebots_id:
+			continue
+		var sid: String = str(a["spieler"])
+		var eigen: float = Spielerfabrik.gesamt(d["spieler"][sid])
+		var luecke: float = maxf(eigen - _kaderstaerke(d, str(a["nach"])), 0.0)
+		return minf(float(d["vereine"][str(a["nach"])]["transferbudget"]),
+			ablösevorstellung(d, sid) * (1.15 + clampf(luecke / 20.0, 0.0, 0.55)))
+	return 0.0
+
+## Die drei Nachforderungen, die zu einem Angebot passen.
+##
+## Benannte Stufen statt eines Schiebereglers: eine Forderung ist eine
+## Entscheidung mit einer Zahl, kein Suchlauf. Was darüber liegt, nimmt der
+## Käufer ohnehin nicht ernst — deshalb steht die Obergrenze fest.
+static func forderungsstufen(d: Dictionary, a: Dictionary) -> Array:
+	var geboten: float = float(a["ablöse"])
+	var vorstellung: float = ablösevorstellung(d, str(a["spieler"]))
+	var stufen: Array = [
+		{"name": "+15 %", "betrag": geboten * 1.15},
+		{"name": "+35 %", "betrag": geboten * 1.35},
+	]
+	# Die eigene Bewertung nur anbieten, wenn sie überhaupt darüber liegt und
+	# noch im verhandelbaren Bereich ist.
+	if vorstellung > geboten * 1.4 and vorstellung <= geboten * NACHFORDERUNG_MAX:
+		stufen.append({"name": "Unsere Bewertung", "betrag": vorstellung})
+	return stufen

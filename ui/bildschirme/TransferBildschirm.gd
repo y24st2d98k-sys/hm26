@@ -288,6 +288,22 @@ func _verhandlung(a: Dictionary) -> Control:
 			_melde(str(erg["grund"]), bool(erg["ok"]))
 			aktualisieren())
 		zeile.add_child(ja)
+		# Nachfordern statt nur ja oder nein. Ein Angebot, das man nur
+		# annehmen oder ablehnen kann, ist keine Verhandlung, sondern ein
+		# Formular — und der Preis stimmt beim ersten Anruf selten.
+		# Nachfordern statt nur ja oder nein. Drei benannte Stufen statt eines
+		# Schiebereglers: man soll die Zahl sehen, die man fordert, und nicht
+		# ins Blaue schieben.
+		for stufe in Transfermarkt.forderungsstufen(Welt.daten, a):
+			var e: Dictionary = stufe
+			var k := Stil.knopf(str(e["name"]))
+			k.tooltip_text = "%s fordern. Der Käufer zahlt, kommt entgegen oder steigt aus." % Stil.geld(float(e["betrag"]))
+			var betrag: float = float(e["betrag"])
+			k.pressed.connect(func():
+				var erg := Transfermarkt.gegenforderung_stellen(Welt.daten, str(a["id"]), betrag)
+				_melde(str(erg["grund"]), bool(erg["ok"]))
+				aktualisieren())
+			zeile.add_child(k)
 		var nein := Stil.knopf("Ablehnen")
 		nein.pressed.connect(func():
 			Transfermarkt.eingehendes_angebot_entscheiden(Welt.daten, str(a["id"]), false)

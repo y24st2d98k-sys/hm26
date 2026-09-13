@@ -148,7 +148,16 @@ Fünf Mittel sorgen dafür, dass das Auge eine Reihenfolge bekommt:
   mit. `FontVariation` macht daraus vier: halbfett für Werte, Knöpfe und
   Spielernamen, fett für Überschriften und große Zahlen, einen gesperrten
   Versalienschnitt für Etiketten — ohne Laufweite kleben Großbuchstaben — und
-  einen engen für lange Zahlenkolonnen. Kein geladenes Asset, vier Gewichte.
+  einen engen für lange Zahlenkolonnen.
+
+  Der erste Entwurf fettete dabei viel zu stark. Godot fettet synthetisch,
+  indem es die Kontur nach außen versetzt; ab etwa 0.08 überschneidet sie sich
+  mit sich selbst. Eine Vergleichstafel über acht Stufen zeigt das Ergebnis:
+  Sporne an den Ecken von „N" und „1", zugelaufene Punzen, ein zerfressenes
+  „M". Bei 0.48, dem ursprünglich gewählten Wert, war jede große Zahl auf dem
+  Bildschirm sichtbar beschädigt. Die Grenze liegt jetzt bei 0.05. Wer einen
+  echten Fettschnitt will, legt eine Schriftdatei in `assets/schrift/` — dann
+  wird die synthetische Fettung abgeschaltet.
 * **Licht kommt von oben.** Jede erhabene Fläche bekommt eine um wenige Prozent
   hellere Oberkante (`Stil.lichtkante`) und einen Schatten nach unten. Ohne
   diesen einen Pixel sieht eine Karte aus wie ein aufgemalter Kasten und nicht
@@ -655,6 +664,115 @@ den ersten zehn eine frühe Entscheidung.
 
 Die Szenen überleben die Kurzfassung: auch von einer fremden Partie, von der
 der Spielstand nur noch das Ergebnis aufhebt, bleiben sie erhalten.
+
+## Wer wechselt wohin — und wer nicht
+
+Diesem Spiel fehlte der Begriff der **Bindung**. Ein Spieler war eine Stärke
+mit einem Marktwert, und jeder Verein, dem diese Stärke fehlte, gab ein
+Angebot ab. Nachgemessen über zwei Saisons bei einem Spitzenverein: **210
+Angebote für den eigenen Kader, von denen der Spieler 201 ablehnte** — eine
+Annahmequote von vier Prozent.
+
+Beide Zahlen sind falsch, und zwar aus derselben Ursache. Die Ablehnungen
+waren nämlich sachlich richtig: wer bei einem Spitzenverein spielt, geht nicht
+zum Tabellenzwölften. Falsch war, dass diese Angebote überhaupt zustande
+kamen. Ein Sportdirektor weiß das vorher und ruft gar nicht erst an.
+
+Deshalb steht in `kern/Wechselbereitschaft.gd` jetzt eine Frage vor jedem
+Angebot: **würde dieser Spieler überhaupt zusagen?** Nur dann wird geboten.
+
+### Bindung
+
+Wie fest ein Spieler an seinem Verein hängt, 0 bis 100, aus Dingen, die man
+einem Kader ansieht: Dienstjahre, eigene Jugend, Loyalität als
+Charaktereigenschaft, seine Rolle, ob er spielt. Dagegen: Unzufriedenheit, ein
+Transferwunsch, das letzte Vertragsjahr.
+
+Eine **Identifikationsfigur** ab 78 ist praktisch nicht zu holen. Ein
+Ergänzungsspieler ohne Einsatzzeit steht auf dem Sprung.
+
+### Der Rivale
+
+Der Fall, den man beim Namen nennt: ein Führungsspieler wechselt nicht zum
+direkten Konkurrenten, auch nicht für mehr Geld. Je fester er sitzt, desto
+undenkbarer — bis zu 0,75 Abzug, mehr als jeder andere Einzelposten.
+
+Dafür mussten die Rivalitäten echt werden. Bis hierher würfelte das Spiel sie
+aus: zufällige Paare je Liga plus gleiche Ortsendung. Für eine erfundene Welt
+ist das richtig, für eine echte falsch — das Nordderby zwischen Kiel und
+Flensburg ist keine Frage des Zufalls. In `daten/ligen.json` stehen jetzt 58
+echte Rivalitätspaare über sieben Ligen: Kiel–Flensburg (92), Kielce–Płock
+(88), Kiel–Magdeburg (80), Gummersbach–Bergischer HC (80), Stuttgart–Göppingen
+(78), Essen–Hamm (70) und so weiter.
+
+Gemessen für das Aushängeschild eines Spitzenvereins (Bindung 77):
+
+| Zielverein | Ruf | Rivalität | Zielwert | bietet? |
+|---|---|---|---|---|
+| THW Kiel | 90 | 84 | 0,00 | nein |
+| Füchse Berlin | 89 | 69 | 0,00 | nein |
+| SG Flensburg-Handewitt | 87 | 71 | 0,00 | nein |
+| MT Melsungen | 84 | 51 | 0,08 | nein |
+| Rhein-Neckar Löwen | 83 | 3 | 0,25 | nein |
+
+Für einen Ergänzungsspieler desselben Kaders (Bindung 0) kämen dagegen zehn
+von siebzehn Ligavereinen in Frage.
+
+### Werben statt bieten
+
+Bisher bot jeder Verein dasselbe: Stammspieler zum Standardgehalt. Damit war
+ein Wechsel entweder von vornherein attraktiv oder von vornherein
+aussichtslos. Wer jetzt einen Führungsspieler holen will, bietet ihm die Rolle
+des Führungsspielers und legt beim Gehalt drauf — bis zu fünfzig Prozent, und
+nie über das, was der Verein tragen kann. Genau daran scheitert es dann auch.
+
+Dazu zwei Bremsen: höchstens drei unbeantwortete Angebote gleichzeitig, und
+ein Verein, dem gerade abgesagt wurde, ruft 45 Tage lang nicht wieder an.
+
+**Nach den Änderungen, gleiche Messung:** 11 Angebote in zwei Saisons statt
+210, Annahmequote 100 statt 4 Prozent. Das Transfervolumen der Welt bleibt bei
+rund 1,5 Wechseln je Verein und Saison.
+
+### Verhandeln statt abnicken
+
+Ein eingehendes Angebot war ein Ja-Nein-Knopf — also kein Verhandeln, sondern
+Verwalten. Jetzt lässt sich nachfordern, in drei benannten Stufen (+15 %,
++35 %, die eigene Bewertung). Der Käufer zahlt, kommt teilweise entgegen oder
+steigt aus; wie weit er geht, hängt an seinem Budget und daran, wie sehr ihm
+der Spieler in der Mannschaft fehlt. Mehr als das Doppelte des Gebots nimmt
+niemand ernst — dann ist das Angebot weg.
+
+## Vorverträge
+
+Im Handball ist das der Normalfall, nicht die Ausnahme: Wechsel werden Monate
+vor dem Sommer bekanntgegeben, oft schon im Herbst. Ein Spieler, dessen
+Vertrag im Sommer endet, darf vorher woanders unterschreiben und spielt die
+laufende Saison bei seinem alten Verein zu Ende.
+
+Bisher kannte das Spiel nur den sofortigen Wechsel im offenen Fenster. Die Art
+„vorvertrag" gab es zwar im Code, wurde aber nirgends anders behandelt — der
+Spieler wechselte trotzdem sofort, und in der Oberfläche war sie gar nicht
+erreichbar.
+
+Drei Regeln:
+
+1. Möglich nur für Spieler, deren Vertrag am Saisonende ausläuft, und erst ab
+   Tag 120 der Saison. Ein Vertrag, der noch anderthalb Jahre läuft, wird
+   nicht im August für übermorgen verhandelt.
+2. **Ablösefrei** — der abgebende Verein bekommt nichts und wird nicht gefragt.
+   Genau das macht die Sache für ihn schmerzhaft, und deshalb geht die
+   Verhandlung direkt an den Spieler.
+3. Möglich auch bei **geschlossenem Transferfenster**. Das Fenster regelt, wann
+   jemand die Mannschaft wechselt, nicht wann er unterschreibt.
+
+Die Computervereine tun dasselbe — sonst wäre der Vorvertrag ein Werkzeug, das
+nur einer benutzt, und ablösefreie Spitzenspieler lägen jeden Sommer als
+Geschenk herum. Gemessen über zwei Saisons: bis zu sieben offene Zusagen
+gleichzeitig.
+
+Wer einen eigenen Spieler zu spät verlängert, erfährt es als Nachricht: „X hat
+für die kommende Saison bei Y unterschrieben. Er bleibt bis zum Saisonende,
+geht dann aber ablösefrei — eine Ablöse ist nicht mehr zu erzielen."
 
 ## Deadline Day
 

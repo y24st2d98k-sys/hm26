@@ -60,45 +60,84 @@ const A_RIESIG := 26
 #
 # Die Engine bringt genau einen Schnitt mit. Ohne Gewichtsunterschied klingt
 # jede Fläche gleich laut: Überschrift, Wert und Fußnote unterscheiden sich nur
-# in der Größe, und das reicht nicht, um ein Auge zu führen. FontVariation
-# erzeugt Halbfett, Fett und einen gesperrten Versalienschnitt aus derselben
-# Datei — ohne ein einziges geladenes Asset.
+# in der Größe, und das reicht nicht, um ein Auge zu führen.
+#
+# Der erste Versuch löste das mit FontVariation.variation_embolden — und das
+# war falsch. Godot fettet synthetisch, indem es die Kontur nach außen
+# versetzt; ab etwa 0.08 überschneidet sich die Kontur mit sich selbst, und in
+# einer Vergleichstafel über acht Stufen sieht man das Ergebnis: Sporne an den
+# Ecken von "N" und "1", zugelaufene Punzen, ein zerfressenes "M". Bei 0.48,
+# dem ursprünglich gewählten Wert, ist jede große Zahl sichtbar beschädigt.
+#
+# Deshalb zwei Wege statt einem:
+#   * synthetisch nur noch bis 0.05 — spürbar, aber ohne Artefakte
+#   * echte Schriftdateien in assets/schrift/ haben Vorrang, sobald welche
+#     dort liegen. Erst damit gibt es einen wirklichen Fettschnitt.
 
-var _schnitt_halbfett: FontVariation = null
-var _schnitt_fett: FontVariation = null
-var _schnitt_gesperrt: FontVariation = null
-var _schnitt_eng: FontVariation = null
+## Ordner für eigene Schriftdateien. Erkannt werden "normal", "halbfett" und
+## "fett" mit den üblichen Endungen.
+const SCHRIFTORDNER := "res://assets/schrift"
+const SCHRIFT_ENDUNGEN := ["ttf", "otf", "woff2", "woff"]
+## So weit darf synthetisch gefettet werden, ohne dass die Kontur ausfranst.
+const EMBOLDEN_GRENZE := 0.05
 
-func _schnitt(embolden: float, sperrung: float) -> FontVariation:
+var _schnitte: Dictionary = {}
+
+## Sucht eine hinterlegte Schriftdatei. Auch das Nichtvorhandensein wird
+## gemerkt — sonst prüft jeder Bildschirmaufbau das Dateisystem erneut.
+func _datei_schrift(name: String) -> Font:
+	var schluessel := "datei_" + name
+	if _schnitte.has(schluessel):
+		return _schnitte[schluessel]
+	var gefunden: Font = null
+	for endung in SCHRIFT_ENDUNGEN:
+		var pfad := "%s/%s.%s" % [SCHRIFTORDNER, name, endung]
+		if ResourceLoader.exists(pfad):
+			var res := ResourceLoader.load(pfad)
+			if res is Font:
+				gefunden = res
+				break
+	_schnitte[schluessel] = gefunden
+	return gefunden
+
+## Ein Schnitt: bevorzugt die hinterlegte Datei, sonst die Engine-Schrift mit
+## maßvoller synthetischer Fettung.
+func _schnitt(name: String, datei: String, embolden: float, sperrung: int) -> FontVariation:
+	if _schnitte.has(name):
+		return _schnitte[name]
 	var f := FontVariation.new()
-	f.base_font = ThemeDB.fallback_font
-	f.variation_embolden = embolden
-	f.spacing_glyph = int(sperrung)
+	var eigen := _datei_schrift(datei)
+	if eigen != null:
+		# Mit echtem Schnitt ist synthetische Fettung überflüssig und schädlich.
+		f.base_font = eigen
+		f.variation_embolden = 0.0
+	else:
+		f.base_font = grundschrift()
+		f.variation_embolden = clampf(embolden, 0.0, EMBOLDEN_GRENZE)
+	f.spacing_glyph = sperrung
+	_schnitte[name] = f
 	return f
+
+## Die Grundschrift für alles ohne besonderen Schnitt.
+func grundschrift() -> Font:
+	var eigen := _datei_schrift("normal")
+	return eigen if eigen != null else ThemeDB.fallback_font
 
 ## Halbfett — Werte, Knöpfe, Spielernamen.
 func schnitt_halbfett() -> FontVariation:
-	if _schnitt_halbfett == null:
-		_schnitt_halbfett = _schnitt(0.22, 0)
-	return _schnitt_halbfett
+	return _schnitt("halbfett", "halbfett", 0.03, 0)
 
 ## Fett — Überschriften und große Zahlen.
 func schnitt_fett() -> FontVariation:
-	if _schnitt_fett == null:
-		_schnitt_fett = _schnitt(0.48, 0)
-	return _schnitt_fett
+	return _schnitt("fett", "fett", 0.05, 0)
 
 ## Gesperrt — Versalien-Etiketten. Ohne Laufweite kleben Großbuchstaben.
 func schnitt_gesperrt() -> FontVariation:
-	if _schnitt_gesperrt == null:
-		_schnitt_gesperrt = _schnitt(0.20, 1)
-	return _schnitt_gesperrt
+	return _schnitt("gesperrt", "halbfett", 0.02, 1)
 
 ## Eng — lange Zahlenkolonnen, die sonst die Spalte sprengen.
 func schnitt_eng() -> FontVariation:
-	if _schnitt_eng == null:
-		_schnitt_eng = _schnitt(0.0, -1)
-	return _schnitt_eng
+	return _schnitt("eng", "normal", 0.0, -1)
 
 var _theme: Theme = null
 

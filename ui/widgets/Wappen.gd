@@ -33,6 +33,10 @@ var logo: Texture2D = null
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Echte Vereinslogos liegen als 256er- oder 512er-Bild vor und werden hier
+	# auf 16 bis 50 Pixel verkleinert. Ohne Mipmaps flimmert dabei jede Kante
+	# und feine Schrift im Logo wird zu Brei.
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 ## Sucht ein hinterlegtes Logo. Ergebnis wird gemerkt, auch das Nichtvorhandensein.
 static func logo_fuer(kuerzel: String) -> Texture2D:
@@ -82,8 +86,21 @@ func _draw() -> void:
 		return
 	var versatz := Vector2((size.x - s) * 0.5, (size.y - s) * 0.5)
 	# Ein hinterlegtes Logo hat Vorrang vor dem gezeichneten Wappen.
+	#
+	# Es wird eingepasst, nicht eingequetscht. Der erste Entwurf zeichnete
+	# jedes Logo in ein Quadrat — echte Vereinslogos sind aber selten
+	# quadratisch, und ein hochformatiges Wappen kam dadurch in die Breite
+	# gezogen heraus. Eingepasst heißt: die längere Kante füllt das Feld, die
+	# kürzere wird mittig gesetzt.
 	if logo != null:
-		draw_texture_rect(logo, Rect2(versatz, Vector2(s, s)), false)
+		var bild := logo.get_size()
+		if bild.x > 0.0 and bild.y > 0.0:
+			var faktor: float = minf(s / bild.x, s / bild.y)
+			var gross := bild * faktor
+			draw_texture_rect(logo,
+				Rect2(versatz + (Vector2(s, s) - gross) * 0.5, gross), false)
+		else:
+			draw_texture_rect(logo, Rect2(versatz, Vector2(s, s)), false)
 		return
 	var a: Color = wappen.get("a", STANDARD["a"])
 	var b: Color = wappen.get("b", STANDARD["b"])
