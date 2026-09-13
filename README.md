@@ -734,6 +734,123 @@ kommen aus denselben Formeln, mit denen die Simulation rechnet:
 
 ---
 
+## Wie sich das Spiel anfühlen soll
+
+Tiefe allein macht kein gutes Spiel. Ein Managerspiel wird an drei Stellen
+gewonnen oder verloren: ob der häufigste Knopfdruck sofort etwas tut, ob man
+nach dem ersten Start weiß, wo man anfangen soll, und ob nichts kaputtgeht,
+wenn etwas schiefläuft. Alle drei sind gemessen, nicht behauptet.
+
+### Der Spieltag blockiert nicht
+
+Ein voller Spieltag sind bis zu 68 Partien — rund anderthalb Sekunden
+Rechenzeit. Am Stück gerechnet steht das Bild so lange still, und ein
+stehendes Bild nach einem Knopfdruck fühlt sich nach Absturz an. Deshalb
+rechnet die Oberfläche den Spieltag **in Scheiben zu vier Partien** und lässt
+zwischen ihnen ein Bild durch: ein Balken zeigt „34 von 68 Partien
+abgepfiffen“. Kleine Spieltage laufen ohne Anzeige durch — ein Balken, der für
+achtzig Millisekunden aufblitzt, ist schlimmer als keiner.
+
+`Welt.tag_weiter()` bleibt als Ganzes erhalten, für Vorspulen, Tests und
+Werkzeuge. Beide Wege rechnen dasselbe; der Oberflächentest prüft genau das.
+
+### Was gemessen wurde
+
+`werkzeuge/Leistung.tscn` beziffert, was jeder Schritt kostet, damit
+Optimierung eine Messung und keine Vermutung ist. Der Stand vor und nach dem
+Leistungsdurchgang, bei 3.221 Spielern und 156 Vereinen:
+
+| | vorher | nachher |
+| --- | --- | --- |
+| Tageswechsel, Median | 437 ms | **154 ms** |
+| Tageswechsel, Mittel | 750 ms | **423 ms** |
+| Neue Karriere anlegen | 2.671 ms | **641 ms** |
+| Transfermarkt öffnen | 680 ms | **245 ms** |
+| 300 Partien durchrechnen | 20,0 s | **7,8 s** |
+| 400 Tage Integritätsprüfung | 380 s | **160 s** |
+| Spielstand laden | 1.228 ms | **753 ms** |
+| Spielstandgröße | 22,2 MB | **6,9 MB** |
+
+Drei Ursachen, alle derselben Art — **etwas Teures wurde immer wieder neu
+gerechnet, obwohl es sich nicht geändert hatte**:
+
+* **Werte, die eine Partie lang gleich bleiben** (Kabinenklima, Prävention der
+  medizinischen Abteilung, Trainerprägungen, Ausdauer, Deckungswerte,
+  Anweisungsmittel, wer auf der Platte steht) wurden bei jedem einzelnen
+  Angriff neu geholt. `Medizin.risiko` etwa lief dabei jedes Mal durch das
+  gesamte Personal des Vereins. Sie liegen jetzt im Mannschaftszustand und
+  werden bei jedem Wechsel, jeder Zeitstrafe und jeder Umstellung verworfen.
+* **Teure Vergleiche in `sort_custom`.** Ein Vergleich läuft n·log n mal;
+  `Spielerfabrik.gesamt()` summiert dabei jedes Mal zwanzig Attribute. Bei
+  dreitausend Spielern sind das über hunderttausend Attributschleifen für eine
+  einzige Liste. `Spielerfabrik.nach_staerke()` und `nach_kennzahl()` rechnen
+  einmal und sortieren dann.
+* **Der Gesamtwert selbst.** Er wird überall gebraucht und ändert sich an genau
+  sechs Stellen (Training, Alterung, Lager, Jugend, Patenschaft). Er wird jetzt
+  im Spieler gemerkt und dort verworfen. Damit das verlässlich bleibt, rechnet
+  `werkzeuge/Pruefung.gd` ihn für **jeden** Spieler frisch nach und vergleicht:
+  ein vergessenes Verwerfen fällt beim nächsten Prüflauf auf, nicht erst nach
+  drei Saisons.
+
+Der Spielstand wird außerdem **komprimiert** abgelegt (Zstd): er besteht zu
+weiten Teilen aus Wiederholung — dieselben Schlüsselnamen in dreitausend
+Spielerwörterbüchern — und schrumpft auf ein Drittel. Das Speichern dauert
+dadurch etwas länger (544 → 749 ms), das Laden deutlich kürzer. Der Tausch
+lohnt sich, weil man aufs Laden bewusst wartet und das wöchentliche Sichern
+nebenherläuft. Ältere, unkomprimierte Spielstände werden weiterhin gelesen.
+
+### Der erste Start erklärt sich
+
+Fünfundzwanzig Bildschirme ohne ein Wort dazu sind keine Tiefe, sondern eine
+Wand. Beim allerersten Mal öffnet sich deshalb von selbst eine Kurzanleitung:
+links die ersten fünf Schritte, jeder mit einem Knopf, der direkt dorthin
+führt; rechts die Tastenkürzel. Danach liegt sie auf **F1** und auf einem `?`
+in der Kopfzeile.
+
+### Tastenkürzel
+
+Ein Managerspiel wird mit den Händen auf der Tastatur gespielt, nicht mit der
+Maus auf Wanderschaft durch eine Seitenleiste.
+
+| Taste | Wirkung |
+| --- | --- |
+| Leertaste | Einen Tag weiter |
+| F1 | Kurzanleitung |
+| 1 – 0 | Die zehn häufigsten Bildschirme |
+| B / K / A | Büro, Kader, Aufstellung |
+| T / F / N | Transfermarkt, Finanzen, Nachrichten |
+| S / Z / J | Spielplan, Scouting, Nachwuchs |
+| V / M | Vorstand, Medien |
+
+### Ein beschädigter Spielstand stürzt nicht ab
+
+Bisher genügte eine abgeschnittene oder fremde Datei, um das Spiel beim ersten
+Zugriff abstürzen zu lassen — geprüft wurde nur, ob überhaupt ein Wörterbuch
+darin stand. Jetzt prüft `Welt.spielstand_pruefen()` die tragenden Abschnitte
+(Tag, Startjahr, Vereine, Spieler, Ligen, Spiele, Zähler), ihre Typen und ob
+der eigene Verein noch existiert. Schlägt das fehl, bleibt der alte Zustand
+stehen und die Oberfläche nennt den Grund — „Dem Spielstand fehlt der Abschnitt
+Vereine“ statt „Laden fehlgeschlagen“.
+
+### Das Layout wird geprüft, nicht angeschaut
+
+Ein abgeschnittener Text fällt auf einem Bildschirmfoto nur auf, wenn man genau
+hinsieht — und bei fünfundzwanzig Bildschirmen sieht irgendwann niemand mehr
+genau hin. `werkzeuge/Layoutpruefung.tscn` spielt eine Vierteljahressaison,
+öffnet jeden Bildschirm mit echten Inhalten und vermisst jeden Knoten:
+
+* Inhalt, der über den rechten Rand hinausragt
+* Beschriftungen, die breiter sind als ihr Platz (also abgeschnitten werden),
+  wobei bewusst gekürzte Texte nur als Hinweis gelten
+* Klickflächen unter 22 Pixeln Höhe
+
+Der aktuelle Stand: **0 Layoutfehler, 0 Hinweise.** Der Lauf davor meldete 294
+zu kleine Klickflächen — flache Knöpfe waren 19 Pixel hoch und damit in einer
+Tabelle mit zwanzig davon untereinander nicht zuverlässig zu treffen.
+`Stil.KLICKFLAECHE_MIN` setzt sie auf 24.
+
+---
+
 ## Warum das Spiel zweidimensional ist — und wo nicht
 
 Eine Draufsicht liest sich in einem Manager besser als eine Kameraperspektive:
@@ -1057,7 +1174,13 @@ ui/
                      Nachrichten- und Vorspulfenster
   bildschirme/       25 Bildschirme
 daten/               ligen.json und kader.json — die echten Vereine und Kader
-werkzeuge/           Test- und Kalibrierungsszenen
+werkzeuge/           Test-, Mess- und Kalibrierungsszenen
+  Pruefung.gd        Simuliert Jahre und prüft harte Zusagen der Spielwelt
+  Layoutpruefung.gd  Vermisst jeden Knoten jedes Bildschirms auf Überstand
+  Leistung.gd        Misst Tageswechsel, Bildschirmaufbau, Speichern, Laden
+  Oberflaechentest.gd  Führt jedes System einmal vor und prüft das Ergebnis
+  Kaltstarttest.gd   Startet ohne Spielstand und öffnet jeden Bildschirm
+  Testlauf.gd        Kalibrierung: 300 Partien, Tore, Strafen, Heimvorteil
 ```
 
 ---

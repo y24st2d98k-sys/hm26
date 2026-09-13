@@ -191,6 +191,7 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 		var abbau: float = (float(alter_jahre) - 30.0) * 0.028
 		for a in ["tempo", "sprungkraft", "beweglichkeit", "ausdauer"]:
 			sp["attr"][a] = clampf(float(sp["attr"][a]) - abbau * Namen.bereich(0.4, 1.4), 1.0, 20.0)
+		Spielerfabrik.staerke_verwerfen(sp)
 
 	if zuwachs <= 0.0001:
 		return
@@ -203,6 +204,7 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 		if Spielerfabrik.gesamt(sp) >= potenzial and Namen.zufall() < 0.8:
 			break
 		sp["attr"][a] = clampf(float(sp["attr"][a]) + zuwachs * Namen.bereich(0.5, 1.6), 1.0, 20.0)
+		Spielerfabrik.staerke_verwerfen(sp)
 	sp["wert"] = Spielerfabrik.marktwert(sp)
 
 static func _positionsattribute(sp: Dictionary) -> Array:

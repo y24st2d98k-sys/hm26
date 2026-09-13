@@ -226,7 +226,22 @@ func ungelesene_nachrichten() -> int:
 
 ## Schaltet einen Tag weiter und verarbeitet alles, was an diesem Tag passiert.
 ## Gibt eine Unterbrechung zurueck, wenn die Oberflaeche eingreifen soll.
+## Einen Tag weiterschalten — am Stück. Die Oberfläche benutzt stattdessen
+## `tag_beginnen` / `spieltag_scheibe` / `tag_abschliessen`, damit ein Spieltag
+## mit 68 Partien das Bild nicht sekundenlang einfriert. Beide Wege rechnen
+## dasselbe; dieser hier bleibt für Vorspulen, Tests und Werkzeuge.
 func tag_weiter() -> Dictionary:
+	var erg := tag_beginnen()
+	if not erg.is_empty():
+		return erg
+	var t: int = tag()
+	spieltag_abwickeln(t)
+	return tag_abschliessen(t)
+
+## Erster Teil eines Tages: Datum vorstellen, alle Tagessysteme laufen lassen
+## und prüfen, ob eine Partie des Spielers ansteht. Gibt eine Unterbrechung
+## zurück, wenn der Tag hier enden muss.
+func tag_beginnen() -> Dictionary:
 	unterbrechung = {}
 	daten["tag"] = tag() + 1
 	var t: int = tag()
@@ -258,8 +273,10 @@ func tag_weiter() -> Dictionary:
 		live_spiel_faellig.emit(eigenes)
 		tag_gewechselt.emit(t)
 		return unterbrechung
+	return {}
 
-	spieltag_abwickeln(t)
+## Letzter Teil eines Tages: Wochen- und Saisonrhythmus, dann die Signale.
+func tag_abschliessen(t: int) -> Dictionary:
 	wochenrhythmus(t)
 	saison_pruefen(t)
 	tag_gewechselt.emit(t)
@@ -301,12 +318,53 @@ func vorspulen(ziel_tag: int, eigene_simulieren: bool = true) -> Dictionary:
 
 ## Rechnet alle Partien eines Tages ab (ohne die des Spielers, falls schon gespielt).
 func spieltag_abwickeln(t: int) -> void:
-	var heute: Array = (spiele_am_tag(t) as Array).duplicate()
-	for mid in heute:
+	spieltag_starten(t)
+	while spieltag_scheibe(9999) > 0:
+		pass
+	spieltag_beenden()
+
+# --------------------------------------------------- Spieltag in Scheiben ---
+#
+# Ein voller Spieltag sind bis zu 68 Partien und damit rund anderthalb
+# Sekunden Rechenzeit. Am Stück gerechnet steht das Bild so lange still, und
+# ein stehendes Bild nach einem Knopfdruck fühlt sich nach Absturz an. Die
+# Oberfläche holt sich den Spieltag deshalb in Scheiben und zeigt dazwischen
+# an, wie weit er ist.
+
+## Noch offene Partien des laufenden Spieltags.
+var _spieltag_rest: Array = []
+## Wie viele es zu Beginn waren — für die Fortschrittsanzeige.
+var _spieltag_gesamt: int = 0
+
+func spieltag_starten(t: int) -> int:
+	_spieltag_rest.clear()
+	for mid in (spiele_am_tag(t) as Array):
 		var m: Dictionary = daten["spiele"].get(mid, {})
 		if m.is_empty() or bool(m["gespielt"]):
 			continue
-		partie_simulieren(mid)
+		_spieltag_rest.append(mid)
+	_spieltag_gesamt = _spieltag_rest.size()
+	return _spieltag_gesamt
+
+## Rechnet bis zu `anzahl` Partien und gibt zurück, wie viele noch offen sind.
+func spieltag_scheibe(anzahl: int) -> int:
+	var gerechnet := 0
+	while gerechnet < anzahl and not _spieltag_rest.is_empty():
+		var mid: String = str(_spieltag_rest.pop_front())
+		var m: Dictionary = daten["spiele"].get(mid, {})
+		if not m.is_empty() and not bool(m["gespielt"]):
+			partie_simulieren(mid)
+		gerechnet += 1
+	return _spieltag_rest.size()
+
+func spieltag_fortschritt() -> Dictionary:
+	return {"offen": _spieltag_rest.size(), "gesamt": _spieltag_gesamt,
+		"fertig": _spieltag_gesamt - _spieltag_rest.size()}
+
+## Nach der letzten Partie: Wochenehrungen und Wettbewerbsstände.
+func spieltag_beenden() -> void:
+	_spieltag_rest.clear()
+	_spieltag_gesamt = 0
 	Auszeichnungen.woche_auswerten(daten, mein_verein_id)
 	_wettbewerbe_fortschreiben()
 
@@ -446,6 +504,32 @@ func automatisch_speichern() -> bool:
 
 # ------------------------------------------------------------- Persistenz ---
 
+## Wie Spielstände abgelegt werden.
+##
+## Zstd gegenüber unkomprimiert gemessen: 22,2 → 6,9 MB, Laden 1.228 → 753 ms,
+## Speichern 544 → 749 ms. Der Tausch lohnt sich: aufs Laden wartet man
+## bewusst, wenn man eine Karriere fortsetzt, das wöchentliche Sichern läuft
+## nebenher. FastLZ wäre beim Speichern schneller, aber beim Laden langsamer
+## und die Datei um die Hälfte größer — also der schlechtere Tausch.
+const KOMPRESSION := FileAccess.COMPRESSION_ZSTD
+
+## Liest einen Spielstand, egal ob komprimiert abgelegt oder noch im alten,
+## unkomprimierten Format. Erst der neue Weg, dann der alte — so bleiben
+## Spielstände aus früheren Fassungen lesbar.
+func _spielstand_lesen(pfad: String):
+	var f := FileAccess.open_compressed(pfad, FileAccess.READ, KOMPRESSION)
+	if f != null:
+		var inhalt = f.get_var(false)
+		f.close()
+		if typeof(inhalt) == TYPE_DICTIONARY:
+			return inhalt
+	var alt := FileAccess.open(pfad, FileAccess.READ)
+	if alt == null:
+		return null
+	var roh = alt.get_var(false)
+	alt.close()
+	return roh
+
 func slot_pfad(slot: int) -> String:
 	return "%s/spielstand_%d.hh" % [SPEICHERORDNER, slot]
 
@@ -457,7 +541,11 @@ func speichern(slot: int, bezeichnung: String = "") -> bool:
 		return false
 	daten["version"] = DATENVERSION
 	daten["mein_verein"] = mein_verein_id
-	var f := FileAccess.open(slot_pfad(slot), FileAccess.WRITE)
+	# Komprimiert gespeichert. Ein Spielstand ist zu weiten Teilen Wiederholung
+	# — dieselben Schlüsselnamen in dreitausend Spielerwörterbüchern — und
+	# schrumpft dadurch auf einen Bruchteil. Das spart bei jedem
+	# Wochensicherungspunkt spürbar Zeit und beim Laden noch mehr.
+	var f := FileAccess.open_compressed(slot_pfad(slot), FileAccess.WRITE, KOMPRESSION)
 	if f == null:
 		return false
 	f.store_var(daten, false)
@@ -478,16 +566,54 @@ func speichern(slot: int, bezeichnung: String = "") -> bool:
 		mf.close()
 	return true
 
+## Was ein Spielstand mindestens enthalten muss, um einer zu sein.
+## Ohne diese Prüfung genügte eine abgeschnittene, beschädigte oder fremde
+## Datei, um das Spiel beim ersten Zugriff abstürzen zu lassen — und ein
+## Absturz beim Laden ist das Letzte, was man jemandem zumuten darf, der
+## gerade seine Karriere fortsetzen wollte.
+const PFLICHTFELDER := {
+	"tag": TYPE_INT, "startjahr": TYPE_INT,
+	"vereine": TYPE_DICTIONARY, "spieler": TYPE_DICTIONARY,
+	"ligen": TYPE_DICTIONARY, "spiele": TYPE_DICTIONARY,
+	"zaehler": TYPE_DICTIONARY,
+}
+
+## Prüft einen geladenen Spielstand, ohne ihn zu übernehmen.
+## Gibt einen leeren String zurück, wenn alles stimmt — sonst den Grund.
+static func spielstand_pruefen(kandidat) -> String:
+	if typeof(kandidat) != TYPE_DICTIONARY:
+		return "Die Datei enthält keinen Spielstand."
+	var k: Dictionary = kandidat
+	for feld in PFLICHTFELDER.keys():
+		if not k.has(feld):
+			return "Dem Spielstand fehlt der Abschnitt „%s“." % feld
+		if typeof(k[feld]) != int(PFLICHTFELDER[feld]):
+			return "Der Abschnitt „%s“ ist beschädigt." % feld
+	if (k["vereine"] as Dictionary).is_empty():
+		return "Der Spielstand enthält keine Vereine."
+	if (k["spieler"] as Dictionary).is_empty():
+		return "Der Spielstand enthält keine Spieler."
+	var mein: String = str(k.get("mein_verein", ""))
+	if mein != "" and not (k["vereine"] as Dictionary).has(mein):
+		return "Der eigene Verein steht nicht mehr im Spielstand."
+	return ""
+
+## Warum das letzte Laden fehlschlug — für die Meldung in der Oberfläche.
+var ladefehler: String = ""
+
 func laden(slot: int) -> bool:
+	ladefehler = ""
 	var pfad := slot_pfad(slot)
 	if not FileAccess.file_exists(pfad):
+		ladefehler = "Auf diesem Platz liegt kein Spielstand."
 		return false
-	var f := FileAccess.open(pfad, FileAccess.READ)
-	if f == null:
+	var geladen = _spielstand_lesen(pfad)
+	if geladen == null:
+		ladefehler = "Der Spielstand lässt sich nicht öffnen."
 		return false
-	var geladen = f.get_var(false)
-	f.close()
-	if typeof(geladen) != TYPE_DICTIONARY:
+	var grund := spielstand_pruefen(geladen)
+	if grund != "":
+		ladefehler = grund
 		return false
 	daten = geladen
 	_daten_auffrischen()
@@ -597,6 +723,9 @@ func _daten_auffrischen() -> void:
 			sp["laufbahn"] = []
 		if not sp.has("beziehung"):
 			sp["beziehung"] = 50.0
+		# Der gemerkte Gesamtwert wird beim ersten Zugriff neu gerechnet.
+		if not sp.has("staerke"):
+			sp["staerke"] = -1.0
 		if not sp.has("lernkurve"):
 			sp["lernkurve"] = Namen.glocke(1.0, 0.21, Spielerfabrik.LERNKURVE_MIN, Spielerfabrik.LERNKURVE_MAX)
 		var vertrag: Dictionary = sp.get("vertrag", {})

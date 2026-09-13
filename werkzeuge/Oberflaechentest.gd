@@ -628,6 +628,57 @@ func _ready() -> void:
 	if Darlehen.restschuld(Welt.daten, t_cid) > 0.0:
 		_log("   verbleibende Restschuld: %s" % Stil.geld(Darlehen.restschuld(Welt.daten, t_cid)))
 
+	_log("— Spieltag in Scheiben —")
+	# Der Weg, den die Oberfläche geht: Tag beginnen, Partien scheibenweise
+	# rechnen, Tag abschließen. Er muss dasselbe Ergebnis liefern wie der
+	# Weg am Stück, sonst rechnete das Spiel je nach Bedienung anders.
+	var scheiben_tage := 0
+	var scheiben_partien := 0
+	var scheiben_runden := 0
+	for _i in range(30):
+		var u_s := Welt.tag_beginnen()
+		if not u_s.is_empty():
+			if str(u_s.get("art", "")) == "eigenes_spiel":
+				Welt.partie_simulieren(str(u_s["spiel"]))
+			continue
+		var offen_heute: int = Welt.spieltag_starten(Welt.tag())
+		scheiben_partien += offen_heute
+		while Welt.spieltag_scheibe(4) > 0:
+			scheiben_runden += 1
+			if scheiben_runden > 5000:
+				_log("   FEHLER: der Spieltag hört nicht auf")
+				break
+		Welt.spieltag_beenden()
+		Welt.tag_abschliessen(Welt.tag())
+		scheiben_tage += 1
+	_log("   %d Tage, %d Partien in Scheiben gerechnet (%d Durchläufe)" % [
+		scheiben_tage, scheiben_partien, scheiben_runden])
+	var offen_rest: Dictionary = Welt.spieltag_fortschritt()
+	if int(offen_rest["offen"]) != 0:
+		_log("   FEHLER: nach dem Spieltag sind noch %d Partien offen" % int(offen_rest["offen"]))
+	# Keine Partie darf doppelt gerechnet worden sein.
+	var doppelt := 0
+	for mid_s in Welt.daten["spiele"].keys():
+		var m_s: Dictionary = Welt.partie(str(mid_s))
+		if bool(m_s["gespielt"]) and int(m_s["tore_heim"]) + int(m_s["tore_gast"]) == 0:
+			doppelt += 1
+	_log("   gespielte Partien ohne Tore: %d" % doppelt)
+
+	_log("— Spielstandprüfung —")
+	for fall in [
+			{"name": "leeres Wörterbuch", "wert": {}},
+			{"name": "fremde Datei", "wert": {"irgendwas": 1}},
+			{"name": "Vereine fehlen", "wert": {"tag": 5, "startjahr": 2026, "spieler": {"a": {}},
+				"ligen": {}, "spiele": {}, "zaehler": {}}},
+			{"name": "kein Wörterbuch", "wert": 42},
+		]:
+		var grund := Welt.spielstand_pruefen(fall["wert"])
+		_log("   %-20s → %s" % [str(fall["name"]), grund if grund != "" else "FEHLER: durchgewunken"])
+	var echt := Welt.spielstand_pruefen(Welt.daten)
+	_log("   %-20s → %s" % ["laufender Spielstand", echt if echt != "" else "gültig"])
+	if echt != "":
+		_log("   FEHLER: der eigene Spielstand gilt als ungültig")
+
 	_log("— Alter Spielstand (fehlende Felder ergänzen) —")
 	# Einen Spielstand aus einer früheren Fassung nachstellen: alles, was neu
 	# dazugekommen ist, wieder entfernen und die Welt reparieren lassen.

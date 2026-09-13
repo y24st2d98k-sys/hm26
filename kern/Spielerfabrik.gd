@@ -164,6 +164,8 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 		"attr": attr,
 		"potenzial": potenzial,
 		"lernkurve": lernkurve,
+		# Gemerkter Gesamtwert; -1 heißt "muss neu gerechnet werden".
+		"staerke": -1.0,
 		"form": Namen.glocke(58.0, 14.0, 20.0, 95.0),
 		"moral": Namen.glocke(66.0, 12.0, 25.0, 98.0),
 		"fitness": Namen.glocke(93.0, 5.0, 70.0, 100.0),
@@ -327,7 +329,25 @@ static func abwehrwert(spieler: Dictionary) -> float:
 	return summe / maxf(gewicht, 0.01) * 5.0
 
 ## Gesamtwert 0..100 — Mischung aus Angriff und Abwehr, je nach Position gewichtet.
+## Der Gesamtwert eines Spielers, gemerkt statt jedes Mal neu summiert.
+##
+## `gesamt()` läuft über zwanzig Attribute und wird überall aufgerufen: im
+## Transfermarkt für dreitausend Spieler, in jeder Kaderliste, in der
+## Spielsimulation. Attribute ändern sich aber nur im Training, im Lager, in
+## der Jugend und bei einer Patenschaft — sechs Stellen, die den Wert
+## anschließend verwerfen. Damit das verlässlich bleibt, rechnet
+## `werkzeuge/Pruefung.gd` den Wert für jeden Spieler frisch nach und
+## vergleicht: ein vergessenes Verwerfen fällt sofort auf.
 static func gesamt(spieler: Dictionary) -> float:
+	var gemerkt: float = float(spieler.get("staerke", -1.0))
+	if gemerkt >= 0.0:
+		return gemerkt
+	var frisch: float = gesamt_rechnen(spieler)
+	spieler["staerke"] = frisch
+	return frisch
+
+## Die Rechnung selbst, ohne Gedächtnis — für die Prüfung und das Verwerfen.
+static func gesamt_rechnen(spieler: Dictionary) -> float:
 	if bool(spieler["ist_torwart"]):
 		return angriffswert(spieler)
 	var pos: String = str(spieler["position"])
@@ -337,6 +357,43 @@ static func gesamt(spieler: Dictionary) -> float:
 	elif pos == "LA" or pos == "RA":
 		abwehr_anteil = 0.24
 	return angriffswert(spieler) * (1.0 - abwehr_anteil) + abwehrwert(spieler) * abwehr_anteil
+
+## Nach jeder Attributänderung aufzurufen: der gemerkte Gesamtwert gilt nicht
+## mehr. Wer das vergisst, spielt mit veralteten Stärken weiter.
+static func staerke_verwerfen(spieler: Dictionary) -> void:
+	spieler["staerke"] = -1.0
+
+## Spieler-IDs nach Gesamtstärke, der Stärkste zuerst.
+##
+## Das Entscheidende ist das "einmal": `sort_custom` ruft seinen Vergleich
+## n·log n mal auf, und `gesamt()` summiert dabei jedes Mal zwanzig Attribute.
+## Bei dreitausend Spielern sind das über hunderttausend Attributschleifen für
+## eine einzige Liste. Einmal rechnen, dann nach dem fertigen Wert sortieren.
+static func nach_staerke(d: Dictionary, ids: Array) -> Array:
+	var paare: Array = []
+	for sid in ids:
+		var sp: Dictionary = d["spieler"].get(str(sid), {})
+		if sp.is_empty():
+			continue
+		paare.append({"id": str(sid), "wert": gesamt(sp)})
+	paare.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	var aus: Array = []
+	for e in paare:
+		aus.append(str((e as Dictionary)["id"]))
+	return aus
+
+## Dieselbe Sortierung für eine beliebige, teuer zu berechnende Kennzahl.
+## `schluessel` bekommt eine ID und liefert die Zahl, nach der absteigend
+## sortiert wird — berechnet genau einmal je Eintrag.
+static func nach_kennzahl(ids: Array, schluessel: Callable) -> Array:
+	var paare: Array = []
+	for id in ids:
+		paare.append({"id": id, "wert": float(schluessel.call(id))})
+	paare.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	var aus: Array = []
+	for e in paare:
+		aus.append((e as Dictionary)["id"])
+	return aus
 
 ## Wie gut spielt jemand auf einer fremden Position? 0..1
 static func eignung(spieler: Dictionary, position: String) -> float:

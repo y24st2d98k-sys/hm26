@@ -168,6 +168,7 @@ static func _wirkung(d: Dictionary, cid: String, paar: Dictionary) -> void:
 		var a: String = str(Namen.waehle(LEHRATTRIBUTE))
 		if (s["attr"] as Dictionary).has(a):
 			s["attr"][a] = clampf(float(s["attr"][a]) + 0.045 * staerke * Namen.bereich(0.6, 1.5), 1.0, 20.0)
+			Spielerfabrik.staerke_verwerfen(s)
 	# Menschlich: der Charakter zieht in Richtung des Paten
 	var sc: Dictionary = s["charakter"]
 	var mc: Dictionary = m["charakter"]

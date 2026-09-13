@@ -142,7 +142,8 @@ func _slot(slot: int) -> Control:
 				_melde("Spielstand geladen.")
 				Welt.zustand_geaendert.emit()
 			else:
-				_melde("Laden fehlgeschlagen.", false)
+				# Den Grund nennen: "fehlgeschlagen" hilft niemandem weiter.
+				_melde(Welt.ladefehler if Welt.ladefehler != "" else "Laden fehlgeschlagen.", false)
 			aktualisieren())
 		zeile.add_child(laden)
 		var loeschen := Stil.knopf("Löschen")

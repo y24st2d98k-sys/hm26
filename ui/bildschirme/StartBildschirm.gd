@@ -410,8 +410,15 @@ func _slots_fuellen() -> void:
 			h.add_child(v2)
 			var laden := Stil.knopf_primaer("Laden")
 			var s := slot
+			var fehlerzeile := Stil.text("", Stil.S_MINI, Stil.ROT)
+			fehlerzeile.visible = false
+			v2.add_child(fehlerzeile)
 			laden.pressed.connect(func():
 				if Welt.laden(s):
-					spiel_gestartet.emit())
+					spiel_gestartet.emit()
+				else:
+					# Ein beschädigter Spielstand darf nicht ins Leere laufen.
+					fehlerzeile.text = Welt.ladefehler if Welt.ladefehler != "" else "Laden fehlgeschlagen."
+					fehlerzeile.visible = true)
 			h.add_child(laden)
 		slotliste.add_child(p)

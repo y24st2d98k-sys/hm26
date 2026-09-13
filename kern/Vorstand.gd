@@ -23,7 +23,9 @@ static func saisonziel_festlegen(d: Dictionary, cid: String) -> void:
 	# Spiel bewertet wird. Sonst bekommt ein Verein mit gutem Ruf und duennem
 	# Kader ein Ziel, das seine Mannschaft nicht einloesen kann — und der
 	# Trainer verliert das Vertrauen fuer etwas, das er gar nicht steuert.
-	rangliste.sort_custom(func(a, b): return staerkeindex(d, a) > staerkeindex(d, b))
+	# Einmal je Verein rechnen, dann sortieren: staerkeindex geht über den
+	# ganzen Kader, und ein Vergleich in sort_custom liefe n·log n mal.
+	rangliste = Spielerfabrik.nach_kennzahl(rangliste, func(cid_r): return staerkeindex(d, str(cid_r)))
 	var platz: int = rangliste.find(cid) + 1
 	var teams: int = rangliste.size()
 	var ehrgeiz: float = Namen.bereich(-1.0, 1.0)

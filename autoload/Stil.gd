@@ -566,10 +566,16 @@ func knopf_geist(beschriftung: String, farbe: Variant = null) -> Button:
 	return b
 
 ## Flacher Knopf ohne Rahmen — fuer Listeneintraege und Namen.
+## Kleinste Höhe einer anklickbaren Fläche. Neunzehn Pixel trifft man nicht
+## zuverlässig — auch nicht mit der Maus, und schon gar nicht in einer Tabelle,
+## in der zwanzig davon untereinanderstehen.
+const KLICKFLAECHE_MIN := 24
+
 func knopf_flach(beschriftung: String, farbe: Variant = null) -> Button:
 	var b := Button.new()
 	b.text = beschriftung
 	b.flat = true
+	b.custom_minimum_size = Vector2(0, KLICKFLAECHE_MIN)
 	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	b.add_theme_color_override("font_color", farbe if farbe != null else TEXT)
 	b.add_theme_color_override("font_hover_color", AKZENT)

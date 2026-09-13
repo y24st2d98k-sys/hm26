@@ -46,6 +46,8 @@ static func suchen(d: Dictionary, filter: Dictionary, eigener_verein: String = "
 	if d.is_empty():
 		return treffer
 	var saison: int = Welt.saison_index()
+	# Einmal kleinschreiben, nicht dreitausendmal.
+	var suchtext: String = str(filter.get("text", "")).strip_edges().to_lower()
 	for sid in d["spieler"].keys():
 		var sp: Dictionary = d["spieler"][sid]
 		if bool(sp.get("jugendspieler", false)):
@@ -73,12 +75,10 @@ static func suchen(d: Dictionary, filter: Dictionary, eigener_verein: String = "
 			continue
 		if filter.has("nation") and str(filter["nation"]) != "" and str(sp["nation"]) != str(filter["nation"]):
 			continue
-		if filter.has("text") and str(filter["text"]) != "":
-			var suche: String = str(filter["text"]).to_lower()
-			if not Spielerfabrik.voller_name(sp).to_lower().contains(suche):
-				continue
+		if suchtext != "" and not Spielerfabrik.voller_name(sp).to_lower().contains(suchtext):
+			continue
 		treffer.append(sid)
-	treffer.sort_custom(func(a, b): return Spielerfabrik.gesamt(d["spieler"][a]) > Spielerfabrik.gesamt(d["spieler"][b]))
+	treffer = Spielerfabrik.nach_staerke(d, treffer)
 	return treffer.slice(0, int(filter.get("limit", 120)))
 
 ## Was der abgebende Verein mindestens sehen will.

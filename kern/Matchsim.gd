@@ -173,6 +173,18 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		# Zielminuten je Spieler (siehe kern/Einsatzzeit.gd). Leer heisst:
 		# es rotiert allein die Kraft.
 		"minutenziele": (auf.get("minuten", {}) as Dictionary).duplicate(true),
+		# --- Werte, die eine Partie lang gleich bleiben ---------------------
+		# Sie bei jedem Angriff neu zu holen kostete zwei Drittel der Rechen-
+		# zeit eines Spieltags: bei 68 Partien am Tag ist das der Unterschied
+		# zwischen einem Ruckler und einem Knopfdruck.
+		"teamfaktor": Kabine.teamfaktor(daten, cid),
+		"praevention": Medizin.praeventionsfaktor(daten, cid),
+		"bonus_tempodiktat": Trainerkarriere.bonus_fuer(daten, cid, "tempodiktat"),
+		"bonus_kontrolleur": Trainerkarriere.bonus_fuer(daten, cid, "kontrolleur"),
+		"bonus_betonmischer": Trainerkarriere.bonus_fuer(daten, cid, "betonmischer"),
+		"bonus_hexer": Trainerkarriere.bonus_fuer(daten, cid, "hexer"),
+		# Cache für alles, was sich erst mit einem Wechsel ändert.
+		"cache": {},
 	}
 	var angriff: Dictionary = auf.get("angriff", {})
 	var abwehr: Dictionary = auf.get("abwehr", {})
@@ -231,6 +243,10 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 			"tagesform": Spielerfabrik.tagesform(sp_cache),
 			"basis_abwehr": Spielerfabrik.abwehrwert(sp_cache),
 			"basis_angriff": {},
+			# Ausdauer und Verletzungsanfälligkeit ändern sich in einer Partie
+			# nicht — sie werden aber in jedem Angriff gebraucht.
+			"ausdauer": float(sp_cache["attr"]["ausdauer"]) / 20.0,
+			"risiko_basis": Medizin.risiko_roh(sp_cache),
 			"sekunden": 0.0, "tore": 0, "wuerfe": 0, "assists": 0, "paraden": 0, "gegentore": 0,
 			"blocks": 0, "fehler": 0, "zeitstrafen": 0, "ballgewinne": 0, "rot": false,
 			"bewertung": 3.4, "siebenmeter": 0, "siebenmeter_tore": 0,
@@ -417,7 +433,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	diff += float(ueberzahl) * 11.0
 	if _gegenstoss:
 		diff += 22.0
-		if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "tempodiktat"):
+		if bool(a["bonus_tempodiktat"]):
 			diff += 6.0
 
 	# Technischer Fehler / Ballgewinn der Abwehr
@@ -426,7 +442,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	p_fehler *= _anweisungsmittel(a, "angriff_auf", "angriff", "fehler")
 	if a["sieben_gegen_sechs"]:
 		p_fehler *= 1.35
-	if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "kontrolleur"):
+	if bool(a["bonus_kontrolleur"]):
 		p_fehler *= 0.88
 	if rng.randf() < p_fehler:
 		return _ballverlust(a, v)
@@ -506,6 +522,15 @@ func _faktor(t: Dictionary, sid: String, bereich: String, feld: String) -> float
 
 ## Mittelwert eines Anweisungsfaktors ueber die Feldspieler einer Formation.
 func _anweisungsmittel(t: Dictionary, formation: String, bereich: String, feld: String) -> float:
+	var cache: Dictionary = t["cache"]
+	var schluessel: String = "am:%s:%s:%s" % [formation, bereich, feld]
+	if cache.has(schluessel):
+		return float(cache[schluessel])
+	var wert: float = _anweisungsmittel_rechnen(t, formation, bereich, feld)
+	cache[schluessel] = wert
+	return wert
+
+func _anweisungsmittel_rechnen(t: Dictionary, formation: String, bereich: String, feld: String) -> float:
 	var auf: Dictionary = t[formation]
 	var summe := 0.0
 	var n := 0
@@ -540,10 +565,14 @@ func _kreisschub(a: Dictionary) -> float:
 
 ## Deckungswerte der Taktik, verschoben durch die Abwehranweisungen.
 func _deckungswerte(v: Dictionary) -> Dictionary:
+	var cache: Dictionary = v["cache"]
+	if cache.has("deckung"):
+		return cache["deckung"]
 	var td: Dictionary = (DECKUNG.get(str(v["taktik"]["abwehr"]), DECKUNG["6-0"]) as Dictionary).duplicate()
 	td["block"] = float(td["block"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "block")
 	td["ballgewinn"] = float(td["ballgewinn"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "ballgewinn")
 	td["zeitstrafe"] = float(td["zeitstrafe"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "zeitstrafe")
+	cache["deckung"] = td
 	return td
 
 ## Haelt fest, was aus einem Abschluss von dieser Position geworden ist.
@@ -874,6 +903,7 @@ func _feldspieler(t: Dictionary) -> int:
 	return clampi(mini(besetzt, grenze) - strafen, 3, 7)
 
 func _vom_platz_nehmen(t: Dictionary, sid: String) -> void:
+	cache_verwerfen(t)
 	for pos in (t["angriff_auf"] as Dictionary).keys():
 		if str(t["angriff_auf"][pos]) == sid:
 			var ersatz := _bester_von_bank(t, pos)
@@ -885,6 +915,7 @@ func _vom_platz_nehmen(t: Dictionary, sid: String) -> void:
 			t["abwehr_auf"][pos] = ""
 
 func _zurueck_aufs_feld(t: Dictionary, sid: String) -> void:
+	cache_verwerfen(t)
 	if not (t["bank"] as Array).has(sid):
 		(t["bank"] as Array).append(sid)
 	# Leere Abwehrplaetze zuerst fuellen
@@ -930,6 +961,7 @@ func sieben_gegen_sechs_pruefen(t: Dictionary) -> void:
 	if aktiv == bool(t["sieben_gegen_sechs"]):
 		return
 	t["sieben_gegen_sechs"] = aktiv
+	cache_verwerfen(t)
 	var text := "%s nimmt den Torwart heraus und spielt 7 gegen 6." % t["name"] if aktiv else "%s stellt wieder auf regulären Angriff um." % t["name"]
 	_warteschlange.append(_ereignis("taktik", _seite(t), "", text))
 
@@ -959,7 +991,9 @@ func _kraft_verbrauchen(t: Dictionary, dauer: float, im_angriff: bool) -> void:
 ## Prueft, ob sich ein Spieler auf dem Feld verletzt — mit sofortigem Ausfall.
 func _verletzungspruefung(t: Dictionary) -> void:
 	for sid in alle_auf_platz(t):
-		if rng.randf() >= Medizin.risiko(daten, sid) * 2.2:
+		# Vorgerechnet: die Grundneigung des Spielers mal die Prävention des
+		# Vereins. Beides ändert sich während einer Partie nicht.
+		if rng.randf() >= float(t["zustand"][sid]["risiko_basis"]) * float(t["praevention"]) * 2.2:
 			continue
 		var sp: Dictionary = daten["spieler"][sid]
 		if not (sp["verletzung"] as Dictionary).is_empty():
@@ -988,6 +1022,9 @@ func aktuell_auf_platz(t: Dictionary) -> Array:
 	return liste
 
 func alle_auf_platz(t: Dictionary) -> Array:
+	var cache: Dictionary = t["cache"]
+	if cache.has("auf_platz"):
+		return cache["auf_platz"]
 	var liste := {}
 	for pos in t["angriff_auf"].keys():
 		var sid: String = str(t["angriff_auf"][pos])
@@ -997,7 +1034,8 @@ func alle_auf_platz(t: Dictionary) -> Array:
 		var sid2: String = str(t["abwehr_auf"][pos])
 		if sid2 != "":
 			liste[sid2] = true
-	return liste.keys()
+	cache["auf_platz"] = liste.keys()
+	return cache["auf_platz"]
 
 func _pause_erholung() -> void:
 	for t in [heim, gast]:
@@ -1142,6 +1180,7 @@ func wechsel(t: Dictionary, raus: String, rein: String, pos: String = "") -> boo
 	(t["bank"] as Array).erase(rein)
 	if not (t["bank"] as Array).has(raus):
 		(t["bank"] as Array).append(raus)
+	cache_verwerfen(t)
 	t["stats"]["wechsel"] += 1
 	# Wechselfehler: bei sehr hoher Wechselintensitaet droht eine Zeitstrafe
 	var intensitaet: float = float(t["taktik"].get("wechselspiel", 50)) / 100.0
@@ -1282,6 +1321,14 @@ func _zufaelliger_abwehrspieler(t: Dictionary, ohne_tw: bool = true) -> String:
 		return _zufaelliger_angreifer(t)
 	return str(liste[rng.randi_range(0, liste.size() - 1)])
 
+## Der Cache gilt nur, solange dieselben sieben auf der Platte stehen und
+## dieselben Anweisungen gelten. Jeder Wechsel, jede Zeitstrafe und jede
+## Umstellung wirft ihn weg — lieber einmal zu oft neu gerechnet als mit einer
+## veralteten Mannschaft weitergespielt. Öffentlich, weil auch die Live-Ansicht
+## Taktik und Anweisungen mitten in der Partie ändern kann.
+func cache_verwerfen(t: Dictionary) -> void:
+	(t["cache"] as Dictionary).clear()
+
 ## Gecachter Angriffswert eines Spielers auf einer Position.
 func _angriff_basis(t: Dictionary, sid: String, pos: String) -> float:
 	var z: Dictionary = t["zustand"][sid]
@@ -1312,7 +1359,7 @@ func _angriffskraft(a: Dictionary, v: Dictionary) -> float:
 	basis *= float((ANGRIFF_GEGEN_DECKUNG.get(stil, {}) as Dictionary).get(gegen, 1.0))
 	basis *= float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["angriff"])
 	basis *= _puls_wirkung(a)
-	basis *= Kabine.teamfaktor(daten, str(a["cid"]))
+	basis *= float(a["teamfaktor"])
 	basis *= 1.0 + Scouting.gegnervorteil(daten, str(a["cid"]), str(v["cid"]))
 	basis *= 1.0 + 0.035 * float(a["auszeit_wirkung"])
 	basis *= 1.0 + 0.055 * float(a["ansprache"])
@@ -1338,9 +1385,9 @@ func _abwehrkraft(v: Dictionary, a: Dictionary) -> float:
 	var basis: float = summe / maxf(gewicht, 1.0)
 	basis *= float(MENTALITAET[str(v["taktik"]["mentalitaet"])]["abwehr"])
 	basis *= _puls_wirkung(v)
-	basis *= Kabine.teamfaktor(daten, str(v["cid"]))
+	basis *= float(v["teamfaktor"])
 	basis *= 1.0 + 0.045 * float(v["ansprache"])
-	if Trainerkarriere.bonus_fuer(daten, str(v["cid"]), "betonmischer"):
+	if bool(v["bonus_betonmischer"]):
 		basis *= 1.035
 	# Gezielte Manndeckung gegen den Hauptwerfer des Gegners
 	if str(v["taktik"].get("deckungsfokus", "keiner")) == "rueckraum":

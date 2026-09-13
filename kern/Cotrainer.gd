@@ -143,7 +143,7 @@ static func _vertraege(d: Dictionary, cid: String, liste: Array) -> void:
 		auslaufend.append(sid)
 	if auslaufend.is_empty():
 		return
-	auslaufend.sort_custom(func(a, b): return Spielerfabrik.gesamt(d["spieler"][a]) > Spielerfabrik.gesamt(d["spieler"][b]))
+	auslaufend = Spielerfabrik.nach_staerke(d, auslaufend)
 	var bester: Dictionary = d["spieler"][auslaufend[0]]
 	var stufe: int = STUFE_WARNUNG if Spielerfabrik.gesamt(bester) >= 68.0 else STUFE_HINWEIS
 	_melden(liste, stufe, "vertrag", "%d Vertrag/Verträge laufen aus" % auslaufend.size(),

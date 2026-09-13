@@ -127,6 +127,7 @@ static func _tag_wirken(d: Dictionary, cid: String, lager: Dictionary) -> void:
 		sp["fitness"] = clampf(float(sp["fitness"]) + float(w["fitness"]) / tage, 20.0, 100.0)
 		sp["last"] = clampf(float(sp["last"]) + float(w["last"]) / tage, 0.0, 100.0)
 		sp["attr"]["teamgeist"] = clampf(float(sp["attr"]["teamgeist"]) + float(w["teamgeist"]) / tage * 0.12, 1.0, 20.0)
+		Spielerfabrik.staerke_verwerfen(sp)
 		sp["moral"] = clampf(float(sp["moral"]) + 0.25, 5.0, 100.0)
 		if Namen.zufall() < Medizin.risiko(d, sid) * float(w["verletzung"]) * 8.0:
 			var vl := Medizin.erzeuge_verletzung(d, sid, false)

@@ -5,6 +5,11 @@ extends Bildschirm
 var suchergebnis: VBoxContainer
 var verhandlungen: VBoxContainer
 var kopfinfo: Label
+## Wie viele Trefferzeilen gebaut werden. Mehr auf Knopfdruck.
+const ZEILEN_START := 25
+const ZEILEN_SCHRITT := 25
+var sichtbare_zeilen: int = ZEILEN_START
+
 var filter := {"position": "", "max_alter": 40, "min_gesamt": 0.0, "max_ablöse": 0.0, "nur_transferliste": false,
 	"nur_vereinslos": false, "nur_vertragsende": false, "text": ""}
 var meldung: Label
@@ -33,7 +38,7 @@ func aufbauen() -> void:
 		pos.set_item_metadata(pos.item_count - 1, p)
 	pos.item_selected.connect(func(i):
 		filter["position"] = str(pos.get_item_metadata(i))
-		_suche())
+		_filter_geaendert())
 	filterzeile.add_child(pos)
 
 	filterzeile.add_child(Stil.matt("max. Alter"))
@@ -43,7 +48,7 @@ func aufbauen() -> void:
 	alter.value = 40
 	alter.value_changed.connect(func(w):
 		filter["max_alter"] = int(w)
-		_suche())
+		_filter_geaendert())
 	filterzeile.add_child(alter)
 
 	filterzeile.add_child(Stil.matt("min. Stärke"))
@@ -53,7 +58,7 @@ func aufbauen() -> void:
 	staerke.value = 0
 	staerke.value_changed.connect(func(w):
 		filter["min_gesamt"] = float(w)
-		_suche())
+		_filter_geaendert())
 	filterzeile.add_child(staerke)
 
 	filterzeile.add_child(Stil.matt("Name"))
@@ -61,7 +66,7 @@ func aufbauen() -> void:
 	suchfeld.custom_minimum_size = Vector2(150, 0)
 	suchfeld.text_changed.connect(func(t):
 		filter["text"] = t
-		_suche())
+		_filter_geaendert())
 	filterzeile.add_child(suchfeld)
 
 	var zeile2 := Stil.hbox(10)
@@ -79,7 +84,7 @@ func aufbauen() -> void:
 	var budget := Stil.knopf("Nur im Budget")
 	budget.pressed.connect(func():
 		filter["max_ablöse"] = float(Welt.mein_verein().get("transferbudget", 0.0))
-		_suche())
+		_filter_geaendert())
 	zeile2.add_child(budget)
 	var zuruecksetzen := Stil.knopf("Filter zurücksetzen")
 	zuruecksetzen.pressed.connect(func():
@@ -136,13 +141,24 @@ func _kopf() -> void:
 		kopfinfo.text += "   ·   Budget: %s   ·   Gehaltsauslastung: %.0f %%" % [
 			Stil.geld(float(v["transferbudget"])), Finanzen.gehaltsauslastung(Welt.daten, Welt.mein_verein_id)]
 
+## Nach einer Filteränderung fängt die Liste wieder oben an — sonst zeigte
+## ein neuer Filter plötzlich hundert Zeilen, weil vorher nachgeladen wurde.
+func _filter_geaendert() -> void:
+	sichtbare_zeilen = ZEILEN_START
+	_suche()
+
 func _suche() -> void:
 	if suchergebnis == null or not Welt.bereit():
 		return
 	leeren(suchergebnis)
 	var f := filter.duplicate()
-	f["limit"] = 60
+	# Nur so viele Zeilen bauen, wie jemand tatsächlich durchsieht. Sechzig
+	# Zeilen auf einmal kosteten spürbar Zeit beim Öffnen und wurden trotzdem
+	# nie zu Ende gelesen — wer mehr will, holt sie sich per Knopf.
+	f["limit"] = sichtbare_zeilen + 1
 	var treffer := Transfermarkt.suchen(Welt.daten, f, Welt.mein_verein_id)
+	var mehr_da: bool = treffer.size() > sichtbare_zeilen
+	treffer = treffer.slice(0, sichtbare_zeilen)
 	var kopf := Stil.hbox(6)
 	suchergebnis.add_child(kopf)
 	for s in [["Pos", 44], ["Spieler", 180], ["Alter", 44], ["Stärke", 66], ["Perspektive", 150],
@@ -158,6 +174,16 @@ func _suche() -> void:
 	for sid in treffer:
 		suchergebnis.add_child(_zeile(sid, nummer))
 		nummer += 1
+	if mehr_da:
+		var fuss := Stil.hbox(8)
+		suchergebnis.add_child(fuss)
+		fuss.add_child(Stil.matt("%d Treffer angezeigt — die stärksten zuerst." % treffer.size(), Stil.S_MINI))
+		fuss.add_child(Stil.dehner())
+		var mehr := Stil.knopf("Weitere %d anzeigen" % ZEILEN_SCHRITT)
+		mehr.pressed.connect(func():
+			sichtbare_zeilen += ZEILEN_SCHRITT
+			aktualisieren())
+		fuss.add_child(mehr)
 
 func _zeile(sid: String, index: int = 0) -> Control:
 	var sp: Dictionary = Welt.spieler(sid)

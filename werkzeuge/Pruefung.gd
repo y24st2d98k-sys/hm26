@@ -79,6 +79,7 @@ func _alles_pruefen(d: Dictionary, soll: Dictionary) -> void:
 	_spielplan(d)
 	_trikotnummern(d)
 	_halle_und_fans(d)
+	_staerkecache(d)
 
 ## Ligen behalten ihre Größe über Auf- und Abstieg hinweg.
 func _ligen(d: Dictionary, soll: Dictionary) -> void:
@@ -208,6 +209,31 @@ func _verweise(d: Dictionary) -> void:
 	for sid_k in d["spieler"].keys():
 		if bool(d["spieler"][sid_k].get("nachwuchskandidat", false)) and not in_liste.has(str(sid_k)):
 			_fehler("Nachwuchskandidat %s steht in keiner Sichtungsliste" % sid_k)
+
+## Der gemerkte Gesamtwert stimmt mit der frischen Rechnung überein.
+##
+## Ohne diese Prüfung wäre der Zwischenspeicher ein Risiko: eine vergessene
+## Verwerfung fiele erst auf, wenn ein Spieler jahrelang mit veralteter Stärke
+## aufliefe. So fällt sie beim nächsten Prüflauf auf.
+func _staerkecache(d: Dictionary) -> void:
+	var abweichungen := 0
+	var schlimmste := 0.0
+	var beispiel := ""
+	for sid in d["spieler"].keys():
+		var sp: Dictionary = d["spieler"][sid]
+		var gemerkt: float = float(sp.get("staerke", -1.0))
+		if gemerkt < 0.0:
+			continue
+		var frisch: float = Spielerfabrik.gesamt_rechnen(sp)
+		var delta: float = absf(frisch - gemerkt)
+		if delta > 0.01:
+			abweichungen += 1
+			if delta > schlimmste:
+				schlimmste = delta
+				beispiel = str(sid)
+	if abweichungen > 0:
+		_fehler("%d Spieler tragen eine veraltete Stärke (schlimmster Fall %s: %.2f Punkte)" % [
+			abweichungen, beispiel, schlimmste])
 
 ## Eintrittspreise, Dauerkarten, Fanszene und Kredite bleiben im Rahmen.
 func _halle_und_fans(d: Dictionary) -> void:

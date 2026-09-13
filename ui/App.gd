@@ -54,6 +54,15 @@ var nav_knoepfe: Dictionary = {}
 var startbildschirm: Control
 var rahmen: Control
 var live: Control
+## Läuft gerade ein Tageswechsel? Verhindert doppelte Auslösung.
+var _tag_laeuft: bool = false
+## Wie viele Partien je Einzelbild gerechnet werden. Vier Partien sind rund
+## hundert Millisekunden — spürbar flüssig und trotzdem zügig durch.
+const SPIELTAG_SCHEIBE := 4
+var _hilfe_schleier: Control
+var _spieltag_schleier: Control
+var _spieltag_balken: Control
+var _spieltag_text: Label
 
 func _ready() -> void:
 	theme = Stil.theme()
@@ -261,6 +270,20 @@ func _baue_kopfzeile(eltern: Node) -> void:
 	spulen.add_child(ssym)
 	zeile.add_child(spulen)
 
+	# Hilfe muss sichtbar sein, sonst findet F1 niemand.
+	var hilfe := Button.new()
+	hilfe.flat = true
+	hilfe.text = "?"
+	hilfe.custom_minimum_size = Vector2(34, 34)
+	hilfe.focus_mode = Control.FOCUS_NONE
+	hilfe.tooltip_text = "Kurzanleitung und Tastenkürzel (F1)"
+	hilfe.add_theme_stylebox_override("normal", Stil.box_leer())
+	hilfe.add_theme_stylebox_override("hover", Stil.box(Stil.lasur(Stil.TEXT, 0.07), Stil.R_KLEIN))
+	hilfe.add_theme_stylebox_override("pressed", Stil.box(Stil.lasur(Stil.AKZENT, 0.14), Stil.R_KLEIN))
+	hilfe.add_theme_color_override("font_color", Stil.TEXT_MATT)
+	hilfe.pressed.connect(func(): _hilfe_umschalten())
+	zeile.add_child(hilfe)
+
 	weiter_knopf = Stil.knopf_primaer("Weiter")
 	weiter_knopf.pressed.connect(_weiter)
 	weiter_knopf.tooltip_text = "Einen Tag weiterschalten (Leertaste)"
@@ -387,12 +410,27 @@ func _kopf_auffrischen() -> void:
 
 # ------------------------------------------------------------- Zeitablauf ---
 
+## Ein Spieltag sind bis zu 68 Partien. Am Stück gerechnet stünde das Bild
+## anderthalb Sekunden still — und ein stehendes Bild nach einem Knopfdruck
+## fühlt sich nach Absturz an. Deshalb wird der Tag in Scheiben gerechnet,
+## zwischen denen die Oberfläche atmen und den Fortschritt zeigen kann.
 func _weiter() -> void:
-	if not Welt.laeuft:
+	if not Welt.laeuft or _tag_laeuft:
 		return
+	_tag_laeuft = true
 	weiter_knopf.disabled = true
 	Klang.spiele("klick", 0.6)
-	var unterbrechung := Welt.tag_weiter()
+
+	var unterbrechung := Welt.tag_beginnen()
+	if unterbrechung.is_empty():
+		var t: int = Welt.tag()
+		var anzahl: int = Welt.spieltag_starten(t)
+		if anzahl > 0:
+			await _spieltag_rechnen(anzahl)
+			Welt.spieltag_beenden()
+		unterbrechung = Welt.tag_abschliessen(t)
+
+	_tag_laeuft = false
 	weiter_knopf.disabled = false
 	if unterbrechung.has("art"):
 		match str(unterbrechung["art"]):
@@ -404,6 +442,179 @@ func _weiter() -> void:
 			"neue_saison":
 				zeige("buero")
 	_auffrischen()
+
+## Rechnet den Spieltag in Scheiben und hält die Anzeige dabei am Leben.
+## Kleine Spieltage laufen ohne Anzeige durch — ein Balken, der für 80
+## Millisekunden aufblitzt, ist schlimmer als keiner.
+func _spieltag_rechnen(anzahl: int) -> void:
+	var mit_anzeige: bool = anzahl > 8
+	if mit_anzeige:
+		_spieltag_anzeige_zeigen()
+	while true:
+		var offen: int = Welt.spieltag_scheibe(SPIELTAG_SCHEIBE)
+		if mit_anzeige:
+			_spieltag_anzeige_stand(Welt.spieltag_fortschritt())
+		if offen <= 0:
+			break
+		await get_tree().process_frame
+	if mit_anzeige:
+		_spieltag_anzeige_verbergen()
+
+# ------------------------------------------------------------- Hilfe (F1) ---
+#
+# Hallenherz hat fünfundzwanzig Bildschirme. Wer zum ersten Mal hereinkommt,
+# sieht eine Seitenleiste und weiß nicht, wo er anfangen soll. F1 beantwortet
+# beides: was zuerst zu tun ist und welche Taste wohin führt.
+
+const HILFE_ERSTE_SCHRITTE := [
+	["Aufstellung prüfen", "Wer spielt im Angriff, wer in der Abwehr? Der Stab stellt automatisch auf — Sie überstimmen ihn, wo Sie es besser wissen.", "taktik"],
+	["Trainingsplan setzen", "Intensität, Schwerpunkt und wer geregeneriert wird. Das Lastkonto entscheidet über Verletzungen.", "training"],
+	["Kader ansehen", "Stärken, Verträge, Perspektive. Wer läuft aus, wer wird noch besser?", "kader"],
+	["Preise und Fans", "Eintrittspreise, Dauerkarten und das Programm des nächsten Heimspiels.", "halle"],
+	["Weiter drücken", "Leertaste schaltet einen Tag weiter. Vor Ihrem Spiel hält das Spiel von selbst an.", ""],
+]
+
+func _hilfe_offen() -> bool:
+	return _hilfe_schleier != null and _hilfe_schleier.visible
+
+func _hilfe_umschalten() -> void:
+	if _hilfe_schleier == null:
+		_hilfe_schleier = _hilfe_bauen()
+		add_child(_hilfe_schleier)
+	_hilfe_schleier.visible = not _hilfe_schleier.visible
+	if _hilfe_schleier.visible:
+		move_child(_hilfe_schleier, get_child_count() - 1)
+
+func _hilfe_bauen() -> Control:
+	var wurzel := Control.new()
+	wurzel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var dunkel := ColorRect.new()
+	dunkel.color = Color(0, 0, 0, 0.72)
+	dunkel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dunkel.mouse_filter = Control.MOUSE_FILTER_STOP
+	dunkel.gui_input.connect(func(e):
+		if e is InputEventMouseButton and e.pressed:
+			_hilfe_umschalten())
+	wurzel.add_child(dunkel)
+	var mitte := CenterContainer.new()
+	mitte.set_anchors_preset(Control.PRESET_FULL_RECT)
+	wurzel.add_child(mitte)
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(880, 0)
+	panel.add_theme_stylebox_override("panel", Stil.box_erhaben(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
+	mitte.add_child(panel)
+	var rand := MarginContainer.new()
+	for seite in ["left", "right", "top", "bottom"]:
+		rand.add_theme_constant_override("margin_%s" % seite, 24)
+	panel.add_child(rand)
+	var spalte := Stil.vbox(14)
+	rand.add_child(spalte)
+
+	var kopf := Stil.hbox(10)
+	spalte.add_child(kopf)
+	kopf.add_child(Stil.titel("Hallenherz — Kurzanleitung", 1))
+	kopf.add_child(Stil.dehner())
+	var zu := Stil.knopf_flach("Schließen (Esc)", Stil.TEXT_MATT)
+	zu.pressed.connect(func(): _hilfe_umschalten())
+	kopf.add_child(zu)
+	spalte.add_child(Stil.trenner())
+
+	var reihe := Stil.hbox(24)
+	spalte.add_child(reihe)
+
+	var links := Stil.vbox(8)
+	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	reihe.add_child(links)
+	links.add_child(Stil.etikett("Die ersten Schritte"))
+	for e in HILFE_ERSTE_SCHRITTE:
+		var block := Stil.vbox(2)
+		links.add_child(block)
+		var titelzeile := Stil.hbox(8)
+		block.add_child(titelzeile)
+		titelzeile.add_child(Stil.text(str(e[0]), Stil.S_NORMAL, Stil.AKZENT))
+		if str(e[2]) != "":
+			var hin := Stil.knopf_flach("Hin ›", Stil.BLAU)
+			var ziel: String = str(e[2])
+			hin.pressed.connect(func():
+				_hilfe_umschalten()
+				zeige(ziel))
+			titelzeile.add_child(hin)
+		block.add_child(Bausteine.fliesstext(str(e[1]), Stil.S_KLEIN, null, 260.0))
+
+	var rechts := Stil.vbox(6)
+	rechts.custom_minimum_size = Vector2(330, 0)
+	reihe.add_child(rechts)
+	rechts.add_child(Stil.etikett("Tastenkürzel"))
+	for e2 in [["Leertaste", "Einen Tag weiter"], ["F1", "Diese Hilfe"],
+			["1 – 0", "Die zehn häufigsten Bildschirme"],
+			["B / K / A", "Büro, Kader, Aufstellung"],
+			["T / F / N", "Transfermarkt, Finanzen, Nachrichten"],
+			["S / Z / J", "Spielplan, Scouting, Nachwuchs"],
+			["V / M", "Vorstand, Medien"]]:
+		var z := Stil.hbox(10)
+		rechts.add_child(z)
+		var taste := Stil.abzeichen(str(e2[0]), Stil.AKZENT)
+		taste.custom_minimum_size = Vector2(110, 0)
+		z.add_child(taste)
+		z.add_child(Stil.matt(str(e2[1]), Stil.S_KLEIN))
+	rechts.add_child(Stil.trenner())
+	rechts.add_child(Bausteine.fliesstext(
+		"Jede Karte mit einem „Öffnen ›“ führt weiter. Fast jeder Wert hat einen Tooltip, der erklärt, woher er kommt.",
+		Stil.S_MINI, null, 260.0))
+	return wurzel
+
+# ------------------------------------------------- Anzeige des Spieltags ---
+
+## Ein schmaler Streifen über dem Bild: Wappen weg, Balken hin. Bewusst kein
+## voller Schleier — man soll sehen, dass das Spiel weiterläuft, nicht das
+## Gefühl bekommen, es sei stehengeblieben.
+func _spieltag_anzeige_zeigen() -> void:
+	if _spieltag_schleier == null:
+		_spieltag_schleier = _spieltag_anzeige_bauen()
+		add_child(_spieltag_schleier)
+	_spieltag_schleier.visible = true
+	move_child(_spieltag_schleier, get_child_count() - 1)
+
+func _spieltag_anzeige_bauen() -> Control:
+	var wurzel := Control.new()
+	wurzel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	wurzel.mouse_filter = Control.MOUSE_FILTER_STOP
+	var dunkel := ColorRect.new()
+	dunkel.color = Color(0, 0, 0, 0.45)
+	dunkel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	wurzel.add_child(dunkel)
+	var mitte := CenterContainer.new()
+	mitte.set_anchors_preset(Control.PRESET_FULL_RECT)
+	wurzel.add_child(mitte)
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(420, 0)
+	panel.add_theme_stylebox_override("panel", Stil.box_erhaben(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
+	mitte.add_child(panel)
+	var rand := MarginContainer.new()
+	for seite in ["left", "right", "top", "bottom"]:
+		rand.add_theme_constant_override("margin_%s" % seite, 20)
+	panel.add_child(rand)
+	var spalte := Stil.vbox(10)
+	rand.add_child(spalte)
+	spalte.add_child(Stil.titel("Spieltag", 2))
+	_spieltag_text = Stil.matt("", Stil.S_KLEIN)
+	spalte.add_child(_spieltag_text)
+	_spieltag_balken = Stil.balken(0.0, 100.0, 380, Stil.AKZENT)
+	spalte.add_child(_spieltag_balken)
+	return wurzel
+
+func _spieltag_anzeige_stand(fortschritt: Dictionary) -> void:
+	if _spieltag_schleier == null or not _spieltag_schleier.visible:
+		return
+	var gesamt: int = maxi(int(fortschritt["gesamt"]), 1)
+	var fertig: int = int(fortschritt["fertig"])
+	_spieltag_text.text = "%d von %d Partien abgepfiffen" % [fertig, gesamt]
+	_spieltag_balken.wert = float(fertig) / float(gesamt) * 100.0
+	_spieltag_balken.queue_redraw()
+
+func _spieltag_anzeige_verbergen() -> void:
+	if _spieltag_schleier != null:
+		_spieltag_schleier.visible = false
 
 func _starte_live(spiel_id: String) -> void:
 	rahmen.visible = false
@@ -419,11 +630,48 @@ func _auf_live_ende(_spiel_id: String) -> void:
 	_auffrischen()
 	if bildschirme.has("buero"):
 		zeige("buero")
+	# Beim allerersten Mal die Kurzanleitung von selbst öffnen. Fünfundzwanzig
+	# Bildschirme ohne ein Wort dazu sind keine Tiefe, sondern eine Wand.
+	if Welt.laeuft and not bool(Welt.einstellung("hilfe_gesehen", false)):
+		Welt.setze_einstellung("hilfe_gesehen", true)
+		_hilfe_umschalten()
+
+## Tastenkürzel. Ein Managerspiel wird mit den Händen auf der Tastatur
+## gespielt, nicht mit der Maus auf Wanderschaft durch eine Seitenleiste —
+## wer täglich zwischen Kader, Aufstellung und Transfermarkt springt, will
+## das in einem Anschlag tun.
+const TASTENKUERZEL := {
+	KEY_1: "buero", KEY_2: "kader", KEY_3: "taktik", KEY_4: "training",
+	KEY_5: "spielplan", KEY_6: "tabellen", KEY_7: "transfer", KEY_8: "finanzen",
+	KEY_9: "halle", KEY_0: "nachrichten",
+	KEY_B: "buero", KEY_K: "kader", KEY_A: "taktik", KEY_T: "transfer",
+	KEY_F: "finanzen", KEY_N: "nachrichten", KEY_S: "spielplan", KEY_Z: "scouting",
+	KEY_J: "jugend", KEY_V: "vorstand", KEY_M: "medien",
+}
 
 func _unhandled_input(ereignis: InputEvent) -> void:
 	if not Welt.laeuft or not rahmen.visible:
 		return
-	if ereignis is InputEventKey and ereignis.pressed and not ereignis.echo:
-		if ereignis.keycode == KEY_SPACE:
-			_weiter()
+	if not (ereignis is InputEventKey and ereignis.pressed and not ereignis.echo):
+		return
+	var taste: int = ereignis.keycode
+	# Modifikatoren gehören den Bildschirmen, nicht der Navigation.
+	if ereignis.ctrl_pressed or ereignis.alt_pressed or ereignis.meta_pressed:
+		return
+	if taste == KEY_SPACE:
+		_weiter()
+		get_viewport().set_input_as_handled()
+		return
+	if taste == KEY_F1:
+		_hilfe_umschalten()
+		get_viewport().set_input_as_handled()
+		return
+	if taste == KEY_ESCAPE and _hilfe_offen():
+		_hilfe_umschalten()
+		get_viewport().set_input_as_handled()
+		return
+	if TASTENKUERZEL.has(taste):
+		var ziel: String = str(TASTENKUERZEL[taste])
+		if bildschirme.has(ziel):
+			zeige(ziel)
 			get_viewport().set_input_as_handled()

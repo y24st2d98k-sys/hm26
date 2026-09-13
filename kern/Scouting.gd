@@ -157,8 +157,8 @@ static func _talente_in_liga(d: Dictionary, lid: String, qualitaet: float) -> Ar
 	for cid in d["ligen"][lid]["vereine"]:
 		for sid in d["vereine"][cid]["kader"]:
 			kandidaten.append(sid)
-	kandidaten.sort_custom(func(a, b):
-		return _rohbewertung(d, a, qualitaet) > _rohbewertung(d, b, qualitaet))
+	# Einmal bewerten, dann sortieren — _rohbewertung ist teuer.
+	kandidaten = Spielerfabrik.nach_kennzahl(kandidaten, func(sid_k): return _rohbewertung(d, str(sid_k), qualitaet))
 	return kandidaten.slice(0, 6)
 
 static func _talente_auf_position(d: Dictionary, position: String, qualitaet: float) -> Array:
@@ -170,8 +170,8 @@ static func _talente_auf_position(d: Dictionary, position: String, qualitaet: fl
 		if str(sp["verein"]) == Welt.mein_verein_id:
 			continue
 		kandidaten.append(sid)
-	kandidaten.sort_custom(func(a, b):
-		return _rohbewertung(d, a, qualitaet) > _rohbewertung(d, b, qualitaet))
+	# Einmal bewerten, dann sortieren — _rohbewertung ist teuer.
+	kandidaten = Spielerfabrik.nach_kennzahl(kandidaten, func(sid_k): return _rohbewertung(d, str(sid_k), qualitaet))
 	return kandidaten.slice(0, 6)
 
 ## Was der Scout zu sehen glaubt — mit Fehler je nach Gespuer.

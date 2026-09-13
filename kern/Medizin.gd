@@ -51,16 +51,27 @@ static func verletzung_im_spiel(d: Dictionary, sid: String) -> Dictionary:
 ## Wahrscheinlichkeit, dass sich ein Spieler gerade verletzt (pro Angriff auf dem Feld).
 static func risiko(d: Dictionary, sid: String) -> float:
 	var sp: Dictionary = d["spieler"][sid]
+	var basis: float = risiko_roh(sp)
+	var verein: String = str(sp["verein"])
+	if verein != "" and d["vereine"].has(verein):
+		basis *= praeventionsfaktor(d, verein)
+	return basis
+
+## Nur der Spieleranteil des Risikos, ohne den Verein. Getrennt, damit die
+## Spielsimulation ihn einmal je Partie vorrechnen kann statt bei jedem
+## Angriff für jeden Spieler auf der Platte erneut.
+static func risiko_roh(sp: Dictionary) -> float:
 	var neigung: float = float(sp["verletzungsneigung"]) / 20.0
 	var last: float = float(sp["last"]) / 100.0
 	var fit: float = float(sp["fitness"]) / 100.0
 	var alter_mod: float = 1.0 + maxf(float(sp["alter"]) - 29.0, 0.0) * 0.05
-	var basis: float = 0.00042 * (0.5 + neigung) * (0.7 + 1.5 * last) * (1.5 - 0.6 * fit) * alter_mod
-	var verein: String = str(sp["verein"])
-	if verein != "" and d["vereine"].has(verein):
-		var praevention: float = _praeventionswert(d, verein)
-		basis *= clampf(1.25 - praevention / 120.0, 0.55, 1.25)
-	return basis
+	return 0.00042 * (0.5 + neigung) * (0.7 + 1.5 * last) * (1.5 - 0.6 * fit) * alter_mod
+
+## Wie stark die medizinische Abteilung eines Vereins das Risiko senkt.
+static func praeventionsfaktor(d: Dictionary, cid: String) -> float:
+	if cid == "" or not d["vereine"].has(cid):
+		return 1.0
+	return clampf(1.25 - _praeventionswert(d, cid) / 120.0, 0.55, 1.25)
 
 static func _praeventionswert(d: Dictionary, cid: String) -> float:
 	var v: Dictionary = d["vereine"][cid]

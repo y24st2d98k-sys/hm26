@@ -545,7 +545,7 @@ static func _neue_personal_id(d: Dictionary) -> String:
 static func _verteile_rollen(d: Dictionary, cid: String) -> void:
 	var verein: Dictionary = d["vereine"][cid]
 	var liste: Array = (verein["kader"] as Array).duplicate()
-	liste.sort_custom(func(a, b): return Spielerfabrik.gesamt(d["spieler"][a]) > Spielerfabrik.gesamt(d["spieler"][b]))
+	liste = Spielerfabrik.nach_staerke(d, liste)
 	for i in range(liste.size()):
 		var sp: Dictionary = d["spieler"][liste[i]]
 		var rolle := "ergaenzung"
@@ -661,7 +661,7 @@ static func bank_aus_kader(d: Dictionary, cid: String, auf: Dictionary) -> Array
 		if drin.has(sid) or not sp["verletzung"].is_empty() or int(sp["sperre"]) > 0:
 			continue
 		bank.append(sid)
-	bank.sort_custom(func(a, b): return Spielerfabrik.gesamt(d["spieler"][a]) > Spielerfabrik.gesamt(d["spieler"][b]))
+	bank = Spielerfabrik.nach_staerke(d, bank)
 	# Im Handball stehen am Spieltag hoechstens 14 Spieler im Aufgebot.
 	return bank.slice(0, maxi(SPIELTAGSKADER - drin.size(), 0))
 

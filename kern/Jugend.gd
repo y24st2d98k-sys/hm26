@@ -96,6 +96,7 @@ static func wochenwechsel(d: Dictionary) -> void:
 						break
 					var a: String = str(Namen.waehle(attr_liste))
 					sp["attr"][a] = clampf(float(sp["attr"][a]) + zuwachs * Namen.bereich(0.5, 1.7), 1.0, 20.0)
+				Spielerfabrik.staerke_verwerfen(sp)
 			sp["kenntnis"] = clampf(float(sp["kenntnis"]) + 0.35 + qualitaet, 0.0, 100.0)
 			sp["wert"] = Spielerfabrik.marktwert(sp)
 			sp["fitness"] = clampf(float(sp["fitness"]) + 1.0, 40.0, 100.0)

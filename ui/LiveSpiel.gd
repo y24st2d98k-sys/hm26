@@ -650,11 +650,20 @@ func _taktik_aufbauen() -> void:
 	Bildschirm.leeren(taktik_bereich)
 	taktik_bereich.add_child(Stil.matt("Änderungen gelten nur für diese Partie.", Stil.S_MINI))
 	var t: Dictionary = mein_team["taktik"]
-	taktik_bereich.add_child(_wahl("Abwehr", ["6-0", "5-1", "3-2-1", "4-2"], str(t["abwehr"]), func(w): t["abwehr"] = w))
+	# Nach jeder Umstellung muss die Engine ihre vorgerechneten Deckungswerte
+	# wegwerfen, sonst spielte die Mannschaft weiter nach der alten Anweisung.
+	var umstellen := func(): sim.cache_verwerfen(mein_team)
+	taktik_bereich.add_child(_wahl("Abwehr", ["6-0", "5-1", "3-2-1", "4-2"], str(t["abwehr"]), func(w):
+		t["abwehr"] = w
+		umstellen.call()))
 	taktik_bereich.add_child(_wahl("Angriff", ["positionsangriff", "tempospiel", "kreisfokus", "aussenfokus", "rueckraumfokus"],
-		str(t["angriff"]), func(w): t["angriff"] = w))
+		str(t["angriff"]), func(w):
+			t["angriff"] = w
+			umstellen.call()))
 	taktik_bereich.add_child(_wahl("Mentalität", ["defensiv", "ausgeglichen", "offensiv", "all-in"],
-		str(t["mentalitaet"]), func(w): t["mentalitaet"] = w))
+		str(t["mentalitaet"]), func(w):
+			t["mentalitaet"] = w
+			umstellen.call()))
 	taktik_bereich.add_child(_wahl("7 gegen 6", ["nie", "unterzahl", "rueckstand", "schluss", "immer"],
 		str(t["siebter_feldspieler"]), func(w):
 			t["siebter_feldspieler"] = w
@@ -721,6 +730,9 @@ func _anweisungen_aufbauen() -> void:
 				if not (mein_team["anweisungen"] as Dictionary).has(sid2):
 					mein_team["anweisungen"][sid2] = {"angriff": "normal", "abwehr": "normal"}
 				(mein_team["anweisungen"][sid2] as Dictionary)[bereich] = neu
+				# Die Engine rechnet Anweisungswirkungen nur einmal je
+				# Aufstellung aus — nach einer Änderung muss sie neu rechnen.
+				sim.cache_verwerfen(mein_team)
 				# Auch dauerhaft merken, sonst gilt sie nur diese Partie.
 				Anweisungen.setzen(Welt.daten, str(mein_team["cid"]), sid2, bereich, neu)
 				hinweis.text = "%s: %s" % [Spielerfabrik.kurz_name(Welt.spieler(sid2)), str(katalog[neu]["name"])])
