@@ -277,10 +277,12 @@ func _taktik() -> void:
 	taktik_bereich.add_child(_auswahl("Abwehrformation", ["6-0", "5-1", "3-2-1", "4-2"],
 		str(t["abwehr"]), func(w): t["abwehr"] = w,
 		"6-0 blockt Rückraumwürfe, 3-2-1 und 4-2 erzwingen Ballgewinne — kosten aber Kraft und Zeitstrafen."))
+	taktik_bereich.add_child(_vertrautheit_zeile("abwehr", str(t["abwehr"])))
 	taktik_bereich.add_child(_auswahl("Angriffsausrichtung",
 		["positionsangriff", "tempospiel", "kreisfokus", "aussenfokus", "rueckraumfokus"],
 		str(t["angriff"]), func(w): t["angriff"] = w,
 		"Bestimmt, wer wirft — und wie gut das gegen die gegnerische Deckung funktioniert."))
+	taktik_bereich.add_child(_vertrautheit_zeile("angriff", str(t["angriff"])))
 	taktik_bereich.add_child(_auswahl("Mentalität", ["defensiv", "ausgeglichen", "offensiv", "all-in"],
 		str(t["mentalitaet"]), func(w): t["mentalitaet"] = w,
 		"Verschiebt Tempo, Risiko und die Gewichtung zwischen Angriff und Abwehr."))
@@ -707,3 +709,29 @@ func _warnungen() -> void:
 		zeile.add_child(Stil.text("%s ist nicht in Verfassung (Einsatzform %d, Last %d)." % [
 			Spielerfabrik.voller_name(sp2), int(float(e["form"])), int(float(sp2["last"]))], Stil.S_KLEIN, Stil.GELB))
 		karte.add_child(zeile)
+
+
+## Wie gut die Mannschaft die gewählte Formation kann — und was sie das kostet.
+##
+## Diese Zeile steht direkt unter der Auswahl, weil sie nur dort etwas nützt:
+## man soll den Preis einer Umstellung im selben Blick sehen wie die
+## Umstellung selbst, nicht drei Bildschirme weiter.
+func _vertrautheit_zeile(bereich: String, formation: String) -> Control:
+	var cid := Welt.mein_verein_id
+	var w: float = Vertrautheit.wert(Welt.daten, cid, bereich, formation)
+	var farbe: Color = Stil.prozent_farbe(w)
+	var zeile := Stil.hbox(8)
+	zeile.add_child(Stil.etikett("Eingespielt"))
+	zeile.add_child(Stil.balken(w, 100.0, 120, farbe))
+	zeile.add_child(Stil.text(Vertrautheit.stufe_text(w), Stil.S_MINI, farbe))
+	zeile.add_child(Stil.dehner())
+	# Der Abzug in Prozent, nicht der Rohwert: „92 von 100" sagt niemandem
+	# etwas, „3 % Wirkung weniger" schon.
+	var abzug: int = int(round((1.0 - Vertrautheit.faktor(Welt.daten, cid, bereich, formation)) * 100.0))
+	if abzug > 0:
+		var wochen: int = Vertrautheit.wochen_bis(Welt.daten, cid, bereich, formation)
+		zeile.add_child(Stil.matt("−%d %% Wirkung · in etwa %d Wochen eingeschliffen" % [abzug, wochen],
+			Stil.S_MINI))
+	else:
+		zeile.add_child(Stil.matt("kein Abzug", Stil.S_MINI))
+	return zeile

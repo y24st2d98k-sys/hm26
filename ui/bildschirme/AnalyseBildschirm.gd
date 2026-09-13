@@ -48,6 +48,7 @@ func aktualisieren() -> void:
 	_wurfkarte(oben, cid)
 	_torverlauf(oben, cid)
 	_formtabelle(cid)
+	_gespanne()
 
 ## Die eigenen Werte gegen den Ligaschnitt.
 func _kennzahlen(cid: String) -> void:
@@ -143,3 +144,34 @@ func _formtabelle(cid: String) -> void:
 		var pfeil: String = "steigend" if t > 0.12 else ("fallend" if t < -0.12 else "gleichbleibend")
 		g.add_child(Stil.text(pfeil, Stil.S_KLEIN,
 			Stil.GRUEN if t > 0.12 else (Stil.ROT if t < -0.12 else Stil.TEXT_MATT)))
+
+
+## Die Gespanne, nach Strenge sortiert.
+##
+## Diese Tabelle ist kein Zierrat: wer weiß, dass ein Duo im Schnitt fünf
+## Zeitstrafen verteilt, stellt vor dem Spiel die Härte anders ein. Aufgeführt
+## werden nur Gespanne, die schon gepfiffen haben — über die anderen wäre jede
+## Aussage erfunden.
+func _gespanne() -> void:
+	var liste: Array = []
+	for g in Schiedsrichter.alle(Welt.daten):
+		if int((g as Dictionary)["spiele"]) > 0:
+			liste.append(g)
+	if liste.is_empty():
+		return
+	var karte := Bausteine.karte_in(inhalt, "Die Gespanne")
+	karte.add_child(Stil.matt(
+		"Wer viel pfeift, macht harte Abwehr teuer. Der Vorbericht nennt vor jedem Spiel das angesetzte Duo.",
+		Stil.S_MINI))
+	var gr := Stil.tabelle(["Gespann", "Spiele", "Zeitstrafen/Spiel", "7m/Spiel", "Rot", "Ruf"])
+	gr.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(gr)
+	for g in liste:
+		var q: float = Schiedsrichter.zeitstrafen_quote(g)
+		var farbe: Color = Stil.prozent_farbe(clampf(100.0 - (q - 2.0) * 24.0, 0.0, 100.0))
+		gr.add_child(Stil.text(Schiedsrichter.namen(g), Stil.S_KLEIN))
+		gr.add_child(Stil.matt(str(int(g["spiele"])), Stil.S_KLEIN))
+		gr.add_child(Stil.text("%.1f" % q, Stil.S_KLEIN, farbe))
+		gr.add_child(Stil.matt("%.1f" % Schiedsrichter.siebenmeter_quote(g), Stil.S_KLEIN))
+		gr.add_child(Stil.matt(str(int(g["rote"])), Stil.S_KLEIN))
+		gr.add_child(Stil.text(Schiedsrichter.ruf(g), Stil.S_KLEIN, farbe))

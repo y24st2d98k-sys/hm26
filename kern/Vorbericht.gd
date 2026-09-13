@@ -32,7 +32,11 @@ static func stufen_text(s: int) -> String:
 		_: return "Lückenlose Analyse — bis hin zu Wurfverteilung und Schwachstellen."
 
 ## Vollständiger Vorbericht für ein bevorstehendes Spiel.
-static func erzeuge(d: Dictionary, cid: String, gegner: String) -> Dictionary:
+##
+## `mid` ist die Partie, um die es geht. Ohne sie fehlt das Gespann — der
+## Bericht funktioniert trotzdem, sagt dann aber nichts darüber, was Härte
+## heute kostet.
+static func erzeuge(d: Dictionary, cid: String, gegner: String, mid: String = "") -> Dictionary:
 	var s := stufe(d, cid, gegner)
 	var g: Dictionary = d["vereine"][gegner]
 	var bericht := {
@@ -46,7 +50,17 @@ static func erzeuge(d: Dictionary, cid: String, gegner: String) -> Dictionary:
 		"schwaechen": [],
 		"empfehlung": "",
 		"wurfverteilung": {},
+		# Das Gespann steht immer im Bericht, unabhängig von der Analysestufe:
+		# wer heute pfeift, ist keine Frage der Scoutingabteilung, das steht
+		# auf der Ansetzung.
+		"gespann": {},
+		"gespann_hinweis": "",
 	}
+	if mid != "":
+		var gespann := Schiedsrichter.fuer_partie(d, mid)
+		if not gespann.is_empty():
+			bericht["gespann"] = gespann
+			bericht["gespann_hinweis"] = Schiedsrichter.hinweis(gespann)
 	if s >= 1:
 		bericht["formation"] = _formation(d, gegner, s)
 		bericht["schluesselspieler"] = _schluesselspieler(d, gegner, s)

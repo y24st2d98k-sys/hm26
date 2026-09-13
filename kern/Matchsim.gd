@@ -78,6 +78,10 @@ var zuschauer_aufschluesselung: Dictionary = {}
 ## Das eingelöste Spieltagsprogramm dieser Partie.
 var programm: Dictionary = {}
 var live: bool = false
+## Das Gespann dieser Partie und seine Tagesform. Beides steht vor dem Anwurf
+## fest und ändert sich bis zum Schlusspfiff nicht mehr.
+var gespann: Dictionary = {}
+var gespann_tagesform: float = 1.0
 
 func _init(p_daten: Dictionary, p_spiel: Dictionary, saat: int = 0) -> void:
 	daten = p_daten
@@ -100,11 +104,15 @@ func vorbereiten() -> void:
 		* (0.66 + 0.34 * _stimmungsanteil())
 		* Fanszene.pulsfaktor(daten, str(spiel["heim"]))
 		+ float(programm.get("puls", 0.0)), 15.0, 98.0)
+	gespann = Schiedsrichter.fuer_partie(daten, str(spiel["id"]))
+	gespann_tagesform = Schiedsrichter.tagesform(gespann, rng)
 	angriffsrecht = "heim" if rng.randf() < 0.5 else "gast"
 	zeit = 0.0
 	beendet = false
 	_warteschlange.append(_ereignis("anwurf", angriffsrecht, "", "Anwurf in der %s. %s Zuschauer sind da." % [
 		daten["vereine"][spiel["heim"]]["halle"]["name"], Stil.zahl(zuschauer)]))
+	if not gespann.is_empty():
+		_warteschlange.append(_ereignis("gespann", "", "", "Es pfeift das Gespann %s." % Schiedsrichter.namen_lang(gespann)))
 
 func _auslastung() -> float:
 	var kap: float = maxf(float(daten["vereine"][spiel["heim"]]["halle"]["kapazitaet"]), 1.0)
@@ -183,6 +191,10 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		"bonus_kontrolleur": Trainerkarriere.bonus_fuer(daten, cid, "kontrolleur"),
 		"bonus_betonmischer": Trainerkarriere.bonus_fuer(daten, cid, "betonmischer"),
 		"bonus_hexer": Trainerkarriere.bonus_fuer(daten, cid, "hexer"),
+		# Wie gut die Mannschaft ihre beiden Formationen wirklich kann. Steht
+		# vor dem Anwurf fest und ändert sich in der Partie nicht mehr.
+		"vertraut_abwehr": Vertrautheit.faktor(daten, cid, "abwehr", str(taktik.get("abwehr", "6-0"))),
+		"vertraut_angriff": Vertrautheit.faktor(daten, cid, "angriff", str(taktik.get("angriff", "positionsangriff"))),
 		# Cache für alles, was sich erst mit einem Wechsel ändert.
 		"cache": {},
 	}
@@ -444,14 +456,32 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 		p_fehler *= 1.35
 	if bool(a["bonus_kontrolleur"]):
 		p_fehler *= 0.88
+	# Unsaubere Abläufe enden nicht nur in schlechteren Würfen, sondern in
+	# Schrittfehlern und Fehlpässen. Deshalb wirkt die Vertrautheit hier ein
+	# zweites Mal, und zwar umgekehrt.
+	p_fehler /= maxf(float(a["vertraut_angriff"]), 0.5)
 	if rng.randf() < p_fehler:
 		return _ballverlust(a, v)
 
-	# Freiwurf/Foul: Zeitstrafe oder Siebenmeter
+	# Freiwurf/Foul: Zeitstrafe oder Siebenmeter.
+	#
+	# Hier entscheidet sich, ob der Härteregler eine Zahl bleibt oder eine
+	# Wette wird. Die eingestellte Härte sagt, wie oft die Abwehr zupackt; das
+	# Gespann sagt, was das kostet. Dasselbe 70er-Deckungsverhalten bringt
+	# gegen ein kleinliches Duo die halbe Abwehr auf die Strafbank und gegen
+	# ein großzügiges kaum eine Verwarnung.
 	var haerte: float = clampf(float(v["taktik"]["haerte"]), 0.0, 100.0)
-	var p_2min: float = clampf(0.050 + haerte * 0.00058, 0.02, 0.12) * float(td["zeitstrafe"])
-	var p_7m: float = clampf(0.034 + haerte * 0.00026 + maxf(diff, 0.0) * 0.0005, 0.015, 0.09)
+	var pfiff: float = Schiedsrichter.strenge_faktor(gespann, gespann_tagesform)
+	# Die Halle wirkt nur gegen die Gäste — deshalb der Faktor allein, wenn die
+	# verteidigende Mannschaft auswärts ist.
+	if not bool(v["ist_heim"]):
+		pfiff *= Schiedsrichter.heimfaktor(gespann, hallenpuls)
+	var p_2min: float = clampf(0.050 + haerte * 0.00058, 0.02, 0.12) * float(td["zeitstrafe"]) * pfiff
+	var p_7m: float = clampf(0.034 + haerte * 0.00026 + maxf(diff, 0.0) * 0.0005, 0.015, 0.09) * pfiff
 	p_7m *= _anweisungsmittel(a, "angriff_auf", "angriff", "siebenmeter")
+	# Ein Gespann, das den Zweikampf zulässt, lässt den Angriff nach Kontakt
+	# weiterlaufen: mehr Abschlüsse aus der Bewegung statt Unterbrechung.
+	diff += (Schiedsrichter.laufen_lassen(gespann) - 1.0) * 22.0
 	var wurf_zuf: float = rng.randf()
 	if wurf_zuf < p_2min:
 		_zeitstrafe(v, a)
@@ -1365,6 +1395,9 @@ func _angriffskraft(a: Dictionary, v: Dictionary) -> float:
 	basis *= 1.0 + 0.055 * float(a["ansprache"])
 	basis *= 1.0 + Presse.motivation(daten, str(a["cid"]))
 	a["auszeit_wirkung"] = maxf(float(a["auszeit_wirkung"]) - 0.12, 0.0)
+	# Dasselbe im Angriff: ein frisch umgestelltes System läuft, aber es läuft
+	# nicht rund.
+	basis *= float(a["vertraut_angriff"])
 	return basis
 
 func _abwehrkraft(v: Dictionary, a: Dictionary) -> float:
@@ -1389,6 +1422,9 @@ func _abwehrkraft(v: Dictionary, a: Dictionary) -> float:
 	basis *= 1.0 + 0.045 * float(v["ansprache"])
 	if bool(v["bonus_betonmischer"]):
 		basis *= 1.035
+	# Eine Formation, die nicht eingeschliffen ist, steht schlechter: die
+	# Übergaben stimmen nicht, das Herausrücken kommt zu spät.
+	basis *= float(v["vertraut_abwehr"])
 	# Gezielte Manndeckung gegen den Hauptwerfer des Gegners
 	if str(v["taktik"].get("deckungsfokus", "keiner")) == "rueckraum":
 		basis *= 1.03
@@ -1408,6 +1444,18 @@ func _spielende() -> void:
 	# Die Aufschlüsselung braucht die Abrechnung: nur Tageskarten bringen am
 	# Spieltag noch Geld, Dauerkarten sind längst bezahlt.
 	spiel["tickets"] = zuschauer_aufschluesselung.duplicate(true)
+	# Was das Gespann gepfiffen hat, geht auf sein Konto. Erst diese Zahlen
+	# machen aus einer verborgenen Anlage einen Ruf, den man vor dem nächsten
+	# Spiel nachlesen kann.
+	# Was gespielt wurde, schleift sich ein — ein Pflichtspiel bringt mehr als
+	# eine ganze Trainingswoche.
+	for t in [heim, gast]:
+		Vertrautheit.partie_verbuchen(daten, str(t["cid"]),
+			str(t["taktik"]["abwehr"]), str(t["taktik"]["angriff"]))
+	Schiedsrichter.partie_verbuchen(daten, str(spiel["id"]),
+		int(heim["stats"]["zeitstrafen"]) + int(gast["stats"]["zeitstrafen"]),
+		int(heim["stats"]["siebenmeter"]) + int(gast["stats"]["siebenmeter"]),
+		int(heim["stats"]["rote"]) + int(gast["stats"]["rote"]))
 	if not programm.is_empty() and str(programm.get("programm", "")) != Spieltagsprogramm.STANDARD:
 		spiel["programm"] = str(programm["programm"])
 	_warteschlange.append(_ereignis("ende", "", "", "Schlusssirene: %s %d:%d %s" % [
@@ -1458,6 +1506,7 @@ static func bericht_schlank(voll: Dictionary) -> Dictionary:
 		"zuschauer": voll.get("zuschauer", 0),
 		"hallenpuls": voll.get("hallenpuls", 50.0),
 		"spieler_des_spiels": voll.get("spieler_des_spiels", ""),
+		"gespann": voll.get("gespann", ""),
 		"knapp": true,
 	}
 	for seite in ["heim", "gast"]:
@@ -1483,6 +1532,7 @@ func bericht() -> Dictionary:
 		"zuschauer": zuschauer,
 		"hallenpuls": hallenpuls,
 		"spieler_des_spiels": bester,
+		"gespann": Schiedsrichter.namen(gespann),
 		"ticker": _ticker_kurz(),
 	}
 

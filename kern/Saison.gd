@@ -272,6 +272,11 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 		Vorstand.saisonziel_festlegen(d, cid)
 		d["vereine"][cid]["vorstand"]["warnstufe"] = 0
 	KI.saisonvorbereitung(d)
+	# Acht Wochen Vorbereitung: was jetzt eingestellt ist, sitzt zum Auftakt
+	# ordentlich. Wer im Sommer umstellt, zahlt dafür fast nichts — wer es im
+	# November tut, umso mehr.
+	for cid3 in Weltgenerator.clubs(d):
+		Vertrautheit.sommervorbereitung(d, str(cid3))
 	# Nach Abgängen, Aufrückern und Neuzugängen sitzt jede Nummer wieder
 	# eindeutig — der Saisonumbruch ist der eine Punkt, an dem sich jeder
 	# Kader verändert hat.

@@ -463,6 +463,7 @@ func wochenrhythmus(t: int) -> void:
 	var wt: int = Kalender.wochentag(t)
 	if wt == 0:  # Montag: Wochenbericht
 		Training.wochenwechsel(daten)
+		Vertrautheit.wochenwechsel(daten)
 		Finanzen.wochenabrechnung(daten)
 		Medien.wochenrueckblick(daten, mein_verein_id)
 		Vorstand.wochenpruefung(daten, mein_verein_id)
@@ -654,10 +655,16 @@ func _daten_auffrischen() -> void:
 		"nationalteams": [], "turnier": Nationalteam.leeres_turnier(),
 		"pressekonferenz": {}, "versprechen": [], "anliegen": [],
 		"auszeichnungen": Auszeichnungen.leer(),
+		"schiedsrichter": Schiedsrichter.leer(),
 	}
 	for k in vorlage.keys():
 		if not daten.has(k):
 			daten[k] = vorlage[k]
+	# Ein Spielstand von vor der Einführung der Gespanne hat den Pool zwar als
+	# leeres Gerüst, aber ohne Inhalt. Ihn hier zu füllen kostet nichts und
+	# erspart jeder aufrufenden Stelle eine Sonderbehandlung.
+	if (daten["schiedsrichter"].get("reihenfolge", []) as Array).is_empty():
+		Schiedsrichter.erzeugen(daten, (daten.get("nationen", {}) as Dictionary).keys())
 	var trainer_dict: Dictionary = daten.get("trainer", {})
 	if not trainer_dict.is_empty():
 		if not trainer_dict.has("nationalteam"):

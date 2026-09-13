@@ -56,6 +56,54 @@ static func aufstellung_pruefen(d: Dictionary, cid: String) -> void:
 	Weltgenerator.setze_standardaufstellung(d, cid)
 	taktik_anpassen(d, cid)
 
+## Legt die Handschrift eines Vereins fest: welche Deckung er spielt und
+## worauf sein Angriff ausgerichtet ist.
+##
+## Das passiert einmal in der Saisonvorbereitung und sonst nie. Ein Verein,
+## der seine Deckung staendig wechselt, bekommt sie nie eingeschliffen — das
+## gilt fuer die Computertrainer genauso wie fuer den Spieler.
+static func formation_festlegen(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	if bool(v.get("ist_mensch", false)):
+		return
+	var t: Dictionary = v["taktik"]
+	var beweglich := 0.0
+	var n := 0
+	for sid in v["kader"]:
+		var sp: Dictionary = d["spieler"][sid]
+		if bool(sp["ist_torwart"]):
+			continue
+		beweglich += float(sp["attr"]["beweglichkeit"]) + float(sp["attr"]["antizipation"])
+		n += 1
+	var schnitt: float = beweglich / maxf(float(n) * 2.0, 1.0)
+	var wunsch: String = str(t.get("abwehr", "6-0"))
+	if schnitt > 13.5 and Namen.zufall() < 0.5:
+		wunsch = str(Namen.waehle(["5-1", "3-2-1"]))
+	elif schnitt < 10.0:
+		wunsch = "6-0"
+	elif Namen.zufall() < 0.25:
+		wunsch = str(Namen.waehle(["6-0", "5-1"]))
+	# Eine eingespielte Deckung gibt man nicht leichtfertig auf. Nur wenn der
+	# Kader wirklich nicht mehr dazu passt — oder das System ohnehin noch nicht
+	# sitzt — wird umgestellt.
+	var sitzt: float = Vertrautheit.wert(d, cid, "abwehr", str(t.get("abwehr", "6-0")))
+	if wunsch != str(t.get("abwehr", "6-0")) and sitzt >= 80.0 and Namen.zufall() < 0.72:
+		wunsch = str(t.get("abwehr", "6-0"))
+	t["abwehr"] = wunsch
+	t["angriff"] = _bester_angriffsstil(d, cid)
+	v["stammabwehr"] = wunsch
+	v["stammangriff"] = str(t["angriff"])
+
+## Stellt vor einer Partie die festgelegte Formation wieder her. Legt sie beim
+## ersten Mal an, damit auch aeltere Spielstaende sofort eine haben.
+static func formation_sichern(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	if str(v.get("stammabwehr", "")) == "":
+		formation_festlegen(d, cid)
+		return
+	v["taktik"]["abwehr"] = str(v["stammabwehr"])
+	v["taktik"]["angriff"] = str(v["stammangriff"])
+
 ## Taktik nach Gegnerstaerke und eigener Lage.
 static func taktik_anpassen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
@@ -75,24 +123,16 @@ static func taktik_anpassen(d: Dictionary, cid: String) -> void:
 	else:
 		t["mentalitaet"] = "ausgeglichen"
 		t["tempo"] = Namen.wuerfel(42, 62)
-	# Abwehrformation passt zur Kaderqualitaet
-	var beweglich := 0.0
-	var n := 0
-	for sid in v["kader"]:
-		var sp: Dictionary = d["spieler"][sid]
-		if bool(sp["ist_torwart"]):
-			continue
-		beweglich += float(sp["attr"]["beweglichkeit"]) + float(sp["attr"]["antizipation"])
-		n += 1
-	var schnitt: float = beweglich / maxf(float(n) * 2.0, 1.0)
-	if schnitt > 13.5 and Namen.zufall() < 0.5:
-		t["abwehr"] = Namen.waehle(["5-1", "3-2-1"])
-	elif schnitt < 10.0:
-		t["abwehr"] = "6-0"
-	elif Namen.zufall() < 0.25:
-		t["abwehr"] = Namen.waehle(["6-0", "5-1"])
-	# Angriffsausrichtung nach Kaderprofil
-	t["angriff"] = _bester_angriffsstil(d, cid)
+	# Die Formation wird hier ausdruecklich nicht angefasst.
+	#
+	# Vor der Vertrautheit war es folgerichtig, die Deckung vor jedem Spiel neu
+	# zu wuerfeln — sie kostete ja nichts. Jetzt kostet sie: eine Mannschaft,
+	# die woechentlich zwischen 6-0 und 3-2-1 springt, steht dauerhaft wie
+	# frisch umgestellt da. Genau das soll der Spieler spueren, und genau
+	# deshalb duerfen die Computertrainer es nicht tun. Die Formation ist die
+	# Handschrift eines Vereins; sie faellt in der Saisonvorbereitung
+	# (formation_festlegen) und gilt dann.
+	formation_sichern(d, cid)
 	t["haerte"] = clampi(int(t["haerte"]) + Namen.wuerfel(-6, 6), 20, 85)
 	t["risiko"] = clampi(int(t["risiko"]) + Namen.wuerfel(-8, 8), 15, 85)
 	t["wechselspiel"] = clampi(int(t.get("wechselspiel", 55)) + Namen.wuerfel(-6, 6), 20, 90)
@@ -343,4 +383,7 @@ static func saisonvorbereitung(d: Dictionary) -> void:
 	for cid in Weltgenerator.clubs(d):
 		Weltgenerator.setze_standardaufstellung(d, cid)
 		if not bool(d["vereine"][cid].get("ist_mensch", false)):
+			# Der eine Punkt im Jahr, an dem eine Deckung wirklich neu gewaehlt
+			# wird — mit dem ganzen Sommer Zeit, sie einzuschleifen.
+			formation_festlegen(d, cid)
 			taktik_anpassen(d, cid)

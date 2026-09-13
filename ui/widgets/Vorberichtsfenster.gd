@@ -71,7 +71,7 @@ func _zeichne() -> void:
 		return
 	var g: Dictionary = Welt.verein(gegner)
 	kopftitel.text = "Spielvorbereitung — %s" % str(g["name"])
-	var b := Vorbericht.erzeuge(Welt.daten, Welt.mein_verein_id, gegner)
+	var b := Vorbericht.erzeuge(Welt.daten, Welt.mein_verein_id, gegner, spiel_id)
 	var s: int = int(b["stufe"])
 
 	var kopfkarte := Bausteine.karte_in(inhalt, "Erkenntnisstand")
@@ -89,6 +89,8 @@ func _zeichne() -> void:
 		kopfkarte.add_child(Stil.matt(
 			"Ein Scoutauftrag auf diesen Gegner und eine bessere Analyseabteilung schärfen das Bild.",
 			Stil.S_MINI))
+
+	_gespann_karte(b)
 
 	if s >= 1:
 		var mitte := Stil.hbox(12)
@@ -176,3 +178,47 @@ func _zeichne() -> void:
 			else:
 				auftrag.text = str(erg["grund"]))
 		inhalt.add_child(auftrag)
+
+## Wer pfeift — und was das für die eingestellte Härte bedeutet.
+##
+## Diese Karte steht bewusst vor der Gegneranalyse: die Härte ist die einzige
+## Einstellung, die man wegen des Gespanns wirklich anfasst, und sie soll
+## einem ins Auge fallen, bevor man sich in Wurfverteilungen vertieft.
+func _gespann_karte(b: Dictionary) -> void:
+	var g: Dictionary = b.get("gespann", {})
+	if g.is_empty():
+		return
+	var karte := Bausteine.karte_in(inhalt, "Das Gespann")
+	var q: float = Schiedsrichter.zeitstrafen_quote(g)
+	var farbe: Color = Stil.prozent_farbe(clampf(100.0 - (q - 2.0) * 24.0, 0.0, 100.0))
+	var zeile := Stil.hbox(12)
+	karte.add_child(zeile)
+	var spalte := Stil.vbox(2)
+	spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	zeile.add_child(spalte)
+	spalte.add_child(Stil.text(Schiedsrichter.namen_lang(g), Stil.S_NORMAL))
+	spalte.add_child(Bausteine.fliesstext(str(b.get("gespann_hinweis", "")), Stil.S_KLEIN))
+	zeile.add_child(Stil.dehner())
+	zeile.add_child(Stil.abzeichen(Schiedsrichter.ruf(g), farbe))
+	if int(g["spiele"]) > 0:
+		var zahlen := Stil.hbox(18)
+		karte.add_child(zahlen)
+		zahlen.add_child(_gespann_zahl("Spiele geleitet", str(int(g["spiele"])), Stil.TEXT))
+		zahlen.add_child(_gespann_zahl("Zeitstrafen je Spiel", "%.1f" % q, farbe))
+		zahlen.add_child(_gespann_zahl("Siebenmeter je Spiel",
+			"%.1f" % Schiedsrichter.siebenmeter_quote(g), Stil.TEXT))
+		zahlen.add_child(_gespann_zahl("Rote Karten", str(int(g["rote"])), Stil.TEXT))
+	# Die eigene Einstellung daneben: erst der Vergleich macht die Zahl zur
+	# Entscheidung. Ein 78er-Härtewert ist für sich genommen nichts.
+	var haerte: float = float(Welt.mein_verein()["taktik"]["haerte"])
+	var erwartet: float = Matchsim.zeitstrafenquote_bei_haerte(haerte) \
+		* Schiedsrichter.strenge_faktor(g) * 110.0
+	karte.add_child(Stil.matt(
+		"Ihre Härte steht auf %d. Bei diesem Gespann sind daraus rund %.1f Zeitstrafen zu erwarten." % [
+			int(haerte), erwartet], Stil.S_MINI))
+
+func _gespann_zahl(beschriftung: String, wert: String, farbe: Color) -> Control:
+	var v := Stil.vbox(1)
+	v.add_child(Stil.etikett(beschriftung))
+	v.add_child(Stil.text(wert, Stil.S_GROSS, farbe))
+	return v

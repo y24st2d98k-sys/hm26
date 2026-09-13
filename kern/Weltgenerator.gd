@@ -107,6 +107,12 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 	_erzeuge_medien(d)
 	_erzeuge_rekorde(d)
 	Nationalteam.erzeuge_teams(d)
+	Schiedsrichter.erzeugen(d, (d["nationen"] as Dictionary).keys())
+	# Erst hier steht die Handschrift jedes Vereins fest. Das Vertrautheits-
+	# konto muss darauf sitzen, sonst startet die halbe Liga so, als hätte sie
+	# gerade umgestellt.
+	for cid in clubs(d):
+		Vertrautheit.stammformation_setzen(d, str(cid))
 	return d
 
 static func _erzeuge_nationen(d: Dictionary) -> void:
@@ -372,6 +378,9 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		"jugend": [],
 		"personal": [],
 		"taktik": standard_taktik(),
+		# Die Stammformation sitzt von Anfang an, alles andere nicht. Ohne das
+		# stünde die ganze Liga am ersten Spieltag wie frisch umgestellt da.
+		"vertrautheit": {},
 		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": "", "anweisungen": {}, "minuten": {}},
 		"mentoring": [],
 		"trainingslager": {},

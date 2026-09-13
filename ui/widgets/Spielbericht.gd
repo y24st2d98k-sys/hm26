@@ -124,6 +124,9 @@ func _zeichne() -> void:
 	var bester: String = str(bericht.get("spieler_des_spiels", ""))
 	if bester != "" and Welt.daten["spieler"].has(bester):
 		werte.add_child(Stil.info_zeile("Spieler des Spiels", Spielerfabrik.voller_name(Welt.spieler(bester)), Stil.AKZENT))
+	var gespann: String = str(bericht.get("gespann", ""))
+	if gespann != "":
+		werte.add_child(Stil.info_zeile("Gespann", gespann, Stil.TEXT_MATT))
 
 	# Von fremden Partien hebt der Spielstand nur das Ergebnis und die
 	# Mannschaftswerte auf. Das steht hier, damit die leeren Karten unten
