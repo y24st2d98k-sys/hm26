@@ -464,6 +464,7 @@ func wochenrhythmus(t: int) -> void:
 	if wt == 0:  # Montag: Wochenbericht
 		Training.wochenwechsel(daten)
 		Vertrautheit.wochenwechsel(daten)
+		Spielzuege.wochenwechsel(daten)
 		Finanzen.wochenabrechnung(daten)
 		Medien.wochenrueckblick(daten, mein_verein_id)
 		Vorstand.wochenpruefung(daten, mein_verein_id)

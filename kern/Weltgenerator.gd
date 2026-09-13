@@ -113,6 +113,7 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 	# gerade umgestellt.
 	for cid in clubs(d):
 		Vertrautheit.stammformation_setzen(d, str(cid))
+		Spielzuege.ki_buch_anlegen(d, str(cid))
 	return d
 
 static func _erzeuge_nationen(d: Dictionary) -> void:
@@ -381,6 +382,7 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		# Die Stammformation sitzt von Anfang an, alles andere nicht. Ohne das
 		# stünde die ganze Liga am ersten Spieltag wie frisch umgestellt da.
 		"vertrautheit": {},
+		"spielbuch": {},
 		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": "", "anweisungen": {}, "minuten": {}},
 		"mentoring": [],
 		"trainingslager": {},

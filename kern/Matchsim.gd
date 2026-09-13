@@ -195,6 +195,13 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		# vor dem Anwurf fest und ändert sich in der Partie nicht mehr.
 		"vertraut_abwehr": Vertrautheit.faktor(daten, cid, "abwehr", str(taktik.get("abwehr", "6-0"))),
 		"vertraut_angriff": Vertrautheit.faktor(daten, cid, "angriff", str(taktik.get("angriff", "positionsangriff"))),
+		# Das Spielbuch und was daraus in dieser Partie tatsächlich gelaufen
+		# ist — Letzteres geht nach dem Schlusspfiff zurück ins Training.
+		"spielbuch": Spielzuege.buch(daten, cid),
+		"zug_gelaufen": {},
+		# Der Zug des laufenden Angriffs. Wird in _angriff_ausspielen gesetzt
+		# und von _wurfposition und _angriffsdauer mitgelesen.
+		"zug": "", "zug_wirkung": {},
 		# Cache für alles, was sich erst mit einem Wechsel ändert.
 		"cache": {},
 	}
@@ -396,6 +403,10 @@ func _angriffsdauer(a: Dictionary) -> float:
 	# eine Gratisverbesserung.
 	var bereitschaft: float = _anweisungsmittel(a, "angriff_auf", "angriff", "wurfanteil")
 	basis += clampf((1.0 - bereitschaft) * 18.0, -3.0, 10.5)
+	# Ein Zug hat seine eigene Länge: die zweite Welle ist nach zwanzig
+	# Sekunden abgeschlossen, "Ball halten" zieht den Angriff bis zum
+	# passiven Vorwarnzeichen.
+	basis *= float((a.get("zug_wirkung", {}) as Dictionary).get("dauer", 1.0))
 	return clampf(basis + rng.randf_range(-6.0, 6.0), 9.0, 52.0)
 
 # --------------------------------------------- Wirkung der Regler (Anzeige) ---
@@ -435,6 +446,8 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	var a_feld: int = _feldspieler(a)
 	var v_feld: int = _feldspieler(v)
 	var ueberzahl: int = a_feld - v_feld
+	_spielzug_waehlen(a, v, ueberzahl)
+	var zug: Dictionary = a["zug_wirkung"]
 
 	var angriffskraft: float = _angriffskraft(a, v)
 	var abwehrkraft: float = _abwehrkraft(v, a)
@@ -460,6 +473,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	# Schrittfehlern und Fehlpässen. Deshalb wirkt die Vertrautheit hier ein
 	# zweites Mal, und zwar umgekehrt.
 	p_fehler /= maxf(float(a["vertraut_angriff"]), 0.5)
+	p_fehler *= float(zug.get("fehler", 1.0))
 	if rng.randf() < p_fehler:
 		return _ballverlust(a, v)
 
@@ -479,6 +493,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	var p_2min: float = clampf(0.050 + haerte * 0.00058, 0.02, 0.12) * float(td["zeitstrafe"]) * pfiff
 	var p_7m: float = clampf(0.034 + haerte * 0.00026 + maxf(diff, 0.0) * 0.0005, 0.015, 0.09) * pfiff
 	p_7m *= _anweisungsmittel(a, "angriff_auf", "angriff", "siebenmeter")
+	p_7m *= float(zug.get("siebenmeter", 1.0))
 	# Ein Gespann, das den Zweikampf zulässt, lässt den Angriff nach Kontakt
 	# weiterlaufen: mehr Abschlüsse aus der Bewegung statt Unterbrechung.
 	diff += (Schiedsrichter.laufen_lassen(gespann) - 1.0) * 22.0
@@ -492,7 +507,40 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	elif wurf_zuf < p_2min + p_7m:
 		return _siebenmeter(a, v)
 
+	# Der Zuschlag des Spielzugs: er wirkt auf die Abschlussqualität, nicht auf
+	# die Wahrscheinlichkeit, überhaupt zum Wurf zu kommen. Ein gut gelaufener
+	# Kreuz bringt die bessere Position, nicht mehr Angriffe.
+	diff += float(zug.get("guete", 0.0)) * ANWEISUNG_GUETE
 	return _wurf(a, v, diff, td)
+
+## Welcher Zug in diesem Angriff läuft.
+##
+## Die Reihenfolge ist die aus Spielzuege.SITUATIONEN: die speziellste Lage
+## gewinnt. Ein Zug, der nicht eingetragen oder nicht einstudiert ist, ergibt
+## eine neutrale Wirkung — die Simulation rechnet dann genau wie ohne
+## Spielbuch, und deshalb verschiebt das System nichts an der Kalibrierung.
+func _spielzug_waehlen(a: Dictionary, v: Dictionary, ueberzahl: int) -> void:
+	var b: Dictionary = a["spielbuch"]
+	var situation := "standard"
+	if ueberzahl < 0:
+		situation = "unterzahl"
+	elif ueberzahl > 0:
+		situation = "ueberzahl"
+	elif float(a["auszeit_wirkung"]) > 0.55:
+		situation = "nach_auszeit"
+	elif zeit > SPIELZEIT - 300.0 and absi(int(heim["tore"]) - int(gast["tore"])) <= 3:
+		situation = "schluss"
+	var zug: String = Spielzuege.zug_fuer(b, situation)
+	if zug == "" and situation != "standard":
+		# Für eine Lage ohne eigenen Eintrag gilt der normale Angriff. Sonst
+		# stünde man in Überzahl plötzlich ohne jedes Konzept da.
+		zug = Spielzuege.zug_fuer(b, "standard")
+	a["zug"] = zug
+	a["zug_wirkung"] = Spielzuege.wirkung(zug, Spielzuege.einstudiert(b, zug),
+		str(v["taktik"]["abwehr"]))
+	if zug != "":
+		var gel: Dictionary = a["zug_gelaufen"]
+		gel[zug] = int(gel.get(zug, 0)) + 1
 
 func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Dictionary:
 	var pos := _wurfposition(a)
@@ -627,6 +675,10 @@ func _wurfposition(a: Dictionary) -> String:
 		var kraft: float = float(a["zustand"][sid]["kraft"]) / 100.0
 		var g: float = float(verteilung[pos]) * (0.55 + 0.45 * kraft) * (0.7 + 0.6 * _angriff_basis(a, sid, pos) / 100.0)
 		g *= _faktor(a, sid, "angriff", "wurfanteil")
+		# Der laufende Spielzug verschiebt, wer zum Abschluss kommt. Genau das
+		# ist der sichtbarste Teil eines einstudierten Ablaufs: nach einem
+		# Einläufer wirft der Kreis, nach einem Kreuz der Rückraum.
+		g *= float((a["zug_wirkung"].get("wurf", {}) as Dictionary).get(pos, 1.0))
 		gewichte[pos] = g
 		gesamt += g
 	# Wer den Kreis anspielt, verschiebt Abschluesse zum Kreislaeufer.
@@ -1452,6 +1504,7 @@ func _spielende() -> void:
 	for t in [heim, gast]:
 		Vertrautheit.partie_verbuchen(daten, str(t["cid"]),
 			str(t["taktik"]["abwehr"]), str(t["taktik"]["angriff"]))
+		Spielzuege.partie_verbuchen(daten, str(t["cid"]), t["zug_gelaufen"])
 	Schiedsrichter.partie_verbuchen(daten, str(spiel["id"]),
 		int(heim["stats"]["zeitstrafen"]) + int(gast["stats"]["zeitstrafen"]),
 		int(heim["stats"]["siebenmeter"]) + int(gast["stats"]["siebenmeter"]),

@@ -12,6 +12,7 @@ var feld: Spielfeld
 var warnungen_bereich: VBoxContainer
 var anweisungs_bereich: VBoxContainer
 var profil_bereich: VBoxContainer
+var spielbuch_bereich: VBoxContainer
 var minuten_bereich: VBoxContainer
 var vorschau_angriff: bool = true
 var meldung: Label
@@ -84,6 +85,7 @@ func aufbauen() -> void:
 	feldkarte.add_child(feld)
 	taktik_bereich = Bausteine.karte_in(rechts, "Spielidee")
 
+	spielbuch_bereich = Bausteine.karte_in(inhalt, "Das Spielbuch")
 	profil_bereich = Bausteine.karte_in(inhalt, "Spielideen")
 	anweisungs_bereich = Bausteine.karte_in(inhalt, "Spieleranweisungen")
 	minuten_bereich = Bausteine.karte_in(inhalt, "Einsatzzeiten")
@@ -103,6 +105,7 @@ func aktualisieren() -> void:
 	leeren(bank_bereich)
 	leeren(anweisungs_bereich)
 	leeren(profil_bereich)
+	leeren(spielbuch_bereich)
 	leeren(minuten_bereich)
 	leeren(warnungen_bereich)
 	if Welt.mein_verein_id == "":
@@ -112,6 +115,7 @@ func aktualisieren() -> void:
 	_angriff()
 	_abwehr()
 	_taktik()
+	_spielbuch()
 	_profile()
 	_anweisungen()
 	_einsatzzeiten()
@@ -735,3 +739,90 @@ func _vertrautheit_zeile(bereich: String, formation: String) -> Control:
 	else:
 		zeile.add_child(Stil.matt("kein Abzug", Stil.S_MINI))
 	return zeile
+
+
+# ------------------------------------------------------------- Spielbuch ---
+
+## Welcher einstudierte Ablauf in welcher Lage gelaufen wird.
+##
+## Die Tabelle zeigt bewusst drei Dinge nebeneinander: den zugeordneten Zug,
+## wie weit er einstudiert ist, und gegen welche Deckung er läuft. Erst
+## zusammen ergeben sie eine Entscheidung — ein perfekt einstudierter
+## Einläufer gegen ein 6-0 ist verschenkte Arbeit.
+func _spielbuch() -> void:
+	var cid := Welt.mein_verein_id
+	var b := Spielzuege.buch(Welt.daten, cid)
+	var belegt: Array = Spielzuege.belegte(b)
+	spielbuch_bereich.add_child(Bausteine.fliesstext(
+		"Ein Spielzug ist kein Gewinn, sondern ein Tausch: er verschiebt, wer wirft, und läuft gegen die eine Deckung besser als gegen die andere. Es passen %d Züge ins Buch — was nicht drinsteht, verlernt die Mannschaft wieder." % Spielzuege.PLAETZE,
+		Stil.S_MINI))
+	var kopf := Stil.hbox(10)
+	spielbuch_bereich.add_child(kopf)
+	kopf.add_child(Stil.etikett("Belegt"))
+	kopf.add_child(Stil.text("%d von %d" % [belegt.size(), Spielzuege.PLAETZE], Stil.S_KLEIN,
+		Stil.AKZENT if belegt.size() >= Spielzuege.PLAETZE else Stil.TEXT))
+	var gegner := _naechster_gegner()
+	if gegner != "":
+		var gdeckung: String = str(Welt.verein(gegner)["taktik"]["abwehr"])
+		kopf.add_child(Stil.dehner())
+		kopf.add_child(Stil.matt("Nächster Gegner deckt:", Stil.S_MINI))
+		kopf.add_child(Stil.abzeichen(gdeckung, Stil.BLAU))
+
+	var gr := Stil.tabelle(["Situation", "Spielzug", "Einstudiert", "Läuft gegen", "Läuft nicht gegen"])
+	gr.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spielbuch_bereich.add_child(gr)
+	for situation in Spielzuege.SITUATIONEN:
+		var sid: String = str((situation as Dictionary)["id"])
+		var gewaehlt: String = Spielzuege.zug_fuer(b, sid)
+		var beschriftung := Stil.vbox(0)
+		beschriftung.add_child(Stil.text(str((situation as Dictionary)["name"]), Stil.S_KLEIN))
+		beschriftung.add_child(Stil.matt(str((situation as Dictionary)["text"]), Stil.S_ETIKETT))
+		gr.add_child(beschriftung)
+		gr.add_child(_zugwahl(sid, gewaehlt, belegt))
+		if gewaehlt == "":
+			gr.add_child(Stil.matt("—", Stil.S_KLEIN))
+			gr.add_child(Stil.matt("—", Stil.S_KLEIN))
+			gr.add_child(Stil.matt("—", Stil.S_KLEIN))
+			continue
+		var grad: float = Spielzuege.einstudiert(b, gewaehlt)
+		var reihe := Stil.hbox(6)
+		reihe.add_child(Stil.balken(grad, 100.0, 74, Stil.prozent_farbe(grad)))
+		reihe.add_child(Stil.matt(Spielzuege.stufe_text(grad), Stil.S_ETIKETT))
+		gr.add_child(reihe)
+		gr.add_child(Stil.abzeichen(Spielzuege.beste_deckung(gewaehlt), Stil.GRUEN))
+		gr.add_child(Stil.abzeichen(Spielzuege.schlechteste_deckung(gewaehlt), Stil.ROT))
+
+## Die Auswahl selbst. Züge, die noch nicht im Buch stehen und für die kein
+## Platz mehr frei ist, werden abgeblendet statt versteckt — sonst sucht man
+## den Kreuzlauf und findet ihn nicht mehr.
+func _zugwahl(situation: String, gewaehlt: String, belegt: Array) -> Control:
+	var w := OptionButton.new()
+	w.custom_minimum_size = Vector2(230, 0)
+	w.add_item("— kein Spielzug —", 0)
+	w.set_item_metadata(0, "")
+	var i := 1
+	var index := 0
+	for zug in Spielzuege.ZUEGE.keys():
+		w.add_item(Spielzuege.name_von(str(zug)), i)
+		w.set_item_metadata(i, str(zug))
+		w.set_item_tooltip(i, str((Spielzuege.ZUEGE[zug] as Dictionary)["text"]))
+		if not belegt.has(str(zug)) and belegt.size() >= Spielzuege.PLAETZE:
+			w.set_item_disabled(i, true)
+		if str(zug) == gewaehlt:
+			index = i
+		i += 1
+	w.select(index)
+	w.item_selected.connect(func(gewaehlt_index: int):
+		var zug: String = str(w.get_item_metadata(gewaehlt_index))
+		if Spielzuege.zuordnen(Welt.daten, Welt.mein_verein_id, situation, zug):
+			_melde("%s: %s" % [situation, Spielzuege.name_von(zug)])
+		else:
+			_melde("Das Spielbuch ist voll — erst einen Zug herausnehmen.")
+		aktualisieren())
+	return w
+
+func _naechster_gegner() -> String:
+	var n := Welt.naechstes_spiel(Welt.mein_verein_id)
+	if n.is_empty():
+		return ""
+	return str(n["gast"]) if str(n["heim"]) == Welt.mein_verein_id else str(n["heim"])
