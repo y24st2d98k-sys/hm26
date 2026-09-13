@@ -55,6 +55,9 @@ const FLAGGEN := {
 	"br": {"art": Art.MITTELBALKEN, "farben": [GR, G]},
 	"jp": {"art": Art.EINFARBIG, "farben": [W, R]},
 	"kr": {"art": Art.EINFARBIG, "farben": [W, B]},
+	# Kuba: Streifen mit rotem Keil am Mast — dieselbe Abstraktion wie bei
+	# Tschechien und Bosnien.
+	"cu": {"art": Art.VIERTEL, "farben": [B, W, R]},
 }
 
 var nation: String = "de"

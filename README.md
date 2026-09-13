@@ -667,10 +667,11 @@ der Spielstand nur noch das Ergebnis aufhebt, bleiben sie erhalten.
 
 ## Echte Kader
 
-`daten/kader.json` hält die belegten Kader. Fünf Bundesligisten sind für die
+`daten/kader.json` hält die belegten Kader. Zehn Bundesligisten sind für die
 Saison 2026/27 vollständig hinterlegt — Magdeburg, Füchse Berlin, Flensburg,
-Gummersbach und Lemgo — mit Rückennummer, Name, Position, Nation und Alter zum
-1. September 2026.
+Gummersbach, Lemgo, Kiel, Melsungen, Rhein-Neckar Löwen, Göppingen und der HSV
+Hamburg — mit Rückennummer, Name, Position, Nation und Alter zum 1. September
+2026. Das sind 183 Spieler und mehr als die Hälfte der Liga.
 
 Die **Stärke ist ein Schätzwert für die Simulation**, keine Tatsachenbehauptung.
 Sie ordnet einen Spieler auf einer Skala ein, auf der der Bundesliga-MVP bei 96
@@ -687,10 +688,12 @@ zwischen denen, die es gibt.
 
 Für einen belegten Kader (ab vierzehn Spielern) gilt deshalb nur noch, was die
 Simulation zwingend braucht: zwei Torhüter, mindestens einer auf jeder
-Feldposition, mindestens sechzehn Mann gegen Verletzungspech. Die fünf
-gepflegten Kader kommen damit ohne einen einzigen erfundenen Spieler aus. Kiel
-bekommt genau einen, weil im hinterlegten Kader kein Rechtsaußen steht — das
-ist die Lücke, nicht das Verfahren.
+Feldposition, mindestens sechzehn Mann gegen Verletzungspech. Alle zehn
+gepflegten Kader kommen damit ohne einen einzigen erfundenen Spieler aus.
+
+Zwei Entscheidungen, die dabei anfielen: ein an einen anderen Verein
+verliehener Spieler steht nicht im Kader seines Stammvereins, und ein Trainer,
+der in einer Kadertabelle mitgeführt wird, ist kein Spieler.
 
 Die Rückennummern aus dem Datensatz werden übernommen: Gidsel trägt die 19,
 Kristjánsson die 10, Pytlick die 2.

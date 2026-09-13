@@ -22,6 +22,9 @@ const KULTUR_NAME := {
 	"lv": "Lettland", "by": "Belarus", "ro": "Rumänien", "cz": "Tschechien",
 	"sk": "Slowakei", "ua": "Ukraine", "tn": "Tunesien", "qa": "Katar",
 	"jp": "Japan", "kr": "Südkorea", "gr": "Griechenland", "fi": "Finnland",
+	# Nur fuer benannte echte Spieler — es gibt keinen kubanischen
+	# Namenspool, also wird auch niemand mit dieser Kultur erzeugt.
+	"cu": "Kuba"
 }
 
 const KULTUR_KUERZEL := {
@@ -31,7 +34,7 @@ const KULTUR_KUERZEL := {
 	"at": "AUT", "ch": "SUI", "nl": "NED", "be": "BEL", "it": "ITA", "fo": "FRO",
 	"ba": "BIH", "me": "MNE", "lv": "LAT", "by": "BLR", "ro": "ROU", "cz": "CZE",
 	"sk": "SVK", "ua": "UKR", "tn": "TUN", "qa": "QAT", "jp": "JPN", "kr": "KOR",
-	"gr": "GRE", "fi": "FIN",
+	"gr": "GRE", "fi": "FIN", "cu": "CUB",
 }
 
 # ------------------------------------------------------------- Vornamen ---
