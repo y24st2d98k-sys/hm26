@@ -24,6 +24,30 @@ static func fenster_offen(d: Dictionary) -> bool:
 	var tis: int = Kalender.tag_in_saison(int(d.get("tag", 0)))
 	return (tis >= SOMMER_VON and tis <= SOMMER_BIS) or (tis >= WINTER_VON and tis <= WINTER_BIS)
 
+## Die letzten Tage eines Fensters. Was jetzt nicht passiert, passiert nicht
+## mehr — und das aendert das Verhalten aller Beteiligten.
+const DEADLINE_TAGE := 3
+
+static func ist_deadline(d: Dictionary) -> bool:
+	if not fenster_offen(d):
+		return false
+	var rest := tage_bis_fensterschluss(d)
+	return rest >= 0 and rest < DEADLINE_TAGE
+
+## Wie gross der Druck ist: 0 lange vor Schluss, 1 am letzten Tag.
+##
+## Das ist die eine Zahl, aus der die ganze Schlussphase folgt. Vorher war ein
+## Transferfenster ueberall gleich warm — man konnte am ersten Tag dasselbe
+## tun wie am letzten, und der Kalender war Kulisse. Ein Fenster ohne
+## Zeitdruck ist aber kein Fenster, sondern eine Liste.
+static func deadline_druck(d: Dictionary) -> float:
+	if not fenster_offen(d):
+		return 0.0
+	var rest := tage_bis_fensterschluss(d)
+	if rest < 0 or rest >= DEADLINE_TAGE:
+		return 0.0
+	return clampf(1.0 - float(rest) / float(DEADLINE_TAGE), 0.0, 1.0)
+
 static func tage_bis_fensterschluss(d: Dictionary) -> int:
 	if d.is_empty():
 		return 0
@@ -163,6 +187,10 @@ static func tageswechsel(d: Dictionary) -> void:
 	d["transfermarkt"]["angebote"] = behalten
 	if Kalender.wochentag(int(d["tag"])) == 1:
 		_ki_transferrunde(d)
+	if ist_deadline(d):
+		# An den letzten Tagen laeuft der Markt heiss, statt einmal die Woche.
+		_ki_transferrunde(d)
+		_deadline_bilanz(d)
 	_deadline_hinweis(d)
 
 static func _deadline_hinweis(d: Dictionary) -> void:
@@ -175,6 +203,39 @@ static func _deadline_hinweis(d: Dictionary) -> void:
 			"betreff": "Transferfenster: noch %d Tage" % rest,
 			"text": "Danach sind bis zum nächsten Fenster keine Verpflichtungen mehr möglich. Offene Verhandlungen sollten jetzt entschieden werden.",
 		})
+
+## Was heute im Markt passiert ist. Nur an Deadline-Tagen und nur, wenn es
+## etwas zu berichten gibt — eine Meldung ueber null Transfers waere Laerm.
+static func _deadline_bilanz(d: Dictionary) -> void:
+	if Welt.mein_verein_id == "":
+		return
+	var heute: Array = []
+	for e in d["transfermarkt"].get("verlauf", []):
+		if int((e as Dictionary).get("tag", -1)) == int(d["tag"]):
+			heute.append(e)
+	if heute.is_empty():
+		return
+	heute.sort_custom(func(a, b): return float((a as Dictionary).get("ablöse", 0.0)) > float((b as Dictionary).get("ablöse", 0.0)))
+	var zeilen: Array = []
+	for e in heute.slice(0, 6):
+		var eintrag: Dictionary = e
+		var sp: Dictionary = d["spieler"].get(str(eintrag.get("spieler", "")), {})
+		if sp.is_empty():
+			continue
+		var nach: String = str((d["vereine"].get(str(eintrag.get("nach", "")), {}) as Dictionary).get("name", "einem neuen Verein"))
+		var von: String = str((d["vereine"].get(str(eintrag.get("von", "")), {}) as Dictionary).get("name", "vereinslos"))
+		zeilen.append("· %s: %s → %s (%s)" % [Spielerfabrik.voller_name(sp), von, nach,
+			Stil.geld(float(eintrag.get("ablöse", 0.0)))])
+	if zeilen.is_empty():
+		return
+	var rest := tage_bis_fensterschluss(d)
+	Welt.nachricht({
+		"typ": "transfer", "wichtig": rest <= 0,
+		"betreff": "Deadline Day: %d Wechsel heute" % heute.size(),
+		"text": "%s\n\n%s" % [
+			("Das Fenster schließt heute." if rest <= 0 else "Noch %d Tage." % rest),
+			"\n".join(zeilen)],
+	})
 
 static func _angebot_bearbeiten(d: Dictionary, a: Dictionary) -> void:
 	var sid: String = str(a["spieler"])
@@ -206,6 +267,10 @@ static func _vereinsverhandlung(d: Dictionary, a: Dictionary) -> void:
 		schwelle *= 1.28
 	if bool(sp.get("transferwunsch", false)):
 		schwelle *= 0.86
+	# In den letzten Tagen wird ein abgebender Verein weicher: laesst er den
+	# Spieler jetzt nicht ziehen, hat er ihn ein halbes Jahr an der Backe und
+	# bekommt gar nichts. Bis zu 16 Prozent unter der normalen Forderung.
+	schwelle *= 1.0 - 0.16 * deadline_druck(d)
 	if geboten >= schwelle:
 		a["status"] = "verein_einig"
 		a["antwort"] = "%s stimmt einer Ablöse von %s zu. Jetzt entscheidet der Spieler." % [verkaeufer["name"], Stil.geld(geboten)]

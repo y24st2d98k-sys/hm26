@@ -130,7 +130,15 @@ func aktualisieren() -> void:
 func _kopf() -> void:
 	var offen := Transfermarkt.fenster_offen(Welt.daten)
 	var rest := Transfermarkt.tage_bis_fensterschluss(Welt.daten)
-	if offen:
+	if offen and Transfermarkt.ist_deadline(Welt.daten):
+		# Die Schlussphase ist keine Randnotiz: Vereine geben nach, die
+		# Computertrainer kaufen taeglich statt woechentlich, und was jetzt
+		# nicht passiert, passiert ein halbes Jahr lang nicht.
+		kopfinfo.text = "DEADLINE DAY — %s" % (
+			"das Fenster schließt heute" if rest <= 0 else "noch %d Tage" % rest)
+		kopfinfo.add_theme_color_override("font_color", Stil.ROT)
+		kopfinfo.add_theme_font_override("font", Stil.schnitt_fett())
+	elif offen:
 		kopfinfo.text = "Transferfenster offen — noch %d Tage" % rest
 		kopfinfo.add_theme_color_override("font_color", Stil.GRUEN if rest > 7 else Stil.ROT)
 	else:

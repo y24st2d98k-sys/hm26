@@ -123,6 +123,7 @@ static func spiel_verbuchen(d: Dictionary, m: Dictionary, cid: String) -> void:
 		delta = -0.1 + clampf((gegnerruf - eigenruf) / 140.0, -0.05, 0.09)
 	t["ruf"] = clampf(float(t["ruf"]) + delta, 1.0, 100.0)
 	handschrift_pflegen(d, cid)
+	Ruhmeshalle.nach_spiel(d, m, cid)
 
 ## Richtet die Handschrift langsam an der tatsaechlichen Arbeitsweise aus.
 static func handschrift_pflegen(d: Dictionary, cid: String) -> void:
@@ -191,6 +192,7 @@ static func titel_gewinnen(d: Dictionary, bezeichnung: String) -> void:
 	if not st.is_empty():
 		(st["titel"] as Array).append(bezeichnung)
 	t["ruf"] = clampf(float(t["ruf"]) + 6.0, 1.0, 100.0)
+	Ruhmeshalle.nach_titel(d)
 
 ## Wechselt den Verein: alte Station schliessen, neue eroeffnen.
 static func verein_wechseln(d: Dictionary, neuer_verein: String) -> void:
@@ -220,6 +222,7 @@ static func verein_wechseln(d: Dictionary, neuer_verein: String) -> void:
 			"abfindung_faktor": 0.5,
 		}
 	Welt.mein_verein_id = neuer_verein
+	Ruhmeshalle.nach_wechsel(d)
 	# Gesichtete Talente des alten Vereins bleiben dort.
 	Talentsuche.aufraeumen(d)
 

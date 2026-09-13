@@ -45,6 +45,21 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "matchplan":
+			# Der Matchplan steht weit unten auf dem Taktikbildschirm.
+			app.zeige("taktik")
+			var naechst := Welt.naechstes_spiel(Welt.mein_verein_id)
+			var geg: String = str(naechst.get("gast", ""))
+			if geg == Welt.mein_verein_id:
+				geg = str(naechst.get("heim", ""))
+			Gegnerplan.setzen(Welt.daten, Welt.mein_verein_id, geg, "manndeckung")
+			app.bildschirme["taktik"].aktualisieren()
+			await get_tree().process_frame
+			var tb: Node = app.bildschirme["taktik"]
+			for kind in tb.get_children():
+				_scrollen(kind, 1120)
+			await _foto("%s/matchplan.png" % ordner)
+			continue
 		if str(id) == "zweite":
 			app.zeige("jugend")
 			app.bildschirme["jugend"].reiter = "zweite"
@@ -246,3 +261,12 @@ func _pokal(app: Node, ordner: String) -> void:
 	await get_tree().process_frame
 	await _foto("%s/pokal.png" % ordner)
 	tafel.queue_free()
+
+## Sucht rekursiv den Scrollbereich eines Bildschirms und rollt ihn.
+## Nur fuer Aufnahmen: manche Karten liegen weit unter dem Falz.
+func _scrollen(knoten: Node, wert: int) -> void:
+	if knoten is ScrollContainer:
+		(knoten as ScrollContainer).scroll_vertical = wert
+		return
+	for kind in knoten.get_children():
+		_scrollen(kind, wert)

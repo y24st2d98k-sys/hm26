@@ -13,6 +13,7 @@ var warnungen_bereich: VBoxContainer
 var anweisungs_bereich: VBoxContainer
 var profil_bereich: VBoxContainer
 var spielbuch_bereich: VBoxContainer
+var gegnerplan_bereich: VBoxContainer
 var minuten_bereich: VBoxContainer
 var vorschau_angriff: bool = true
 var meldung: Label
@@ -85,6 +86,7 @@ func aufbauen() -> void:
 	feldkarte.add_child(feld)
 	taktik_bereich = Bausteine.karte_in(rechts, "Spielidee")
 
+	gegnerplan_bereich = Bausteine.karte_in(inhalt, "Der Matchplan")
 	spielbuch_bereich = Bausteine.karte_in(inhalt, "Das Spielbuch")
 	profil_bereich = Bausteine.karte_in(inhalt, "Spielideen")
 	anweisungs_bereich = Bausteine.karte_in(inhalt, "Spieleranweisungen")
@@ -106,6 +108,7 @@ func aktualisieren() -> void:
 	leeren(anweisungs_bereich)
 	leeren(profil_bereich)
 	leeren(spielbuch_bereich)
+	leeren(gegnerplan_bereich)
 	leeren(minuten_bereich)
 	leeren(warnungen_bereich)
 	if Welt.mein_verein_id == "":
@@ -115,6 +118,7 @@ func aktualisieren() -> void:
 	_angriff()
 	_abwehr()
 	_taktik()
+	_gegnerplan()
 	_spielbuch()
 	_profile()
 	_anweisungen()
@@ -789,8 +793,14 @@ func _spielbuch() -> void:
 		reihe.add_child(Stil.balken(grad, 100.0, 74, Stil.prozent_farbe(grad)))
 		reihe.add_child(Stil.matt(Spielzuege.stufe_text(grad), Stil.S_ETIKETT))
 		gr.add_child(reihe)
-		gr.add_child(Stil.abzeichen(Spielzuege.beste_deckung(gewaehlt), Stil.GRUEN))
-		gr.add_child(Stil.abzeichen(Spielzuege.schlechteste_deckung(gewaehlt), Stil.ROT))
+		if Spielzuege.deckungsabhaengig(gewaehlt):
+			gr.add_child(Stil.abzeichen(Spielzuege.beste_deckung(gewaehlt), Stil.GRUEN))
+			gr.add_child(Stil.abzeichen(Spielzuege.schlechteste_deckung(gewaehlt), Stil.ROT))
+		else:
+			# Ein Zug, der überall gleich läuft, soll auch nichts anderes
+			# behaupten.
+			gr.add_child(Stil.matt("egal", Stil.S_MINI))
+			gr.add_child(Stil.matt("egal", Stil.S_MINI))
 
 ## Die Auswahl selbst. Züge, die noch nicht im Buch stehen und für die kein
 ## Platz mehr frei ist, werden abgeblendet statt versteckt — sonst sucht man
@@ -826,3 +836,92 @@ func _naechster_gegner() -> String:
 	if n.is_empty():
 		return ""
 	return str(n["gast"]) if str(n["heim"]) == Welt.mein_verein_id else str(n["heim"])
+
+
+# ----------------------------------------------------------- Gegnerplan ---
+
+## Was gegen genau diesen Gegner unternommen wird.
+##
+## Die Mannschaftstaktik gilt gegen jeden gleich, die Spieleranweisung gilt
+## für den eigenen Mann. Diese Karte ist die dritte Ebene: was man gegen
+## *diesen* Rückraumschützen tut, der in den letzten fünf Spielen 28 Tore
+## geworfen hat. Beide Mittel kosten etwas — deshalb steht der Preis daneben.
+func _gegnerplan() -> void:
+	var cid := Welt.mein_verein_id
+	var gegner := _naechster_gegner()
+	if gegner == "":
+		gegnerplan_bereich.add_child(Stil.leerzustand(
+			"Kein nächstes Spiel angesetzt — es gibt niemanden, gegen den man etwas planen könnte."))
+		return
+	var p := Gegnerplan.plan(Welt.daten, cid)
+	var gilt: bool = str(p["gegner"]) == gegner
+	var kopf := Stil.hbox(10)
+	gegnerplan_bereich.add_child(kopf)
+	kopf.add_child(Wappen.fuer_verein(gegner, 26.0))
+	kopf.add_child(Stil.text("Nächster Gegner: %s" % str(Welt.verein(gegner)["name"]), Stil.S_KLEIN))
+	kopf.add_child(Stil.abzeichen(str(Welt.verein(gegner)["taktik"]["abwehr"]), Stil.BLAU))
+	kopf.add_child(Stil.dehner())
+	if not gilt and str(p["mittel"]) != "keins":
+		# Ein Plan gegen jemand anderen ist kein Plan. Das muss man sehen,
+		# sonst wundert man sich, warum nichts passiert.
+		kopf.add_child(Stil.abzeichen("gilt gegen einen anderen Verein", Stil.GELB))
+	gegnerplan_bereich.add_child(Bausteine.fliesstext(
+		Gegnerplan.beschreibung(Welt.daten, Gegnerplan.fuer(Welt.daten, cid, gegner)), Stil.S_KLEIN))
+
+	var mittelzeile := Stil.hbox(10)
+	gegnerplan_bereich.add_child(mittelzeile)
+	mittelzeile.add_child(Stil.etikett("Mittel"))
+	var wahl := OptionButton.new()
+	wahl.custom_minimum_size = Vector2(250, 0)
+	var i := 0
+	for schluessel in Gegnerplan.MITTEL.keys():
+		wahl.add_item(str((Gegnerplan.MITTEL[schluessel] as Dictionary)["name"]), i)
+		wahl.set_item_metadata(i, str(schluessel))
+		wahl.set_item_tooltip(i, str((Gegnerplan.MITTEL[schluessel] as Dictionary)["text"]))
+		if gilt and str(p["mittel"]) == str(schluessel):
+			wahl.select(i)
+		i += 1
+	wahl.item_selected.connect(func(idx: int):
+		var mittel: String = str(wahl.get_item_metadata(idx))
+		var ziel: String = str(p["ziel"]) if gilt else ""
+		Gegnerplan.setzen(Welt.daten, cid, gegner, mittel, ziel)
+		_melde("Matchplan: %s" % str((Gegnerplan.MITTEL[mittel] as Dictionary)["name"]))
+		aktualisieren())
+	mittelzeile.add_child(wahl)
+	mittelzeile.add_child(Stil.dehner())
+	mittelzeile.add_child(Stil.matt(_planpreis(str(p["mittel"]) if gilt else "keins"), Stil.S_MINI))
+
+	if not (gilt and str(p["mittel"]) in ["manndeckung", "doppeln"]):
+		return
+	# Nur wenn ein Mittel gewählt ist, das ein Ziel braucht: sonst stünde hier
+	# eine Liste ohne Zweck.
+	gegnerplan_bereich.add_child(Stil.trenner())
+	gegnerplan_bereich.add_child(Stil.etikett("Auf wen"))
+	var g := Stil.tabelle(["Pos", "Spieler", "Stärke", "Saisontore", ""])
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	gegnerplan_bereich.add_child(g)
+	for e in Gegnerplan.kandidaten(Welt.daten, gegner):
+		var sid: String = str((e as Dictionary)["spieler"])
+		var sp: Dictionary = Welt.spieler(sid)
+		var ist_ziel: bool = str(p["ziel"]) == sid
+		g.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
+		var k := Stil.knopf_flach(Spielerfabrik.voller_name(sp),
+			Stil.AKZENT if ist_ziel else Stil.TEXT)
+		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		g.add_child(k)
+		g.add_child(Stil.text(str(int((e as Dictionary)["staerke"])), Stil.S_KLEIN,
+			Stil.wert_farbe(float((e as Dictionary)["staerke"]), 100.0)))
+		g.add_child(Stil.text(str(int((e as Dictionary)["tore"])), Stil.S_KLEIN, Stil.AKZENT))
+		var setzen := Stil.knopf_primaer("Decken") if not ist_ziel else Stil.knopf("Nicht mehr decken")
+		setzen.pressed.connect(func():
+			Gegnerplan.setzen(Welt.daten, cid, gegner, str(p["mittel"]), "" if ist_ziel else sid)
+			_melde("Manndeckung auf %s" % Spielerfabrik.voller_name(sp) if not ist_ziel else "Manndeckung aufgehoben.")
+			aktualisieren())
+		g.add_child(setzen)
+
+func _planpreis(mittel: String) -> String:
+	match mittel:
+		"manndeckung": return "Preis: −4,5 % Abwehrkraft, +18 % Zeitstrafen"
+		"doppeln": return "Preis: −2,2 % Abwehrkraft, +9 % Zeitstrafen"
+		"kreis_zustellen": return "Preis: +16 % Fernwurfgefahr"
+	return "Kein Preis — und keine Wirkung."

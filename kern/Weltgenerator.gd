@@ -383,6 +383,7 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 		# stünde die ganze Liga am ersten Spieltag wie frisch umgestellt da.
 		"vertrautheit": {},
 		"spielbuch": {},
+		"gegnerplan": {},
 		"aufstellung": {"angriff": {}, "abwehr": {}, "bank": [], "kapitaen": "", "siebenmeter": "", "anweisungen": {}, "minuten": {}},
 		"mentoring": [],
 		"trainingslager": {},
@@ -443,7 +444,7 @@ static func standard_taktik() -> Dictionary:
 		"siebter_feldspieler": "nie",
 		"wechselspiel": 55,
 		"siebenmeter_schuetze": "",
-		"deckungsfokus": "keiner",
+
 		"auszeit_automatik": true,
 	}
 

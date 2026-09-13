@@ -134,6 +134,7 @@ func aktualisieren() -> void:
 		vz.add_child(nein)
 
 	_verbandsangebote(t)
+	_ruhmeshalle()
 
 	var angebote: Array = t.get("jobangebote", [])
 	var jobs := Bausteine.karte_in(inhalt, "Angebote anderer Vereine")
@@ -212,3 +213,54 @@ func _verbandsangebote(t: Dictionary) -> void:
 func _melde(text: String, gut: bool = true) -> void:
 	meldung.text = text
 	meldung.add_theme_color_override("font_color", Stil.GRUEN if gut else Stil.ROT)
+
+
+# ---------------------------------------------------------- Ruhmeshalle ---
+
+## Die Lebensleistung: Bestmarken, erreichte Meilensteine und die nächste
+## Marke.
+##
+## Rekorde der Vereine liegen in der Chronik, Ehrungen für Spieler im
+## Auszeichnungswesen — für den, der das alles entschieden hat, gab es nichts.
+## Die Zeile mit der nächsten Marke ist dabei die wichtigste: ohne sie wäre
+## das hier ein Rückblick, mit ihr ist es ein Ziel.
+func _ruhmeshalle() -> void:
+	var spalten := Stil.hbox(12)
+	inhalt.add_child(spalten)
+
+	var zahlen := Bausteine.karte_in(spalten, "Lebensbilanz")
+	Stil.karte_wurzel(zahlen).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for zeile in Ruhmeshalle.bilanz(Welt.daten):
+		zahlen.add_child(Stil.info_zeile(str((zeile as Dictionary)["name"]),
+			str((zeile as Dictionary)["wert"])))
+	var naechste := Ruhmeshalle.naechste_marke(Welt.daten)
+	if not naechste.is_empty():
+		zahlen.add_child(Stil.trenner())
+		zahlen.add_child(Stil.etikett("Als Nächstes"))
+		var z := Stil.hbox(8)
+		zahlen.add_child(z)
+		z.add_child(Stil.text(str(naechste["name"]), Stil.S_KLEIN))
+		z.add_child(Stil.dehner())
+		z.add_child(Stil.balken(float(naechste["ist"]), float(naechste["ziel"]), 110, Stil.AKZENT))
+		z.add_child(Stil.matt("%d / %d" % [int(naechste["ist"]), int(naechste["ziel"])], Stil.S_MINI))
+
+	var halle := Bausteine.karte_in(spalten, "Ruhmeshalle")
+	Stil.karte_wurzel(halle).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var liste := Ruhmeshalle.meilensteine(Welt.daten)
+	if liste.is_empty():
+		halle.add_child(Stil.leerzustand(
+			"Noch kein Meilenstein erreicht. Der erste kommt nach fünfzig Spielen."))
+		return
+	for m in liste:
+		var e: Dictionary = m
+		var zeile := Stil.hbox(8)
+		halle.add_child(zeile)
+		zeile.add_child(Stil.marke_strich(Stil.AKZENT, 3, 22))
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(spalte)
+		spalte.add_child(Stil.text(str(e["name"]), Stil.S_KLEIN, Stil.AKZENT))
+		spalte.add_child(Stil.matt(str(e["text"]), Stil.S_MINI))
+		var wo: String = str((Welt.daten["vereine"].get(str(e.get("verein", "")), {}) as Dictionary).get("kurz", ""))
+		zeile.add_child(Stil.abzeichen("%s · Saison %d" % [wo, int(e.get("saison", 0)) + 1],
+			Stil.TEXT_SCHWACH))

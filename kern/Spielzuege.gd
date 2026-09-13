@@ -264,6 +264,24 @@ static func stufe_text(grad: float) -> String:
 		return "angerissen"
 	return "kaum geübt"
 
+## Ob sich eine Aussage über die Deckung überhaupt lohnt.
+##
+## "Ball halten" läuft gegen jede Deckung fast gleich. Trotzdem best- und
+## schlechtestgeeignete Deckung anzuzeigen, machte aus einem Rundungsfehler
+## eine Empfehlung — und wer danach ginge, entschiede auf Rauschen.
+const SPREIZUNG_MINDEST := 0.10
+
+static func deckungsabhaengig(zug: String) -> bool:
+	if not ZUEGE.has(zug):
+		return false
+	var werte: Array = ((ZUEGE[zug] as Dictionary)["gegen"] as Dictionary).values()
+	var hoch := -99.0
+	var tief := 99.0
+	for w in werte:
+		hoch = maxf(hoch, float(w))
+		tief = minf(tief, float(w))
+	return hoch - tief >= SPREIZUNG_MINDEST
+
 ## Gegen welche Deckung dieser Zug am besten läuft — für die Oberfläche.
 static func beste_deckung(zug: String) -> String:
 	if not ZUEGE.has(zug):

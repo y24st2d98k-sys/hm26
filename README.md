@@ -408,6 +408,209 @@ dauerhaft gespeichert.
 
 ---
 
+## Das Spielbuch
+
+Bis zu diesem Punkt entschied die Simulation jeden Angriff aus Reglern und
+Positionsstärken. Das ist gut kalibriert, aber es ist keine Handschrift: zwei
+Mannschaften mit demselben Kader spielten identisch, egal wer an der
+Seitenlinie stand. Handball lebt aber von einstudierten Abläufen — Kreuz,
+Sperre, Einläufer, Parallelstoß —, und welchen man wann laufen lässt, ist die
+eigentliche Trainerarbeit zwischen zwei Spielen.
+
+Neun Züge stehen im Katalog, fünf Plätze hat das Buch. Zugeordnet wird nach
+Situation: Unterzahl, Überzahl, Schlussphase, der erste Angriff nach der
+Auszeit, normaler Angriff. In der Partie gewinnt die speziellste Lage.
+
+Drei Regeln halten das System ehrlich:
+
+1. **Ein Zug ist kein Gewinn, sondern ein Tausch.** Jeder verschiebt die
+   Wurfverteilung, hebt die Abschlussqualität gegen die eine Deckung und senkt
+   sie gegen die andere; die Faktoren mitteln sich über alle vier Deckungen zu
+   eins. Wer blind einen Zug einträgt, gewinnt nichts. Wer ihn zur Deckung des
+   Gegners passend wählt, gewinnt spürbar — deshalb steht neben der Auswahl,
+   wie der nächste Gegner deckt.
+2. **Ein Zug wirkt nur, soweit er einstudiert ist.** Frisch eingetragen
+   passiert gar nichts. Fünf Züge im Buch schleifen sich langsamer ein als
+   zwei — die Trainingszeit teilt sich auf.
+3. **Was nicht im Buch steht, verfällt.** Man kann nicht alles können.
+
+Ein Zug, der gegen jede Deckung gleich läuft, sagt das auch: die Spalten
+„Läuft gegen“ und „Läuft nicht gegen“ zeigen dann „egal“ statt eines
+Rundungsfehlers als Empfehlung.
+
+## Der Matchplan
+
+Die Mannschaftstaktik gilt gegen jeden gleich, die Spieleranweisung gilt für
+den eigenen Mann. Der Matchplan ist die dritte Ebene: was man gegen *diesen*
+Rückraumschützen unternimmt, der in den letzten fünf Spielen achtundzwanzig
+Tore geworfen hat.
+
+* **Manndeckung** — einer geht heraus und klebt an ihm. Sein Wurfanteil fällt
+  auf 42 Prozent, seine Abschlussqualität deutlich. Preis: die Abwehr deckt zu
+  fünft, verliert 4,5 Prozent Kraft und kassiert 18 Prozent mehr Zeitstrafen.
+* **Doppeln beim Anspiel** — dieselbe Idee, halb so radikal und halb so
+  wirksam.
+* **Kreis zustellen** — der Innenblock bleibt geschlossen. Der Kreisläufer
+  kommt kaum noch zum Abschluss, der Rückraum wirft dafür 16 Prozent freier.
+
+Der Plan gilt nur gegen den Verein, für den er gemacht wurde. Steht er gegen
+jemand anderen, sagt der Bildschirm das — sonst wundert man sich, warum nichts
+passiert.
+
+## Die Schiedsrichter
+
+Der Regler „Härte in der Abwehr“ war eine Zahl, keine Wette: 45 bedeutete
+immer 7,6 Prozent Zeitstrafen, in jedem Spiel, gegen jeden Gegner.
+
+Jetzt pfeift jede Partie ein Gespann aus zwei Personen — im Handball nie eine
+allein — mit vier Eigenschaften, von denen jede genau eine Wirkung hat:
+Strenge (wie oft überhaupt gepfiffen wird), Zweikampfauslegung (ob früh
+unterbrochen oder laufen gelassen wird), Heimneigung (wie sehr die Halle
+wirkt) und Konstanz (wie stark die Tagesform schwankt). Dieselbe Härte kostet
+gegen ein kleinliches Duo die halbe Abwehr und gegen ein großzügiges fast
+nichts.
+
+Achtundzwanzig Gespanne gibt es. Die Zuteilung wird aus der Spiel-ID
+abgeleitet statt gespeichert: dieselbe Partie bekommt immer dasselbe Duo, ohne
+dass ein einziges Byte im Spielstand dafür draufgeht — bei sechzigtausend
+Partien pro Karriere ist das der Unterschied zwischen einer Zeile Code und
+einem Megabyte.
+
+Was ein Gespann pfeift, geht auf sein Konto. Erst diese Zahlen machen aus
+einer verborgenen Anlage einen Ruf: man liest nicht „Strenge 78“, sondern
+„4,1 Zeitstrafen je Spiel“. Der Vorbericht nennt vor jedem Spiel das
+angesetzte Duo, seinen Ruf und die Rechnung, was die eigene Härte bei genau
+diesem Gespann erwarten lässt. Die Saisonanalyse führt alle auf, nach Strenge
+sortiert.
+
+Die Mitte der Strengespanne liegt exakt auf 1,0: ein durchschnittliches
+Gespann darf die Kalibrierung der Liga nicht verschieben. Ein Gespann ändert,
+wie ein einzelnes Spiel läuft — nicht, wie viele Zeitstrafen eine Saison hat.
+
+## Formationsvertrautheit
+
+Ein Formationswechsel war kostenlos: dienstags von 6-0 auf 3-2-1, samstags
+fehlerfrei. Damit hatte die wichtigste taktische Entscheidung kein Gewicht —
+wenn Umstellen nichts kostet, gibt es keinen Grund, bei etwas zu bleiben.
+
+Vertrautheit ist ein Konto je Formation. Es wächst durch Training (eine Woche
+Taktikschulung zählt dreifach) und vor allem durch Pflichtspiele, und es
+verfällt ohne Gebrauch. Die Wirkung geht bis zehn Prozent auf Abwehrkraft,
+Angriffskraft und Fehlerquote. Bei 100 ist sie exakt neutral: eingespielt
+heißt kein Bonus, sondern kein Abzug.
+
+Die **Sommervorbereitung** hebt die eingestellten Formationen auf 70. Wer im
+Juli umstellt, zahlt fast nichts; wer es im November tut, umso mehr. Der
+Taktikbildschirm zeigt unter jeder Auswahl den Abzug in Prozent und wie viele
+Wochen bis zum Einschleifen fehlen.
+
+Die Computertrainer würfelten ihre Deckung bisher vor jedem Spiel neu. Das war
+folgerichtig, solange es nichts kostete, und wäre jetzt ein Dauerschaden: eine
+Mannschaft, die wöchentlich zwischen 6-0 und 3-2-1 springt, stünde dauerhaft
+wie frisch umgestellt da. Die Formation ist deshalb ab sofort die Handschrift
+eines Vereins und fällt in der Saisonvorbereitung.
+
+## Die zweite Mannschaft
+
+Talente wurden gesichtet, entwickelt und bewertet — und bekamen dann nie eine
+Pflichtspielminute. Man konnte einen Achtzehnjährigen hochziehen oder
+vergessen, aber nie herausfinden, ob er trägt. Damit war die gesamte
+Nachwuchssäule Aufwand ohne Rückkopplung.
+
+Die Zweite spielt eine Reserverunde, die die Ligarunde spiegelt: wann immer
+die Erste ein Ligaspiel hat, tritt am selben Tag die Zweite gegen die Zweite
+desselben Gegners an. Das braucht keinen eigenen Spielplan, hält die Tabelle
+synchron und kostet nichts.
+
+Das Aufgebot stellt sich selbst: die ganze Jugend, dazu Profis unter 23 mit
+wenig Einsatzzeit und jeder, der seit Wochen nicht gespielt hat. Wer oben
+gebraucht wird, lässt sich freistellen.
+
+Die Partien laufen **nicht** durch die volle Simulation. Bei 68 Paarungen je
+Spieltag wäre das eine zweite Sekunde Rechenzeit für etwas, das niemand
+anschaut. Ein schlanker Rechner löst Ergebnis, Minuten, Tore und Noten auf —
+dieselben Größen, die auch aus einem Profispiel herausfallen, nur ohne den
+Angriff-für-Angriff-Verlauf.
+
+Die eigentliche Rückkopplung steht in der Nachwuchsentwicklung: Spielpraxis
+ist der Teil, den kein Training ersetzt. Wer in der Zweiten Minuten sammelt,
+kommt bis zu dreißig Prozent schneller voran als jemand, der nur mittrainiert
+— und wer gar nicht spielt, langsamer als bisher. Erst wenn ein Talent eine
+Zahl hinter seinem Namen hat, lässt sich eine Beförderung begründen.
+
+## Schlüsselszenen
+
+Nach dem Abpfiff gab es Zahlen und einen Ticker mit siebzig Zeilen. Beides
+stimmt und beides erzählt nichts: man sieht, dass es 29:28 stand, aber nicht,
+woran es lag.
+
+Sieben Momente kommen in den Bericht. Bewertet wird jedes Ereignis nach drei
+Größen, die sich multiplizieren: Gewicht der Art (ein Siebenmeter wiegt mehr
+als ein Feldtor, eine Rote Karte mehr als beides), Enge des Spielstands und
+Zeitpunkt (die letzten zehn Minuten zählen fast doppelt).
+
+Reine Bestenauswahl reichte nicht. Weil Spielstände auseinandergehen, sitzt
+die eng umkämpfte Phase fast immer am Anfang — die ersten Versuche legten alle
+sieben Szenen in die ersten zwanzig Minuten und ließen die zweite Halbzeit
+ganz aus. Das ist kein Rückblick, das ist ein Ausschnitt. Zwei Regeln beheben
+das: ein Pflichtplatz je Viertel, bevor die freien Plätze vergeben werden, und
+nach jeder Wahl wird die Umgebung gedämpft — zeitlich mit sieben Minuten
+Radius und nach Art, damit nicht dreimal derselbe Torlauf dasteht.
+
+Darüber liegt eine Minutenachse mit Heim oben und Gast unten, Halbzeitmarke
+und Punkten, die nach Art eingefärbt und anklickbar sind. Eine Liste sagt,
+*was* passiert ist; die Leiste sagt zusätzlich *wann* — und das ist die halbe
+Geschichte: drei Szenen in den letzten sechs Minuten sind ein Krimi, drei in
+den ersten zehn eine frühe Entscheidung.
+
+Die Szenen überleben die Kurzfassung: auch von einer fremden Partie, von der
+der Spielstand nur noch das Ergebnis aufhebt, bleiben sie erhalten.
+
+## Deadline Day
+
+Ein Transferfenster ohne Zeitdruck ist kein Fenster, sondern eine Liste: man
+konnte am ersten Tag dasselbe tun wie am letzten, und der Kalender war
+Kulisse. Die letzten drei Tage sind jetzt anders:
+
+* Abgebende Vereine werden weicher — bis zu 16 Prozent unter der normalen
+  Ablöseforderung. Wer den Spieler jetzt nicht ziehen lässt, hat ihn ein
+  halbes Jahr an der Backe und bekommt gar nichts.
+* Die Computertrainer kaufen täglich statt einmal die Woche.
+* Der Posteingang bekommt jeden Abend die Bilanz des Tages mit den größten
+  Wechseln der Liga.
+* Der Transfermarkt trägt einen roten Kopf statt eines grünen.
+
+## Reisebelastung
+
+Ein Europapokalspiel im Ausland ist Flughafen, Umsteigen, fremdes Hotel und
+eine kurze Nacht; bisher war es genauso teuer wie ein Heimspiel, nämlich
+nichts. Auswärts in einem anderen Land kostet die Anreise 4,5 Prozent Kraft,
+im eigenen Land 1,5 Prozent.
+
+Im Inland bleibt es bei null. Eine Busfahrt zum Nachbarn kostet nichts, was
+nicht schon im Hallenpuls steckt — beides zu zählen hieße, den Heimvorteil
+doppelt zu berechnen, und genau das hat in der Messung die Heimsiegquote von
+55 auf 64 Prozent getrieben, bevor es wieder herausgenommen wurde.
+
+## Die Ruhmeshalle
+
+Rekorde der Vereine liegen in der Chronik, Ehrungen für Spieler im
+Auszeichnungswesen — nur für den, der das alles entschieden hat, gab es
+nichts. Die Karriereseite zeigte Bilanz und Stationen, aber nichts, worauf man
+hinarbeitet.
+
+Zwei Teile, absichtlich getrennt. **Meilensteine** sind feste Marken, die man
+einmal erreicht und die dann mit Datum und Verein stehenbleiben: das
+fünfzigste, hundertste, zweihundertfünfzigste und fünfhundertste Spiel, 25,
+100 und 300 Siege, 5.000 Tore der eigenen Mannschaften, der erste, fünfte und
+zehnte Titel, der zweite Verein, der Verbandsjob. **Bestmarken** sind laufende
+Rekorde, die überboten werden können: höchster Sieg, höchste Niederlage,
+längste Serie ohne Niederlage.
+
+Die wichtigste Zeile ist die mit der nächsten Marke. Ohne sie wäre das ein
+Rückblick; mit ihr ist es ein Ziel, und das ist der Unterschied zwischen einer
+Vitrine und einer Karriere.
+
 ## Auszeichnungen
 
 Eine Saison ohne Ehrungen ist eine Tabelle. Hallenherz vergibt vier Arten:

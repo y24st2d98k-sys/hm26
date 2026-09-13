@@ -104,6 +104,7 @@ static func annehmen(d: Dictionary, nid: String) -> Dictionary:
 	if gewaehlt.is_empty():
 		return {"ok": false, "grund": "Dieses Angebot liegt nicht mehr vor."}
 	t["nationalteam"] = nid
+	Ruhmeshalle.nach_verbandsjob(d)
 	t["verbandsziel"] = str(gewaehlt["ziel"])
 	t["verbandsangebote"] = []
 	t["verband_seit"] = Welt.saison_index()

@@ -104,6 +104,9 @@ func vorbereiten() -> void:
 		* (0.66 + 0.34 * _stimmungsanteil())
 		* Fanszene.pulsfaktor(daten, str(spiel["heim"]))
 		+ float(programm.get("puls", 0.0)), 15.0, 98.0)
+	# Der Matchplan gilt nur gegen den Verein, für den er gemacht wurde.
+	heim["gegnerplan"] = Gegnerplan.fuer(daten, str(heim["cid"]), str(gast["cid"]))
+	gast["gegnerplan"] = Gegnerplan.fuer(daten, str(gast["cid"]), str(heim["cid"]))
 	gespann = Schiedsrichter.fuer_partie(daten, str(spiel["id"]))
 	gespann_tagesform = Schiedsrichter.tagesform(gespann, rng)
 	angriffsrecht = "heim" if rng.randf() < 0.5 else "gast"
@@ -202,6 +205,9 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		# Der Zug des laufenden Angriffs. Wird in _angriff_ausspielen gesetzt
 		# und von _wurfposition und _angriffsdauer mitgelesen.
 		"zug": "", "zug_wirkung": {},
+		# Der Matchplan gegen genau diesen Gegner. Wird in vorbereiten()
+		# gesetzt, weil er erst dort feststeht.
+		"gegnerplan": {},
 		# Cache für alles, was sich erst mit einem Wechsel ändert.
 		"cache": {},
 	}
@@ -255,10 +261,12 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 			im_aufgebot[sid] = true
 			t["bank"].append(sid)
 	ersatz_pool = im_aufgebot.keys()
+	var reise := _reisefaktor(cid, ist_heim)
 	for sid in ersatz_pool:
 		var sp_cache: Dictionary = daten["spieler"][sid]
 		t["zustand"][sid] = {
-			"kraft": clampf(float(sp_cache["fitness"]) - float(sp_cache["last"]) * 0.18, 40.0, 100.0),
+			"kraft": clampf((float(sp_cache["fitness"]) - float(sp_cache["last"]) * 0.18) * reise,
+				40.0 * reise, 100.0),
 			"tagesform": Spielerfabrik.tagesform(sp_cache),
 			"basis_abwehr": Spielerfabrik.abwehrwert(sp_cache),
 			"basis_angriff": {},
@@ -273,6 +281,28 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 	if str(t["siebenmeter_schuetze"]) == "" or not t["zustand"].has(t["siebenmeter_schuetze"]):
 		t["siebenmeter_schuetze"] = _bester_siebenmeter(t)
 	return t
+
+## Was die Anreise kostet.
+##
+## Eine Auswaertsfahrt zum Nachbarn ist ein Bus und zwei Stunden; ein
+## Europapokalspiel in einem anderen Land ist Flughafen, Umsteigen, fremdes
+## Hotel und eine kurze Nacht. Bisher war beides gleich viel wert, naemlich
+## nichts. Das nahm dem internationalen Wettbewerb den Teil, der ihn im
+## Kalender wirklich teuer macht.
+func _reisefaktor(cid: String, ist_heim: bool) -> float:
+	if ist_heim:
+		return 1.0
+	var art: String = str(spiel.get("art", "liga"))
+	if art == "international":
+		var eigene: String = str(daten["vereine"][cid].get("nation", ""))
+		var gastgeber: String = str(daten["vereine"][spiel["heim"]].get("nation", ""))
+		# Im eigenen Land ist auch ein europaeisches Spiel nur eine Busfahrt.
+		return 0.955 if eigene != gastgeber else 0.985
+	# Im Inland bleibt es bei 1.0. Eine Busfahrt zum Nachbarn kostet nichts,
+	# was nicht schon im Hallenpuls steckt — beides zu zaehlen hiesse, den
+	# Heimvorteil doppelt zu berechnen, und genau das hat in der Messung die
+	# Heimsiegquote von 55 auf 64 Prozent getrieben.
+	return 1.0
 
 func _ersatz_fuer(pool: Array, belegt: Array, pos: String) -> String:
 	var best := ""
@@ -650,6 +680,11 @@ func _deckungswerte(v: Dictionary) -> Dictionary:
 	td["block"] = float(td["block"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "block")
 	td["ballgewinn"] = float(td["ballgewinn"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "ballgewinn")
 	td["zeitstrafe"] = float(td["zeitstrafe"]) * _anweisungsmittel(v, "abwehr_auf", "abwehr", "zeitstrafe")
+	# Der Matchplan verschiebt dieselben Werte noch einmal — Manndeckung
+	# bringt Ballgewinne und Zeitstrafen, Kreis zustellen macht innen zu und
+	# außen auf.
+	for feld in Gegnerplan.deckungswerte(v["gegnerplan"]).keys():
+		td[feld] = float(td.get(feld, 1.0)) * float(Gegnerplan.deckungswerte(v["gegnerplan"])[feld])
 	cache["deckung"] = td
 	return td
 
@@ -679,6 +714,10 @@ func _wurfposition(a: Dictionary) -> String:
 		# ist der sichtbarste Teil eines einstudierten Ablaufs: nach einem
 		# Einläufer wirft der Kreis, nach einem Kreuz der Rückraum.
 		g *= float((a["zug_wirkung"].get("wurf", {}) as Dictionary).get(pos, 1.0))
+		# Wer in Manndeckung steht, kommt kaum noch zum Wurf. Das ist der
+		# eigentliche Zweck der Massnahme — nicht, dass er schlechter trifft,
+		# sondern dass er den Ball nicht bekommt.
+		g *= Gegnerplan.wurfanteil(_gegner_zu(a)["gegnerplan"], sid)
 		gewichte[pos] = g
 		gesamt += g
 	# Wer den Kreis anspielt, verschiebt Abschluesse zum Kreislaeufer.
@@ -698,6 +737,7 @@ func _wurfposition(a: Dictionary) -> String:
 	return str(gewichte.keys()[0])
 
 func _wurfguete(sp: Dictionary, pos: String, a: Dictionary, diff: float) -> float:
+	var gedeckt: float = Gegnerplan.gueteabzug(_gegner_zu(a)["gegnerplan"], str(sp["id"]))
 	var attr: Dictionary = sp["attr"]
 	var basis: float = 0.0
 	match pos:
@@ -723,7 +763,13 @@ func _wurfguete(sp: Dictionary, pos: String, a: Dictionary, diff: float) -> floa
 			druck = 0.9 + 0.2 * nerven
 	var puls_bonus: float = _puls_wirkung(a)
 	var anweisung: float = _faktor(a, str(sp["id"]), "angriff", "wurfguete") * ANWEISUNG_GUETE
-	return basis * 5.0 * (0.70 + 0.30 * kraft) * float(z_sch["tagesform"]) * druck * puls_bonus + clampf(diff, -30.0, 30.0) * 0.12 + anweisung
+	return basis * 5.0 * (0.70 + 0.30 * kraft) * float(z_sch["tagesform"]) * druck * puls_bonus \
+		+ clampf(diff, -30.0, 30.0) * 0.12 + anweisung - gedeckt * ANWEISUNG_GUETE
+
+## Die jeweils andere Mannschaft. Wird gebraucht, wo eine Angriffsrechnung
+## wissen muss, was die Abwehr vorhat.
+func _gegner_zu(t: Dictionary) -> Dictionary:
+	return gast if t == heim else heim
 
 func _paradenwert(v: Dictionary, tw: String, pos: String) -> float:
 	if tw == "":
@@ -1477,9 +1523,9 @@ func _abwehrkraft(v: Dictionary, a: Dictionary) -> float:
 	# Eine Formation, die nicht eingeschliffen ist, steht schlechter: die
 	# Übergaben stimmen nicht, das Herausrücken kommt zu spät.
 	basis *= float(v["vertraut_abwehr"])
-	# Gezielte Manndeckung gegen den Hauptwerfer des Gegners
-	if str(v["taktik"].get("deckungsfokus", "keiner")) == "rueckraum":
-		basis *= 1.03
+	# Der Preis des Matchplans: wer einen Mann herausschickt, deckt hinten mit
+	# einem weniger. Ohne diesen Faktor waere Manndeckung eine Gratisverbesserung.
+	basis *= Gegnerplan.abwehrfaktor(v["gegnerplan"])
 	return basis
 
 # ------------------------------------------------------------- Spielende ---
