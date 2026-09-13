@@ -11,6 +11,10 @@ static func oeffnen(von: Node, spiel_id: String) -> void:
 	if f != null:
 		f.zeige(spiel_id)
 
+## Der Scrollbereich. Oeffentlich, damit Werkzeuge auch den unteren Teil des
+## Berichts aufnehmen koennen — sonst sieht man nie, was unter dem Falz steht.
+var rolle: ScrollContainer
+
 func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	visible = false
@@ -51,6 +55,7 @@ func _ready() -> void:
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	v.add_child(scroll)
+	rolle = scroll
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(inhalt)
@@ -146,6 +151,8 @@ func _zeichne() -> void:
 		w.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		kk.add_child(w)
 		kk.add_child(Stil.matt("Kreisgröße: Würfe · Füllung: Trefferquote", Stil.S_MINI))
+
+	_szenen(bericht)
 
 	if knapp:
 		return
@@ -302,3 +309,52 @@ class Torverlauf extends Control:
 			draw_line(vorher, Vector2(size.x, vorher.y),
 				heim_farbe if letzte_diff > 0.0 else (gast_farbe if letzte_diff < 0.0 else Stil.TEXT_MATT),
 				1.8, true)
+
+
+## Die Schlüsselszenen.
+##
+## Steht bewusst vor dem Spielverlauf und außerhalb der Kurzfassung: auch von
+## einer fremden Partie, von der der Spielstand nur noch das Ergebnis
+## aufhebt, bleiben die sieben Momente erhalten. Sie kosten fast nichts und
+## sind das Einzige, was man sich von einem Spiel merkt.
+func _szenen(bericht: Dictionary) -> void:
+	var liste: Array = bericht.get("szenen", [])
+	if liste.is_empty():
+		return
+	var karte := Bausteine.karte_in(inhalt, "Schlüsselszenen")
+	karte.add_child(Stil.matt(Schluesselszenen.fazit(liste), Stil.S_KLEIN))
+	var leiste := Szenenleiste.new()
+	leiste.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	leiste.setze(liste)
+	karte.add_child(leiste)
+	var zeilen: Array = []
+	for i in range(liste.size()):
+		var s: Dictionary = liste[i]
+		var zeile := Stil.hbox(8)
+		# Der Balken links markiert die gewählte Szene. Ohne ihn verliert man
+		# nach einem Klick auf die Leiste sofort wieder, welche Zeile gemeint war.
+		var marke := Stil.marke_strich(Stil.RAND_HELL, 3, 18)
+		zeile.add_child(marke)
+		var zeit := Stil.matt(_zeit(float(s["zeit"])), Stil.S_MINI)
+		zeit.custom_minimum_size = Vector2(44, 0)
+		zeile.add_child(zeit)
+		var stand: Array = s.get("stand", [0, 0])
+		var st := Stil.text("%d:%d" % [int(stand[0]), int(stand[1])], Stil.S_MINI)
+		st.custom_minimum_size = Vector2(42, 0)
+		zeile.add_child(st)
+		zeile.add_child(Stil.abzeichen(Schluesselszenen.etikett(s), _farbe(str(s["typ"]))))
+		var t := Stil.text(str(s["text"]), Stil.S_KLEIN)
+		t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(t)
+		var sid: String = str(s.get("spieler", ""))
+		if sid != "" and Welt.daten["spieler"].has(sid):
+			var k := Stil.knopf_flach("Profil")
+			k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+			zeile.add_child(k)
+		karte.add_child(zeile)
+		zeilen.append(marke)
+	leiste.szene_gewaehlt.connect(func(index: int):
+		for j in range(zeilen.size()):
+			(zeilen[j] as Control).farbe = Stil.AKZENT if j == index else Stil.RAND_HELL
+			(zeilen[j] as Control).queue_redraw())

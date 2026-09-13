@@ -1560,6 +1560,7 @@ static func bericht_schlank(voll: Dictionary) -> Dictionary:
 		"hallenpuls": voll.get("hallenpuls", 50.0),
 		"spieler_des_spiels": voll.get("spieler_des_spiels", ""),
 		"gespann": voll.get("gespann", ""),
+		"szenen": voll.get("szenen", []),
 		"knapp": true,
 	}
 	for seite in ["heim", "gast"]:
@@ -1587,6 +1588,10 @@ func bericht() -> Dictionary:
 		"spieler_des_spiels": bester,
 		"gespann": Schiedsrichter.namen(gespann),
 		"ticker": _ticker_kurz(),
+		# Die sieben Momente, an denen die Partie gekippt ist. Sie entstehen
+		# aus derselben Ereignisliste wie der Ticker — sie wegzuwerfen war die
+		# Verschwendung, nicht sie zu berechnen.
+		"szenen": Schluesselszenen.auswaehlen(ereignisse, SPIELZEIT),
 	}
 
 const BERICHT_FELDER := ["sekunden", "tore", "wuerfe", "assists", "paraden", "gegentore",

@@ -374,6 +374,15 @@ class Marke extends Control:
 		draw_circle(Vector2(r, r), r, farbe)
 		draw_circle(Vector2(r, size.y - r), r, farbe)
 
+## Ein Akzentstrich als fertiges Control — spart den immer gleichen Dreisatz
+## aus Erzeugen, Groesse setzen und Farbe zuweisen.
+func marke_strich(farbe: Color, breite: int = 3, hoehe: int = 16) -> Marke:
+	var m := Marke.new()
+	m.custom_minimum_size = Vector2(breite, hoehe)
+	m.farbe = farbe
+	m.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	return m
+
 ## Kleine Grossbuchstaben-Beschriftung ueber einem Wert oder Abschnitt.
 func etikett(text_inhalt: String, farbe: Variant = null) -> Label:
 	var l := Label.new()
