@@ -265,6 +265,8 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 	_nachwuchs(d)
 	_statistiken_umlegen(d)
 	_wettbewerbe_zuruecksetzen(d)
+	Zweite.zuruecksetzen(d)
+	Zweite.saison_zuruecksetzen(d)
 	Finanzen.saison_budgets(d)
 	Sponsoren.jahreswechsel(d, mein)
 	_dauerkarten(d, mein)

@@ -45,6 +45,13 @@ func _ready() -> void:
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
+		if str(id) == "zweite":
+			app.zeige("jugend")
+			app.bildschirme["jugend"].reiter = "zweite"
+			app.bildschirme["jugend"].aktualisieren()
+			await _foto("%s/zweite.png" % ordner)
+			app.bildschirme["jugend"].reiter = "akademie"
+			continue
 		if str(id) == "planung":
 			app.zeige("kader")
 			app.bildschirme["kader"].modus = "planung"

@@ -4,6 +4,10 @@ extends Bildschirm
 
 var inhalt: VBoxContainer
 var meldung: Label
+## "akademie" oder "zweite". Die beiden gehören zusammen — ein Talent ohne
+## Spielpraxis ist eine halbe Entscheidung — aber nicht auf denselben Schirm.
+var reiter := "akademie"
+var reiterleiste: HBoxContainer
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -12,6 +16,9 @@ func aufbauen() -> void:
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
 	kopf.add_child(Stil.titel("Nachwuchszentrum", 0))
+	reiterleiste = Stil.hbox(0)
+	kopf.add_child(reiterleiste)
+	_baue_reiter()
 	kopf.add_child(Stil.dehner())
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
@@ -23,12 +30,26 @@ func aufbauen() -> void:
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(inhalt)
 
+func _baue_reiter() -> void:
+	leeren(reiterleiste)
+	reiterleiste.add_child(Stil.segmente([
+		{"id": "akademie", "name": "Akademie"}, {"id": "zweite", "name": "Die Zweite"}],
+		reiter, func(id):
+			reiter = str(id)
+			_baue_reiter()
+			aktualisieren()))
+
 func aktualisieren() -> void:
 	if inhalt == null:
 		return
+	if reiterleiste != null:
+		_baue_reiter()
 	leeren(inhalt)
 	if Welt.mein_verein_id == "" or not Welt.bereit():
 		inhalt.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
+		return
+	if reiter == "zweite":
+		_zweite()
 		return
 	var cid := Welt.mein_verein_id
 	var v: Dictionary = Welt.verein(cid)
@@ -126,3 +147,123 @@ func aktualisieren() -> void:
 func _melde(text: String, gut: bool = true) -> void:
 	meldung.text = text
 	meldung.add_theme_color_override("font_color", Stil.GRUEN if gut else Stil.ROT)
+
+
+# ------------------------------------------------------------- Die Zweite ---
+
+## Die zweite Mannschaft: Tabelle, letzte Ergebnisse, Aufgebot und was jeder
+## dort tatsächlich geleistet hat.
+##
+## Der Sinn steht in der ersten Zeile des Bildschirms: ohne Spielpraxis ist
+## jede Einschätzung eines Talents geraten. Hier stehen die Zahlen, die eine
+## Beförderung begründen oder verhindern.
+func _zweite() -> void:
+	var cid := Welt.mein_verein_id
+	var v: Dictionary = Welt.verein(cid)
+	var b := Zweite.bilanz(Welt.daten, cid)
+
+	var oben := Stil.hbox(12)
+	inhalt.add_child(oben)
+
+	var lage := Bausteine.karte_in(oben, "Saisonbilanz")
+	Stil.karte_wurzel(lage).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lage.add_child(Bausteine.fliesstext(
+		"Die Zweite spielt die Reserverunde: immer dann, wenn die Erste ein Ligaspiel hat, tritt sie gegen die Zweite desselben Gegners an. Hier bekommen Talente die Minuten, die im Profikader nicht frei sind.",
+		Stil.S_MINI))
+	if int(b["spiele"]) == 0:
+		lage.add_child(Stil.leerzustand("In dieser Saison hat die Zweite noch nicht gespielt."))
+	else:
+		var zahlen := Stil.hbox(18)
+		lage.add_child(zahlen)
+		zahlen.add_child(_zahl("Spiele", str(int(b["spiele"])), Stil.TEXT))
+		zahlen.add_child(_zahl("Punkte", str(int(b["punkte"])), Stil.AKZENT))
+		zahlen.add_child(_zahl("Bilanz", "%d–%d–%d" % [int(b["siege"]), int(b["unentschieden"]), int(b["niederlagen"])], Stil.TEXT))
+		var diff: int = int(b["tore"]) - int(b["gegentore"])
+		zahlen.add_child(_zahl("Tore", "%d:%d" % [int(b["tore"]), int(b["gegentore"])],
+			Stil.GRUEN if diff >= 0 else Stil.ROT))
+		var letzte: Array = (v.get("zweite", {}) as Dictionary).get("letzte", [])
+		if not letzte.is_empty():
+			lage.add_child(Stil.trenner())
+			lage.add_child(Stil.etikett("Zuletzt"))
+			for e in letzte:
+				var eig: int = int((e as Dictionary)["eigene"])
+				var fre: int = int((e as Dictionary)["fremde"])
+				var farbe: Color = Stil.GRUEN if eig > fre else (Stil.GELB if eig == fre else Stil.ROT)
+				lage.add_child(Stil.info_zeile(
+					"gegen %s II" % str(Welt.verein(str((e as Dictionary)["gegner"])).get("name", "?")),
+					"%d:%d" % [eig, fre], farbe))
+
+	var tab := Bausteine.karte_in(oben, "Reservetabelle")
+	Stil.karte_wurzel(tab).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var zeilen := Zweite.tabelle(Welt.daten, str(v["liga"]))
+	if zeilen.is_empty():
+		tab.add_child(Stil.matt("Für diese Liga gibt es keine Reserverunde."))
+	else:
+		var gt := Stil.tabelle(["#", "Verein", "SP", "P", "Tore", "Diff"])
+		gt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tab.add_child(gt)
+		var platz := 0
+		for z in zeilen:
+			platz += 1
+			var eigen: bool = str((z as Dictionary)["verein"]) == cid
+			var farbe: Color = Stil.AKZENT if eigen else Stil.TEXT
+			gt.add_child(Stil.text(str(platz), Stil.S_KLEIN, farbe))
+			gt.add_child(Stil.text("%s II" % str(Welt.verein(str((z as Dictionary)["verein"]))["name"]),
+				Stil.S_KLEIN, farbe))
+			gt.add_child(Stil.matt(str(int((z as Dictionary)["spiele"])), Stil.S_KLEIN))
+			gt.add_child(Stil.text(str(int((z as Dictionary)["punkte"])), Stil.S_KLEIN, farbe))
+			gt.add_child(Stil.matt("%d:%d" % [int((z as Dictionary)["tore"]), int((z as Dictionary)["gegentore"])], Stil.S_KLEIN))
+			var dz: int = int((z as Dictionary)["diff"])
+			gt.add_child(Stil.text("%+d" % dz, Stil.S_KLEIN, Stil.GRUEN if dz >= 0 else Stil.ROT))
+
+	var kader := Bausteine.karte_in(inhalt, "Aufgebot und Leistungen")
+	var aufgebot := Zweite.aufgebot(Welt.daten, cid)
+	var alle := Zweite.kandidaten(Welt.daten, cid)
+	kader.add_child(Bausteine.fliesstext(
+		"Aufgestellt wird von selbst: die Jugend, dazu Profis unter %d Jahren mit wenig Einsatzzeit und jeder, der Spielpraxis braucht. Wer oben gebraucht wird, nehmen Sie mit dem Haken heraus." % Zweite.JUNGPROFI_ALTER,
+		Stil.S_MINI))
+	if alle.is_empty():
+		kader.add_child(Stil.leerzustand("Niemand kommt derzeit für die Zweite in Frage."))
+		return
+	var g := Stil.tabelle(["Pos", "Name", "Alter", "Stärke", "Spiele", "Minuten", "Tore", "Note", "Freigegeben"])
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	kader.add_child(g)
+	for sid in alle:
+		var sp: Dictionary = Welt.spieler(sid)
+		var k := Zweite.statistik(sp)
+		var dabei: bool = aufgebot.has(sid)
+		g.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
+		var zeile := Stil.hbox(4)
+		var knopf := Stil.knopf_flach(Spielerfabrik.voller_name(sp))
+		knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		zeile.add_child(knopf)
+		if not bool(sp.get("jugendspieler", false)):
+			zeile.add_child(Stil.abzeichen("PROFI", Stil.TEXT_SCHWACH))
+		# Freigegeben heißt "kommt in Frage", im Aufgebot heißt "läuft am
+		# Wochenende wirklich auf". Bei zwölf Plätzen und zwanzig Kandidaten
+		# ist das nicht dasselbe.
+		if dabei:
+			zeile.add_child(Stil.abzeichen("AUFGEBOT", Stil.GRUEN))
+		g.add_child(zeile)
+		g.add_child(Stil.matt(str(int(sp["alter"])), Stil.S_KLEIN))
+		g.add_child(Stil.text(Scouting.gesamt_text(Welt.daten, sid), Stil.S_KLEIN,
+			Stil.wert_farbe(Spielerfabrik.gesamt(sp), 100.0)))
+		g.add_child(Stil.matt(str(int(k["spiele"])), Stil.S_KLEIN))
+		g.add_child(Stil.matt("%d" % int(float(k["minuten"])), Stil.S_KLEIN))
+		g.add_child(Stil.text(str(int(k["tore"])), Stil.S_KLEIN, Stil.AKZENT if int(k["tore"]) > 0 else Stil.TEXT_MATT))
+		var n: float = Zweite.note(sp)
+		g.add_child(Stil.text("—" if n <= 0.0 else "%.2f" % n, Stil.S_KLEIN,
+			Stil.prozent_farbe(n * 10.0) if n > 0.0 else Stil.TEXT_MATT))
+		var haken := CheckBox.new()
+		haken.button_pressed = not bool(sp.get("nicht_zweite", false))
+		haken.tooltip_text = "Steht im Aufgebot der Zweiten." if dabei else "Kommt in Frage, ist heute aber nicht unter den ersten %d." % Zweite.AUFGEBOT
+		haken.toggled.connect(func(an):
+			Zweite.freistellen(Welt.daten, sid, not an)
+			aktualisieren())
+		g.add_child(haken)
+
+func _zahl(beschriftung: String, wert: String, farbe: Color) -> Control:
+	var v := Stil.vbox(1)
+	v.add_child(Stil.etikett(beschriftung))
+	v.add_child(Stil.text(wert, Stil.S_GROSS, farbe))
+	return v

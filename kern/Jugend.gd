@@ -88,7 +88,11 @@ static func wochenwechsel(d: Dictionary) -> void:
 			var gesamt: float = Spielerfabrik.gesamt(sp)
 			var luft: float = clampf((float(sp["potenzial"]) - gesamt) / maxf(float(sp["potenzial"]), 1.0), 0.0, 1.0)
 			var arbeitseinsatz: float = float(sp["attr"]["arbeitseinsatz"]) / 20.0
-			var zuwachs: float = 0.085 * (0.35 + 1.2 * luft) * (0.45 + 0.9 * qualitaet) * (0.6 + 0.6 * arbeitseinsatz)
+			# Spielpraxis ist der Teil der Entwicklung, den kein Training
+			# ersetzt. Wer in der Zweiten Minuten sammelt, kommt schneller
+			# voran als jemand, der nur mittrainiert.
+			var praxis: float = Zweite.entwicklungsschub(sp)
+			var zuwachs: float = 0.085 * (0.35 + 1.2 * luft) * (0.45 + 0.9 * qualitaet) * (0.6 + 0.6 * arbeitseinsatz) * praxis
 			if zuwachs > 0.0:
 				var attr_liste: Array = _foerderattribute(sp)
 				for i in range(2):

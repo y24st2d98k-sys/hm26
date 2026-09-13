@@ -393,6 +393,10 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 		spiel_ausgetragen.emit(mid)
 		return
 	Statistik.spiel_verbuchen(daten, m)
+	# Wenn die Erste spielt, spielt die Zweite. Die Reserverunde spiegelt die
+	# Ligarunde — das braucht keinen eigenen Spielplan und hält die Tabelle
+	# synchron.
+	Zweite.partie(daten, m)
 	Finanzen.spieltag_abrechnen(daten, m)
 	Praemien.abrechnen(daten, m)
 	Medizin.spiel_nachwirkung(daten, m)
