@@ -473,7 +473,7 @@ static func standard_taktik() -> Dictionary:
 		"risiko": 45,
 		"haerte": 45,
 		"mentalitaet": "ausgeglichen",
-		"siebter_feldspieler": "nie",
+		"siebter_feldspieler": "unterzahl",
 		"wechselspiel": 55,
 		"siebenmeter_schuetze": "",
 

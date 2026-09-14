@@ -438,6 +438,8 @@ func _wirkung_zeigen(e: Dictionary) -> void:
 			feld.aufblitzen(feld.spielerpunkt(str(e.get("spieler", ""))), Stil.TUERKIS, 0.6)
 		"zeitstrafe", "rot":
 			feld.aufblitzen(feld.spielerpunkt(str(e.get("spieler", ""))), Stil.ROT, 0.9)
+		"verwarnung":
+			feld.aufblitzen(feld.spielerpunkt(str(e.get("spieler", ""))), Stil.GELB, 0.7)
 		"ballverlust":
 			feld.aufblitzen(feld._ballpunkt(), Stil.GELB, 0.6)
 
@@ -539,6 +541,8 @@ func _ereignisfarbe(e: Dictionary) -> Color:
 			return Stil.BLAU if eigene else Stil.TEXT_MATT
 		"zeitstrafe", "rot", "verletzung", "wechselfehler":
 			return Stil.ROT if eigene else Stil.GELB
+		"verwarnung":
+			return Stil.GELB
 		"auszeit", "taktik", "lauf":
 			return Stil.AKZENT
 		"halbzeit", "ende", "anwurf":
@@ -1145,6 +1149,8 @@ func _klang_zu(e: Dictionary) -> void:
 			Klang.spiele("parade" if eigene else "raunen", 0.5 + 0.3 * puls)
 		"zeitstrafe", "rot":
 			Klang.spiele("pfiff", 0.75)
+		"verwarnung":
+			Klang.spiele("pfiff", 0.5)
 		"siebenmeter":
 			Klang.spiele("pfiff", 0.6, 1.08)
 		"fehler", "block":

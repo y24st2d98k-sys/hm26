@@ -216,6 +216,8 @@ func _farbe(typ: String) -> Color:
 			return Stil.GRUEN
 		"zeitstrafe", "rot":
 			return Stil.ROT
+		"verwarnung":
+			return Stil.GELB
 		"auszeit", "lauf":
 			return Stil.AKZENT
 		"halbzeit", "ende":

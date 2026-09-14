@@ -136,7 +136,18 @@ static func taktik_anpassen(d: Dictionary, cid: String) -> void:
 	t["haerte"] = clampi(int(t["haerte"]) + Namen.wuerfel(-6, 6), 20, 85)
 	t["risiko"] = clampi(int(t["risiko"]) + Namen.wuerfel(-8, 8), 15, 85)
 	t["wechselspiel"] = clampi(int(t.get("wechselspiel", 55)) + Namen.wuerfel(-6, 6), 20, 90)
-	t["siebter_feldspieler"] = "schluss" if Namen.zufall() < 0.45 else "nie"
+	# Der siebte Feldspieler ist in der Bundesliga kein Notnagel mehr, sondern
+	# Alltag: gut fuenfmal je Partie geht ein Torwart vom Feld. Am haeufigsten
+	# in Unterzahl, wo er aus dem 5-gegen-6 wieder ein 6-gegen-6 macht.
+	var wahl: float = Namen.zufall()
+	if wahl < 0.52:
+		t["siebter_feldspieler"] = "unterzahl"
+	elif wahl < 0.78:
+		t["siebter_feldspieler"] = "schluss"
+	elif wahl < 0.86:
+		t["siebter_feldspieler"] = "rueckstand"
+	else:
+		t["siebter_feldspieler"] = "nie"
 	# Auch die Computertrainer geben ihren Spielern Rollen — sonst waere die
 	# Anweisungstafel ein Vorteil, den nur der Mensch hat.
 	Anweisungen.automatisch(d, cid)

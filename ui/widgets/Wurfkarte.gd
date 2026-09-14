@@ -14,11 +14,12 @@ extends Control
 const PLATZ := {
 	"LA": Vector2(0.22, 0.13), "RL": Vector2(0.38, 0.27), "RM": Vector2(0.25, 0.50),
 	"RR": Vector2(0.38, 0.73), "RA": Vector2(0.22, 0.87), "KM": Vector2(0.75, 0.50),
-	"7M": Vector2(0.50, 0.50),
+	"7M": Vector2(0.50, 0.50), "TG": Vector2(0.60, 0.16), "LT": Vector2(0.08, 0.50),
 }
 const NAME := {
 	"LA": "Linksaußen", "RL": "Rückraum links", "RM": "Rückraum Mitte",
 	"RR": "Rückraum rechts", "RA": "Rechtsaußen", "KM": "Kreis", "7M": "Siebenmeter",
+	"TG": "Tempogegenstoß", "LT": "Wurf ins leere Tor",
 }
 
 var karte: Dictionary = {}

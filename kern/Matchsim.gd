@@ -170,12 +170,14 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		"auszeit_wirkung": 0.0,
 		"stats": {"wuerfe": 0, "tore": 0, "technische_fehler": 0, "zeitstrafen": 0, "rote": 0,
 			"siebenmeter": 0, "siebenmeter_tore": 0, "paraden": 0, "blocks": 0, "gegenstoss_tore": 0,
-			"ballgewinne": 0, "wechsel": 0, "puls_hoch": 0.0},
+			"gegenstoss_wuerfe": 0, "sieben_gegen_sechs": 0,
+			"ballgewinne": 0, "wechsel": 0, "puls_hoch": 0.0, "verwarnungen": 0},
 		# Wurfkarte: je Abschlussposition gezaehlt, was daraus geworden ist.
 		# Nur Summen, keine Einzelwuerfe — der Spielstand soll schlank bleiben.
 		"wurfkarte": {},
 		"siebenmeter_schuetze": str(auf.get("siebenmeter", "")),
 		"sieben_gegen_sechs": false,
+		"ueberzahl": 0,
 		"letzte_wechselpruefung": -999.0,
 		"ansprache": 0.0,
 		"ansprachen": [],
@@ -277,7 +279,7 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 			"ausdauer": float(sp_cache["attr"]["ausdauer"]) / 20.0,
 			"risiko_basis": Medizin.risiko_roh(sp_cache),
 			"sekunden": 0.0, "tore": 0, "wuerfe": 0, "assists": 0, "paraden": 0, "gegentore": 0,
-			"blocks": 0, "fehler": 0, "zeitstrafen": 0, "ballgewinne": 0, "rot": false,
+			"blocks": 0, "fehler": 0, "zeitstrafen": 0, "verwarnungen": 0, "ballgewinne": 0, "rot": false,
 			"bewertung": 3.4, "siebenmeter": 0, "siebenmeter_tore": 0,
 		}
 	if str(t["siebenmeter_schuetze"]) == "" or not t["zustand"].has(t["siebenmeter_schuetze"]):
@@ -435,14 +437,51 @@ func _erster_anwurf_heim() -> bool:
 ## Wie stark der Unterschied zwischen Angriff und Abwehr auf den einzelnen
 ## Wurf durchschlaegt.
 const WURF_EMPFINDLICHKEIT := 0.0055
-## Trefferwahrscheinlichkeit eines Wurfs bei gleich starken Mannschaften.
-const WURF_GRUND := 0.752
-## Die Grenzen der Trefferwahrscheinlichkeit eines einzelnen Wurfs.
-const WURF_UNTEN := 0.42
-const WURF_OBEN := 0.90
+
+## Trefferquote eines Wurfs von dieser Position, wenn sich gleich starke
+## Mannschaften gegenueberstehen.
+##
+## Bis hierher traf jeder Wurf gleich wahrscheinlich, egal ob er vom Kreis kam
+## oder aus zehn Metern ueber einen formierten Block ging. Genau das ist der
+## Kern des Handballs: **die Position entscheidet ueber den Abschluss, nicht
+## erst der Werfer.** Das Modell dahinter heisst im Handball SPAM (Shot
+## Position Average Model) und wird als "Expected Goals" veroeffentlicht — der
+## unbedraengte Kreiswurf liegt bei gut 0,8, der Aussenwurf bei rund 0,64, der
+## Fernwurf ueber den Block bei 0,3 bis 0,45.
+##
+## Die Werte hier liegen bewusst etwas unter den reinen xG-Spitzenwerten: sie
+## gelten fuer *alle* Wuerfe von dieser Position, also auch fuer den
+## bedraengten Kreiswurf und den Aussenwurf aus spitzem Winkel, und sie sind an
+## den veroeffentlichten Wurfquoten der Bundesliga ausgerichtet.
+## Die Werte gelten fuer das gewoehnliche 6-gegen-6. Ueberzahl, Unterzahl und
+## der siebte Feldspieler kommen obendrauf — deshalb liegt der gemessene
+## Ligaschnitt ein paar Prozentpunkte darueber, genau wie in Wirklichkeit.
+const TREFFER_POSITION := {
+	"LA": 0.583, "RA": 0.583, "KM": 0.677, "RL": 0.456, "RM": 0.475, "RR": 0.456,
+}
+## Der Tempogegenstoss ist der beste Abschluss, den der Handball kennt: ein
+## Wurf aus dem Lauf auf einen Torwart, der allein im Tor steht.
+const TREFFER_GEGENSTOSS := 0.804
+## Und in ein wirklich leeres Tor trifft fast jeder.
+const TREFFER_LEERES_TOR := 0.93
+## Werfer und Torhueter werden aus verschiedenen Attributsaetzen gerechnet, und
+## deren Mittelwerte liegen nicht uebereinander. Ohne Ausgleich zieht dieser
+## Unterschied jede Positionsquote um gut vier Prozentpunkte nach unten — die
+## Zahlen oben stuenden dann zwar im Code, aber nicht im Spiel. Der Wert ist
+## gemessen (werkzeuge/Realismussonde.gd), nicht geschaetzt.
+const WURF_AUSGLEICH := 7.6
+## Wie weit Koennen, Tagesform und Torwart die Positionsquote hoechstens
+## verschieben. Ein ueberragender Kreislaeufer trifft oefter als ein
+## durchschnittlicher — aber auch er wirft nicht vom Fluegel wie vom Kreis.
+const WURF_UNTEN_ANTEIL := 0.58
+const WURF_OBEN_ANTEIL := 1.38
+## Trefferquote am Siebenmeterstrich bei gleich starker Paarung. Der Ligaschnitt
+## liegt seit Jahren bei rund drei Vierteln.
+const SIEBENMETER_GRUND := 0.805
 
 const SCHLUSSPHASE := 900.0
-const DRUCK_LEER := {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0, "abwehr": 1.0}
+const DRUCK_LEER := {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0, "abwehr": 1.0,
+	"abschluss": 0.0, "dauer": 1.0}
 ## Wie stark ein Torabstand treibt. Ein Tor ist aufholbar, sechs sind es in
 ## zehn Minuten nicht mehr — und wer gar nicht mehr herankommt, verwaltet auch
 ## nicht mehr, sondern spielt zu Ende.
@@ -451,6 +490,52 @@ const R_TEMPO := 34.0
 const R_RISIKO := 5.0
 const R_ANGRIFF := 0.16
 const F_ANGRIFF := -0.14
+## Was ein Feldspieler mehr oder weniger auf der Platte wert ist.
+##
+## Eine Zeitstrafe ist im Handball die teuerste Strafe des Sports: zwei Minuten
+## in Unterzahl kosten im Schnitt ein Tor. Gerechnet wurde das bisher als
+## Zuschlag auf den Staerkevergleich — und davon kam am Wurf nicht einmal ein
+## Prozentpunkt an. Eine Hinausstellung war praktisch folgenlos. Deshalb wirkt
+## die Ueber- und Unterzahl hier direkt: auf die Trefferquote und auf die
+## Fehlerquote, also genau dort, wo sie im Handball wehtut.
+const UEBERZAHL_ABSCHLUSS := 0.075
+const UEBERZAHL_FEHLER := 0.22
+## Wieviel unsauberer ein Angriff mit sieben Feldspielern laeuft.
+const SIEBTER_FEHLER := 1.18
+## Wie oft ein Ballverlust im 7-gegen-6 dem Gegner einen freien Wurf auf das
+## leere Tor gibt — und wie oft der dann sitzt. Vierzig Meter sind auch fuer
+## einen Profi kein Selbstlaeufer.
+const LEERES_TOR_WURF := 0.42
+const LEERES_TOR_TREFFER := 0.72
+
+## Was der Spielstand direkt am Abschluss aendert.
+##
+## Der Umweg ueber die Mannschaftsstaerke war wirkungslos: ein Angriffswert von
+## sechzig, um sechzehn Prozent erhoeht, verschiebt die Trefferquote um einen
+## halben Prozentpunkt — ueber fuenfzehn Angriffe sind das null Komma eins
+## Tore. Gemessen hatte die Schlussphase damit gar keinen Einfluss. Der
+## Zuschlag hier wirkt dort, wo er hingehoert: auf den Wurf.
+const R_ABSCHLUSS := 0.055
+const F_ABSCHLUSS := -0.045
+## Uhrmanagement: wer knapp fuehrt, zieht die letzten Angriffe in die Laenge,
+## bis das Vorwarnzeichen kommt. Das ist der wirksamste Hebel, den eine
+## fuehrende Mannschaft in der Schlussphase hat — nicht der bessere Wurf,
+## sondern der Angriff, der eine halbe Minute frisst.
+const UHRPHASE := 360.0
+const F_DAUER := 1.85
+const R_DAUER := 0.62
+
+## Ab wann eine klare Fuehrung die Partie entscheidet — und was das aendert.
+##
+## In der Bundesliga spielt niemand eine Partie, die in der 45. Minute acht
+## Tore vorn liegt, zu Ende wie beim 2:2. Die Stammkraefte setzen sich hin, der
+## Zug geht aus dem Angriff, die Abwehr steht nur noch. Genau das fehlte: die
+## Simulation warf weiter drauf, und die Ergebnisse fielen entsprechend hoch
+## aus — sieben Tore Abstand im Mittel, in Wirklichkeit gut fuenf.
+const SCHONGANG_AB := 2280.0
+const SCHONGANG_VORSPRUNG := 6
+const SCHONGANG_ABSCHLUSS := -0.055
+const SCHONGANG_VOLL := 11.0
 
 ## Wie eine Mannschaft auf den Spielstand reagiert.
 ##
@@ -465,19 +550,45 @@ const F_ANGRIFF := -0.14
 ## liegt, spielt die Partie zu Ende, statt sie zu drehen.
 func _spielstandsdruck(t: Dictionary) -> Dictionary:
 	var rest: float = SPIELZEIT - zeit
+	var diff: int = int(t["tore"]) - (int(gast["tore"]) if t == heim else int(heim["tore"]))
 	if rest >= SCHLUSSPHASE:
-		return DRUCK_LEER
+		return _schongang(diff)
 	# Nicht linear: in der 51. Minute aendert ein Tor Rueckstand wenig, in der
 	# 59. alles.
 	var naehe: float = pow(clampf(1.0 - rest / SCHLUSSPHASE, 0.0, 1.0), 1.2)
-	var diff: int = int(t["tore"]) - (int(gast["tore"]) if t == heim else int(heim["tore"]))
 	if diff == 0:
-		return DRUCK_LEER
+		return _letzter_angriff(rest)
 	var staerke: float = naehe * _abstandsgewicht(absi(diff))
+	# Die Uhr zaehlt erst in den letzten sechs Minuten wirklich.
+	var uhr: float = clampf(1.0 - rest / UHRPHASE, 0.0, 1.0) * _abstandsgewicht(absi(diff))
 	if diff < 0:
 		return {"tempo": R_TEMPO * staerke, "risiko": R_RISIKO * staerke,
-			"angriff": 1.0 + R_ANGRIFF * staerke, "abwehr": 1.0}
-	return {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0 + F_ANGRIFF * staerke, "abwehr": 1.0}
+			"angriff": 1.0 + R_ANGRIFF * staerke, "abwehr": 1.0,
+			"abschluss": R_ABSCHLUSS * staerke, "dauer": 1.0 - (1.0 - R_DAUER) * uhr}
+	var fuehrung := _schongang(diff)
+	return {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0 + F_ANGRIFF * staerke, "abwehr": 1.0,
+		"abschluss": F_ABSCHLUSS * staerke + float(fuehrung["abschluss"]),
+		"dauer": 1.0 + (F_DAUER - 1.0) * uhr}
+
+## Was eine entschiedene Partie mit der fuehrenden Mannschaft macht.
+func _schongang(diff: int) -> Dictionary:
+	if zeit < SCHONGANG_AB or diff < SCHONGANG_VORSPRUNG:
+		return DRUCK_LEER
+	var staerke: float = clampf(float(diff - SCHONGANG_VORSPRUNG + 1)
+		/ (SCHONGANG_VOLL - float(SCHONGANG_VORSPRUNG) + 1.0), 0.0, 1.0)
+	staerke *= clampf((zeit - SCHONGANG_AB) / 600.0, 0.25, 1.0)
+	return {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0, "abwehr": 1.0,
+		"abschluss": SCHONGANG_ABSCHLUSS * staerke, "dauer": 1.0}
+
+## Beim Gleichstand in den Schlussminuten wird der letzte Angriff ausgespielt.
+## Wer in der 59. Minute den Ball hat, wirft nicht sofort — er laesst die Uhr
+## laufen, damit der Gegner keinen Angriff mehr bekommt.
+func _letzter_angriff(rest: float) -> Dictionary:
+	if rest > 150.0:
+		return DRUCK_LEER
+	var d := DRUCK_LEER.duplicate()
+	d["dauer"] = 1.0 + 0.95 * clampf(1.0 - rest / 150.0, 0.0, 1.0)
+	return d
 
 func _abstandsgewicht(abstand: int) -> float:
 	if abstand >= ABSTAND_GEWICHT.size():
@@ -489,11 +600,11 @@ func _angriffsdauer(a: Dictionary) -> float:
 	var druck: Dictionary = _spielstandsdruck(a)
 	var tempo: float = clampf(float(t["tempo"]) + float(MENTALITAET[str(t["mentalitaet"])]["tempo"])
 		+ float(druck["tempo"]), 0.0, 100.0)
-	var basis: float = 40.5 - 0.19 * tempo
-	# Zeitspiel: wer fuehrt und langsam spielt, zieht die Angriffe in die Laenge
-	var diff: int = int(a["tore"]) - (int(gast["tore"]) if a == heim else int(heim["tore"]))
-	if diff >= 2 and zeit > SPIELZEIT - 420.0 and tempo < 45.0:
-		basis += 10.0
+	var basis: float = 43.0 - 0.19 * tempo
+	# Uhrmanagement: wer fuehrt, zieht die Angriffe in die Laenge, wer
+	# zurueckliegt, kuerzt sie ab. Die Zahl der verbleibenden Angriffe ist in
+	# der Schlussphase der eigentliche Einsatz.
+	basis *= float(druck.get("dauer", 1.0))
 	# Abschlussbereitschaft: eine Mannschaft, in der niemand den Wurf nimmt,
 	# spielt sich fest. Das kostet Zeit — und damit Angriffe. Umgekehrt bringt
 	# blindes Draufhalten kaum Tempo, sonst waere "Abschluss suchen" fuer alle
@@ -504,7 +615,7 @@ func _angriffsdauer(a: Dictionary) -> float:
 	# Sekunden abgeschlossen, "Ball halten" zieht den Angriff bis zum
 	# passiven Vorwarnzeichen.
 	basis *= float((a.get("zug_wirkung", {}) as Dictionary).get("dauer", 1.0))
-	return clampf(basis + rng.randf_range(-6.0, 6.0), 9.0, 52.0)
+	return clampf(basis + rng.randf_range(-6.0, 6.0), 9.0, 58.0)
 
 # --------------------------------------------- Wirkung der Regler (Anzeige) ---
 #
@@ -516,18 +627,25 @@ func _angriffsdauer(a: Dictionary) -> float:
 ## Ungefaehre Zahl der Angriffe je Mannschaft bei diesem Tempo.
 static func angriffe_bei_tempo(tempo: float, mentalitaet: String = "ausgeglichen") -> int:
 	var wirksam: float = clampf(tempo + float((MENTALITAET.get(mentalitaet, MENTALITAET["ausgeglichen"]) as Dictionary)["tempo"]), 0.0, 100.0)
-	var dauer: float = 40.5 - 0.19 * wirksam
+	var dauer: float = 43.0 - 0.19 * wirksam
 	# Beide Mannschaften teilen sich die Spielzeit, jeder Angriff gehoert einer.
 	return int(round(SPIELZEIT / maxf(dauer, 9.0) / 2.0))
 
 ## Anteil der Angriffe, die im technischen Fehler enden.
 static func fehlerquote_bei_risiko(risiko: float, mentalitaet: String = "ausgeglichen") -> float:
 	var wirksam: float = clampf(risiko + float((MENTALITAET.get(mentalitaet, MENTALITAET["ausgeglichen"]) as Dictionary)["risiko"]), 0.0, 100.0)
-	return clampf(0.185 + (wirksam - 50.0) * 0.0009, 0.09, 0.26)
+	return clampf(0.205 + (wirksam - 50.0) * 0.0009, 0.10, 0.28)
 
-## Wie oft eine Abwehraktion in zwei Minuten endet.
+## Wie oft eine Abwehraktion ueberhaupt geahndet wird — Verwarnung oder
+## Zeitstrafe. Dass die ersten drei Vergehen einer Mannschaft meist mit Gelb
+## abgehen, steckt in _ahnden().
+static func ahndungsquote_bei_haerte(haerte: float) -> float:
+	return clampf(0.093 + haerte * 0.00105, 0.04, 0.22)
+
+## Wie oft eine Abwehraktion in zwei Minuten endet. Rund die Haelfte der
+## geahndeten Vergehen einer Partie kommt nach den drei Verwarnungen.
 static func zeitstrafenquote_bei_haerte(haerte: float) -> float:
-	return clampf(0.050 + haerte * 0.00058, 0.02, 0.12)
+	return ahndungsquote_bei_haerte(haerte) * 0.55
 
 ## Wie oft eine Abwehraktion einen Siebenmeter kostet.
 static func siebenmeterquote_bei_haerte(haerte: float) -> float:
@@ -540,8 +658,8 @@ static func kraftaufschlag_bei_wechselspiel(wechselspiel: float) -> float:
 # ---------------------------------------------------------- Angriffslogik ---
 
 func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
-	var a_feld: int = _feldspieler(a)
-	var v_feld: int = _feldspieler(v)
+	var a_feld: int = _feldspieler(a, true)
+	var v_feld: int = _feldspieler(v, false)
 	var ueberzahl: int = a_feld - v_feld
 	_spielzug_waehlen(a, v, ueberzahl)
 	var zug: Dictionary = a["zug_wirkung"]
@@ -551,8 +669,11 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	var diff: float = angriffskraft - abwehrkraft
 	var td: Dictionary = _deckungswerte(v)
 
-	# Unter- bzw. Ueberzahl wirkt deutlich
-	diff += float(ueberzahl) * 11.0
+	# Unter- bzw. Ueberzahl wirkt direkt am Abschluss (siehe
+	# UEBERZAHL_ABSCHLUSS); hier bleibt nur der kleine Anteil, der wirklich
+	# ueber den Staerkevergleich laeuft — die freieren Wege im Aufbau.
+	diff += float(ueberzahl) * 4.0
+	a["ueberzahl"] = ueberzahl
 	if _gegenstoss:
 		diff += 22.0
 		if bool(a["bonus_tempodiktat"]):
@@ -561,10 +682,11 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	# Technischer Fehler / Ballgewinn der Abwehr
 	var risiko: float = clampf(float(a["taktik"]["risiko"]) + float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["risiko"])
 		+ float(_spielstandsdruck(a)["risiko"]), 0.0, 100.0)
-	var p_fehler: float = clampf(0.185 - diff * 0.0008 + (risiko - 50.0) * 0.0009, 0.09, 0.26) * float(td["ballgewinn"])
+	var p_fehler: float = clampf(0.205 - diff * 0.0008 + (risiko - 50.0) * 0.0009, 0.10, 0.28) * float(td["ballgewinn"])
 	p_fehler *= _anweisungsmittel(a, "angriff_auf", "angriff", "fehler")
+	p_fehler *= clampf(1.0 - float(ueberzahl) * UEBERZAHL_FEHLER, 0.5, 1.6)
 	if a["sieben_gegen_sechs"]:
-		p_fehler *= 1.35
+		p_fehler *= SIEBTER_FEHLER
 	if bool(a["bonus_kontrolleur"]):
 		p_fehler *= 0.88
 	# Unsaubere Abläufe enden nicht nur in schlechteren Würfen, sondern in
@@ -589,7 +711,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	# verteidigende Mannschaft auswärts ist.
 	if not bool(v["ist_heim"]):
 		pfiff *= Schiedsrichter.heimfaktor(gespann, hallenpuls)
-	var p_2min: float = clampf(0.050 + haerte * 0.00058, 0.02, 0.12) * float(td["zeitstrafe"]) * pfiff
+	var p_2min: float = ahndungsquote_bei_haerte(haerte) * float(td["zeitstrafe"]) * pfiff
 	var p_7m: float = clampf(0.034 + haerte * 0.00026 + maxf(diff, 0.0) * 0.0005, 0.015, 0.09) * pfiff
 	p_7m *= _anweisungsmittel(a, "angriff_auf", "angriff", "siebenmeter")
 	p_7m *= float(zug.get("siebenmeter", 1.0))
@@ -598,7 +720,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	diff += (Schiedsrichter.laufen_lassen(gespann) - 1.0) * 22.0
 	var wurf_zuf: float = rng.randf()
 	if wurf_zuf < p_2min:
-		_zeitstrafe(v, a)
+		_ahnden(v, a)
 		if rng.randf() < 0.25:
 			return _siebenmeter(a, v)
 		# Freiwurf: Angriff geht weiter, leicht verbessert
@@ -650,23 +772,42 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 	var zst: Dictionary = a["zustand"][schuetze]
 	a["stats"]["wuerfe"] += 1
 	zst["wuerfe"] += 1
+	if _gegenstoss:
+		a["stats"]["gegenstoss_wuerfe"] += 1
 
 	var tw := _spieler_auf(v, "TW")
+	# Geblockt wird im Handball fast ausschliesslich der Fernwurf. Ein Block am
+	# Kreis oder am Fluegel ist die Ausnahme — dort steht der Verteidiger nicht
+	# im Wurfarm, sondern im Weg.
 	var block_mod: float = float(td["block"])
-	var p_block: float = clampf(0.140 - diff * 0.0008, 0.06, 0.19) * block_mod
+	var p_block: float = clampf(0.125 - diff * 0.0008, 0.05, 0.18) * block_mod
 	if pos == "KM" or pos == "LA" or pos == "RA":
-		p_block *= 0.45
+		p_block *= 0.22
+	if _gegenstoss:
+		p_block *= 0.25
 	if rng.randf() < p_block:
 		_wurf_notieren(a, pos, "block")
 		return _block(a, v, schuetze, pos)
 
 	var wurfguete: float = _wurfguete(sp, pos, a, diff)
 	var paradenwert: float = _paradenwert(v, tw, pos)
+	# Die Position gibt die Quote vor, Koennen und Torwart verschieben sie.
 	# Der Hallenpuls wirkt direkt auf den Abschluss, nicht nur ueber den
 	# Staerkevergleich — sonst verschwindet der Heimvorteil.
-	var p_tor: float = clampf(WURF_GRUND + (wurfguete - paradenwert) * WURF_EMPFINDLICHKEIT + _puls_abschluss(a),
-		WURF_UNTEN, WURF_OBEN)
-	var p_vorbei: float = clampf(0.115 - (wurfguete - paradenwert) * 0.0009, 0.05, 0.17)
+	var ziel: float = float(TREFFER_POSITION.get(pos, 0.60))
+	if _gegenstoss:
+		ziel = TREFFER_GEGENSTOSS
+	if tw == "":
+		ziel = TREFFER_LEERES_TOR
+	var treffer: float = clampf(ziel + (wurfguete - paradenwert + WURF_AUSGLEICH) * WURF_EMPFINDLICHKEIT
+		+ _puls_abschluss(a) + float(_spielstandsdruck(a)["abschluss"])
+		+ float(int(a.get("ueberzahl", 0))) * UEBERZAHL_ABSCHLUSS,
+		ziel * WURF_UNTEN_ANTEIL, minf(ziel * WURF_OBEN_ANTEIL, 0.97))
+	var p_vorbei: float = clampf(0.085 - (wurfguete - paradenwert) * 0.0009, 0.04, 0.14)
+	# Blockierte und vorbeigeworfene Baelle gehen von derselben Quote ab. Damit
+	# am Ende wirklich `treffer` uebrig bleibt, wird die Torchance des
+	# verbleibenden Wurfs entsprechend hochgerechnet.
+	var p_tor: float = clampf(treffer / maxf((1.0 - p_block) * (1.0 - p_vorbei), 0.35), 0.02, 0.995)
 	var w: float = rng.randf()
 	if w < p_vorbei:
 		_wurf_notieren(a, pos, "vorbei")
@@ -783,11 +924,18 @@ func _deckungswerte(v: Dictionary) -> Dictionary:
 	return td
 
 ## Haelt fest, was aus einem Abschluss von dieser Position geworden ist.
+##
+## Der Tempogegenstoss bekommt einen eigenen Eintrag ("TG"). Er ist im Handball
+## eine eigene Wurfkategorie und keine Position: derselbe Linksaussen wirft aus
+## dem Lauf gegen einen allein stehenden Torwart voellig anders als aus dem
+## Stand gegen eine formierte Abwehr. Zaehlte man beides zusammen, sagte die
+## Wurfkarte ueber keine der beiden Lagen mehr etwas.
 func _wurf_notieren(a: Dictionary, pos: String, ergebnis: String) -> void:
+	var schluessel: String = "TG" if _gegenstoss and pos != "7M" else pos
 	var karte: Dictionary = a["wurfkarte"]
-	if not karte.has(pos):
-		karte[pos] = {"tor": 0, "parade": 0, "vorbei": 0, "block": 0}
-	var eintrag: Dictionary = karte[pos]
+	if not karte.has(schluessel):
+		karte[schluessel] = {"tor": 0, "parade": 0, "vorbei": 0, "block": 0}
+	var eintrag: Dictionary = karte[schluessel]
 	eintrag[ergebnis] = int(eintrag.get(ergebnis, 0)) + 1
 
 func _wurfposition(a: Dictionary) -> String:
@@ -1005,14 +1153,24 @@ func _ballverlust(a: Dictionary, v: Dictionary) -> Dictionary:
 	var arten := ["Schrittfehler", "Stürmerfoul", "technischer Fehler", "Fehlpass", "Doppelfehler", "Zeitspiel-Abpfiff"]
 	var art := str(arten[rng.randi_range(0, arten.size() - 1)])
 	var text := "%s: %s." % [art, Spielerfabrik.kurz_name(daten["spieler"][verursacher])] if verursacher != "" else "Ballverlust."
-	var leeres_tor_risiko: float = 0.42
+	var leeres_tor_risiko: float = LEERES_TOR_WURF
 	if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "hasardeur"):
 		leeres_tor_risiko = 0.26
 	if a["sieben_gegen_sechs"] and rng.randf() < leeres_tor_risiko:
-		# Ins leere Tor
+		# Freie Bahn auf das verwaiste Tor — aus der eigenen Haelfte.
+		var werfer := _zufaelliger_abwehrspieler(v)
+		v["stats"]["wuerfe"] += 1
+		if werfer != "":
+			v["zustand"][werfer]["wuerfe"] += 1
+		if rng.randf() >= LEERES_TOR_TREFFER:
+			_wurf_notieren(v, "LT", "vorbei")
+			text += " Der Gegenwurf auf das leere Tor geht daneben."
+			_warteschlange.append(_ereignis("fehlwurf", _seite(v), werfer, text, {"position": "RM"}))
+			_puls_aendern(a, -2.0)
+			return {"gegenstoss": false}
+		_wurf_notieren(v, "LT", "tor")
 		v["tore"] = int(v["tore"]) + 1
 		v["stats"]["tore"] += 1
-		var werfer := _zufaelliger_abwehrspieler(v)
 		if werfer != "":
 			v["zustand"][werfer]["tore"] += 1
 			v["zustand"][werfer]["bewertung"] -= 0.35
@@ -1040,7 +1198,7 @@ func _siebenmeter(a: Dictionary, v: Dictionary) -> Dictionary:
 	if tw != "":
 		var tsp: Dictionary = daten["spieler"][tw]
 		halten = (float(tsp["attr"]["siebenmeterabwehr"]) * 2.2 + float(tsp["attr"]["reflexe"]) * 1.0) / 3.2 * 5.0
-	var p: float = clampf(0.76 + (guete - halten) * 0.0055, 0.45, 0.95)
+	var p: float = clampf(SIEBENMETER_GRUND + (guete - halten) * 0.0055, 0.45, 0.95)
 	_warteschlange.append(_ereignis("siebenmeter", _seite(a), schuetze, "Siebenmeter für %s — %s legt sich den Ball zurecht." % [a["kurz"], Spielerfabrik.kurz_name(sp)], {"position": "RM"}))
 	if rng.randf() < p:
 		_wurf_notieren(a, "7M", "tor")
@@ -1076,8 +1234,72 @@ func _bester_auf_platz_siebenmeter(a: Dictionary) -> String:
 
 # ------------------------------------------------------- Zeitstrafen etc. ---
 
+## Wie viele Verwarnungen eine Mannschaft hoechstens bekommt, bevor das
+## Schiedsrichtergespann bei jedem weiteren Vergehen zur Zeitstrafe greift.
+## Die Regel steht so im Regelwerk: drei Gelbe je Mannschaft, danach entfaellt
+## diese Stufe.
+const VERWARNUNGEN_MAX := 3
+
+## Die progressive Bestrafung des Handballs.
+##
+## Sie fehlte ganz: jedes geahndete Vergehen fuehrte sofort zu zwei Minuten.
+## In Wirklichkeit steht davor die Verwarnung — und sie ist nicht unbegrenzt.
+## Hat eine Mannschaft ihre drei Gelben gesehen, geht jedes weitere Foul
+## denselben Weg wie vorher: direkt auf die Strafbank.
+func _ahnden(v: Dictionary, a: Dictionary) -> void:
+	var gelb: int = int(v["stats"].get("verwarnungen", 0))
+	if gelb < VERWARNUNGEN_MAX and rng.randf() < 0.62:
+		_verwarnung(v)
+		return
+	_zeitstrafe(v, a)
+
+func _verwarnung(v: Dictionary) -> void:
+	var suender := _foulender_spieler(v)
+	if suender == "":
+		return
+	var zst: Dictionary = v["zustand"][suender]
+	# Wer schon Gelb hat, bekommt sie nicht zweimal — dann greift die naechste
+	# Stufe. Dass er trotzdem weiterspielt, entscheidet erst die Zeitstrafe.
+	if int(zst.get("verwarnungen", 0)) > 0:
+		return
+	zst["verwarnungen"] = 1
+	v["stats"]["verwarnungen"] = int(v["stats"].get("verwarnungen", 0)) + 1
+	var sp: Dictionary = daten["spieler"][suender]
+	_warteschlange.append(_ereignis("verwarnung", _seite(v), suender,
+		"Gelbe Karte für %s." % Spielerfabrik.kurz_name(sp)))
+
+## Wen es trifft.
+##
+## Nicht gleichverteilt: ein Trainer nimmt einen Spieler mit zwei Zeitstrafen
+## aus der Abwehr, und die Spieler selbst gehen nach der zweiten kein Risiko
+## mehr ein. Ohne diese Gewichtung sah die Simulation in jeder dritten Partie
+## eine Disqualifikation — in der Bundesliga ist es etwa jede zehnte.
+func _foulender_spieler(t: Dictionary) -> String:
+	var liste: Array = []
+	var gewichte: Array = []
+	var summe := 0.0
+	for pos in t["abwehr_auf"].keys():
+		if pos == "TW":
+			continue
+		var sid: String = str(t["abwehr_auf"][pos])
+		if sid == "" or bool(t["zustand"][sid]["rot"]):
+			continue
+		var bisher: int = int(t["zustand"][sid]["zeitstrafen"])
+		var g: float = 1.0 / (1.0 + 2.6 * float(bisher))
+		liste.append(sid)
+		gewichte.append(g)
+		summe += g
+	if liste.is_empty():
+		return _zufaelliger_abwehrspieler(t, true)
+	var wurf: float = rng.randf() * summe
+	for i in liste.size():
+		wurf -= float(gewichte[i])
+		if wurf <= 0.0:
+			return str(liste[i])
+	return str(liste[liste.size() - 1])
+
 func _zeitstrafe(v: Dictionary, a: Dictionary) -> void:
-	var suender := _zufaelliger_abwehrspieler(v, true)
+	var suender := _foulender_spieler(v)
 	if suender == "":
 		return
 	var zst: Dictionary = v["zustand"][suender]
@@ -1113,16 +1335,24 @@ func _strafzeiten_pruefen(t: Dictionary) -> void:
 ## Bei einer Zeitstrafe rueckt zwar jemand von der Bank in die Aufstellung
 ## (damit alle Positionen besetzt bleiben), gezaehlt wird die Mannschaft aber
 ## in Unterzahl — genau das ist der Nachteil, den eine Hinausstellung bringt.
-func _feldspieler(t: Dictionary) -> int:
+func _feldspieler(t: Dictionary, im_angriff: bool = true) -> int:
 	var besetzt: int = 0
 	for pos in t["angriff_auf"].keys():
 		if pos == "TW":
 			continue
 		if str(t["angriff_auf"][pos]) != "":
 			besetzt += 1
-	var grenze: int = 7 if bool(t["sieben_gegen_sechs"]) else 6
+	# Im 7-gegen-6 kommt ein Feldspieler fuer den Torwart — er steht auf keiner
+	# der sechs Angriffspositionen, spielt aber mit. Ohne diesen Zuschlag war
+	# der zusaetzliche Spieler im Modell schlicht nicht vorhanden, und die
+	# ganze Massnahme brachte nur Nachteile.
+	# Nur im Angriff: wer in Unterzahl den Torwart herausnimmt, greift wieder
+	# zu sechst an — verteidigt aber weiter zu fuenft. Genau das ist der
+	# Handel, und ohne diese Unterscheidung hob die Massnahme die eigene
+	# Unterzahl auch in der Abwehr auf.
+	var zusatz: int = 1 if (im_angriff and bool(t["sieben_gegen_sechs"])) else 0
 	var strafen: int = (t["gesperrt"] as Array).size()
-	return clampi(mini(besetzt, grenze) - strafen, 3, 7)
+	return clampi(mini(besetzt, 6) + zusatz - strafen, 3, 7)
 
 func _vom_platz_nehmen(t: Dictionary, sid: String) -> void:
 	cache_verwerfen(t)
@@ -1183,6 +1413,8 @@ func sieben_gegen_sechs_pruefen(t: Dictionary) -> void:
 	if aktiv == bool(t["sieben_gegen_sechs"]):
 		return
 	t["sieben_gegen_sechs"] = aktiv
+	if aktiv:
+		t["stats"]["sieben_gegen_sechs"] += 1
 	cache_verwerfen(t)
 	var text := "%s nimmt den Torwart heraus und spielt 7 gegen 6." % t["name"] if aktiv else "%s stellt wieder auf regulären Angriff um." % t["name"]
 	_warteschlange.append(_ereignis("taktik", _seite(t), "", text))
