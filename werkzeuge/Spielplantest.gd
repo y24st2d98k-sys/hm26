@@ -55,6 +55,9 @@ func _ready() -> void:
 	_log("— Die ergänzte Runde ist trotzdem eine saubere Doppelrunde —")
 	_doppelrunde_pruefen(d, lid)
 
+	_log("— Und niemand spielt wochenlang nur daheim oder nur auswärts —")
+	_serien_pruefen(d, lid)
+
 	_log("— Ein Plan, der nicht aufgeht, wird verworfen —")
 	var teams: Array = (liga["vereine"] as Array).duplicate()
 	var a: String = str(teams[0])
@@ -146,6 +149,53 @@ func _mit_plan(liganame: String, partien: Array, pruefung: Callable) -> void:
 		eigene.erase(liganame)
 	else:
 		eigene[liganame] = vorher
+
+## Wie lange ein Verein am Stueck daheim oder auswaerts spielt.
+##
+## Das war lange kaputt, ohne dass es jemandem auffiel: siebzehn Heimspiele in
+## Folge, dann siebzehn auswaerts. Die Gesamtzahl stimmte dabei die ganze Zeit,
+## deshalb schlug keine Pruefung an — erst der Buerokalender machte es sichtbar.
+## Seitdem steht die Serie hier.
+const SERIE_HOECHSTENS := 4
+
+func _serien_pruefen(d: Dictionary, lid: String) -> void:
+	var liga: Dictionary = d["ligen"][lid]
+	var folge := {}
+	for cid in liga["vereine"]:
+		folge[str(cid)] = []
+	var nach_runde := {}
+	for mid in d["spiele"].keys():
+		var m: Dictionary = d["spiele"][mid]
+		if str(m.get("wettbewerb", "")) != lid or str(m["art"]) != "liga":
+			continue
+		var r: int = int(m["runde"])
+		if not nach_runde.has(r):
+			nach_runde[r] = []
+		(nach_runde[r] as Array).append(mid)
+	var runden: Array = nach_runde.keys()
+	runden.sort()
+	for r2 in runden:
+		for mid2 in nach_runde[r2]:
+			var m2: Dictionary = d["spiele"][mid2]
+			(folge[str(m2["heim"])] as Array).append("H")
+			(folge[str(m2["gast"])] as Array).append("A")
+	var schlimmste := 0
+	var schlimmster := ""
+	for cid2 in folge.keys():
+		var f: Array = folge[cid2]
+		var best := 1
+		var akt := 1
+		for i in range(1, f.size()):
+			akt = akt + 1 if str(f[i]) == str(f[i - 1]) else 1
+			best = maxi(best, akt)
+		if best > schlimmste:
+			schlimmste = best
+			schlimmster = str(cid2)
+	_pruefe(schlimmste <= SERIE_HOECHSTENS,
+		"Längste Serie gleicher Spielart: %d (%s) — erlaubt sind %d" % [
+			schlimmste, str(d["vereine"].get(schlimmster, {}).get("name", "?")), SERIE_HOECHSTENS])
+	if schlimmste > SERIE_HOECHSTENS:
+		_log("      %s" % "".join(folge[schlimmster]))
 
 func _doppelrunde_pruefen(d: Dictionary, lid: String) -> void:
 	var liga: Dictionary = d["ligen"][lid]

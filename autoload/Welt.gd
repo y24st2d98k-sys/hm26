@@ -288,33 +288,56 @@ func tag_abschliessen(t: int) -> Dictionary:
 ## das Saisonende, der Saisonwechsel oder der Verlust des Vereins.
 ## Liefert {"tage": …, "grund": …, "spiel": …} zurueck.
 func vorspulen(ziel_tag: int, eigene_simulieren: bool = true) -> Dictionary:
+	var summe := 0
+	while true:
+		var teil := vorspulen_schritt(ziel_tag, eigene_simulieren, 400)
+		summe += int(teil["tage"])
+		if not bool(teil["weiter"]):
+			teil["tage"] = summe
+			return teil
+	return {"tage": summe, "grund": "ziel_erreicht", "weiter": false}
+
+## Ein Stueck vorspulen und dann zurueckkommen.
+##
+## Dreissig Tage am Stueck zu rechnen dauert je nach Spieltagen mehrere
+## Sekunden, und in dieser Zeit stand das Bild still — nach einem Knopfdruck
+## fuehlt sich das nach Absturz an. Deshalb gibt der Sprung die Kontrolle
+## zwischendurch ab, damit die Oberflaeche einen Ladebalken zeichnen kann.
+##
+## "weiter" sagt, ob es noch etwas zu tun gibt. Alles andere ist wie bei
+## vorspulen(): angehalten wird, sobald etwas eine Entscheidung verlangt.
+func vorspulen_schritt(ziel_tag: int, eigene_simulieren: bool, hoechstens: int) -> Dictionary:
 	if not bereit():
-		return {"tage": 0, "grund": "kein_spielstand"}
+		return {"tage": 0, "grund": "kein_spielstand", "weiter": false}
 	var geschafft := 0
 	var verein_vorher := mein_verein_id
 	# Harte Obergrenze: ein Kalenderjahr. Sonst koennte ein falsches Zieldatum
 	# das Spiel in eine sehr lange Schleife schicken.
 	var grenze: int = mini(maxi(ziel_tag - tag(), 0), 400)
-	while geschafft < grenze:
+	var dieses_mal: int = mini(grenze, maxi(hoechstens, 1))
+	while geschafft < dieses_mal:
 		var u := tag_weiter()
 		geschafft += 1
 		if u.has("art"):
 			match str(u["art"]):
 				"eigenes_spiel":
 					if not eigene_simulieren:
-						return {"tage": geschafft, "grund": "eigenes_spiel", "spiel": str(u["spiel"])}
+						return {"tage": geschafft, "grund": "eigenes_spiel",
+							"spiel": str(u["spiel"]), "weiter": false}
 					partie_simulieren(str(u["spiel"]))
 					spieltag_abwickeln(tag())
 					wochenrhythmus(tag())
 					saison_pruefen(tag())
 				"saisonende":
-					return {"tage": geschafft, "grund": "saisonende"}
+					return {"tage": geschafft, "grund": "saisonende", "weiter": false}
 				"neue_saison":
-					return {"tage": geschafft, "grund": "neue_saison"}
+					return {"tage": geschafft, "grund": "neue_saison", "weiter": false}
 		if mein_verein_id != verein_vorher:
-			return {"tage": geschafft, "grund": "verein_verloren"}
-	zustand_geaendert.emit()
-	return {"tage": geschafft, "grund": "ziel_erreicht"}
+			return {"tage": geschafft, "grund": "verein_verloren", "weiter": false}
+	if tag() >= ziel_tag or grenze <= dieses_mal:
+		zustand_geaendert.emit()
+		return {"tage": geschafft, "grund": "ziel_erreicht", "weiter": false}
+	return {"tage": geschafft, "grund": "unterwegs", "weiter": true}
 
 ## Rechnet alle Partien eines Tages ab (ohne die des Spielers, falls schon gespielt).
 func spieltag_abwickeln(t: int) -> void:
@@ -741,6 +764,11 @@ func _daten_auffrischen() -> void:
 			sp["laufbahn"] = []
 		if not sp.has("beziehung"):
 			sp["beziehung"] = 50.0
+		# Ohne Abzug vom Saisonbeginn gaebe es nichts zu vergleichen. Der
+		# heutige Stand als Ausgangspunkt ist die ehrlichste Naeherung: das
+		# Spiel behauptet dann keine Entwicklung, die es nicht belegen kann.
+		if not sp.has("attr_saisonstart"):
+			sp["attr_saisonstart"] = (sp["attr"] as Dictionary).duplicate()
 		# Der gemerkte Gesamtwert wird beim ersten Zugriff neu gerechnet.
 		if not sp.has("staerke"):
 			sp["staerke"] = -1.0

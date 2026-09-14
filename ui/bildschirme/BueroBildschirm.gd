@@ -30,6 +30,7 @@ func aktualisieren() -> void:
 	var v: Dictionary = Welt.verein(cid)
 
 	_kennzahlen(v)
+	_kalender(bereich)
 
 	for e in Anliegen.offene(Welt.daten):
 		var eintrag: Dictionary = e
@@ -245,6 +246,13 @@ func _ohne_verein() -> void:
 	var t: Dictionary = Welt.trainer()
 	karte.add_child(Stil.info_zeile("Ruf", "%d — %s" % [int(float(t.get("ruf", 0.0))), Trainerkarriere.ruf_stufe(float(t.get("ruf", 0.0)))]))
 	karte.add_child(Stil.info_zeile("Angebote", str((t.get("jobangebote", []) as Array).size())))
+
+## Der Monat auf einen Blick. Steht bewusst weit oben: die Frage "was kommt in
+## den naechsten Wochen auf mich zu" ist die erste, die man im Buero hat.
+func _kalender(eltern: Node) -> void:
+	var karte := Bausteine.karte_in(eltern, "Kalender")
+	var k := Monatskalender.new()
+	karte.add_child(k)
 
 func _naechstes_spiel(eltern: Node) -> void:
 	var karte := Bausteine.karte_zu(eltern, "Nächstes Spiel", "spielplan", "Zum vollständigen Spielplan")

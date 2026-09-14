@@ -157,13 +157,39 @@ func _marken() -> Array:
 
 # ---------------------------------------------------------------- Springen ---
 
+## Wie viele Tage zwischen zwei Bildern gerechnet werden. Klein genug, dass der
+## Balken laeuft; gross genug, dass das Zeichnen nicht mehr kostet als das
+## Rechnen.
+const SCHEIBE := 3
+
+## Springt in Scheiben und zeigt dabei, wie weit es ist.
+func _mit_ladeschirm(zieltag: int, simulieren: bool) -> Dictionary:
+	var start: int = Welt.tag()
+	var strecke: int = maxi(zieltag - start, 1)
+	var schirm := Ladeschirm.oeffnen(self, "Die Zeit läuft weiter",
+		"bis %s" % Kalender.text(zieltag, Welt.startjahr()))
+	await schirm.atmen()
+	var summe := 0
+	var erg := {"tage": 0, "grund": "ziel_erreicht", "weiter": false}
+	while true:
+		erg = Welt.vorspulen_schritt(zieltag, simulieren, SCHEIBE)
+		summe += int(erg["tage"])
+		schirm.fortschritt(float(summe) / float(strecke),
+			"%s · noch %d Tag(e)" % [Welt.datum_text(true), maxi(zieltag - Welt.tag(), 0)])
+		await schirm.atmen()
+		if not bool(erg.get("weiter", false)):
+			break
+	erg["tage"] = summe
+	schirm.schliessen()
+	return erg
+
 func _springen(zieltag: int) -> void:
 	if zieltag <= Welt.tag():
 		meldung.text = "Dieses Datum liegt nicht in der Zukunft."
 		meldung.add_theme_color_override("font_color", Stil.ROT)
 		return
 	var simulieren: bool = bool(Welt.einstellung("vorspulen_simuliert", false))
-	var erg := Welt.vorspulen(zieltag, simulieren)
+	var erg := await _mit_ladeschirm(zieltag, simulieren)
 	var text := ""
 	match str(erg["grund"]):
 		"ziel_erreicht":

@@ -268,6 +268,7 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 	_karriereenden(d)
 	_nachwuchs(d)
 	_statistiken_umlegen(d)
+	attributstand_festhalten(d)
 	_wettbewerbe_zuruecksetzen(d)
 	Zweite.zuruecksetzen(d)
 	Zweite.saison_zuruecksetzen(d)
@@ -457,6 +458,34 @@ static func _nachwuchs(d: Dictionary) -> void:
 			"betreff": "Neuer Jahrgang im Nachwuchszentrum",
 			"text": "Diese Talente sind aufgenommen worden:\n• %s" % "\n• ".join(PackedStringArray(namen)),
 		})
+
+## Haelt zu Saisonbeginn fest, wo jeder Spieler steht.
+##
+## Ohne diesen Abzug laesst sich nicht sagen, ob einer sich entwickelt hat.
+## Das Spiel rechnet jede Woche an den Attributen, aber der Unterschied zum
+## letzten Sommer stand nirgends — man sah eine Zahl und wusste nicht, ob sie
+## gestiegen oder gefallen ist. Mit dem Abzug wird aus "Wurfkraft 14" ein
+## "Wurfkraft 14, plus zwei seit Juli".
+static func attributstand_festhalten(d: Dictionary) -> void:
+	for sid in d.get("spieler", {}).keys():
+		var sp: Dictionary = d["spieler"][sid]
+		sp["attr_saisonstart"] = (sp["attr"] as Dictionary).duplicate()
+
+## Was sich seit Saisonbeginn getan hat: Attributname -> Veraenderung.
+## Nur Werte, die sich sichtbar bewegt haben — ein Zehntel ist kein Fortschritt,
+## sondern Rechenrauschen.
+static func attributveraenderung(sp: Dictionary, mindestens: float = 0.5) -> Dictionary:
+	var start: Dictionary = sp.get("attr_saisonstart", {})
+	var aus := {}
+	if start.is_empty():
+		return aus
+	for a in (sp["attr"] as Dictionary).keys():
+		if not start.has(a):
+			continue
+		var diff: float = float(sp["attr"][a]) - float(start[a])
+		if absf(diff) >= mindestens:
+			aus[a] = diff
+	return aus
 
 static func _statistiken_umlegen(d: Dictionary) -> void:
 	for sid in d["spieler"].keys():

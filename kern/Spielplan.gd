@@ -226,12 +226,26 @@ static func _um_hinterlegte_runde(teams: Array, belegt: Dictionary, gesetzt: Dic
 
 ## Doppelrunde nach dem Kreisverfahren; Rueckrunde mit getauschtem Heimrecht.
 static func doppelrunde(teams: Array) -> Array:
+	var hin := _paarungsrunden(teams)
+	_heimrecht_verteilen(hin)
+	var rueck: Array = []
+	for paare in hin:
+		var gedreht: Array = []
+		for paar in paare:
+			gedreht.append([paar[1], paar[0]])
+		rueck.append(gedreht)
+	var alles: Array = []
+	alles.append_array(hin)
+	alles.append_array(rueck)
+	return alles
+
+## Wer gegen wen — nach dem Kreisverfahren, ohne Heimrecht.
+static func _paarungsrunden(teams: Array) -> Array:
 	var liste: Array = teams.duplicate()
-	var dummy := liste.size() % 2 == 1
-	if dummy:
+	if liste.size() % 2 == 1:
 		liste.append("")
 	var n: int = liste.size()
-	var hin: Array = []
+	var runden: Array = []
 	for r in range(n - 1):
 		var paare: Array = []
 		for i in range(int(n / 2.0)):
@@ -239,24 +253,63 @@ static func doppelrunde(teams: Array) -> Array:
 			var b = liste[n - 1 - i]
 			if a == "" or b == "":
 				continue
-			if (r + i) % 2 == 0:
-				paare.append([a, b])
-			else:
-				paare.append([b, a])
-		hin.append(paare)
+			paare.append([a, b])
+		runden.append(paare)
 		# Rotation: erstes Element bleibt stehen
 		var letzter = liste.pop_back()
 		liste.insert(1, letzter)
-	var rueck: Array = []
-	for paare in hin:
-		var gedreht: Array = []
-		for p in paare:
-			gedreht.append([p[1], p[0]])
-		rueck.append(gedreht)
-	var alles: Array = []
-	alles.append_array(hin)
-	alles.append_array(rueck)
-	return alles
+	return runden
+
+## Wer daheim spielt.
+##
+## Das war der schwerste Fehler im Spielplan, und er ist erst aufgefallen, als
+## der Buerokalender den Monat am Stueck zeigte: siebzehn der achtzehn Vereine
+## hatten die komplette Hinrunde Heimspiele und die komplette Rueckrunde
+## Auswaertsspiele. Die Ursache lag in der alten Regel `(r + i) % 2`: ein
+## Verein rueckt im Kreisverfahren je Runde um eine Position weiter, r waechst
+## ebenfalls um eins, und damit blieb die Summe in ihrer Parität stehen. Jeder
+## Verein hatte genau einen Wechsel — den, bei dem er die Kreismitte kreuzte.
+##
+## Jetzt wird das Heimrecht Runde fuer Runde vergeben, und zwar so, dass
+## niemand lange dieselbe Sorte Spiel hat und der Stand zwischendurch ungefaehr
+## ausgeglichen bleibt. Am Saisonende ist er es ohnehin: die Rueckrunde
+## spiegelt die Hinrunde, also kommt jeder auf genau so viele Heim- wie
+## Auswaertsspiele, unabhaengig davon, wie die Hinrunde ausfaellt.
+static func _heimrecht_verteilen(runden: Array) -> void:
+	var letzte := {}
+	var serie := {}
+	var heimzahl := {}
+	for r in range(runden.size()):
+		var paare: Array = runden[r]
+		for k in range(paare.size()):
+			var x: String = str(paare[k][0])
+			var y: String = str(paare[k][1])
+			if _heimkosten(x, y, r, letzte, serie, heimzahl) \
+					<= _heimkosten(y, x, r, letzte, serie, heimzahl):
+				paare[k] = [x, y]
+			else:
+				paare[k] = [y, x]
+			var heim: String = str(paare[k][0])
+			var gast: String = str(paare[k][1])
+			for eintrag in [[heim, "H"], [gast, "A"]]:
+				var t: String = str(eintrag[0])
+				var art: String = str(eintrag[1])
+				serie[t] = int(serie.get(t, 0)) + 1 if str(letzte.get(t, "")) == art else 1
+				letzte[t] = art
+			heimzahl[heim] = int(heimzahl.get(heim, 0)) + 1
+
+## Was es kostet, wenn `heim` gegen `gast` das Heimrecht bekommt. Eine
+## fortlaufende Serie wiegt schwer, ein ungleicher Zwischenstand leicht.
+static func _heimkosten(heim: String, gast: String, runde: int,
+		letzte: Dictionary, serie: Dictionary, heimzahl: Dictionary) -> float:
+	var kosten := 0.0
+	if str(letzte.get(heim, "")) == "H":
+		kosten += 10.0 * float(serie.get(heim, 0))
+	if str(letzte.get(gast, "")) == "A":
+		kosten += 10.0 * float(serie.get(gast, 0))
+	kosten += absf(float(int(heimzahl.get(heim, 0)) + 1) * 2.0 - float(runde + 1))
+	kosten += absf(float(int(heimzahl.get(gast, 0))) * 2.0 - float(runde + 1))
+	return kosten
 
 ## Verteilt Spieltage auf Wochenenden und laesst die Winterpause aus.
 ## Grosse Ligen (18 Vereine = 34 Spieltage) passen nicht allein auf Wochenenden —

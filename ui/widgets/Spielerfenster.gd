@@ -290,6 +290,10 @@ func _attribute(sp: Dictionary) -> void:
 	else:
 		gruppen = [["Technik", Spielerfabrik.ATTR_TECHNIK], ["Athletik", Spielerfabrik.ATTR_ATHLETIK],
 			["Abwehr", Spielerfabrik.ATTR_DEFENSIV], ["Mental", Spielerfabrik.ATTR_MENTAL]]
+	# Was sich seit dem Sommer bewegt hat. Ohne diese Spalte sieht man eine
+	# Zahl und weiss nicht, ob sie gestiegen oder gefallen ist — und damit
+	# nicht, ob die Trainingsarbeit etwas bringt.
+	var bewegung: Dictionary = Saison.attributveraenderung(sp)
 	var reihe := Stil.hbox(12)
 	inhalt.add_child(reihe)
 	for g in gruppen:
@@ -307,6 +311,7 @@ func _attribute(sp: Dictionary) -> void:
 			t.custom_minimum_size = Vector2(58, 0)
 			t.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			z.add_child(t)
+			z.add_child(_veraenderung(bewegung, str(a)))
 			karte.add_child(z)
 	if float(sp["kenntnis"]) < 97.0:
 		inhalt.add_child(Stil.matt("Die Werte sind Schätzungen. Ein Scoutauftrag verengt die Spannen.", Stil.S_KLEIN))
@@ -322,6 +327,60 @@ func _attribute(sp: Dictionary) -> void:
 		var e: float = Spielerfabrik.eignung(sp, pos)
 		sp_box.add_child(Stil.balken(e * 100.0, 100.0, 62))
 		raster.add_child(sp_box)
+
+## Was diese Saison aus ihm gemacht hat, auf einen Blick.
+##
+## Die Einzelwerte stehen im Attributreiter, aber dort muss man sie suchen.
+## Hier steht, was sich ueberhaupt bewegt hat — und wenn nichts, dann steht
+## auch das da, statt eine leere Karte zu zeigen.
+func _saisonbilanz(sp: Dictionary) -> void:
+	var bewegung: Dictionary = Saison.attributveraenderung(sp)
+	var karte := Bausteine.karte_in(inhalt, "In dieser Saison")
+	if bewegung.is_empty():
+		karte.add_child(Stil.matt(
+			"Noch keine Veränderung seit Saisonbeginn. Entwicklung braucht Wochen, nicht Tage.",
+			Stil.S_KLEIN))
+		return
+	var namen: Array = bewegung.keys()
+	namen.sort_custom(func(a, b): return absf(float(bewegung[a])) > absf(float(bewegung[b])))
+	var hoch: Array = []
+	var runter: Array = []
+	for a in namen:
+		if float(bewegung[a]) > 0.0:
+			hoch.append(a)
+		else:
+			runter.append(a)
+	for gruppe in [[hoch, "Verbessert", Stil.GRUEN], [runter, "Nachgelassen", Stil.ROT]]:
+		var liste: Array = gruppe[0]
+		if liste.is_empty():
+			continue
+		karte.add_child(Stil.etikett(str(gruppe[1])))
+		var zeile := Stil.hbox(6)
+		karte.add_child(zeile)
+		for a2 in liste:
+			var diff: float = float(bewegung[a2])
+			zeile.add_child(Stil.abzeichen("%s %+d" % [
+				str(Spielerfabrik.ATTR_LABEL.get(a2, a2)), int(round(diff))], gruppe[2]))
+
+## Die Veraenderungsspalte eines Attributs. Sie ist immer da, auch wenn sie
+## leer bleibt — sonst verrutschen die Zeilen gegeneinander, je nachdem wer
+## sich entwickelt hat.
+func _veraenderung(bewegung: Dictionary, attribut: String) -> Control:
+	var diff: float = float(bewegung.get(attribut, 0.0))
+	var text := ""
+	var farbe: Color = Stil.TEXT_MATT
+	if diff >= 0.5:
+		text = "+%d" % int(round(diff))
+		farbe = Stil.GRUEN
+	elif diff <= -0.5:
+		text = "%d" % int(round(diff))
+		farbe = Stil.ROT
+	var l := Stil.text(text, Stil.S_MINI, farbe)
+	l.custom_minimum_size = Vector2(26, 0)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	if text != "":
+		l.tooltip_text = "Seit Saisonbeginn %s" % ("gestiegen" if diff > 0.0 else "gefallen")
+	return l
 
 func _statistik(sp: Dictionary) -> void:
 	var karriere := Bausteine.karte_in(inhalt, "Karriere insgesamt")
@@ -590,6 +649,7 @@ func _angebotsbereich(sp: Dictionary) -> void:
 
 func _entwicklung(sp: Dictionary) -> void:
 	_laufbahn(sp)
+	_saisonbilanz(sp)
 	var karte := Bausteine.karte_in(inhalt, "Entwicklung")
 	karte.add_child(Stil.info_zeile("Aktuelle Stärke", "%d" % int(Spielerfabrik.gesamt(sp))))
 	karte.add_child(Stil.info_zeile("Einschätzung", Scouting.potenzial_text(Welt.daten, sid), Stil.LILA))
