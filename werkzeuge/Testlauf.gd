@@ -219,6 +219,11 @@ func _spiele_test(mit_rollen: bool = false) -> void:
 ## stehen die Werte der Saison 2025/26 aus daten/ligen.json.
 const HBL_TORE_JE_SPIEL := 60.4
 const HBL_UNENTSCHIEDEN := 13.4
+## Punkte des Meisters und des Letzten der Saison 2025/26. Sie sagen, wie weit
+## eine echte Bundesligatabelle auseinandergeht — und damit, wie stark sich
+## Kaderqualitaet ueber 34 Spieltage durchsetzt.
+const HBL_PUNKTE_ERSTER := 64
+const HBL_PUNKTE_LETZTER := 15
 
 func _bundesliga_test() -> void:
 	Welt.daten = Weltgenerator.erzeuge(2026, 999)
@@ -237,6 +242,16 @@ func _bundesliga_test() -> void:
 	var abstand_summe := 0
 	var knapp := 0
 	var deutlich := 0
+	# Setzt sich die bessere Mannschaft durch? Dafuer braucht es die Staerke
+	# jedes Kaders vor dem ersten Anwurf und die Punkte danach.
+	var staerke := {}
+	var punkte := {}
+	for cid in d["ligen"]["l_de1"]["vereine"]:
+		staerke[str(cid)] = Vorstand.staerkeindex(d, str(cid))
+		punkte[str(cid)] = 0
+	var favoritensiege := 0
+	var ueberraschungen := 0
+	var entschieden := 0
 	for mid in partien:
 		var m: Dictionary = d["spiele"][mid]
 		var sim := Matchsim.new(d, m, 0)
@@ -252,10 +267,25 @@ func _bundesliga_test() -> void:
 			knapp += 1
 		if abstand >= 10:
 			deutlich += 1
+		var chb: String = str(m["heim"])
+		var cgb: String = str(m["gast"])
+		punkte[chb] = int(punkte[chb]) + (2 if h > g else (1 if h == g else 0))
+		punkte[cgb] = int(punkte[cgb]) + (2 if g > h else (1 if h == g else 0))
 		if h == g:
 			unentschieden += 1
-		elif h > g:
-			heimsiege += 1
+		else:
+			if h > g:
+				heimsiege += 1
+			# Der Heimvorteil ist keine Ueberraschung, sondern Teil der
+			# Erwartung. Deshalb zaehlt hier der Kadervergleich mit einem
+			# Zuschlag fuer die Heimmannschaft.
+			var favorit: String = chb if float(staerke[chb]) + 1.5 >= float(staerke[cgb]) else cgb
+			var sieger: String = chb if h > g else cgb
+			entschieden += 1
+			if sieger == favorit:
+				favoritensiege += 1
+			else:
+				ueberraschungen += 1
 	var n := float(partien.size())
 	if n < 1.0:
 		print("Keine Bundesligapartien gefunden.")
@@ -269,6 +299,25 @@ func _bundesliga_test() -> void:
 	print("Torabstand im Mittel:%5.1f" % (abstand_summe / n))
 	print("Hoechstens 2 Tore:   %5.1f %%" % (knapp / n * 100.0))
 	print("10 Tore und mehr:    %5.1f %%" % (deutlich / n * 100.0))
+	print("")
+	print("Setzt sich die bessere Mannschaft durch?")
+	if entschieden > 0:
+		print("  Favorit gewinnt:   %5.1f %%   Überraschungen: %.1f %% (%d von %d entschiedenen Partien)" % [
+			float(favoritensiege) / float(entschieden) * 100.0,
+			float(ueberraschungen) / float(entschieden) * 100.0, ueberraschungen, entschieden])
+	var rang: Array = punkte.keys()
+	rang.sort_custom(func(a, b): return int(punkte[a]) > int(punkte[b]))
+	var nach_staerke: Array = staerke.keys()
+	nach_staerke.sort_custom(func(a, b): return float(staerke[a]) > float(staerke[b]))
+	var abweichung := 0
+	for i in range(rang.size()):
+		abweichung += absi(i - nach_staerke.find(rang[i]))
+	print("  Tabelle gegen Kaderrangliste: %.1f Plätze Abweichung im Mittel" % (
+		float(abweichung) / maxf(float(rang.size()), 1.0)))
+	print("  Punkte Erster / Letzter:  %d / %d   (Wirklichkeit 2025/26: %d / %d)" % [
+		int(punkte[rang[0]]), int(punkte[rang[rang.size() - 1]]),
+		HBL_PUNKTE_ERSTER, HBL_PUNKTE_LETZTER])
+	print("  Meister: %s" % str(d["vereine"][rang[0]]["name"]))
 
 func _saison_test(dauer: int) -> void:
 	Welt.neues_spiel("c_001", {"vorname": "Test", "nachname": "Trainer", "hintergrund": "taktiker"}, 2024)

@@ -432,6 +432,15 @@ func _erster_anwurf_heim() -> bool:
 	return true
 
 ## Ab wie vielen Sekunden vor Schluss der Spielstand das Verhalten aendert.
+## Wie stark der Unterschied zwischen Angriff und Abwehr auf den einzelnen
+## Wurf durchschlaegt.
+const WURF_EMPFINDLICHKEIT := 0.0055
+## Trefferwahrscheinlichkeit eines Wurfs bei gleich starken Mannschaften.
+const WURF_GRUND := 0.752
+## Die Grenzen der Trefferwahrscheinlichkeit eines einzelnen Wurfs.
+const WURF_UNTEN := 0.42
+const WURF_OBEN := 0.90
+
 const SCHLUSSPHASE := 900.0
 const DRUCK_LEER := {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0, "abwehr": 1.0}
 ## Wie stark ein Torabstand treibt. Ein Tor ist aufholbar, sechs sind es in
@@ -655,7 +664,8 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 	var paradenwert: float = _paradenwert(v, tw, pos)
 	# Der Hallenpuls wirkt direkt auf den Abschluss, nicht nur ueber den
 	# Staerkevergleich — sonst verschwindet der Heimvorteil.
-	var p_tor: float = clampf(0.735 + (wurfguete - paradenwert) * 0.0035 + _puls_abschluss(a), 0.42, 0.79)
+	var p_tor: float = clampf(WURF_GRUND + (wurfguete - paradenwert) * WURF_EMPFINDLICHKEIT + _puls_abschluss(a),
+		WURF_UNTEN, WURF_OBEN)
 	var p_vorbei: float = clampf(0.115 - (wurfguete - paradenwert) * 0.0009, 0.05, 0.17)
 	var w: float = rng.randf()
 	if w < p_vorbei:
