@@ -171,13 +171,15 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 		"stats": {"wuerfe": 0, "tore": 0, "technische_fehler": 0, "zeitstrafen": 0, "rote": 0,
 			"siebenmeter": 0, "siebenmeter_tore": 0, "paraden": 0, "blocks": 0, "gegenstoss_tore": 0,
 			"gegenstoss_wuerfe": 0, "sieben_gegen_sechs": 0,
-			"ballgewinne": 0, "wechsel": 0, "puls_hoch": 0.0, "verwarnungen": 0},
+			"ballgewinne": 0, "wechsel": 0, "puls_hoch": 0.0, "verwarnungen": 0,
+			"vorwarnungen_passiv": 0},
 		# Wurfkarte: je Abschlussposition gezaehlt, was daraus geworden ist.
 		# Nur Summen, keine Einzelwuerfe — der Spielstand soll schlank bleiben.
 		"wurfkarte": {},
 		"siebenmeter_schuetze": str(auf.get("siebenmeter", "")),
 		"sieben_gegen_sechs": false,
 		"ueberzahl": 0,
+		"vorwarnung": false,
 		"letzte_wechselpruefung": -999.0,
 		"ansprache": 0.0,
 		"ansprachen": [],
@@ -401,6 +403,12 @@ func _angriff_simulieren() -> void:
 	var dauer: float = _angriffsdauer(a)
 	if _gegenstoss:
 		dauer = rng.randf_range(12.0, 20.0)
+	a["vorwarnung"] = dauer >= PASSIV_AB and not _gegenstoss
+	v["vorwarnung"] = false
+	if bool(a["vorwarnung"]):
+		a["stats"]["vorwarnungen_passiv"] = int(a["stats"].get("vorwarnungen_passiv", 0)) + 1
+		_warteschlange.append(_ereignis("passiv", _seite(a), "",
+			"Vorwarnzeichen gegen %s — das Spiel wird passiv." % a["name"]))
 	zeit += dauer
 	_kraft_verbrauchen(a, dauer, true)
 	_kraft_verbrauchen(v, dauer, false)
@@ -479,13 +487,19 @@ const WURF_OBEN_ANTEIL := 1.38
 ## liegt seit Jahren bei rund drei Vierteln.
 const SIEBENMETER_GRUND := 0.805
 
-const SCHLUSSPHASE := 900.0
+const SCHLUSSPHASE := 1800.0
 const DRUCK_LEER := {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0, "abwehr": 1.0,
 	"abschluss": 0.0, "dauer": 1.0}
-## Wie stark ein Torabstand treibt. Ein Tor ist aufholbar, sechs sind es in
-## zehn Minuten nicht mehr — und wer gar nicht mehr herankommt, verwaltet auch
-## nicht mehr, sondern spielt zu Ende.
-const ABSTAND_GEWICHT := [0.0, 1.0, 0.9, 0.7, 0.5, 0.3, 0.15]
+## Wie stark ein Torabstand treibt.
+##
+## Der Verlauf ist bewusst steil: bei einem oder zwei Toren Unterschied
+## entscheidet sich eine Handballpartie, und dort ziehen beide Mannschaften
+## alles heraus, was sie haben — Auszeit, siebter Feldspieler, die beste
+## Sieben, kein Wurf aus der Verlegenheit. Bei vier Toren Rueckstand wird
+## dagegen nur noch gespielt, nicht mehr gerechnet. Genau diese Verteilung
+## erzeugt die vielen knappen Ergebnisse, fuer die der Handball bekannt ist:
+## in der Bundesliga endet jede achte Partie unentschieden.
+const ABSTAND_GEWICHT := [0.0, 1.0, 0.78, 0.40, 0.18, 0.08, 0.03]
 const R_TEMPO := 34.0
 const R_RISIKO := 5.0
 const R_ANGRIFF := 0.16
@@ -515,15 +529,33 @@ const LEERES_TOR_TREFFER := 0.72
 ## halben Prozentpunkt — ueber fuenfzehn Angriffe sind das null Komma eins
 ## Tore. Gemessen hatte die Schlussphase damit gar keinen Einfluss. Der
 ## Zuschlag hier wirkt dort, wo er hingehoert: auf den Wurf.
-const R_ABSCHLUSS := 0.055
-const F_ABSCHLUSS := -0.045
+const R_ABSCHLUSS := 0.225
+const F_ABSCHLUSS := -0.195
 ## Uhrmanagement: wer knapp fuehrt, zieht die letzten Angriffe in die Laenge,
 ## bis das Vorwarnzeichen kommt. Das ist der wirksamste Hebel, den eine
 ## fuehrende Mannschaft in der Schlussphase hat — nicht der bessere Wurf,
 ## sondern der Angriff, der eine halbe Minute frisst.
-const UHRPHASE := 360.0
-const F_DAUER := 1.85
-const R_DAUER := 0.62
+const UHRPHASE := 480.0
+const F_DAUER := 2.10
+const R_DAUER := 0.52
+
+## Passives Spiel (Regel 7:11-12).
+##
+## Im Handball gibt es keine Wurfuhr. Stattdessen heben die Schiedsrichter nach
+## eigenem Ermessen den Arm, wenn eine Mannschaft das Spiel verzoegert, ohne
+## etwas fuer das Tor zu tun (Handzeichen 17). Danach hat sie hoechstens sechs
+## Paesse Zeit: wer dann nicht wirft, gibt den Ball ab.
+##
+## Die Simulation rechnet angriffsweise, nicht passweise — das Mass ist deshalb
+## die Dauer des Angriffs. Wer den Ball ueber vierzig Sekunden haelt, sieht das
+## Vorwarnzeichen, und danach faellt der Abschluss so aus, wie er in dieser
+## Lage eben ausfaellt: ein unvorbereiteter Wurf aus dem Rueckraum mit
+## schlechter Quote. Das verzahnt sich mit dem Uhrmanagement der Schlussphase —
+## genau die Mannschaft, die die Uhr herunterspielt, holt sich das
+## Vorwarnzeichen ab.
+const PASSIV_AB := 40.0
+const PASSIV_ABSCHLAG := 0.115
+const PASSIV_ABPFIFF := 0.13
 
 ## Ab wann eine klare Fuehrung die Partie entscheidet — und was das aendert.
 ##
@@ -532,10 +564,10 @@ const R_DAUER := 0.62
 ## Zug geht aus dem Angriff, die Abwehr steht nur noch. Genau das fehlte: die
 ## Simulation warf weiter drauf, und die Ergebnisse fielen entsprechend hoch
 ## aus — sieben Tore Abstand im Mittel, in Wirklichkeit gut fuenf.
-const SCHONGANG_AB := 2280.0
-const SCHONGANG_VORSPRUNG := 6
-const SCHONGANG_ABSCHLUSS := -0.055
-const SCHONGANG_VOLL := 11.0
+const SCHONGANG_AB := 1980.0
+const SCHONGANG_VORSPRUNG := 5
+const SCHONGANG_ABSCHLUSS := -0.175
+const SCHONGANG_VOLL := 10.0
 
 ## Wie eine Mannschaft auf den Spielstand reagiert.
 ##
@@ -728,6 +760,11 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	elif wurf_zuf < p_2min + p_7m:
 		return _siebenmeter(a, v)
 
+	# Nach dem Vorwarnzeichen: wer die sechs Paesse verstreichen laesst, ohne
+	# zu werfen, bekommt den Pfiff.
+	if bool(a.get("vorwarnung", false)) and rng.randf() < PASSIV_ABPFIFF:
+		return _ballverlust(a, v, "Zeitspiel-Abpfiff")
+
 	# Der Zuschlag des Spielzugs: er wirkt auf die Abschlussqualität, nicht auf
 	# die Wahrscheinlichkeit, überhaupt zum Wurf zu kommen. Ein gut gelaufener
 	# Kreuz bringt die bessere Position, nicht mehr Angriffe.
@@ -797,6 +834,8 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 	var ziel: float = float(TREFFER_POSITION.get(pos, 0.60))
 	if _gegenstoss:
 		ziel = TREFFER_GEGENSTOSS
+	if bool(a.get("vorwarnung", false)):
+		ziel = maxf(ziel - PASSIV_ABSCHLAG, 0.12)
 	if tw == "":
 		ziel = TREFFER_LEERES_TOR
 	var treffer: float = clampf(ziel + (wurfguete - paradenwert + WURF_AUSGLEICH) * WURF_EMPFINDLICHKEIT
@@ -942,6 +981,11 @@ func _wurfposition(a: Dictionary) -> String:
 	var stil: String = str(a["taktik"]["angriff"])
 	var verteilung: Dictionary = WURFVERTEILUNG.get(stil, WURFVERTEILUNG["positionsangriff"])
 	if a["sieben_gegen_sechs"]:
+		verteilung = WURFVERTEILUNG["rueckraumfokus"]
+	# Unter dem Vorwarnzeichen wird geworfen, wer den Ball hat — und das ist
+	# der Rueckraum. Am Kreis oder aussen laesst sich ein erzwungener Wurf
+	# nicht ansetzen.
+	if bool(a.get("vorwarnung", false)):
 		verteilung = WURFVERTEILUNG["rueckraumfokus"]
 	var gesamt := 0.0
 	var gewichte := {}
@@ -1138,7 +1182,7 @@ func _block(a: Dictionary, v: Dictionary, schuetze: String, pos: String) -> Dict
 	_puls_aendern(v, 3.0 if v["ist_heim"] else -2.0)
 	return {"gegenstoss": rng.randf() < 0.28}
 
-func _ballverlust(a: Dictionary, v: Dictionary) -> Dictionary:
+func _ballverlust(a: Dictionary, v: Dictionary, ursache: String = "") -> Dictionary:
 	var verursacher := _zufaelliger_angreifer(a)
 	a["stats"]["technische_fehler"] += 1
 	if verursacher != "":
@@ -1150,8 +1194,8 @@ func _ballverlust(a: Dictionary, v: Dictionary) -> Dictionary:
 		v["stats"]["ballgewinne"] += 1
 		v["zustand"][gewinner]["ballgewinne"] += 1
 		v["zustand"][gewinner]["bewertung"] -= 0.1
-	var arten := ["Schrittfehler", "Stürmerfoul", "technischer Fehler", "Fehlpass", "Doppelfehler", "Zeitspiel-Abpfiff"]
-	var art := str(arten[rng.randi_range(0, arten.size() - 1)])
+	var arten := ["Schrittfehler", "Stürmerfoul", "technischer Fehler", "Fehlpass", "Doppelfehler"]
+	var art := ursache if ursache != "" else str(arten[rng.randi_range(0, arten.size() - 1)])
 	var text := "%s: %s." % [art, Spielerfabrik.kurz_name(daten["spieler"][verursacher])] if verursacher != "" else "Ballverlust."
 	var leeres_tor_risiko: float = LEERES_TOR_WURF
 	if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "hasardeur"):
@@ -1506,18 +1550,32 @@ func _puls_abklingen() -> void:
 	var ruhe: float = float(daten["vereine"][spiel["heim"]]["hallenpuls_basis"])
 	hallenpuls = lerpf(hallenpuls, ruhe, 0.10)
 
-## Direkter Zuschlag auf die Trefferwahrscheinlichkeit durch die Hallenatmosphaere.
+## Direkter Zuschlag auf die Trefferquote durch die Hallenatmosphaere.
+##
+## Der Wert war zu gross. Fuenf Prozentpunkte fuer die eine und fuenf gegen die
+## andere Seite sind ueber fuenfzig Wuerfe fast fuenf Tore — und weil der Puls
+## waehrend der Partie schwankt, war das zum grossen Teil Rauschen. Gemessen
+## an derselben Paarung streuten die Ergebnisse um gut sechs Tore, wo der reine
+## Wurfzufall knapp fuenf hergibt. Der Heimvorteil selbst bleibt: er steckt
+## ausserdem in _puls_wirkung und im Gespann.
+##
+## Was der schwankende Puls verloren hat, holt HEIMVORTEIL als fester Anteil
+## zurueck: die eigene Halle, die kurze Anreise, der bekannte Hallenboden. Fest
+## heisst hier ohne Streuung — der Heimvorteil soll den Schnitt verschieben,
+## nicht die Ergebnisse auffaechern.
+const HEIMVORTEIL := 0.014
+
 func _puls_abschluss(t: Dictionary) -> float:
 	var abweichung: float = (hallenpuls - 50.0) / 50.0
 	if bool(t["ist_heim"]):
-		return clampf(abweichung * 0.045, -0.05, 0.05)
+		return clampf(abweichung * 0.022, -0.025, 0.025) + HEIMVORTEIL
 	var nerven := 0.0
 	var anzahl := 0
 	for sid in alle_auf_platz(t):
 		nerven += float(daten["spieler"][sid]["attr"]["nervenstaerke"])
 		anzahl += 1
 	var schnitt: float = (nerven / maxf(float(anzahl), 1.0)) / 20.0
-	return clampf(-abweichung * 0.030 * (1.3 - schnitt), -0.05, 0.04)
+	return clampf(-abweichung * 0.016 * (1.3 - schnitt), -0.025, 0.02) - HEIMVORTEIL * 0.5
 
 ## Wirkung des Hallenpulses auf ein Team (Heim profitiert, Gast leidet je nach Nerven).
 func _puls_wirkung(t: Dictionary) -> float:

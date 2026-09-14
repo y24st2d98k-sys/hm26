@@ -46,16 +46,24 @@ var pos_karte := {}
 func _log(t: String) -> void:
 	printerr(t)
 
+## Wie viele Spielzeiten gemessen werden. Eine einzelne Runde ist fuer die
+## Randwerte — Unentschieden, klare Ergebnisse — zu klein: dort schwankt eine
+## Saison um mehrere Prozentpunkte, und dann misst man das Rauschen statt der
+## Aenderung.
+const SPIELZEITEN := 4
+
 func _ready() -> void:
-	_lauf()
+	for i in SPIELZEITEN:
+		_lauf(4711 + i * 101)
 	_bericht()
+	_streuungstest()
 	get_tree().quit()
 
 func _zu(feld: String, wert: float) -> void:
 	s[feld] = float(s.get(feld, 0.0)) + wert
 
-func _lauf() -> void:
-	Welt.daten = Weltgenerator.erzeuge(2026, 4711)
+func _lauf(saat: int) -> void:
+	Welt.daten = Weltgenerator.erzeuge(2026, saat)
 	Welt.mein_verein_id = ""
 	var d := Welt.daten
 	Spielplan.erzeuge_saison(d)
@@ -71,17 +79,25 @@ func _lauf() -> void:
 		var m2: Dictionary = d["spiele"][mid]
 		# Feste Saat je Partie: sonst misst jeder Lauf eine andere Stichprobe,
 		# und ein Vergleich vorher/nachher sagt nichts.
-		var sim := Matchsim.new(d, m2, 90001 + n * 7)
+		var sim := Matchsim.new(d, m2, 90001 + n * 7 + saat)
 		sim.vorbereiten()
 		sim.schnell_simulieren()
 		n += 1
 		_partie_auswerten(sim)
-	s["partien"] = float(n)
+	s["partien"] = float(s.get("partien", 0.0)) + float(n)
+	_log("Saat %d: %d Partien gerechnet." % [saat, n])
 
 func _partie_auswerten(sim: Matchsim) -> void:
 	var h: Dictionary = sim.heim
 	var g: Dictionary = sim.gast
 	_zu("tore", float(int(h["tore"]) + int(g["tore"])))
+	var abstand: int = absi(int(h["tore"]) - int(g["tore"]))
+	_zu("abstand", float(abstand))
+	_zu("abstand2", float(abstand * abstand))
+	if abstand <= 2:
+		_zu("eng", 1.0)
+	if abstand >= 10:
+		_zu("klar", 1.0)
 	if int(h["tore"]) == int(g["tore"]):
 		_zu("unentschieden", 1.0)
 	elif int(h["tore"]) > int(g["tore"]):
@@ -97,6 +113,7 @@ func _partie_auswerten(sim: Matchsim) -> void:
 		_zu("zeitstrafen", float(st["zeitstrafen"]))
 		_zu("rote", float(st["rote"]))
 		_zu("verwarnungen", float(st.get("verwarnungen", 0)))
+		_zu("passiv", float(st.get("vorwarnungen_passiv", 0)))
 		_zu("blocks", float(st["blocks"]))
 		_zu("paraden", float(st["paraden"]))
 		_zu("gegentore", float(gegner["tore"]))
@@ -167,9 +184,15 @@ func _bericht() -> void:
 	_zeile("Unentschieden", float(s["unentschieden"]) / p, "unentschieden")
 	_zeile("Heimsiege", float(s["heimsiege"]) / p, "heimsiege")
 	_log("")
+	_log("Torabstand im Mittel: %.2f   (Wirklichkeit rund 5,4)" % (float(s["abstand"]) / p))
+	_log("Streuung des Abstands:%.2f   (Wirklichkeit rund 6,8)" % sqrt(float(s["abstand2"]) / p))
+	_log("Hoechstens zwei Tore:  %.1f %%   (Wirklichkeit rund 36 %%)" % (float(s["eng"]) / p * 100.0))
+	_log("Zehn Tore und mehr:    %.1f %%   (Wirklichkeit rund 15 %%)" % (float(s["klar"]) / p * 100.0))
+	_log("")
 	_log("Tempogegenstoss je Mannschaft: %.2f Wuerfe, %.2f Tore, Quote %.1f %%   (HBL: rund 85 %%)" % [
 		float(s["gegenstoss_wuerfe"]) / m, float(s["gegenstoss_tore"]) / m,
 		float(s["gegenstoss_tore"]) / maxf(float(s["gegenstoss_wuerfe"]), 1.0) * 100.0])
+	_log("Vorwarnzeichen passives Spiel: %.2f je Partie   (HBL: rund vier bis acht)" % (float(s["passiv"]) / p))
 	_log("Sieben gegen Sechs je Partie:  %.2f Umstellungen   (Konzept: 5,7 Einsaetze)" % (float(s["siebter"]) / p))
 	var ges_w: float = maxf(float(s["wuerfe"]), 1.0)
 	_log("Wurfausgang: %.1f %% Tor, %.1f %% Parade, %.1f %% vorbei, %.1f %% geblockt" % [
@@ -192,3 +215,54 @@ func _bericht() -> void:
 		_log("%-4s Anteil %5.1f %%   Quote %5.1f %%   Ziel %4.0f - %4.0f %%   %-10s (%s)" % [
 			pos, anteil * 100.0, quote * 100.0, float(ziel["von"]) * 100.0, float(ziel["bis"]) * 100.0,
 			_urteil(quote, ziel), ziel["quelle"]])
+
+
+## Wieviel der Ergebnisstreuung ist Zufall, wieviel ist Kaderqualitaet?
+##
+## Dieselbe Paarung sechshundertmal: was dabei streut, ist reiner Spielverlauf.
+## Der Rest der Streuung einer Spielzeit geht auf die Unterschiede zwischen den
+## Mannschaften. Ohne diese Trennung schraubt man blind — eine zu breite
+## Ergebnisverteilung kann an beidem liegen, und die Gegenmittel sind
+## gegenlaeufig.
+func _streuungstest() -> void:
+	Welt.daten = Weltgenerator.erzeuge(2026, 20260)
+	Welt.mein_verein_id = ""
+	var d := Welt.daten
+	Spielplan.erzeuge_saison(d)
+	var paarung := ""
+	for mid in d["spiele"].keys():
+		var m: Dictionary = d["spiele"][mid]
+		if str(m["art"]) == "liga" and str(m.get("wettbewerb", "")) == "l_de1":
+			paarung = str(mid)
+			break
+	if paarung == "":
+		return
+	var summe := 0.0
+	var quadrate := 0.0
+	var unentschieden := 0
+	var n := 600
+	for i in n:
+		# Verletzungen bleiben im Datensatz stehen. Ohne Ruecksetzen stuenden
+		# nach ein paar hundert Wiederholungen halbe Kader auf der Liste, und
+		# gemessen waere nicht der Spielverlauf, sondern das Lazarett.
+		for sid in d["spieler"].keys():
+			(d["spieler"][sid] as Dictionary)["verletzung"] = {}
+		var m2: Dictionary = (d["spiele"][paarung] as Dictionary).duplicate(true)
+		var sim := Matchsim.new(d, m2, 700001 + i * 13)
+		sim.vorbereiten()
+		sim.schnell_simulieren()
+		var ab: float = float(int(m2["tore_heim"]) - int(m2["tore_gast"]))
+		summe += ab
+		quadrate += ab * ab
+		if is_zero_approx(ab):
+			unentschieden += 1
+	var mittel: float = summe / float(n)
+	var streuung: float = sqrt(quadrate / float(n) - mittel * mittel)
+	_log("")
+	_log("=== Dieselbe Paarung %d mal ===" % n)
+	_log("Mittlerer Ausgang: %+0.2f Tore   Streuung: %.2f   Unentschieden: %.1f %%" % [
+		mittel, streuung, float(unentschieden) / float(n) * 100.0])
+	var gesamt: float = sqrt(float(s["abstand2"]) / float(s["partien"]))
+	var kader: float = sqrt(maxf(gesamt * gesamt - streuung * streuung, 0.0))
+	_log("Davon Spielverlauf: %.2f   Kaderunterschiede: %.2f   (Gesamtstreuung %.2f)" % [
+		streuung, kader, gesamt])

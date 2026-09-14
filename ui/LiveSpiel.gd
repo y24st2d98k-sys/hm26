@@ -541,7 +541,7 @@ func _ereignisfarbe(e: Dictionary) -> Color:
 			return Stil.BLAU if eigene else Stil.TEXT_MATT
 		"zeitstrafe", "rot", "verletzung", "wechselfehler":
 			return Stil.ROT if eigene else Stil.GELB
-		"verwarnung":
+		"verwarnung", "passiv":
 			return Stil.GELB
 		"auszeit", "taktik", "lauf":
 			return Stil.AKZENT
@@ -1151,6 +1151,8 @@ func _klang_zu(e: Dictionary) -> void:
 			Klang.spiele("pfiff", 0.75)
 		"verwarnung":
 			Klang.spiele("pfiff", 0.5)
+		"passiv":
+			Klang.spiele("raunen", 0.35)
 		"siebenmeter":
 			Klang.spiele("pfiff", 0.6, 1.08)
 		"fehler", "block":
