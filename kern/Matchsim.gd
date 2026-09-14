@@ -281,7 +281,8 @@ func _team_zustand(cid: String, ist_heim: bool) -> Dictionary:
 			"ausdauer": float(sp_cache["attr"]["ausdauer"]) / 20.0,
 			"risiko_basis": Medizin.risiko_roh(sp_cache),
 			"sekunden": 0.0, "tore": 0, "wuerfe": 0, "assists": 0, "paraden": 0, "gegentore": 0,
-			"blocks": 0, "fehler": 0, "zeitstrafen": 0, "verwarnungen": 0, "ballgewinne": 0, "rot": false,
+			"blocks": 0, "fehler": 0, "zeitstrafen": 0, "verwarnungen": 0, "ballgewinne": 0,
+			"gegenstoss_tore": 0, "rot": false,
 			"bewertung": 3.4, "siebenmeter": 0, "siebenmeter_tore": 0,
 		}
 	if str(t["siebenmeter_schuetze"]) == "" or not t["zustand"].has(t["siebenmeter_schuetze"]):
@@ -1085,6 +1086,7 @@ func _tor(a: Dictionary, v: Dictionary, schuetze: String, pos: String, ist_7m: b
 	_bewertung_dampfen(zst)
 	if _gegenstoss:
 		a["stats"]["gegenstoss_tore"] += 1
+		zst["gegenstoss_tore"] += 1
 	if ist_7m:
 		a["stats"]["siebenmeter_tore"] += 1
 		zst["siebenmeter_tore"] += 1
@@ -2067,8 +2069,8 @@ func bericht() -> Dictionary:
 	}
 
 const BERICHT_FELDER := ["sekunden", "tore", "wuerfe", "assists", "paraden", "gegentore",
-	"blocks", "fehler", "zeitstrafen", "ballgewinne", "rot", "bewertung", "siebenmeter",
-	"siebenmeter_tore", "kraft"]
+	"blocks", "fehler", "zeitstrafen", "verwarnungen", "ballgewinne", "rot", "bewertung",
+	"siebenmeter", "siebenmeter_tore", "gegenstoss_tore", "kraft"]
 
 func _team_bericht(t: Dictionary) -> Dictionary:
 	var spieler := {}

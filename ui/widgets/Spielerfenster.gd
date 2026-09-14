@@ -172,6 +172,13 @@ func _uebersicht(sp: Dictionary) -> void:
 		"Gesamteinschätzung aus Fitness, Form und Lastkonto."))
 	if not (sp["verletzung"] as Dictionary).is_empty():
 		zustand.add_child(Stil.text("Verletzt: " + Medizin.verletzungstext(sp), Stil.S_KLEIN, Stil.ROT))
+	var vorgeschichte := Medizin.vorgeschichtstext(sp)
+	if vorgeschichte != "":
+		var risiko := Medizin.wiederholungsrisiko(sp)
+		var farbe: Color = Stil.ROT if risiko >= 2.4 else (Stil.GELB if risiko >= 1.6 else Stil.TEXT_MATT)
+		var zeile := Stil.text("Vorgeschichte: " + vorgeschichte, Stil.S_KLEIN, farbe)
+		zeile.tooltip_text = "Eine überstandene Verletzung kommt an derselben Stelle häufiger wieder — bei der Schulter am stärksten."
+		zustand.add_child(zeile)
 
 	var typ := Bausteine.karte_in(links, "Persönlichkeit")
 	typ.add_child(Stil.text(str(sp["persoenlichkeit"]), Stil.S_NORMAL, Stil.AKZENT))

@@ -116,6 +116,8 @@ static func _spielerstats(d: Dictionary, m: Dictionary) -> void:
 				ziel["ballgewinne"] = int(ziel["ballgewinne"]) + int(z["ballgewinne"])
 				ziel["technische_fehler"] = int(ziel["technische_fehler"]) + int(z["fehler"])
 				ziel["zeitstrafen"] = int(ziel["zeitstrafen"]) + int(z["zeitstrafen"])
+				ziel["verwarnungen"] = int(ziel.get("verwarnungen", 0)) + int(z.get("verwarnungen", 0))
+				ziel["gegenstoss_tore"] = int(ziel.get("gegenstoss_tore", 0)) + int(z.get("gegenstoss_tore", 0))
 				ziel["siebenmeter_wuerfe"] = int(ziel["siebenmeter_wuerfe"]) + int(z["siebenmeter"])
 				ziel["siebenmeter_tore"] = int(ziel["siebenmeter_tore"]) + int(z["siebenmeter_tore"])
 				ziel["note_summe"] = float(ziel["note_summe"]) + float(z["bewertung"])
@@ -144,6 +146,14 @@ const KATEGORIEN := {
 	"assists": {"name": "Vorlagen", "einheit": "", "min_spiele": 1, "torwart": false},
 	"wurfquote": {"name": "Wurfquote", "einheit": "%", "min_spiele": 5, "torwart": false},
 	"siebenmeter": {"name": "Siebenmetertore", "einheit": "", "min_spiele": 1, "torwart": false},
+	# Die Handball-Bundesliga fuehrt drei Torschuetzenlisten nebeneinander:
+	# alle Tore, nur die aus dem Feld und nur die vom Siebenmeterstrich. Wer
+	# zwanzig Tore wirft, davon achtzehn vom Strich, steht in der einen Liste
+	# weit oben und in der anderen gar nicht — und genau das ist die
+	# Unterscheidung, auf die es im Handball ankommt.
+	"feldtore": {"name": "Feldtore", "einheit": "", "min_spiele": 1, "torwart": false},
+	"gegenstosstore": {"name": "Tempogegenstoßtore", "einheit": "", "min_spiele": 1, "torwart": false},
+	"technische_fehler": {"name": "Technische Fehler", "einheit": "", "min_spiele": 5, "torwart": false},
 	"paraden": {"name": "Paraden", "einheit": "", "min_spiele": 1, "torwart": true},
 	"paradenquote": {"name": "Paradenquote", "einheit": "%", "min_spiele": 5, "torwart": true},
 	"note": {"name": "Beste Durchschnittsnote", "einheit": "", "min_spiele": 8, "torwart": false},
@@ -183,6 +193,15 @@ static func rangliste(d: Dictionary, lid: String, kategorie: String, anzahl: int
 				"siebenmeter":
 					wert = float(st["siebenmeter_tore"])
 					zusatz = "von %d Versuchen" % int(st["siebenmeter_wuerfe"])
+				"feldtore":
+					wert = float(int(st["tore"]) - int(st["siebenmeter_tore"]))
+					zusatz = "%d Tore insgesamt" % int(st["tore"])
+				"gegenstosstore":
+					wert = float(int(st.get("gegenstoss_tore", 0)))
+					zusatz = "%d Tore insgesamt" % int(st["tore"])
+				"technische_fehler":
+					wert = float(st["technische_fehler"])
+					zusatz = "in %d Spielen" % spiele
 				"paraden":
 					wert = float(st["paraden"])
 				"paradenquote":

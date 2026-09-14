@@ -76,6 +76,15 @@ func _lauf(saat: int) -> void:
 	partien.sort()
 	var n := 0
 	for mid in partien:
+		# Diese Sonde misst den Verlauf einer Partie, nicht den Verschleiss
+		# einer Spielzeit: sie rechnet Spiel fuer Spiel durch, ohne dass
+		# dazwischen ein Tag vergeht, in dem jemand gesund wird. Ohne
+		# Ruecksetzen stapelten sich die Verletzungen bis zum letzten Spieltag
+		# und gemessen waere am Ende, wie duenn die Kader geworden sind.
+		# Wie oft und wie lange sich jemand verletzt, misst die
+		# Verletzungssonde — dort mit vollem Tageslauf.
+		for sid in d["spieler"].keys():
+			(d["spieler"][sid] as Dictionary)["verletzung"] = {}
 		var m2: Dictionary = d["spiele"][mid]
 		# Feste Saat je Partie: sonst misst jeder Lauf eine andere Stichprobe,
 		# und ein Vergleich vorher/nachher sagt nichts.

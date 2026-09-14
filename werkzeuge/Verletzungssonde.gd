@@ -7,13 +7,18 @@ extends Node
 ## die haeufigste Verletzung (15 bis 19 Prozent), das Knie steht fuer 22
 ## Prozent der Verletzungen, aber fuer 43,1 Prozent aller Ausfalltage.
 
-const JAHRE := 3
+const JAHRE := 2
 
+var _hbl := {}
 var faelle := {}
 var tage_region := {}
 var spieler_tage := {}
 var spieler_faelle := {}
 var gesehen := {}
+## Nur die Kader der Handball-Bundesliga. Der VBG-Sportreport zaehlt Profis,
+## und die spielen dreissig Pflichtspiele und mehr — ein Zweitligatalent, das
+## in der Reserverunde eingesetzt wird, gehoert nicht in dieselbe Rechnung.
+var profi := {}
 
 func _log(t: String) -> void:
 	printerr(t)
@@ -22,6 +27,8 @@ func _ready() -> void:
 	Welt.neues_spiel(_erster_verein(), {"vorname": "Test", "nachname": "Trainer",
 		"hintergrund": "taktiker"}, 7301)
 	var d := Welt.daten
+	for cid in d["ligen"]["l_de1"]["vereine"]:
+		_hbl[str(cid)] = true
 	var offen := {}
 	var tage := 0
 	while tage < JAHRE * 365:
@@ -30,6 +37,8 @@ func _ready() -> void:
 			if str(sp["verein"]) == "":
 				continue
 			gesehen[sid] = true
+			if _hbl.has(str(sp["verein"])):
+				profi[sid] = true
 			var vl: Dictionary = sp["verletzung"]
 			if vl.is_empty():
 				offen.erase(sid)
@@ -54,9 +63,8 @@ func _ready() -> void:
 	get_tree().quit()
 
 func _erster_verein() -> String:
-	var l: Dictionary = Weltgenerator.ligen_vorschau()
-	var liste: Array = l["l_de1"]["vereine"]
-	return str(liste[0]["id"])
+	var d := Weltgenerator.erzeuge(2026, 7301)
+	return str(d["ligen"]["l_de1"]["vereine"][0])
 
 func _bericht() -> void:
 	var n: float = float(gesehen.size())
@@ -80,6 +88,18 @@ func _bericht() -> void:
 	_log("Mittlere Ausfallzeit je Fall:   %5.1f Tage" % (
 		float(tage_gesamt) / maxf(float(faelle_gesamt), 1.0)))
 	_log("")
+	_log("Nur die %d Bundesligaspieler:" % profi.size())
+	var p_faelle := 0
+	var p_tage := 0
+	for sid2 in profi.keys():
+		p_faelle += int(spieler_faelle.get(sid2, 0))
+		p_tage += int(spieler_tage.get(sid2, 0))
+	var pn: float = maxf(float(profi.size()), 1.0)
+	_log("  Faelle je Spieler/Spielzeit:  %5.2f" % (float(p_faelle) / pn / jahre))
+	_log("  Ausfalltage je Spielzeit:     %5.1f   (VBG: rund 34)" % (float(p_tage) / pn / jahre))
+	_log("  Mindestens einmal je Spielzeit:%5.1f %%   (VBG: fast 75 %%)" % (
+		_anteil_mit_einer_je_saison(profi) * 100.0))
+	_log("")
 	_log("%-16s %8s %8s %8s %8s" % ["Region", "Faelle", "Anteil", "Tage", "Tageant."])
 	var regionen: Array = faelle.keys()
 	regionen.sort()
@@ -89,11 +109,12 @@ func _bericht() -> void:
 			float(tage_region[r]) / float(tage_gesamt) * 100.0])
 
 ## Wie viele Spieler in einer typischen Spielzeit mindestens einmal ausfallen.
-func _anteil_mit_einer_je_saison() -> float:
+func _anteil_mit_einer_je_saison(menge: Dictionary = {}) -> float:
+	var welche: Dictionary = menge if not menge.is_empty() else gesehen
 	var schnitt: float = 0.0
-	for sid in gesehen.keys():
+	for sid in welche.keys():
 		var f: float = float(int(spieler_faelle.get(sid, 0))) / float(JAHRE)
 		# Poisson: die Wahrscheinlichkeit, in einer Spielzeit nicht leer
 		# auszugehen.
 		schnitt += 1.0 - exp(-f)
-	return schnitt / float(gesehen.size())
+	return schnitt / maxf(float(welche.size()), 1.0)

@@ -153,6 +153,7 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 	var p := Namen.person(kultur)
 	var ist_tw: bool = position == "TW"
 	var attr := _attribute_fuer(position, ziel_gesamt)
+	_jugendprofil(attr, alter_jahre, position)
 
 	# Potenzial: junge Spieler haben deutlich mehr Luft nach oben.
 	var rest_jahre: float = maxf(0.0, 27.0 - float(alter_jahre))
@@ -201,6 +202,9 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 		"last": Namen.glocke(22.0, 10.0, 0.0, 60.0),
 		"verletzungsneigung": Namen.glocke(9.0, 4.0, 1.0, 20.0),
 		"verletzung": {},
+		# Welche Koerperregionen es schon einmal erwischt hat. Ein Sprunggelenk,
+		# das einmal umgeknickt ist, knickt wieder um — siehe kern/Medizin.gd.
+		"vorgeschichte": {},
 		"sperre": 0,
 		"verein": "",
 		"vertrag": {},
@@ -290,7 +294,8 @@ static func leere_statistik() -> Dictionary:
 static func leere_saisonstats() -> Dictionary:
 	return {
 		"spiele": 0, "minuten": 0.0, "tore": 0, "wuerfe": 0, "assists": 0,
-		"technische_fehler": 0, "zeitstrafen": 0, "rote": 0, "siebenmeter_tore": 0, "siebenmeter_wuerfe": 0,
+		"technische_fehler": 0, "zeitstrafen": 0, "verwarnungen": 0, "rote": 0,
+		"siebenmeter_tore": 0, "siebenmeter_wuerfe": 0, "gegenstoss_tore": 0,
 		"paraden": 0, "gegentore": 0, "blocks": 0, "ballgewinne": 0,
 		"note_summe": 0.0, "noten": 0, "spieler_des_spiels": 0, "titel": 0,
 		"praemien": 0.0, "allstar": 0,
@@ -353,6 +358,47 @@ static func _gesamt_aus(attr: Dictionary, position: String) -> float:
 	elif position == "LA" or position == "RA":
 		abwehr_anteil = 0.24
 	return angriff * (1.0 - abwehr_anteil) + abwehr * abwehr_anteil
+
+## Wie ein Nachwuchsspieler aussieht, bevor er Profihandball gelernt hat.
+##
+## Die DHB-Rahmentrainingskonzeption beschreibt den Werdegang in fuenf Stufen.
+## Bis etwa zwoelf wird ausschliesslich mannorientiert gedeckt — ausdruecklich,
+## um die Wahrnehmungsanforderungen klein zu halten: das Kind sieht seinen
+## Gegenspieler und den Ball, sonst nichts. Die verdichteten Raumdeckungen 6:0
+## und 5:1 kommen erst im Aufbautraining 2 und im Anschlusstraining dazu, also
+## ab sechzehn bis neunzehn.
+##
+## Daraus folgt ein Spielertyp, den das Spiel bisher nicht kannte: ein
+## Achtzehnjaehriger mit hervorragendem Eins-gegen-Eins, der in einer
+## Profiabwehr trotzdem falsch steht, weil Uebergeben, Uebernehmen und Sichern
+## des Nebenmannes noch nicht sitzen. Bisher war ein junger Spieler einfach in
+## allem etwas schwaecher — also nur eine kleinere Ausgabe des fertigen
+## Profis, und damit uninteressant.
+##
+## Der Gesamtwert bleibt unberuehrt: das Profil wird vor _auf_zielstaerke
+## angelegt, die Staerke danach wieder genau getroffen. Was sich aendert, ist
+## die Form, nicht die Hoehe.
+const JUGENDPROFIL_BIS := 23
+##
+## Torhueterattribute bleiben aussen vor. Ihre Gewichte gehen ueber
+## _auf_zielstaerke anders ein als bei einem Feldspieler, und ein
+## verschobenes Stellungsspiel verrueckt sofort die Paradenquote der ganzen
+## Liga — gemessen mit werkzeuge/Testlauf.gd, wo ein erster, kraeftigerer
+## Zuschnitt die Tore je Partie um zwei nach oben zog.
+const JUGEND_STARK := {"zweikampf": 1.09, "taeuschung": 1.08, "tempo": 1.05, "sprungkraft": 1.05}
+const JUGEND_SCHWACH := {"deckungsarbeit": 0.86, "antizipation": 0.88, "uebersicht": 0.90,
+	"entscheidung": 0.89, "fuehrung": 0.85}
+
+static func _jugendprofil(attr: Dictionary, alter_jahre: int, position: String) -> void:
+	if alter_jahre >= JUGENDPROFIL_BIS or position == "TW":
+		return
+	var anteil: float = clampf(float(JUGENDPROFIL_BIS - alter_jahre) / 6.0, 0.0, 1.0)
+	for a in JUGEND_STARK.keys():
+		if attr.has(a):
+			attr[a] = clampf(float(attr[a]) * lerpf(1.0, float(JUGEND_STARK[a]), anteil), 1.0, 20.0)
+	for b in JUGEND_SCHWACH.keys():
+		if attr.has(b):
+			attr[b] = clampf(float(attr[b]) * lerpf(1.0, float(JUGEND_SCHWACH[b]), anteil), 1.0, 20.0)
 
 static func _attribute_fuer(position: String, ziel: float) -> Dictionary:
 	var attr := {}

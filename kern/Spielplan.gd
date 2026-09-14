@@ -102,6 +102,13 @@ static func leere_tabellenzeile() -> Dictionary:
 ## Liefert eine leere Liste, wenn nichts hinterlegt ist oder der Plan nicht
 ## aufgeht — dann wird ausgelost.
 static func echte_runden(d: Dictionary, lid: String, teams: Array) -> Array:
+	# Hinterlegt ist der Plan einer bestimmten Spielzeit — der von 2026/27.
+	# Ab der zweiten Saison steht die Liga anders da: Aufsteiger sind dabei,
+	# Absteiger nicht mehr, und die Liga setzt ohnehin jedes Jahr neu an.
+	# Ohne diese Schranke versuchte das Spiel Jahr fuer Jahr, denselben Plan
+	# aufzulegen, scheiterte an den Vereinsnamen und loste dann doch aus.
+	if Kalender.saison_index(int(d.get("tag", 0))) > 0:
+		return []
 	var liganame: String = str(d["ligen"][lid].get("name", ""))
 	# Selbst eingespielte Plaene schlagen den mitgelieferten Datensatz.
 	var partien: Array = Spielplanpflege.partien(liganame)

@@ -7,42 +7,198 @@ extends RefCounted
 ## und Frische und erhoeht das Verletzungsrisiko spuerbar — Rotation ist dadurch keine
 ## Fleissaufgabe, sondern eine echte Entscheidung.
 
-const LEICHT := ["Prellung", "Zerrung", "Bänderdehnung", "Kapselreizung", "Handverletzung", "Wadenprobleme"]
-const MITTEL := ["Muskelfaserriss", "Bänderanriss", "Schulterverletzung", "Sprunggelenkverletzung",
-	"Rippenbruch", "Sehnenreizung", "Gehirnerschütterung"]
-const SCHWER := ["Kreuzbandriss", "Schulterluxation", "Achillessehnenriss", "Bandscheibenvorfall",
-	"Mittelfußbruch", "Syndesmosebandriss"]
+## Verletzungen nach Koerperregion.
+##
+## Bisher gab es drei Toepfe — leicht, mittel, schwer — und aus dem passenden
+## wurde ein Name gezogen. Das ergab bunte Meldungen, aber kein Muster: ein
+## Kreuzbandriss war genauso wahrscheinlich wie ein Mittelfussbruch, und
+## Vorgeschichte gab es nicht.
+##
+## Der VBG-Sportreport, den der Konzeptbericht zitiert, beschreibt das Muster
+## genau: das Sprunggelenk ist die haeufigste Verletzung im Handball und
+## entsteht bei der Landung nach dem Sprungwurf. Das Knie steht fuer gut ein
+## Fuenftel der Faelle, aber fuer ueber vierzig Prozent aller Ausfalltage — der
+## Kreuzbandriss ist die schwerste Verletzung des Sports. Die Schulter ist die
+## Verletzung des Rueckraumspielers: sie entsteht, wenn ein Abwehrspieler in
+## den Wurfarm greift, sie kostet Monate, und sie kommt ohne Operation fast
+## immer wieder.
+const REGIONEN := {
+	"sprunggelenk": {
+		"name": "Sprunggelenk", "anteil": 0.16, "wiederholung": 1.9,
+		"stufen": [
+			{"bis": 0.84, "arten": ["Bänderdehnung im Sprunggelenk", "Sprunggelenkdistorsion",
+				"Kapselreizung im Sprunggelenk"], "von": 3, "hoch": 12, "schwere": 1},
+			{"bis": 1.00, "arten": ["Syndesmosebandriss", "Außenbandriss im Sprunggelenk"],
+				"von": 40, "hoch": 95, "schwere": 3},
+		],
+	},
+	"knie": {
+		"name": "Kniegelenk", "anteil": 0.23, "wiederholung": 1.6,
+		"stufen": [
+			{"bis": 0.64, "arten": ["Knieprellung", "Kapselreizung im Knie"],
+				"von": 2, "hoch": 10, "schwere": 1},
+			{"bis": 0.82, "arten": ["Meniskusschaden", "Patellasehnenreizung", "Innenbandanriss"],
+				"von": 25, "hoch": 70, "schwere": 2},
+			{"bis": 1.00, "arten": ["Kreuzbandriss"], "von": 175, "hoch": 285, "schwere": 3,
+				"dauerschaden": {"sprungkraft": 1.0, "tempo": 0.7, "beweglichkeit": 0.5}},
+		],
+	},
+	"schulter": {
+		"name": "Schulter", "anteil": 0.09, "wiederholung": 3.2,
+		"stufen": [
+			{"bis": 0.52, "arten": ["Schulterprellung", "Reizung der Rotatorenmanschette"],
+				"von": 5, "hoch": 16, "schwere": 1},
+			{"bis": 0.84, "arten": ["Schultereckgelenksprengung", "Bizepssehnenreizung"],
+				"von": 28, "hoch": 70, "schwere": 2},
+			{"bis": 1.00, "arten": ["Schulterluxation"], "von": 110, "hoch": 240, "schwere": 3,
+				"dauerschaden": {"wurfkraft": 1.0, "wurfpraezision": 0.5}},
+		],
+	},
+	"muskulatur": {
+		"name": "Oberschenkel", "anteil": 0.15, "wiederholung": 1.7,
+		"stufen": [
+			{"bis": 0.70, "arten": ["Zerrung im Oberschenkel", "Wadenprobleme", "Adduktorenprobleme"],
+				"von": 4, "hoch": 14, "schwere": 1},
+			{"bis": 1.00, "arten": ["Muskelfaserriss", "Muskelbündelriss"],
+				"von": 18, "hoch": 42, "schwere": 2},
+		],
+	},
+	"hand": {
+		"name": "Hand und Finger", "anteil": 0.12, "wiederholung": 1.2,
+		"stufen": [
+			{"bis": 0.76, "arten": ["Fingerprellung", "Bänderdehnung am Daumen", "Handgelenksreizung"],
+				"von": 3, "hoch": 14, "schwere": 1},
+			{"bis": 1.00, "arten": ["Mittelhandbruch", "Kahnbeinbruch"],
+				"von": 26, "hoch": 55, "schwere": 2},
+		],
+	},
+	"kopf": {
+		"name": "Kopf und Gesicht", "anteil": 0.09, "wiederholung": 1.4,
+		"stufen": [
+			{"bis": 0.72, "arten": ["Platzwunde", "Nasenbeinprellung"], "von": 1, "hoch": 7, "schwere": 1},
+			{"bis": 1.00, "arten": ["Gehirnerschütterung", "Nasenbeinbruch"],
+				"von": 8, "hoch": 24, "schwere": 2},
+		],
+	},
+	"ruecken": {
+		"name": "Rücken", "anteil": 0.07, "wiederholung": 2.1,
+		"stufen": [
+			{"bis": 0.80, "arten": ["Rückenbeschwerden", "Rippenprellung"], "von": 3, "hoch": 14, "schwere": 1},
+			{"bis": 1.00, "arten": ["Bandscheibenvorfall", "Rippenbruch"], "von": 30, "hoch": 80, "schwere": 2},
+		],
+	},
+	"fuss": {
+		"name": "Fuß und Unterschenkel", "anteil": 0.09, "wiederholung": 1.5,
+		"stufen": [
+			{"bis": 0.74, "arten": ["Fußprellung", "Schienbeinreizung"], "von": 4, "hoch": 18, "schwere": 1},
+			{"bis": 0.94, "arten": ["Mittelfußbruch", "Ermüdungsbruch"], "von": 34, "hoch": 78, "schwere": 2},
+			{"bis": 1.00, "arten": ["Achillessehnenriss"], "von": 160, "hoch": 265, "schwere": 3,
+				"dauerschaden": {"sprungkraft": 0.8, "tempo": 0.8}},
+		],
+	},
+}
+
+## Wie stark eine ueberstandene Verletzung derselben Region wiederkommt, bleibt
+## in `vorgeschichte` des Spielers stehen. Der Konzeptbericht nennt fuer die
+## Schulter eine "nahezu hundertprozentige Rezidivwahrscheinlichkeit" — das ist
+## der hoechste Wiederholungsfaktor in der Tabelle oben.
+const VORGESCHICHTE_MAX := 3
 
 static func erzeuge_verletzung(d: Dictionary, sid: String, im_spiel: bool) -> Dictionary:
 	var sp: Dictionary = d["spieler"][sid]
-	var w: float = Namen.zufall()
-	var art := ""
-	var tage := 0
-	var schwere := 1
-	if w < 0.62:
-		art = str(Namen.waehle(LEICHT))
-		tage = Namen.wuerfel(3, 16)
-		schwere = 1
-	elif w < 0.92:
-		art = str(Namen.waehle(MITTEL))
-		tage = Namen.wuerfel(17, 55)
-		schwere = 2
-	else:
-		art = str(Namen.waehle(SCHWER))
-		tage = Namen.wuerfel(70, 230)
-		schwere = 3
+	var region := _region_ziehen(sp)
+	var daten_region: Dictionary = REGIONEN[region]
+	var stufe := _stufe_ziehen(daten_region)
+	var art: String = str(Namen.waehle(stufe["arten"] as Array))
+	var tage: int = Namen.wuerfel(int(stufe["von"]), int(stufe["hoch"]))
+	var schwere: int = int(stufe["schwere"])
 	var verein: String = str(sp["verein"])
 	if verein != "" and d["vereine"].has(verein):
 		var medizin: int = int(d["vereine"][verein]["infrastruktur"]["medizin"])
 		tage = int(float(tage) * clampf(1.18 - float(medizin) * 0.026, 0.7, 1.2))
 	sp["verletzung"] = {
 		"art": art, "tage": tage, "rest": tage, "schwere": schwere,
-		"im_spiel": im_spiel, "seit_tag": int(d["tag"]),
+		"region": region, "im_spiel": im_spiel, "seit_tag": int(d["tag"]),
 	}
+	_vorgeschichte_merken(sp, region)
+	if stufe.has("dauerschaden"):
+		_dauerschaden(d, sid, stufe["dauerschaden"] as Dictionary)
 	sp["fitness"] = clampf(float(sp["fitness"]) - float(schwere) * 12.0, 20.0, 100.0)
 	sp["moral"] = clampf(float(sp["moral"]) - float(schwere) * 5.0, 5.0, 100.0)
 	Laufbahn.schwere_verletzung(d, sid, art, tage)
 	return sp["verletzung"]
+
+## Welche Region es trifft. Wer dort schon einmal verletzt war, trifft es
+## wieder haeufiger — bei der Schulter am staerksten.
+static func _region_ziehen(sp: Dictionary) -> String:
+	var vor: Dictionary = sp.get("vorgeschichte", {})
+	var gewichte := {}
+	var summe := 0.0
+	for r in REGIONEN.keys():
+		var g: float = float((REGIONEN[r] as Dictionary)["anteil"])
+		var schon: int = int(vor.get(r, 0))
+		if schon > 0:
+			g *= 1.0 + (float((REGIONEN[r] as Dictionary)["wiederholung"]) - 1.0) * mini(schon, VORGESCHICHTE_MAX)
+		gewichte[r] = g
+		summe += g
+	var wurf: float = Namen.zufall() * summe
+	for r in gewichte.keys():
+		wurf -= float(gewichte[r])
+		if wurf <= 0.0:
+			return str(r)
+	return str(REGIONEN.keys()[0])
+
+static func _stufe_ziehen(region: Dictionary) -> Dictionary:
+	var w: float = Namen.zufall()
+	for stufe in region["stufen"]:
+		if w <= float((stufe as Dictionary)["bis"]):
+			return stufe as Dictionary
+	return (region["stufen"] as Array)[(region["stufen"] as Array).size() - 1] as Dictionary
+
+static func _vorgeschichte_merken(sp: Dictionary, region: String) -> void:
+	if not sp.has("vorgeschichte"):
+		sp["vorgeschichte"] = {}
+	var vor: Dictionary = sp["vorgeschichte"]
+	vor[region] = int(vor.get(region, 0)) + 1
+
+## Was eine schwere Verletzung dauerhaft kostet.
+##
+## Ein Kreuzbandriss nimmt Sprungkraft und Antritt, eine Schulterluxation die
+## Wurfgeschwindigkeit — beides steht so im Konzeptbericht, und beides bleibt.
+## Der Spieler kehrt zurueck, aber nicht als derselbe.
+static func _dauerschaden(d: Dictionary, sid: String, felder: Dictionary) -> void:
+	var sp: Dictionary = d["spieler"][sid]
+	var attr: Dictionary = sp["attr"]
+	var alter: float = float(sp["alter"])
+	# Mit dreissig steckt man einen Kreuzbandriss schlechter weg als mit
+	# zweiundzwanzig.
+	var altersfaktor: float = clampf(0.6 + maxf(alter - 24.0, 0.0) * 0.075, 0.6, 1.6)
+	var verloren := {}
+	for feld in felder.keys():
+		if not attr.has(feld):
+			continue
+		var abzug: float = float(felder[feld]) * altersfaktor * Namen.bereich(0.5, 1.5)
+		if abzug < 0.25:
+			continue
+		var neu: float = maxf(float(attr[feld]) - abzug, 1.0)
+		verloren[feld] = float(attr[feld]) - neu
+		attr[feld] = neu
+	if verloren.is_empty():
+		return
+	sp["potenzial"] = maxf(float(sp["potenzial"]) - 1.5 * altersfaktor, Spielerfabrik.gesamt(sp))
+	Spielerfabrik.staerke_verwerfen(sp)
+	if str(sp["verein"]) != Welt.mein_verein_id:
+		return
+	var namen: Array = []
+	for feld2 in verloren.keys():
+		namen.append(str(Spielerfabrik.ATTR_LABEL.get(feld2, feld2)))
+	Welt.nachricht({
+		"typ": "medizin", "wichtig": true,
+		"betreff": "Bleibender Schaden bei %s" % Spielerfabrik.voller_name(sp),
+		"text": "Die Ärzte sind deutlich: %s wird zurückkommen, aber nicht als derselbe. Betroffen sind %s. Solche Verletzungen hinterlassen etwas — das ist im Handball die Regel, nicht die Ausnahme." % [
+			Spielerfabrik.kurz_name(sp), " und ".join(namen)],
+		"daten": {"spieler": str(sp["id"])},
+	})
 
 ## Wird von der Simulation aufgerufen, wenn sich jemand im Spiel verletzt.
 static func verletzung_im_spiel(d: Dictionary, sid: String) -> Dictionary:
@@ -65,7 +221,11 @@ static func risiko_roh(sp: Dictionary) -> float:
 	var last: float = float(sp["last"]) / 100.0
 	var fit: float = float(sp["fitness"]) / 100.0
 	var alter_mod: float = 1.0 + maxf(float(sp["alter"]) - 29.0, 0.0) * 0.05
-	return 0.00042 * (0.5 + neigung) * (0.7 + 1.5 * last) * (1.5 - 0.6 * fit) * alter_mod
+	# Gemessen mit werkzeuge/Verletzungssonde.gd: mit dem alten Grundwert fiel
+	# ein Spieler 15 Tage je Spielzeit aus und nur gut ein Viertel der Kader
+	# verletzte sich ueberhaupt einmal. Der VBG-Sportreport nennt 34 Ausfalltage
+	# und fast drei Viertel aller Profis.
+	return 0.00105 * (0.5 + neigung) * (0.7 + 1.5 * last) * (1.5 - 0.6 * fit) * alter_mod
 
 ## Wie stark die medizinische Abteilung eines Vereins das Risiko senkt.
 static func praeventionsfaktor(d: Dictionary, cid: String) -> float:
@@ -147,6 +307,41 @@ static func spiel_nachwirkung(d: Dictionary, m: Dictionary) -> void:
 							Spielerfabrik.kurz_name(sp), v["art"], int(v["tage"])],
 						"daten": {"spieler": sid},
 					})
+
+## Die Verletzungsgeschichte in einem Satz.
+##
+## Sie ist keine Randnotiz: wer sich zweimal dieselbe Schulter ausgerenkt hat,
+## renkt sie wieder aus. Der Manager soll das sehen koennen, bevor er einen
+## Spieler verpflichtet oder mit hohem Lastkonto aufstellt.
+static func vorgeschichtstext(sp: Dictionary) -> String:
+	var vor: Dictionary = sp.get("vorgeschichte", {})
+	if vor.is_empty():
+		return ""
+	var teile: Array = []
+	var sortiert: Array = vor.keys()
+	sortiert.sort_custom(func(a, b): return int(vor[a]) > int(vor[b]))
+	for r in sortiert:
+		if not REGIONEN.has(r):
+			continue
+		var anzahl: int = int(vor[r])
+		var wort: String = "einmal" if anzahl == 1 else ("zweimal" if anzahl == 2 else "%dmal" % anzahl)
+		teile.append("%s %s" % [wort, str((REGIONEN[r] as Dictionary)["name"])])
+	if teile.is_empty():
+		return ""
+	return ", ".join(teile)
+
+## Wie stark eine Region durch die Vorgeschichte belastet ist — fuer die
+## Anzeige. Null heisst: unauffaellig.
+static func wiederholungsrisiko(sp: Dictionary) -> float:
+	var vor: Dictionary = sp.get("vorgeschichte", {})
+	var hoechster: float = 1.0
+	for r in vor.keys():
+		if not REGIONEN.has(r):
+			continue
+		var w: float = 1.0 + (float((REGIONEN[r] as Dictionary)["wiederholung"]) - 1.0) \
+			* mini(int(vor[r]), VORGESCHICHTE_MAX)
+		hoechster = maxf(hoechster, w)
+	return hoechster
 
 static func verletzungstext(sp: Dictionary) -> String:
 	var v: Dictionary = sp["verletzung"]

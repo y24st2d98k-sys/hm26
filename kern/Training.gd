@@ -172,6 +172,17 @@ const POTENZIAL_HOCH := 10.0
 const POTENZIAL_RUNTER := 5.0
 ## Wie schnell sich das Potenzial je Woche bewegt.
 const POTENZIAL_TEMPO := 0.055
+## Woran ein junger Spieler zuerst arbeitet.
+##
+## Was die Rahmentrainingskonzeption ihm schuldig geblieben ist — Uebergeben,
+## Uebernehmen, Sichern, das Lesen einer verdichteten Abwehr —, holt er in den
+## Jahren nach dem Sprung in den Profikader auf. Das kostet kein zusaetzliches
+## Wachstum: es verschiebt nur, worauf sein Training zuerst wirkt. Sonst
+## bliebe der Achtzehnjaehrige auch mit dreissig taktisch ein Jugendspieler.
+const TAKTIKREIFE_BIS := 25
+const TAKTIK_FELD := ["deckungsarbeit", "antizipation", "uebersicht", "entscheidung"]
+const TAKTIK_TW := ["tw_stellung", "rueckraumabwehr", "fluegelabwehr", "eins_gegen_eins"]
+
 ## Ab so vielen benoteten Einsaetzen faengt das Spiel an zu urteilen. Vorher
 ## ist jede Note Zufall.
 const POTENZIAL_NOTEN := 12
@@ -223,6 +234,8 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 		zuwachs *= 1.22
 	if attr_liste.is_empty():
 		attr_liste = _positionsattribute(sp)
+	if alter_jahre < TAKTIKREIFE_BIS:
+		attr_liste.append_array(TAKTIK_TW if ist_tw else TAKTIK_FELD)
 
 	# Altersbedingter Abbau. Er trifft nur den Koerper, und er trifft einen
 	# Torwart schwaecher: dort zaehlt Stellungsspiel mehr als Antritt, weshalb
