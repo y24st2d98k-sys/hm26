@@ -189,6 +189,7 @@ static func wochenlogik(d: Dictionary) -> void:
 		if Namen.zufall() < 0.12:
 			Darlehen.ki_pruefen(d, cid)
 		_trainingsplan(d, cid)
+		_videostudium(d, cid)
 		_vertraege_pflegen(d, cid)
 		kader_auffuellen(d, cid)
 		if Namen.zufall() < 0.05:
@@ -197,6 +198,34 @@ static func wochenlogik(d: Dictionary) -> void:
 			_personal_pflegen(d, cid)
 		if Namen.zufall() < 0.1:
 			_infrastruktur(d, cid)
+
+## Wie viel der Gegner vor dem Bildschirm sitzt.
+##
+## Entscheidend fuer das Videostudium ist, dass die KI es auch betreibt —
+## sonst waere es ein Knopf, der immer nuetzt, und der Spieler gewaenne jede
+## enge Partie durch Sitzfleisch. Wie viel ein Verein studiert, haengt an
+## seinem Trainerteam und daran, wie gross der Gegner ist: gegen den
+## Tabellenfuehrer schaut man laenger hin als gegen den Aufsteiger.
+static func _videostudium(d: Dictionary, cid: String) -> void:
+	var naechstes := Welt.naechstes_spiel(cid)
+	if naechstes.is_empty():
+		Videostudium.einheiten_setzen(d, cid, 0)
+		return
+	var gegner: String = str(naechstes["gast"]) if str(naechstes["heim"]) == cid else str(naechstes["heim"])
+	if not d["vereine"].has(gegner):
+		Videostudium.einheiten_setzen(d, cid, 0)
+		return
+	var guete: float = Training.trainerqualitaet(d, cid, "taktik") / 100.0
+	var abstand: float = float(d["vereine"][gegner]["ruf"]) - float(d["vereine"][cid]["ruf"])
+	var neigung: float = 0.35 + guete * 0.7 + clampf(abstand / 40.0, -0.25, 0.45)
+	var anzahl := 0
+	if neigung > 0.55:
+		anzahl = 1
+	if neigung > 0.85:
+		anzahl = 2
+	if neigung > 1.15:
+		anzahl = 3
+	Videostudium.einheiten_setzen(d, cid, anzahl)
 
 static func _trainingsplan(d: Dictionary, cid: String) -> void:
 	var p: Dictionary = Training.plan(d, cid)

@@ -416,6 +416,9 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 		spiel_ausgetragen.emit(mid)
 		return
 	Statistik.spiel_verbuchen(daten, m)
+	# Die Vorbereitung auf diesen Gegner ist mit dem Schlusspfiff verbraucht.
+	Videostudium.verbrauchen(daten, str(m["heim"]))
+	Videostudium.verbrauchen(daten, str(m["gast"]))
 	# Wenn die Erste spielt, spielt die Zweite. Die Reserverunde spiegelt die
 	# Ligarunde — das braucht keinen eigenen Spielplan und hält die Tabelle
 	# synchron.
@@ -496,6 +499,7 @@ func wochenrhythmus(t: int) -> void:
 	var wt: int = Kalender.wochentag(t)
 	if wt == 0:  # Montag: Wochenbericht
 		Training.wochenwechsel(daten)
+		Videostudium.wochenwechsel(daten)
 		Vertrautheit.wochenwechsel(daten)
 		Spielzuege.wochenwechsel(daten)
 		Finanzen.wochenabrechnung(daten)

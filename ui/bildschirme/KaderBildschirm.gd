@@ -5,7 +5,10 @@ extends Bildschirm
 const SPALTEN := [
 	{"id": "nummer", "name": "#", "breite": 30},
 	{"id": "position", "name": "Pos", "breite": 44},
-	{"id": "name", "name": "Name", "breite": 226},
+	# 226 Pixel reichten fuer die meisten Namen, aber nicht fuer die langen:
+	# "Oskar Vind Rasmussen" und "Antonio Serradilla Cuenca" standen
+	# abgeschnitten da. Die Layoutpruefung hat beide gemeldet.
+	{"id": "name", "name": "Name", "breite": 252},
 	{"id": "alter", "name": "Alter", "breite": 48},
 	{"id": "gesamt", "name": "Stärke", "breite": 62},
 	{"id": "form", "name": "Form", "breite": 74},

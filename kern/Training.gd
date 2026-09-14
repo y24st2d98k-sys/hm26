@@ -112,6 +112,9 @@ static func _verein_trainieren(d: Dictionary, cid: String) -> void:
 	var schwerpunkt: String = str(p["schwerpunkt"])
 	var sp_daten: Dictionary = SCHWERPUNKTE.get(schwerpunkt, SCHWERPUNKTE["ausgeglichen"])
 	var qualitaet: float = trainerqualitaet(d, cid) / 100.0
+	# Wer die Woche ueber Aufzeichnungen sichtet, steht solange nicht in der
+	# Halle. Das ist der Preis des Videostudiums, und er soll sichtbar sein.
+	var video: float = Videostudium.trainingsfaktor(d, cid)
 	var zuteilung: Dictionary = p.get("regeneration_zuteilung", {})
 
 	for sid in v["kader"]:
@@ -138,7 +141,7 @@ static func _verein_trainieren(d: Dictionary, cid: String) -> void:
 						"daten": {"spieler": sid},
 					})
 				continue
-		_entwickeln(d, sp, cid, intensitaet, qualitaet, sp_daten, regeneriert, verletzt)
+		_entwickeln(d, sp, cid, intensitaet, qualitaet * video, sp_daten, regeneriert, verletzt)
 		_moral_anpassen(d, sp, cid)
 
 ## Attribute, die mit den Jahren besser werden statt schlechter. Ein

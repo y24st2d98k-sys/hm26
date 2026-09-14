@@ -11,6 +11,12 @@ var last_bereich: VBoxContainer
 var lager_bereich: VBoxContainer
 var umschulung_bereich: VBoxContainer
 var meldung: Label
+var vorbereitung_bereich: VBoxContainer
+var video_bereich: VBoxContainer
+## Gewaehlter Termin und Gegner im Ansetzungsformular.
+var vb_termin: int = 0
+var vb_gegner: String = ""
+var vb_daheim: bool = true
 var entwicklung_bereich: VBoxContainer
 var budget_anzeige: Label
 
@@ -37,7 +43,9 @@ func aufbauen() -> void:
 	Stil.karte_wurzel(plan_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entwicklung_bereich = Bausteine.karte_in(oben, "Entwicklung im Kader")
 	Stil.karte_wurzel(entwicklung_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	video_bereich = Bausteine.karte_in(inhalt, "Videostudium")
 	lager_bereich = Bausteine.karte_in(inhalt, "Trainingslager")
+	vorbereitung_bereich = Bausteine.karte_in(inhalt, "Vorbereitungsspiele")
 	umschulung_bereich = Bausteine.karte_in(inhalt, "Umschulungen")
 	last_bereich = Bausteine.karte_in(inhalt, "Lastkonto & Regenerationsbudget")
 
@@ -47,12 +55,16 @@ func aktualisieren() -> void:
 	leeren(plan_bereich)
 	leeren(last_bereich)
 	leeren(entwicklung_bereich)
+	leeren(vorbereitung_bereich)
+	leeren(video_bereich)
 	if Welt.mein_verein_id == "":
 		plan_bereich.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
 		return
 	_plan()
 	_entwicklung()
+	_video()
 	_lager()
+	_vorbereitung()
 	_umschulungen()
 	_lastkonto()
 
@@ -265,6 +277,172 @@ func _lager() -> void:
 		z.add_child(knopf)
 
 ## Positionsumschulungen: laufende und mögliche.
+## Videostudium: wie viel Wochenzeit in die Aufzeichnungen des naechsten
+## Gegners geht — und was das kostet.
+func _video() -> void:
+	var cid := Welt.mein_verein_id
+	var d: Dictionary = Welt.daten
+	video_bereich.add_child(Stil.matt(
+		"Aufzeichnungen des nächsten Gegners sichten. Jede Einheit kostet Trainingszeit — und der Gegner studiert auch, "
+		+ "deshalb zählt nicht, wie viel Sie arbeiten, sondern wie viel mehr als er.", Stil.S_MINI))
+
+	var zeile := Stil.hbox(8)
+	video_bereich.add_child(zeile)
+	var l := Stil.matt("Einheiten je Woche", Stil.S_KLEIN)
+	l.custom_minimum_size = Vector2(150, 0)
+	zeile.add_child(l)
+	var jetzt: int = Videostudium.einheiten(d, cid)
+	for anzahl in range(Videostudium.EINHEITEN_MAX + 1):
+		var wahl: int = anzahl
+		var knopf := Stil.knopf_primaer(str(anzahl)) if anzahl == jetzt else Stil.knopf(str(anzahl))
+		knopf.custom_minimum_size = Vector2(42, 0)
+		knopf.tooltip_text = "keine Videoarbeit — die volle Woche in der Halle" if anzahl == 0 else \
+			"%d Einheit(en): %d %% weniger Trainingsentwicklung" % [
+				anzahl, int(round(float(anzahl) * Videostudium.KOSTEN_JE_EINHEIT * 100.0))]
+		knopf.pressed.connect(func():
+			Videostudium.einheiten_setzen(Welt.daten, cid, wahl)
+			Welt.zustand_geaendert.emit()
+			aktualisieren())
+		zeile.add_child(knopf)
+	zeile.add_child(Stil.dehner())
+	var kosten: float = (1.0 - Videostudium.trainingsfaktor(d, cid)) * 100.0
+	zeile.add_child(Stil.text("%d %% weniger Entwicklung" % int(round(kosten)), Stil.S_KLEIN,
+		Stil.ROT if kosten > 0.0 else Stil.TEXT_MATT))
+
+	video_bereich.add_child(Stil.text(Videostudium.lagetext(d, cid), Stil.S_KLEIN, Stil.BLAU))
+	var s: Dictionary = Videostudium.stand(d, cid)
+	var gegner: String = str(s.get("gegner", ""))
+	if gegner != "" and d["vereine"].has(gegner):
+		var vorteil: float = Videostudium.vorteil(d, cid, gegner)
+		var balken := Stil.hbox(8)
+		video_bereich.add_child(balken)
+		balken.add_child(Stil.matt("Vorsprung gegenüber %s" % str(d["vereine"][gegner]["name"]), Stil.S_KLEIN))
+		balken.add_child(Stil.dehner())
+		var anteil: float = vorteil / Videostudium.WIRKUNG_MAX
+		var wort := "ausgeglichen"
+		var farbe: Color = Stil.TEXT_MATT
+		if anteil > 0.25:
+			wort = "leichter Vorteil" if anteil < 0.7 else "deutlicher Vorteil"
+			farbe = Stil.GRUEN
+		elif anteil < -0.25:
+			wort = "leichter Nachteil" if anteil > -0.7 else "deutlicher Nachteil"
+			farbe = Stil.ROT
+		balken.add_child(Stil.abzeichen(wort, farbe))
+
+## Eigene Vorbereitungsspiele. Steht direkt unter dem Trainingslager, weil
+## beides zusammen geplant wird: wer zehn Tage weg ist, testet danach.
+func _vorbereitung() -> void:
+	var cid := Welt.mein_verein_id
+	var d: Dictionary = Welt.daten
+	var angesetzt := Vorbereitung.partien(d, cid)
+
+	if not angesetzt.is_empty():
+		var g := Stil.tabelle(["Termin", "Gegner", "", "Ergebnis", ""])
+		g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		vorbereitung_bereich.add_child(g)
+		for mid in angesetzt:
+			var m: Dictionary = d["spiele"][mid]
+			var daheim: bool = str(m["heim"]) == cid
+			var gegner: String = str(m["gast"]) if daheim else str(m["heim"])
+			g.add_child(Stil.text(Kalender.kurz(int(m["tag"]), Welt.startjahr()), Stil.S_KLEIN))
+			g.add_child(Stil.text(str(Welt.verein(gegner).get("name", "?")), Stil.S_KLEIN))
+			g.add_child(Stil.abzeichen("HEIM" if daheim else "AUSWÄRTS",
+				Stil.AKZENT if daheim else Stil.TEXT_MATT))
+			if bool(m["gespielt"]):
+				g.add_child(Stil.text("%d:%d" % [int(m["tore_heim"]), int(m["tore_gast"])], Stil.S_KLEIN))
+				g.add_child(Stil.matt("gespielt", Stil.S_MINI))
+			else:
+				g.add_child(Stil.matt("—", Stil.S_KLEIN))
+				var weg := Stil.knopf_geist("Absagen", Stil.ROT)
+				var welche := str(mid)
+				weg.pressed.connect(func():
+					var erg := Vorbereitung.absagen(Welt.daten, cid, welche)
+					_melde(str(erg["grund"]), bool(erg["ok"]))
+					Welt.zustand_geaendert.emit()
+					aktualisieren())
+				g.add_child(weg)
+	else:
+		vorbereitung_bereich.add_child(Stil.matt("Noch keine Vorbereitungsspiele angesetzt.", Stil.S_KLEIN))
+
+	if not Vorbereitung.fenster_offen(d):
+		vorbereitung_bereich.add_child(Stil.matt(
+			"Die Vorbereitung ist vorbei. Neue Testspiele lassen sich erst im nächsten Sommer ansetzen.",
+			Stil.S_KLEIN))
+		return
+	var termine := Vorbereitung.freie_termine(d, cid)
+	if termine.is_empty():
+		vorbereitung_bereich.add_child(Stil.matt(
+			"Kein freier Termin mehr — zwischen zwei Partien müssen %d Tage liegen, und das Trainingslager blockiert seine Tage." % Vorbereitung.ABSTAND,
+			Stil.S_KLEIN))
+		return
+	if angesetzt.size() >= Vorbereitung.HOECHSTZAHL:
+		vorbereitung_bereich.add_child(Stil.matt(
+			"%d Vorbereitungsspiele sind genug." % Vorbereitung.HOECHSTZAHL, Stil.S_KLEIN))
+		return
+
+	vorbereitung_bereich.add_child(Stil.trenner())
+	vorbereitung_bereich.add_child(Stil.matt(
+		"Gegner und Termin selbst wählen. Ein größerer Name verlangt Antrittsgeld; daheim kommt Eintritt herein, auswärts kostet die Reise.",
+		Stil.S_MINI))
+
+	if vb_termin <= 0 or not termine.has(vb_termin):
+		vb_termin = int(termine[0])
+	var zeile := Stil.hbox(8)
+	vorbereitung_bereich.add_child(zeile)
+	zeile.add_child(Stil.matt("Termin"))
+	var terminwahl := OptionButton.new()
+	for i in range(termine.size()):
+		terminwahl.add_item(Kalender.text(int(termine[i]), Welt.startjahr()))
+		terminwahl.set_item_metadata(i, int(termine[i]))
+		if int(termine[i]) == vb_termin:
+			terminwahl.select(i)
+	terminwahl.item_selected.connect(func(i):
+		vb_termin = int(terminwahl.get_item_metadata(i))
+		vb_gegner = ""
+		aktualisieren())
+	zeile.add_child(terminwahl)
+
+	var gegner_liste := Vorbereitung.moegliche_gegner(d, cid, vb_termin)
+	if gegner_liste.is_empty():
+		vorbereitung_bereich.add_child(Stil.matt("An diesem Termin ist niemand frei.", Stil.S_KLEIN))
+		return
+	if vb_gegner == "":
+		vb_gegner = str((gegner_liste[0] as Dictionary)["cid"])
+	zeile.add_child(Stil.matt("Gegner"))
+	var gegnerwahl := OptionButton.new()
+	gegnerwahl.custom_minimum_size = Vector2(300, 0)
+	for i2 in range(gegner_liste.size()):
+		var e: Dictionary = gegner_liste[i2]
+		var gebuehr: float = float(e["gebuehr"])
+		gegnerwahl.add_item("%s · Ruf %d%s" % [str(e["name"]), int(e["ruf"]),
+			"" if gebuehr <= 0.0 else " · %s" % Stil.geld(gebuehr)])
+		gegnerwahl.set_item_metadata(i2, str(e["cid"]))
+		if str(e["cid"]) == vb_gegner:
+			gegnerwahl.select(i2)
+	gegnerwahl.item_selected.connect(func(i):
+		vb_gegner = str(gegnerwahl.get_item_metadata(i))
+		aktualisieren())
+	zeile.add_child(gegnerwahl)
+
+	var ortswahl := OptionButton.new()
+	ortswahl.add_item("daheim")
+	ortswahl.set_item_metadata(0, true)
+	ortswahl.add_item("auswärts")
+	ortswahl.set_item_metadata(1, false)
+	ortswahl.select(0 if vb_daheim else 1)
+	ortswahl.item_selected.connect(func(i): vb_daheim = bool(ortswahl.get_item_metadata(i)))
+	zeile.add_child(ortswahl)
+
+	var setzen := Stil.knopf_primaer("Ansetzen")
+	setzen.pressed.connect(func():
+		var erg := Vorbereitung.ansetzen(Welt.daten, cid, vb_gegner, vb_termin, vb_daheim)
+		_melde(str(erg["grund"]), bool(erg["ok"]))
+		if bool(erg["ok"]):
+			vb_gegner = ""
+		Welt.zustand_geaendert.emit()
+		aktualisieren())
+	zeile.add_child(setzen)
+
 func _umschulungen() -> void:
 	leeren(umschulung_bereich)
 	var cid: String = Welt.mein_verein_id

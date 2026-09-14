@@ -1584,6 +1584,9 @@ func _angriffskraft(a: Dictionary, v: Dictionary) -> float:
 	basis *= _puls_wirkung(a)
 	basis *= float(a["teamfaktor"])
 	basis *= 1.0 + Scouting.gegnervorteil(daten, str(a["cid"]), str(v["cid"]))
+	# Videostudium wirkt ueber den Unterschied zum Gegenueber, nicht ueber den
+	# eigenen Aufwand: zwei gleich gut vorbereitete Mannschaften heben sich auf.
+	basis *= 1.0 + Videostudium.vorteil(daten, str(a["cid"]), str(v["cid"]))
 	basis *= 1.0 + 0.035 * float(a["auszeit_wirkung"])
 	basis *= 1.0 + 0.055 * float(a["ansprache"])
 	basis *= 1.0 + Presse.motivation(daten, str(a["cid"]))
@@ -1611,6 +1614,7 @@ func _abwehrkraft(v: Dictionary, a: Dictionary) -> float:
 	var basis: float = summe / maxf(gewicht, 1.0)
 	basis *= float(MENTALITAET[str(v["taktik"]["mentalitaet"])]["abwehr"])
 	basis *= float(_spielstandsdruck(v)["abwehr"])
+	basis *= 1.0 + Videostudium.vorteil(daten, str(v["cid"]), str(a["cid"]))
 	basis *= _puls_wirkung(v)
 	basis *= float(v["teamfaktor"])
 	basis *= 1.0 + 0.045 * float(v["ansprache"])

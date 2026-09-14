@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://werkzeuge/Videosonde.gd" id="1"]
+[node name="Videosonde" type="Node"]
+script = ExtResource("1")
