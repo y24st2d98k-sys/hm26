@@ -10,23 +10,39 @@ const TONFALL_FARBE := {"jubel": "gruen", "lob": "gruen", "neutral": "matt", "kr
 
 # ------------------------------------------------------------- Grundlagen ---
 
-static func _outlet(d: Dictionary, nation: String) -> Dictionary:
+## Wer diesen Artikel schreibt.
+##
+## Die Wahl war vorher rein zufaellig unter allen Medien der Nation. Damit
+## kamen ueber Jahre dieselben vier Namen im selben Wechsel — und das
+## Lokalblatt des eigenen Vereins, das ueber ihn ja am meisten schreibt, hatte
+## keinen Vorrang vor einer Zeitung am anderen Ende des Landes.
+static func _outlet(d: Dictionary, nation: String, cid: String = "") -> Dictionary:
 	var passend: Array = []
+	var lokal: Array = []
 	for o in d["medien"]["outlets"]:
+		if str(o.get("verein", "")) != "":
+			if cid != "" and str(o["verein"]) == cid:
+				lokal.append(o)
+			continue
 		if str(o["nation"]) == nation:
 			passend.append(o)
+	# Das Lokalblatt ist bei jedem dritten Bericht dran. Oefter waere es
+	# einseitig, seltener liefe es nebenher mit.
+	if not lokal.is_empty() and Namen.zufall() < 0.34:
+		return lokal[Namen.wuerfel(0, lokal.size() - 1)]
 	if passend.is_empty():
 		passend = d["medien"]["outlets"]
 	if passend.is_empty():
-		return {"name": "Hallenzeit", "haltung": "nüchtern", "reichweite": 50.0}
+		return {"name": "Hallenzeit", "haltung": "nüchtern", "gattung": "Tageszeitung", "reichweite": 50.0}
 	return passend[Namen.wuerfel(0, passend.size() - 1)]
 
 static func artikel(d: Dictionary, schlagzeile: String, text: String, tonfall: String, thema: String, bezug: Dictionary = {}) -> void:
 	var nation: String = str(d["vereine"].get(Welt.mein_verein_id, {}).get("nation", "de"))
-	var o := _outlet(d, nation)
+	var o := _outlet(d, nation, str(bezug.get("verein", "")))
 	var eintrag := {
 		"tag": int(d["tag"]),
 		"outlet": str(o["name"]),
+		"gattung": str(o.get("gattung", "Tageszeitung")),
 		"haltung": str(o["haltung"]),
 		"schlagzeile": schlagzeile,
 		"text": text,
@@ -237,46 +253,188 @@ static func _serientext(v: Dictionary) -> String:
 		return "Es ist bereits die %d. Niederlage nacheinander." % anzahl
 	return "Das dritte Remis in Serie sorgt für Stirnrunzeln."
 
+## Was im Hallenfunk nach einer Partie steht.
+##
+## Frueher zog diese Funktion zwei bis fuenf Beitraege aus einem Topf von drei
+## festen Saetzen — mit Zuruecklegen. Derselbe Satz stand deshalb regelmaessig
+## zweimal untereinander, und ueber eine Saison las man dieselben fuenfzehn
+## Saetze immer wieder. Genau das war die Beschwerde.
+##
+## Zwei Aenderungen: die Beitraege kennen jetzt die Partie — Ergebnis, Gegner,
+## Halle, Zuschauer, Torschuetze, Serie, Tabellenplatz —, und sie kennen ihren
+## Absender. Ein Statistiker schreibt Zahlen, ein Noergler noergelt auch nach
+## einem Sieg, ein Ultra findet alles gross. Gezogen wird ohne Zuruecklegen.
 static func _social_zum_spiel(d: Dictionary, m: Dictionary, cid: String, abstand: int, derby: bool, held: Dictionary) -> void:
+	var accounts: Array = d["medien"]["fanaccounts"]
+	if accounts.is_empty():
+		return
 	var v: Dictionary = d["vereine"][cid]
+	var ist_heim: bool = str(m["heim"]) == cid
+	var gegner: Dictionary = d["vereine"][str(m["gast"]) if ist_heim else str(m["heim"])]
+	var eigene: int = int(m["tore_heim"]) if ist_heim else int(m["tore_gast"])
+	var fremde: int = int(m["tore_gast"]) if ist_heim else int(m["tore_heim"])
 	var anzahl: int = 2 + (2 if derby else 0) + (1 if absi(abstand) >= 7 else 0)
+	var tonfall := "jubel" if abstand > 2 else ("neutral" if abstand >= 0 else "kritik")
+
+	# Fuer jeden Beitrag ein eigener Absender, und fuer jeden Absender ein Satz
+	# aus seiner Welt. Keine Wiederholung, weder beim Konto noch beim Text.
+	var gezogen: Array = []
+	var benutzte_texte := {}
+	var benutzte_konten := {}
 	for i in range(anzahl):
-		var tonfall := "jubel" if abstand > 2 else ("neutral" if abstand >= 0 else "kritik")
-		var texte: Array = []
-		if abstand >= 7:
-			texte = [
-				"Was für ein Abend. So kann es weitergehen. #%s" % str(v["kurz"]),
-				"Die Deckung stand heute wie eine Wand. Endlich mal wieder.",
-				"Wenn wir so spielen, muss uns niemand Angst machen.",
-			]
-		elif abstand > 0:
-			texte = [
-				"Gewonnen ist gewonnen. Schön war es trotzdem nicht.",
-				"Zwei Punkte mitgenommen, mehr zählt heute nicht.",
-				"Der Kampfgeist stimmt. Am Abschluss müssen wir arbeiten.",
-			]
-		elif abstand == 0:
-			texte = [
-				"Ein Punkt, der sich wie eine Niederlage anfühlt.",
-				"Wieder in der Schlussphase alles hergegeben. Das nervt.",
-			]
-		elif abstand > -6:
-			texte = [
-				"Knapp verloren ist auch verloren.",
-				"Die Fehlwurfquote war heute nicht zu ertragen.",
-				"Warum wechseln wir eigentlich nie früher?",
-			]
-		else:
-			texte = [
-				"Das war indiskutabel. Keine Gegenwehr, kein Plan.",
-				"So eine Vorstellung darf man den Leuten nicht bieten.",
-				"Ich habe für dieses Spiel einen halben Tag Urlaub genommen.",
-			]
-		if not held.is_empty() and Namen.zufall() < 0.4:
-			texte.append("%s hat heute die Bude alleine zusammengehalten." % str(held["name"]))
-		if derby and Namen.zufall() < 0.5:
-			texte.append("Derby bleibt Derby. Die Stimmung war Gänsehaut pur.")
-		beitrag(d, str(texte[Namen.wuerfel(0, texte.size() - 1)]), tonfall)
+		var konto: Dictionary = {}
+		for versuch in range(8):
+			var kandidat: Dictionary = accounts[Namen.wuerfel(0, accounts.size() - 1)]
+			if not benutzte_konten.has(str(kandidat["handle"])):
+				konto = kandidat
+				break
+		if konto.is_empty():
+			continue
+		benutzte_konten[str(konto["handle"])] = true
+		var topf := _stimmen(d, cid, v, gegner, m, str(konto["typ"]), abstand, eigene, fremde, derby, held, ist_heim)
+		var text := ""
+		for versuch2 in range(10):
+			var kandidat2: String = str(topf[Namen.wuerfel(0, topf.size() - 1)])
+			if not benutzte_texte.has(kandidat2):
+				text = kandidat2
+				break
+		if text == "":
+			continue
+		benutzte_texte[text] = true
+		gezogen.append({"konto": konto, "text": text})
+
+	for eintrag in gezogen:
+		_beitrag_von(d, eintrag["konto"], str(eintrag["text"]), tonfall)
+
+## Ein Beitrag von einem bestimmten Konto. beitrag() sucht sich sein Konto
+## selbst; hier steht der Absender schon fest, weil sein Charakter den Text
+## bestimmt hat.
+static func _beitrag_von(d: Dictionary, konto: Dictionary, text: String, tonfall: String) -> void:
+	(d["social"] as Array).push_front({
+		"tag": int(d["tag"]),
+		"handle": str(konto["handle"]),
+		"typ": str(konto["typ"]),
+		"text": text,
+		"tonfall": tonfall,
+		"gefaellt": Namen.wuerfel(3, int(float(konto["folgen"]) / 12.0) + 20),
+	})
+	if (d["social"] as Array).size() > 250:
+		(d["social"] as Array).resize(250)
+
+## Was ein Konto dieses Schlags nach dieser Partie schreibt.
+static func _stimmen(d: Dictionary, cid: String, v: Dictionary, gegner: Dictionary, m: Dictionary,
+		typ: String, abstand: int, eigene: int, fremde: int, derby: bool,
+		held: Dictionary, ist_heim: bool) -> Array:
+	var kurz: String = str(v["kurz"])
+	var gname: String = str(gegner["name"])
+	var gkurz: String = str(gegner["kurz"])
+	var ergebnis: String = "%d:%d" % [eigene, fremde]
+	var zuschauer: int = int(m.get("zuschauer", 0))
+	var platz: int = _tabellenplatz(d, cid, v)
+	var texte: Array = []
+
+	# Zuerst das, was jeder sagen koennte — mit den Zahlen dieser Partie.
+	if abstand >= 7:
+		texte.append_array([
+			"%s gegen %s. Mehr muss man dazu nicht sagen." % [ergebnis, gkurz],
+			"Sieben Tore und mehr Unterschied. So einen Abend nimmt man mit.",
+			"%s war heute chancenlos. Selten so klar gesehen." % gname,
+		])
+	elif abstand > 0:
+		texte.append_array([
+			"%s. Nicht schön, aber zwei Punkte." % ergebnis,
+			"Gewonnen ist gewonnen. Gegen %s zählt heute nur das." % gkurz,
+			"Am Ende steht ein %s. Den Rest verdrängen wir." % ergebnis,
+		])
+	elif abstand == 0:
+		texte.append_array([
+			"%s. Ein Punkt, der sich wie eine Niederlage anfühlt." % ergebnis,
+			"Schon wieder in der Schlussphase alles hergegeben.",
+			"Unentschieden gegen %s. Damit kommen wir nicht weiter." % gkurz,
+		])
+	elif abstand > -6:
+		texte.append_array([
+			"%s. Knapp verloren ist auch verloren." % ergebnis,
+			"Gegen %s war heute mehr drin. Deutlich mehr." % gkurz,
+			"Ein Tor Unterschied. Genau das eine, das wir liegen gelassen haben." if abstand == -1
+				else "%d Tore Unterschied, und keines davon war nötig." % absi(abstand),
+		])
+	else:
+		texte.append_array([
+			"%s. Das war indiskutabel." % ergebnis,
+			"Keine Gegenwehr, kein Plan, %s gegen %s." % [ergebnis, gkurz],
+			"Ich habe für dieses Spiel einen halben Tag Urlaub genommen.",
+		])
+
+	# Und dann das, was nur dieser Absender sagt.
+	match typ:
+		"statistiker":
+			texte.append_array([
+				"%s. %d Tore in sechzig Minuten, das sind %s pro Viertelstunde." % [
+					ergebnis, eigene, Stil.komma(float(eigene) / 4.0)],
+				"%d Gegentore. Der Saisonschnitt liegt woanders." % fremde,
+				"Torverhältnis nach diesem Spiel: %+d. Tabellenplatz %d." % [eigene - fremde, platz] if platz > 0
+					else "Torverhältnis nach diesem Spiel: %+d." % (eigene - fremde),
+			])
+			if zuschauer > 0:
+				texte.append("%s Zuschauer. Auslastung berechne ich heute Abend." % Stil.zahl(zuschauer))
+		"noergler", "nörgler":
+			texte.append_array([
+				"Sagt mir bitte jemand, warum wir nie früher wechseln.",
+				"Auch beim %s bleibe ich dabei: das trägt nicht über eine Saison." % ergebnis,
+				"Ich sehe hier seit Jahren dieselben Fehler. Heute gegen %s wieder." % gkurz,
+			])
+		"ultra":
+			texte.append_array([
+				"EGAL WIE. IMMER %s." % kurz.to_upper(),
+				"Der Block hat neunzig Minuten gestanden. Die Mannschaft nicht immer.",
+				"Auswärts dabei gewesen. Würde ich wieder machen." if not ist_heim
+					else "Halle war laut heute. So muss das.",
+			])
+		"optimist":
+			texte.append_array([
+				"Ich sehe da eine Mannschaft, die zusammenwächst.",
+				"%s gegen %s — daraus lernt man mehr als aus einem lockeren Sieg." % [ergebnis, gkurz],
+				"Kopf hoch. Nächste Woche sieht das anders aus.",
+			])
+		"dauerkarte":
+			texte.append_array([
+				"Seit elf Jahren derselbe Platz, und ich habe schon Schlimmeres gesehen als das %s." % ergebnis,
+				"Wer heute nicht da war, hat nichts verpasst." if abstand < 0
+					else "Wer heute nicht da war, hat etwas verpasst.",
+				"Die Halle war heute %s." % ("voll und laut" if zuschauer > 5000 else "gut gefüllt"),
+			])
+		"insider":
+			texte.append_array([
+				"Höre aus dem Umfeld, dass die Woche intern schon ausgewertet wurde.",
+				"Man sagt mir, in der Kabine war es nach dem %s sehr ruhig." % ergebnis,
+				"Da tut sich was auf der Position, auf der wir heute Probleme hatten.",
+			])
+		_:
+			texte.append_array([
+				"%s gegen %s. Sachlich betrachtet in Ordnung." % [ergebnis, gkurz],
+				"Ein Spiel von vielen. Weiter geht es.",
+			])
+
+	if not held.is_empty():
+		texte.append("%s hat heute die Bude alleine zusammengehalten." % str(held["name"]))
+		texte.append("Wenn %s so spielt, ist vieles möglich." % str(held["name"]))
+	if derby:
+		texte.append("Derby bleibt Derby. Gänsehaut.")
+		texte.append("Gegen %s zählt die Tabelle sowieso nicht." % gkurz)
+	return texte
+
+## Auf welchem Tabellenplatz der Verein gerade steht. 0, wenn es keine
+## Tabelle gibt — im Pokal zum Beispiel.
+static func _tabellenplatz(d: Dictionary, cid: String, v: Dictionary) -> int:
+	var lid: String = str(v.get("liga", ""))
+	if lid == "" or not d["ligen"].has(lid):
+		return 0
+	var tabelle: Array = Spielplan.tabelle_sortiert(d, lid)
+	for i in range(tabelle.size()):
+		if str(tabelle[i]) == cid:
+			return i + 1
+	return 0
 
 # --------------------------------------------------------------- Rhythmus ---
 
@@ -305,7 +463,26 @@ static func wochenrueckblick(d: Dictionary, cid: String) -> void:
 	if Namen.zufall() < 0.55:
 		var ziel: int = int(v["vorstand"]["ziel_platz"])
 		var tonfall := "lob" if platz <= ziel else "kritik"
-		var kopf := "%s auf Platz %d — %s" % [v["name"], platz, "im Plan" if platz <= ziel else "unter den Erwartungen"]
+		# Zehnmal dieselbe Schlagzeile in einer Saison hat niemand geschrieben.
+		# Die Lage wiederholt sich, die Formulierung soll es nicht.
+		var koepfe: Array = []
+		if platz <= ziel:
+			koepfe = [
+				"%s auf Platz %d — im Plan" % [v["name"], platz],
+				"Rang %d: %s liegt, wo der Vorstand es sehen will" % [platz, v["name"]],
+				"%s hält Kurs auf Platz %d" % [v["name"], platz],
+				"Platz %d nach %d Spieltagen — bei %s stimmt die Richtung" % [
+					platz, int(liga["tabelle"][cid]["sp"]), v["name"]],
+			]
+		else:
+			koepfe = [
+				"%s auf Platz %d — unter den Erwartungen" % [v["name"], platz],
+				"Rang %d: %s bleibt hinter dem Saisonziel zurück" % [platz, v["name"]],
+				"Für %s wird die Luft dünner — nur Platz %d" % [v["name"], platz],
+				"%d Spieltage, Platz %d: bei %s wächst die Unruhe" % [
+					int(liga["tabelle"][cid]["sp"]), platz, v["name"]],
+			]
+		var kopf: String = str(koepfe[Namen.wuerfel(0, koepfe.size() - 1)])
 		var text := "Nach %d Spieltagen steht %s auf Rang %d der %s. Das Saisonziel lautet %s." % [
 			int(liga["tabelle"][cid]["sp"]), v["name"], platz, liga["name"], v["vorstand"]["saisonziel"]]
 		var lazarett := Medizin.lazarett(d, cid)

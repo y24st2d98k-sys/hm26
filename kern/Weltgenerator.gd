@@ -877,19 +877,66 @@ static func _erzeuge_wettbewerbe(d: Dictionary) -> void:
 		},
 	}
 
+## Die Medienlandschaft.
+##
+## Frueher waren es vier Redaktionen je Nation, alle vom selben Schlag, dazu
+## sechzig Fanaccounts. Damit las sich die Presse ueber Jahre gleich: dieselben
+## Namen, dieselbe Machart, und niemand, der auf einen bestimmten Verein schaut.
+##
+## Jetzt hat jedes Medium eine Gattung, die bestimmt, worueber es schreibt und
+## wie laut. Und jeder Erstligist bekommt sein Lokalblatt — das Medium, das nur
+## ueber ihn berichtet und ihn deshalb anders behandelt als eine ueberregionale
+## Zeitung.
+const MEDIENGATTUNGEN := ["Tageszeitung", "Boulevard", "Fachmagazin", "Onlineportal",
+	"Podcast", "Vereinsfunk", "Sportschau"]
+const HALTUNGEN := ["nüchtern", "reißerisch", "wohlwollend", "kritisch", "analytisch"]
+## Welche Haltung zu einer Gattung passt. Ein Boulevardblatt ist nicht nüchtern.
+const GATTUNG_HALTUNG := {
+	"Tageszeitung": ["nüchtern", "kritisch", "analytisch"],
+	"Boulevard": ["reißerisch", "reißerisch", "kritisch"],
+	"Fachmagazin": ["analytisch", "nüchtern"],
+	"Onlineportal": ["reißerisch", "nüchtern", "wohlwollend"],
+	"Podcast": ["analytisch", "wohlwollend", "kritisch"],
+	"Vereinsfunk": ["wohlwollend", "wohlwollend", "nüchtern"],
+	"Sportschau": ["nüchtern", "analytisch"],
+}
+
 static func _erzeuge_medien(d: Dictionary) -> void:
 	var outlets: Array = []
 	for nid in d["nationen"].keys():
-		for i in range(4):
+		for gattung in MEDIENGATTUNGEN:
+			if str(gattung) == "Vereinsfunk":
+				continue
+			# Zwei je Gattung: mit einer einzigen Tageszeitung je Land bliebe
+			# die Auswahl so klein, dass ueber eine Saison doch wieder
+			# dieselben Namen ueber jedem Bericht stehen.
+			for _zwei in range(2):
+				outlets.append({
+					"name": Namen.medium(nid),
+					"nation": nid,
+					"gattung": str(gattung),
+					"verein": "",
+					"haltung": Namen.waehle(GATTUNG_HALTUNG.get(gattung, HALTUNGEN)),
+					"reichweite": Namen.bereich(20.0, 100.0),
+				})
+	# Das Lokalblatt jedes Erstligisten. Es schreibt nur ueber seinen Verein,
+	# haelt zu ihm und weiss trotzdem, wann es unangenehm werden muss.
+	for lid in d["ligen"].keys():
+		if int(d["ligen"][lid]["stufe"]) != 1:
+			continue
+		for cid in d["ligen"][lid]["vereine"]:
+			var v: Dictionary = d["vereine"][cid]
 			outlets.append({
-				"name": Namen.medium(nid),
-				"nation": nid,
-				"haltung": Namen.waehle(["nüchtern", "reißerisch", "wohlwollend", "kritisch", "analytisch"]),
-				"reichweite": Namen.bereich(20.0, 100.0),
+				"name": "%s Rundschau" % str(v["ort"]),
+				"nation": str(v["nation"]),
+				"gattung": "Vereinsfunk",
+				"verein": str(cid),
+				"haltung": Namen.waehle(["wohlwollend", "wohlwollend", "nüchtern"]),
+				"reichweite": Namen.bereich(12.0, 45.0),
 			})
 	d["medien"]["outlets"] = outlets
 	var fans: Array = []
-	for i in range(60):
+	for i in range(120):
 		fans.append({
 			"handle": Namen.fan_handle(),
 			"typ": Namen.waehle(["dauerkarte", "ultra", "nörgler", "statistiker", "optimist", "neutral", "insider"]),

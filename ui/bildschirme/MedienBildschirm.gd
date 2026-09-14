@@ -43,7 +43,9 @@ func aktualisieren() -> void:
 		var kopf := Stil.hbox(8)
 		karte.add_child(kopf)
 		kopf.add_child(Stil.text(str(a["outlet"]), Stil.S_MINI, Stil.AKZENT))
-		kopf.add_child(Stil.matt("· %s · %s" % [str(a["haltung"]), Kalender.text(int(a["tag"]), Welt.startjahr())], Stil.S_MINI))
+		kopf.add_child(Stil.matt("· %s · %s · %s" % [
+			str(a.get("gattung", "Tageszeitung")), str(a["haltung"]),
+			Kalender.text(int(a["tag"]), Welt.startjahr())], Stil.S_MINI))
 		var titel := Stil.text(str(a["schlagzeile"]), Stil.S_GROSS, _farbe(str(a["tonfall"])))
 		titel.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		karte.add_child(titel)
