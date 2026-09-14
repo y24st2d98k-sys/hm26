@@ -80,6 +80,17 @@ const ABWEHR_EIGNUNG := {
 	"A6": {"RA": 1.0, "LA": 0.86, "RR": 0.72, "RL": 0.64, "RM": 0.58, "KM": 0.5},
 }
 
+## Wie die Abwehrplaetze heissen, wenn man sie jemandem zeigt. "A1" bis "A6"
+## sind Schluessel im Datensatz und sagen niemandem etwas; auf dem Feld und in
+## der Aufstellung steht, was der Platz ist.
+const ABWEHR_KURZ := {
+	"A1": "AL", "A2": "HL", "A3": "IL", "A4": "IR", "A5": "HR", "A6": "AR",
+}
+const ABWEHR_NAME := {
+	"A1": "Außen links", "A2": "Halblinks", "A3": "Innenblock links",
+	"A4": "Innenblock rechts", "A5": "Halbrechts", "A6": "Außen rechts",
+}
+
 ## Spannweite der Lernkurve: 1.0 ist der Normalfall, 0.55 ein echter
 ## Spaetzuender, 1.6 ein Spieler, der zwei Jahre ueberspringt.
 const LERNKURVE_MIN := 0.55

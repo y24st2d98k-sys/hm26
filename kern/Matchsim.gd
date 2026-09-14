@@ -1548,6 +1548,42 @@ func _zufaelliger_abwehrspieler(t: Dictionary, ohne_tw: bool = true) -> String:
 ## Umstellung wirft ihn weg — lieber einmal zu oft neu gerechnet als mit einer
 ## veralteten Mannschaft weitergespielt. Öffentlich, weil auch die Live-Ansicht
 ## Taktik und Anweisungen mitten in der Partie ändern kann.
+## Setzt einen Spieler mitten in der Partie auf eine andere Position.
+##
+## Angriff und Abwehr sind getrennte Aufstellungen, und genau das war im Spiel
+## nicht zu aendern: wer merkte, dass sein Kreislaeufer in der Abwehr auf dem
+## Aussenplatz untergeht, konnte ihn bis zum Schlusspfiff nicht umstellen.
+##
+## Steht der Spieler schon woanders im selben Block, tauschen die beiden ihre
+## Plaetze — alles andere liesse eine Position unbesetzt.
+func position_besetzen(t: Dictionary, block: String, pos: String, sid: String) -> Dictionary:
+	var feldname: String = "angriff_auf" if block == "angriff" else "abwehr_auf"
+	var auf: Dictionary = t[feldname]
+	if not auf.has(pos):
+		return {"ok": false, "grund": "Diese Position gibt es nicht."}
+	if sid == "" or not (t["zustand"] as Dictionary).has(sid):
+		return {"ok": false, "grund": "Dieser Spieler ist nicht im Aufgebot."}
+	for e in (t["gesperrt"] as Array):
+		if str((e as Dictionary).get("sid", "")) == sid:
+			return {"ok": false, "grund": "Er sitzt auf der Strafbank."}
+	var vorher: String = str(auf[pos])
+	if vorher == sid:
+		return {"ok": false, "grund": "Er steht bereits dort."}
+	var alte_position := ""
+	for p2 in auf.keys():
+		if str(auf[p2]) == sid:
+			alte_position = str(p2)
+			break
+	auf[pos] = sid
+	if alte_position != "":
+		auf[alte_position] = vorher
+	cache_verwerfen(t)
+	var name: String = Spielerfabrik.kurz_name(daten["spieler"][sid])
+	if alte_position != "":
+		return {"ok": true, "grund": "%s und %s tauschen die Plätze." % [
+			name, Spielerfabrik.kurz_name(daten["spieler"][vorher])]}
+	return {"ok": true, "grund": "%s übernimmt %s." % [name, pos]}
+
 func cache_verwerfen(t: Dictionary) -> void:
 	(t["cache"] as Dictionary).clear()
 

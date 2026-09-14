@@ -24,6 +24,9 @@ var uhr: Timer
 var fertig: bool = false
 
 var feld: Spielfeld
+## Wer gerade auf welcher Position steht — fuer beide Mannschaften.
+var aufstellungsleiste: VBoxContainer
+var aufstellung_bereich: VBoxContainer
 var anzeige_stand: Label
 var anzeige_zeit: Label
 var anzeige_wettbewerb: Label
@@ -143,15 +146,23 @@ func _baue() -> void:
 	haupt.add_child(links)
 	feld = Spielfeld.new()
 	feld.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	feld.custom_minimum_size = Vector2(560, 300)
+	# Das Feld ist in der Hoehe begrenzt, nicht in der Breite: vierzig Meter
+	# auf zwanzig passen breiter als hoch in jedes Fenster. Wer es groesser
+	# haben will, muss ihm Hoehe geben — deshalb nimmt es drei Viertel der
+	# linken Spalte und der Ticker den Rest.
+	feld.size_flags_stretch_ratio = 3.0
+	feld.custom_minimum_size = Vector2(560, 360)
 	links.add_child(feld)
+	aufstellungsleiste = Stil.vbox(4)
+	links.add_child(aufstellungsleiste)
 	var tickerkarte := Stil.karte("Ticker")
 	Stil.karte_wurzel(tickerkarte).size_flags_vertical = Control.SIZE_EXPAND_FILL
+	Stil.karte_wurzel(tickerkarte).size_flags_stretch_ratio = 1.0
 	links.add_child(Stil.karte_wurzel(tickerkarte))
 	ticker_scroll = ScrollContainer.new()
 	ticker_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	ticker_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	ticker_scroll.custom_minimum_size = Vector2(0, 150)
+	ticker_scroll.custom_minimum_size = Vector2(0, 120)
 	tickerkarte.add_child(ticker_scroll)
 	ticker = Stil.vbox(3)
 	ticker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -166,6 +177,7 @@ func _baue() -> void:
 	rechts.add_child(rechtsbox)
 	ansprache_bereich = Bausteine.karte_in(rechtsbox, "Ansprache")
 	taktik_bereich = Bausteine.karte_in(rechtsbox, "Taktik im Spiel")
+	aufstellung_bereich = Bausteine.karte_in(rechtsbox, "Aufstellung im Spiel")
 	kader_bereich = Bausteine.karte_in(rechtsbox, "Mannschaft & Wechsel")
 	stats_bereich = Bausteine.karte_in(rechtsbox, "Statistik")
 
@@ -195,8 +207,15 @@ func starte(spiel_id: String) -> void:
 	gegner_team = sim.gast if heim_ist_mein else sim.heim
 	feld.lebendig = true
 	_zug.clear()
-	feld.heim_farbe = Welt.verein(str(m["heim"]))["wappen"]["a"]
-	feld.gast_farbe = Welt.verein(str(m["gast"]))["wappen"]["a"]
+	# Trikotfarben — und zwar unterscheidbare.
+	#
+	# Zwei Vereine mit gruenem Wappen ergaben zwei gruene Mannschaften, und
+	# damit war auf dem Feld nicht mehr zu sehen, wer zu wem gehoert. In
+	# Wirklichkeit loest das der Ausweichsatz; hier tut es dasselbe.
+	var heim_f: Color = _mindesthelligkeit(Welt.verein(str(m["heim"]))["wappen"]["a"])
+	var gast_f: Color = _ausweichfarbe(heim_f, Welt.verein(str(m["gast"]))["wappen"])
+	feld.heim_farbe = heim_f
+	feld.gast_farbe = gast_f
 	feld.heim_kurz = str(Welt.verein(str(m["heim"])).get("kurz", ""))
 	feld.gast_kurz = str(Welt.verein(str(m["gast"])).get("kurz", ""))
 	anzeige_wettbewerb.text = "%s · %s · %s" % [Welt.wettbewerb_name(str(m["wettbewerb"])),
@@ -210,6 +229,7 @@ func starte(spiel_id: String) -> void:
 	_taktik_aufbauen()
 	_ansprache_aufbauen()
 	_kader_aufbauen()
+	_aufstellung_aufbauen()
 	_stats_aufbauen()
 	_szene_auffrischen()
 	_anzeige_auffrischen()
@@ -536,6 +556,7 @@ func _szene_auffrischen(e: Dictionary = {}, seite: String = "") -> void:
 		"heim": _team_szene(sim.heim, angreift == "heim"),
 		"gast": _team_szene(sim.gast, angreift == "gast"),
 	})
+	_aufstellungsleiste_auffrischen(angreift)
 	if not e.is_empty() and str(e.get("spieler", "")) != "":
 		feld.hervorgehoben = str(e["spieler"])
 	if e.is_empty():
@@ -558,6 +579,89 @@ func _angreifer_zu(e: Dictionary) -> String:
 			return seite
 	return sim.angriffsrecht
 
+## Eine Gastfarbe, die sich von der Heimfarbe abhebt.
+##
+## Zuerst wird die zweite Wappenfarbe versucht — das ist der Ausweichsatz, den
+## der Verein ohnehin hat. Taugt auch die nicht, wird aufgehellt oder
+## abgedunkelt, je nachdem, wohin mehr Abstand ist.
+func _ausweichfarbe(heim: Color, wappen: Dictionary) -> Color:
+	var erste: Color = _mindesthelligkeit(wappen.get("a", Color("#4fa8f5")))
+	if _farbabstand(heim, erste) >= FARBABSTAND_MIN:
+		return erste
+	var zweite: Color = _mindesthelligkeit(wappen.get("b", erste))
+	if _farbabstand(heim, zweite) >= FARBABSTAND_MIN:
+		return zweite
+	# Beide zu nah: in die Richtung ausweichen, in der mehr Luft ist.
+	var heller: Color = erste.lightened(0.55)
+	var dunkler: Color = erste.darkened(0.45)
+	var gewaehlt: Color = heller if _farbabstand(heim, heller) > _farbabstand(heim, dunkler) else dunkler
+	return _mindesthelligkeit(gewaehlt)
+
+## Ein Trikot darf nicht so dunkel sein, dass es auf dem Parkett verschwindet
+## und in der Aufstellungsleiste gar nicht mehr zu lesen ist. Schwarz war als
+## Ausweichfarbe rechnerisch am weitesten weg von Gruen — und praktisch
+## unbrauchbar.
+const HELLIGKEIT_MIN := 0.24
+
+func _mindesthelligkeit(f: Color) -> Color:
+	var aus: Color = f
+	var schutz := 0
+	while aus.get_luminance() < HELLIGKEIT_MIN and schutz < 12:
+		aus = aus.lightened(0.14)
+		schutz += 1
+	return aus
+
+## Wie weit zwei Farben auseinanderliegen. Helligkeit zaehlt doppelt: auf einem
+## dunklen Parkett unterscheidet das Auge hell von dunkel zuverlaessiger als
+## Blau von Gruen.
+const FARBABSTAND_MIN := 0.42
+
+func _farbabstand(a: Color, b: Color) -> float:
+	var helligkeit: float = absf(a.get_luminance() - b.get_luminance()) * 2.0
+	var farbe: float = (absf(a.r - b.r) + absf(a.g - b.g) + absf(a.b - b.b)) / 3.0
+	return helligkeit + farbe
+
+## Die Aufstellungsleiste unter dem Feld.
+##
+## Auf dem Feld selbst ist fuer sechs Abwehrnamen kein Platz — sechs Mann auf
+## elf Metern ergeben einen Block, in dem man nichts mehr liest. Hier steht
+## dafuer beides vollstaendig: wer angreift und wer verteidigt, mit Position,
+## Nummer und Namen, in den Farben der Mannschaften.
+func _aufstellungsleiste_auffrischen(angreift: String) -> void:
+	if aufstellungsleiste == null or sim == null:
+		return
+	Bildschirm.leeren(aufstellungsleiste)
+	for t in [sim.heim, sim.gast]:
+		var greift_an: bool = (angreift == "heim") == (t == sim.heim)
+		var farbe: Color = feld.heim_farbe if t == sim.heim else feld.gast_farbe
+		var reihe := Stil.hbox(6)
+		reihe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		reihe.custom_minimum_size = Vector2(0, 22)
+		aufstellungsleiste.add_child(reihe)
+		var marke := Stil.abzeichen(str(t["kurz"]), farbe)
+		marke.custom_minimum_size = Vector2(52, 0)
+		reihe.add_child(marke)
+		var lage := Stil.matt("Angriff" if greift_an else "Abwehr", Stil.S_MINI)
+		lage.custom_minimum_size = Vector2(52, 0)
+		reihe.add_child(lage)
+		var block: Dictionary = t["angriff_auf"] if greift_an else t["abwehr_auf"]
+		for pos in block.keys():
+			var sid: String = str(block[pos])
+			if sid == "":
+				continue
+			var sp: Dictionary = Welt.spieler(sid)
+			if sp.is_empty():
+				continue
+			var kuerzel: String = str(Spielerfabrik.ABWEHR_KURZ.get(str(pos), str(pos)))
+			var zelle := Stil.hbox(3)
+			zelle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			zelle.add_child(Stil.text(kuerzel, Stil.S_MINI, farbe))
+			var name := Stil.text("%d %s" % [int(sp.get("nummer", 0)), str(sp["nachname"])], Stil.S_MINI)
+			name.clip_text = true
+			name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			zelle.add_child(name)
+			reihe.add_child(zelle)
+
 func _team_szene(t: Dictionary, greift_an: bool) -> Dictionary:
 	var block: Dictionary = t["angriff_auf"] if greift_an else t["abwehr_auf"]
 	var eintraege := {}
@@ -569,8 +673,20 @@ func _team_szene(t: Dictionary, greift_an: bool) -> Dictionary:
 		if pos == "TW" and bool(t["sieben_gegen_sechs"]) and greift_an:
 			continue
 		var sp: Dictionary = Welt.spieler(sid)
-		eintraege[pos] = {"sid": sid, "kurz": str(sp["nachname"]).substr(0, 9),
-			"nummer": int(sp.get("nummer", 0)), "index": 0 if pos == "TW" else i}
+		# Der volle Nachname. Frueher stand hier substr(0, 9) — daher "Vind
+		# Rasm" und "Wasielews" auf dem Feld. Wie viel Platz ist, weiss das
+		# Spielfeld, nicht diese Stelle; gekuerzt wird deshalb erst beim
+		# Zeichnen und dann mit Auslassungspunkten.
+		# Wo einer steht, sagt sein Abwehrplatz — nicht die Reihenfolge, in der
+		# das Woerterbuch seine Schluessel hergibt. Vorher stand der Spieler von
+		# A3 auf dem Platz von A1, wenn A3 zufaellig zuerst eingetragen war:
+		# auf dem Feld war die Abwehr damit falsch herum aufgereiht.
+		var platz: int = i
+		if not greift_an and str(pos).begins_with("A") and str(pos).substr(1).is_valid_int():
+			platz = clampi(int(str(pos).substr(1)) - 1, 0, 5)
+		eintraege[pos] = {"sid": sid, "kurz": str(sp["nachname"]),
+			"pos": str(Spielerfabrik.ABWEHR_KURZ.get(str(pos), str(pos))),
+			"nummer": int(sp.get("nummer", 0)), "index": 0 if pos == "TW" else platz}
 		if pos != "TW":
 			i += 1
 	return eintraege
@@ -776,6 +892,71 @@ func _schieber(beschriftung: String, wert: int, rueckruf: Callable) -> HBoxConta
 		anzeige.text = str(int(w))
 		rueckruf.call(w))
 	return h
+
+## Angriff und Abwehr getrennt umstellen, mitten in der Partie.
+##
+## Beide Aufstellungen gab es im Datenmodell laengst, aendern liess sich vor
+## dem Anpfiff aber nur die eine und waehrend der Partie gar keine. Wer merkte,
+## dass sein Kreislaeufer in der Abwehr auf dem Aussenplatz untergeht, sah
+## sechzig Minuten zu.
+func _aufstellung_aufbauen() -> void:
+	_aufstellung_auffrischen()
+
+func _aufstellung_auffrischen() -> void:
+	if sim == null or aufstellung_bereich == null:
+		return
+	Bildschirm.leeren(aufstellung_bereich)
+	aufstellung_bereich.add_child(Stil.matt(
+		"Angriff und Abwehr stellen sich getrennt auf. Wer schon im selben Block steht, tauscht die Plätze.",
+		Stil.S_MINI))
+	var auf_platz: Array = sim.alle_auf_platz(mein_team)
+	for block in ["angriff", "abwehr"]:
+		var feldname: String = "angriff_auf" if block == "angriff" else "abwehr_auf"
+		var auf: Dictionary = mein_team[feldname]
+		aufstellung_bereich.add_child(Stil.etikett("Angriff" if block == "angriff" else "Abwehr"))
+		var plaetze: Array = auf.keys()
+		plaetze.sort()
+		for pos in plaetze:
+			var zeile := Stil.hbox(6)
+			aufstellung_bereich.add_child(zeile)
+			var kuerzel: String = str(Spielerfabrik.ABWEHR_KURZ.get(str(pos), str(pos)))
+			var l := Stil.text(kuerzel, Stil.S_KLEIN, Stil.AKZENT)
+			l.custom_minimum_size = Vector2(38, 0)
+			l.tooltip_text = str(Spielerfabrik.ABWEHR_NAME.get(str(pos),
+				Spielerfabrik.POSITION_NAME.get(str(pos), str(pos))))
+			zeile.add_child(l)
+			var wahl := OptionButton.new()
+			wahl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			var gewaehlt := 0
+			var i := 0
+			for sid in auf_platz:
+				var sp: Dictionary = Welt.spieler(sid)
+				if sp.is_empty():
+					continue
+				# Ein Feldspieler gehoert nicht ins Tor und umgekehrt.
+				if (str(pos) == "TW") != bool(sp["ist_torwart"]):
+					continue
+				var eignung: float = Spielerfabrik.abwehr_eignung(sp, str(pos)) if str(pos).begins_with("A") \
+					else (1.0 if str(pos) == "TW" else Spielerfabrik.eignung(sp, str(pos)))
+				wahl.add_item("%d %s · %d %%" % [int(sp.get("nummer", 0)), str(sp["nachname"]),
+					int(round(eignung * 100.0))])
+				wahl.set_item_metadata(i, str(sid))
+				if str(sid) == str(auf[pos]):
+					gewaehlt = i
+				i += 1
+			if wahl.item_count == 0:
+				zeile.add_child(Stil.matt("niemand verfügbar", Stil.S_MINI))
+				continue
+			wahl.select(gewaehlt)
+			var welcher_block := str(block)
+			var welche_pos := str(pos)
+			wahl.item_selected.connect(func(idx):
+				var erg := sim.position_besetzen(mein_team, welcher_block, welche_pos,
+					str(wahl.get_item_metadata(idx)))
+				hinweis.text = str(erg["grund"])
+				_aufstellung_auffrischen()
+				_szene_auffrischen())
+			zeile.add_child(wahl)
 
 func _kader_aufbauen() -> void:
 	_kader_auffrischen()

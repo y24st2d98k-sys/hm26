@@ -280,20 +280,57 @@ var _belegt: Array = []
 
 ## Schiebt eine Beschriftung so weit, bis sie keine andere überdeckt. In der
 ## Abwehr stehen sechs Spieler dicht beieinander — ohne das liest man dort nichts.
+## Sucht eine Stelle fuer eine Beschriftung, an der keine andere steht.
+##
+## Die alte Fassung ging vier Schritte in eine Richtung und zeichnete dann
+## trotzdem — bei sechs Abwehrspielern auf elf Metern reichte das nie, und die
+## Namen lagen uebereinander. Sie merkte sich ausserdem auch die Stellen, die
+## gar nicht frei waren, sodass die naechste Beschriftung falsch ausgewichen
+## ist. Jetzt wird in beide Richtungen gesucht, abwechselnd und in wachsendem
+## Abstand — der naechste freie Platz ist damit immer der naechstgelegene.
 func _freie_stelle(stelle: Vector2, breite: float, hoehe: float, nach_unten: bool) -> Vector2:
-	var richtung: float = 1.0 if nach_unten else -1.0
-	for _versuch in range(4):
-		var frei := true
-		for r in _belegt:
-			var anderes: Rect2 = r
-			if anderes.intersects(Rect2(stelle - Vector2(0, hoehe), Vector2(breite, hoehe + 2.0))):
-				frei = false
-				break
-		if frei:
+	var schritt: float = hoehe + 2.0
+	var erste: float = 1.0 if nach_unten else -1.0
+	var gefunden: Vector2 = stelle
+	var frei_gefunden := false
+	for versuch in range(13):
+		var versatz: float = 0.0
+		if versuch > 0:
+			var stufe: int = int((versuch + 1) / 2)
+			versatz = float(stufe) * schritt * (erste if versuch % 2 == 1 else -erste)
+		var kandidat: Vector2 = stelle + Vector2(0.0, versatz)
+		if kandidat.y - hoehe < 0.0 or kandidat.y > size.y:
+			continue
+		if _ist_frei(kandidat, breite, hoehe):
+			gefunden = kandidat
+			frei_gefunden = true
 			break
-		stelle.y += richtung * (hoehe + 1.0)
-	_belegt.append(Rect2(stelle - Vector2(0, hoehe), Vector2(breite, hoehe + 2.0)))
-	return stelle
+	if not frei_gefunden:
+		return Vector2(-9999, -9999)
+	_belegt.append(_kasten(gefunden, breite, hoehe))
+	return gefunden
+
+func _ist_frei(stelle: Vector2, breite: float, hoehe: float) -> bool:
+	var kasten := _kasten(stelle, breite, hoehe)
+	for r in _belegt:
+		if (r as Rect2).intersects(kasten):
+			return false
+	return true
+
+func _kasten(stelle: Vector2, breite: float, hoehe: float) -> Rect2:
+	return Rect2(stelle - Vector2(1.0, hoehe), Vector2(breite + 2.0, hoehe + 3.0))
+
+## Kuerzt eine Beschriftung auf die verfuegbare Breite — mit Auslassungspunkten,
+## damit man sieht, dass gekuerzt wurde.
+func _gekuerzt(schrift: Font, text: String, groesse: int, hoechstens: float) -> String:
+	if schrift.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, groesse).x <= hoechstens:
+		return text
+	var aus: String = text
+	while aus.length() > 3:
+		aus = aus.substr(0, aus.length() - 1)
+		if schrift.get_string_size(aus + "…", HORIZONTAL_ALIGNMENT_LEFT, -1, groesse).x <= hoechstens:
+			return aus + "…"
+	return aus
 
 ## Mittelpunkt des Tores, auf das diese Seite wirft.
 func tormitte(seite: String) -> Vector2:
@@ -316,6 +353,7 @@ func _draw() -> void:
 	if s <= 0.5:
 		return
 	_belegt.clear()
+	_punkte.clear()
 	var feld := Rect2(_m(Vector2(0, 0)), Vector2(LAENGE, BREITE) * s)
 
 	# Parkett mit angedeuteten Dielen — sonst wirkt die Flaeche wie ein Loch
@@ -357,8 +395,15 @@ func _draw() -> void:
 	_tor(0.0, s)
 	_tor(LAENGE, s)
 
-	_zeichne_mannschaft("heim", s)
-	_zeichne_mannschaft("gast", s)
+	# Erst alle Koerper, dann alle Namen. Anders geht es nicht: eine
+	# Beschriftung muss auch den Spielern ausweichen koennen, die erst danach
+	# gezeichnet worden waeren — sonst landet ein Name auf einem Trikot, und
+	# genau das war zu sehen.
+	_entzerren(s)
+	_zeichne_koerper("heim", s)
+	_zeichne_koerper("gast", s)
+	_zeichne_namen("heim", s)
+	_zeichne_namen("gast", s)
 
 	# Kurze Lichtblitze (Tor, Parade, Block): ein aufgehender Ring, kein Nebel
 	for b in _blitze:
@@ -456,13 +501,71 @@ func _tor(x: float, s: float) -> void:
 	draw_line(_m(Vector2(x, 8.5)), _m(Vector2(x + 1.1 * richtung, 8.5)), Color("#c8d2dd"), maxf(s * 0.07, 1.2))
 	draw_line(_m(Vector2(x, 11.5)), _m(Vector2(x + 1.1 * richtung, 11.5)), Color("#c8d2dd"), maxf(s * 0.07, 1.2))
 
-func _zeichne_mannschaft(seite: String, s: float) -> void:
+## Wie weit zwei Trikots mindestens auseinanderstehen, in Radien.
+const TRIKOT_ABSTAND := 2.15
+const TRIKOT_ABSTAND_FREMD := 2.9
+
+## Schiebt Trikots auseinander, die uebereinanderliegen wuerden.
+##
+## Der Kreislaeufer steht im Innenblock, der Aussen klebt am Abwehraussen — das
+## ist Handball und soll so sein. Auf dem Bildschirm wird daraus aber ein
+## einziger Klecks, in dem weder Nummer noch Positionsschild zu lesen sind.
+## Deshalb werden zu dichte Paare ein Stueck auseinandergedrueckt, in
+## Bildschirmkoordinaten und nur so weit, dass die Anordnung erhalten bleibt.
+var _versatz: Dictionary = {}
+
+func _entzerren(s: float) -> void:
+	_versatz.clear()
+	var schluessel: Array = []
+	var lagen: Array = []
+	for seite in ["heim", "gast"]:
+		var spieler: Dictionary = szene.get(seite, {})
+		var greift_an: bool = angreifer == seite
+		var nach_rechts: bool = (seite == "heim")
+		for pos in spieler.keys():
+			var eintrag: Dictionary = spieler[pos]
+			var sid_e: String = str(eintrag.get("sid", "%s_%s" % [seite, pos]))
+			var meter: Vector2 = _position(str(pos), greift_an, nach_rechts, int(eintrag.get("index", 0)))
+			if lebendig and _ist.has(sid_e):
+				meter = _ist[sid_e]
+			schluessel.append("%s|%s" % [seite, pos])
+			lagen.append(_m(meter))
+	var r: float = maxf(s * 0.46, 6.0)
+	var mindest: float = r * TRIKOT_ABSTAND
+	# Zwei Mannschaften auf demselben Fleck sind der schlimmste Fall: der
+	# Kreislaeufer steht im Innenblock, und wenn sich dort gruen und schwarz
+	# ueberdecken, liest man weder Nummer noch Schild. Ueber die Mannschaften
+	# hinweg wird deshalb weiter auseinandergerueckt als innerhalb.
+	var mindest_fremd: float = r * TRIKOT_ABSTAND_FREMD
+	for _durchgang in range(4):
+		for i in range(lagen.size()):
+			for j in range(i + 1, lagen.size()):
+				var gleiche_seite: bool = str(schluessel[i]).split("|")[0] == str(schluessel[j]).split("|")[0]
+				mindest = r * (TRIKOT_ABSTAND if gleiche_seite else TRIKOT_ABSTAND_FREMD)
+				var d: Vector2 = lagen[j] - lagen[i]
+				var laenge: float = d.length()
+				if laenge >= mindest:
+					continue
+				if laenge < 0.01:
+					d = Vector2(0.0, 1.0)
+					laenge = 0.01
+				var schub: Vector2 = d.normalized() * (mindest - laenge) * 0.5
+				lagen[i] = lagen[i] - schub
+				lagen[j] = lagen[j] + schub
+	for k in range(schluessel.size()):
+		_versatz[schluessel[k]] = lagen[k]
+
+## Wo ein Spieler gerade auf dem Bildschirm steht, samt Radius. Wird im ersten
+## Durchgang gefuellt und im zweiten fuer die Namen gebraucht.
+var _punkte: Dictionary = {}
+
+## Erster Durchgang: Trikots, Rueckennummern, Positionsschilder.
+func _zeichne_koerper(seite: String, s: float) -> void:
 	var spieler: Dictionary = szene.get(seite, {})
 	if spieler.is_empty():
 		return
 	var greift_an: bool = angreifer == seite
 	var farbe: Color = heim_farbe if seite == "heim" else gast_farbe
-	# Heim greift auf das rechte Tor an, Gast auf das linke
 	var nach_rechts: bool = (seite == "heim")
 	var schrift := ThemeDB.fallback_font
 	for pos in spieler.keys():
@@ -474,13 +577,15 @@ func _zeichne_mannschaft(seite: String, s: float) -> void:
 			# Ein winziges Wippen: ohne das wirken stehende Spieler wie Pfosten.
 			meter.y += sin(_zeit * 2.1 + float(_zittern.get(sid_e, 0.0))) * 0.10
 			meter.x += cos(_zeit * 1.7 + float(_zittern.get(sid_e, 0.0))) * 0.07
-		var p := _m(meter)
+		var p: Vector2 = _versatz.get("%s|%s" % [seite, pos], _m(meter))
 		var r: float = maxf(s * 0.46, 6.0)
 		var ist_tw: bool = pos == "TW"
 		var f: Color = farbe.lightened(0.30) if ist_tw else farbe
 		var bestraft: bool = str(eintrag.get("status", "")) == "strafe"
 		if bestraft:
 			f = Color("#5b6068")
+		_punkte["%s|%s" % [seite, pos]] = {"p": p, "r": r, "f": f, "bestraft": bestraft,
+			"greift_an": greift_an, "nach_rechts": nach_rechts, "ist_tw": ist_tw}
 		# Schatten, Trikot, Rand — der Rand haelt die Farbe auch auf hellem Parkett lesbar
 		draw_circle(p + Vector2(0, maxf(s * 0.1, 1.0)), r, Color(0, 0, 0, 0.35))
 		draw_circle(p, r, f)
@@ -491,37 +596,86 @@ func _zeichne_mannschaft(seite: String, s: float) -> void:
 			draw_arc(p, r * 1.6, 0.0, TAU, 22, Color("#ffffff"), maxf(s * 0.09, 1.5), true)
 		# Rueckennummer im Trikot — nur wo keine bekannt ist, steht das Positionskuerzel
 		var nummer: int = int(eintrag.get("nummer", 0))
-		var aufdruck: String = str(nummer) if nummer > 0 else pos
+		var poskuerzel: String = str(eintrag.get("pos", pos))
+		var aufdruck: String = str(nummer) if nummer > 0 else poskuerzel
 		var pgroesse: int = maxi(int(s * (0.46 if nummer > 0 else 0.34)), 7)
 		var pbreite: float = schrift.get_string_size(aufdruck, HORIZONTAL_ALIGNMENT_LEFT, -1, pgroesse).x
 		var dunkel: bool = f.get_luminance() < 0.5
 		draw_string(schrift, p + Vector2(-pbreite * 0.5, pgroesse * 0.36), aufdruck,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, pgroesse,
 			Color(1, 1, 1, 0.9) if dunkel else Color(0, 0, 0, 0.75))
-		# Name darunter, mit dunkler Kante fuer Lesbarkeit
-		var beschriftung: String = str(eintrag.get("kurz", ""))
-		if beschriftung == "":
+
+		# Das Positionskuerzel als kleines Schild ueber dem Kreis.
+		#
+		# Ohne das stand auf dem Feld nur eine Nummer und ein Name, und die
+		# Frage "wer spielt gerade Rueckraum Mitte" liess sich nur beantworten,
+		# indem man den Kader danebenlegte.
+		var pgr: int = maxi(int(s * 0.30), 7)
+		var pbr: float = schrift.get_string_size(poskuerzel, HORIZONTAL_ALIGNMENT_LEFT, -1, pgr).x
+		# Ueber dem Kreis ist nur beim Angreifer Platz. In der Abwehr stehen
+		# sechs Mann auf elf Metern, dort stiesse ein Schild ueber dem einen
+		# gegen den Kreis des anderen — deshalb sitzt es dort zur Torseite hin.
+		var schild: Rect2
+		if greift_an or ist_tw:
+			schild = Rect2(p + Vector2(-pbr * 0.5 - 3.0, -r - pgr * 1.55),
+				Vector2(pbr + 6.0, pgr + 4.0))
+		else:
+			var zum_tor: float = -1.0 if nach_rechts else 1.0
+			var links: float = p.x + (r + 2.0) * zum_tor - (pbr + 6.0 if zum_tor < 0.0 else 0.0)
+			schild = Rect2(Vector2(links, p.y - pgr * 0.62), Vector2(pbr + 6.0, pgr + 4.0))
+		draw_rect(schild, Color(0, 0, 0, 0.55), true)
+		draw_rect(schild, Color(f.r, f.g, f.b, 0.85), false, maxf(s * 0.045, 1.0))
+		draw_string(schrift, schild.position + Vector2(3.0, pgr + 0.5), poskuerzel,
+			HORIZONTAL_ALIGNMENT_LEFT, -1, pgr, Color(1, 1, 1, 0.95))
+		# Trikot und Schild sind Sperrflaechen fuer jede Beschriftung.
+		_belegt.append(Rect2(p - Vector2(r, r), Vector2(r * 2.0, r * 2.0)))
+		_belegt.append(schild)
+
+## Zweiter Durchgang: die Namen, die jetzt allem ausweichen koennen.
+func _zeichne_namen(seite: String, s: float) -> void:
+	var spieler: Dictionary = szene.get(seite, {})
+	if spieler.is_empty():
+		return
+	var schrift := ThemeDB.fallback_font
+	for pos in spieler.keys():
+		var lage: Dictionary = _punkte.get("%s|%s" % [seite, pos], {})
+		if lage.is_empty():
 			continue
+		var roh: String = str((spieler[pos] as Dictionary).get("kurz", ""))
+		if roh == "":
+			continue
+		# In der Abwehr bleibt der Name weg. Sechs Namen auf elf Metern sind
+		# ein Block, in dem man nichts mehr liest; wer dort steht, sagt die
+		# Aufstellungsleiste neben dem Feld.
+		if not bool(lage["greift_an"]) and not bool(lage["ist_tw"]):
+			continue
+		var p: Vector2 = lage["p"]
+		var r: float = lage["r"]
 		var groesse: int = maxi(int(s * 0.40), 8)
+		var beschriftung: String = _gekuerzt(schrift, roh, groesse, maxf(s * 5.5, 70.0))
 		var breite: float = schrift.get_string_size(beschriftung, HORIZONTAL_ALIGNMENT_LEFT, -1, groesse).x
 		var stelle: Vector2
-		if greift_an or ist_tw:
+		if bool(lage["greift_an"]) or bool(lage["ist_tw"]):
 			# Angreifer stehen breit verteilt: der Name passt unter den Kreis.
 			stelle = p + Vector2(-breite * 0.5, r + groesse * 1.15)
 		else:
-			# Sechs Abwehrspieler stehen auf elf Metern uebereinander — dort
-			# stapeln sich Namen ueber den Kreisen zu einem Block. Zur eigenen
-			# Torseite hin ist dagegen Platz, und jeder Name steht auf der Hoehe
-			# seines Spielers.
-			var zum_tor: float = -1.0 if nach_rechts else 1.0
-			var seitlich: float = (r + 4.0) * zum_tor
-			stelle = p + Vector2(seitlich - (breite if zum_tor < 0.0 else 0.0), groesse * 0.34)
+			# Sechs Abwehrspieler stehen auf elf Metern uebereinander. Zur
+			# Feldmitte hin ist Platz, zum eigenen Tor hin endet gleich die
+			# Seitenlinie — deshalb weisen die Namen nach innen.
+			var nach_innen: float = 1.0 if bool(lage["nach_rechts"]) else -1.0
+			var seitlich: float = (r + 5.0) * nach_innen
+			stelle = p + Vector2(seitlich - (breite if nach_innen < 0.0 else 0.0), groesse * 0.34)
 		stelle.x = clampf(stelle.x, 2.0, maxf(size.x - breite - 2.0, 2.0))
-		stelle = _freie_stelle(stelle, breite, float(groesse), greift_an)
+		stelle = _freie_stelle(stelle, breite, float(groesse), bool(lage["greift_an"]))
+		# Findet sich kein freier Platz, bleibt der Name weg. Das Schild mit der
+		# Position steht ohnehin da, und ein uebereinandergelegter Namensblock
+		# sagt weniger als gar nichts.
+		if stelle.x < -1000.0:
+			continue
 		draw_string(schrift, stelle + Vector2(0, 1), beschriftung,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, groesse, Color(0, 0, 0, 0.65))
 		draw_string(schrift, stelle, beschriftung, HORIZONTAL_ALIGNMENT_LEFT, -1, groesse,
-			Color("#8d99a6") if bestraft else Color("#dbe4ee"))
+			Color("#8d99a6") if bool(lage["bestraft"]) else Color("#dbe4ee"))
 
 func _position(pos: String, greift_an: bool, nach_rechts: bool, index: int) -> Vector2:
 	if pos == "TW":
