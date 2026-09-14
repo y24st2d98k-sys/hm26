@@ -482,6 +482,28 @@ func _angebotsbereich(sp: Dictionary) -> void:
 	var gehaltswunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(Welt.mein_verein().get("ruf", 50.0)))
 	karte.add_child(Stil.matt("Geschätzte Ablöseforderung: %s · Gehaltsvorstellung: %s pro Woche" % [
 		"ablösefrei" if frei else Stil.geld(forderung), Stil.geld(gehaltswunsch)], Stil.S_KLEIN))
+
+	# Die Anfrage. Sie steht vor allem anderen, weil sie zuerst kommt: erst
+	# fragt man, was der Verein will, dann bietet man. Die Schaetzung darueber
+	# kennt weder dessen Kaderlage noch dessen Kassenstand und liegt deshalb
+	# regelmaessig daneben.
+	if not frei and Welt.mein_verein_id != "" and str(sp["verein"]) != Welt.mein_verein_id:
+		var anfragezeile := Stil.hbox(8)
+		karte.add_child(anfragezeile)
+		var sperre: int = Transfermarkt.anfrage_moeglich(Welt.daten, sid)
+		var fragen := Stil.knopf("Beim Verein anfragen")
+		fragen.disabled = sperre > 0
+		fragen.tooltip_text = "Kostet nichts und bindet nichts. Sie erfahren, was %s wirklich sehen will." % \
+			str(Welt.verein(str(sp["verein"])).get("name", "der Verein")) if sperre <= 0 \
+			else "Erst in %d Tagen wieder." % sperre
+		fragen.pressed.connect(func():
+			var erg := Transfermarkt.anfrage(Welt.daten, sid, Welt.mein_verein_id)
+			_melde(str(erg["text"]), bool(erg["ok"]))
+			if bool(erg["ok"]):
+				_zeichne())
+		anfragezeile.add_child(fragen)
+		if sperre > 0:
+			anfragezeile.add_child(Stil.matt("Nachgefragt — wieder in %d Tagen." % sperre, Stil.S_KLEIN))
 	# Wie fest er an seinem Verein haengt. Das ist die Zahl, die vorher fehlte
 	# und ohne die man nicht einschaetzen kann, ob ein Angebot Aussicht hat.
 	if not frei:

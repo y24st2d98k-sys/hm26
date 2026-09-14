@@ -121,6 +121,9 @@ func _sponsoren(cid: String, v: Dictionary) -> void:
 			Stil.GELB if rest <= 1 else Stil.TEXT_MATT))
 	if (v["sponsoren"] as Array).is_empty():
 		sponsoren.add_child(Stil.leerzustand("Kein Partner unter Vertrag."))
+
+	_akquise(cid)
+
 	if angebote.is_empty():
 		return
 
@@ -141,8 +144,36 @@ func _sponsoren(cid: String, v: Dictionary) -> void:
 		info.add_child(Stil.matt("%s im Jahr · %d Jahre Laufzeit · Titelprämie %s" % [
 			Stil.geld(float(a2["wert"])), int(a2["jahre"]),
 			Stil.geld(float(a2["wert"]) * float(a2["bonus_titel"]))], Stil.S_MINI))
-		var ja := Stil.knopf_primaer("Unterschreiben")
 		var index := i
+		# Nachverhandeln. Die Felder stehen auf dem, was auf dem Tisch liegt —
+		# wer nichts aendert und trotzdem drueckt, bekommt genau das zurueck.
+		var wunsch := SpinBox.new()
+		wunsch.min_value = 0
+		wunsch.max_value = 40000000
+		wunsch.step = 5000
+		wunsch.value = round(float(a2["wert"]))
+		wunsch.custom_minimum_size = Vector2(140, 0)
+		wunsch.tooltip_text = "Was Sie im Jahr sehen wollen."
+		zeile.add_child(wunsch)
+		var jahre := SpinBox.new()
+		jahre.min_value = 1
+		jahre.max_value = 5
+		jahre.value = int(a2["jahre"])
+		jahre.custom_minimum_size = Vector2(64, 0)
+		jahre.tooltip_text = "Laufzeit in Jahren. Eine längere macht den Partner beim Geld weicher."
+		zeile.add_child(jahre)
+		var runden: int = int(a2.get("runden", 0))
+		var reden := Stil.knopf("Nachverhandeln")
+		reden.disabled = runden >= 2
+		reden.tooltip_text = "Zweimal lässt sich reden. Wer zu viel verlangt, steht am Ende ohne Partner da." \
+			if runden < 2 else "%s hat deutlich gemacht, dass jetzt Schluss ist." % str(a2["name"])
+		reden.pressed.connect(func():
+			var erg := Sponsoren.nachverhandeln(Welt.daten, cid, index, wunsch.value, int(jahre.value))
+			_melde(str(erg["grund"]), bool(erg["ok"]))
+			Welt.zustand_geaendert.emit()
+			aktualisieren())
+		zeile.add_child(reden)
+		var ja := Stil.knopf_primaer("Unterschreiben")
 		ja.pressed.connect(func():
 			var erg := Sponsoren.annehmen(Welt.daten, cid, index)
 			_melde(str(erg["grund"]), bool(erg["ok"]))
@@ -156,6 +187,52 @@ func _sponsoren(cid: String, v: Dictionary) -> void:
 		Welt.zustand_geaendert.emit()
 		aktualisieren())
 	karte.add_child(alle)
+
+## Selbst auf Partnersuche gehen.
+##
+## Der Trainer musste bisher warten, bis zum Saisonwechsel Angebote hereinkamen.
+## Ein freier Werbeplatz blieb dazwischen frei, egal wie dringend das Geld
+## gebraucht wurde.
+func _akquise(cid: String) -> void:
+	var frei: Array = Sponsoren.freie_plaetze(Welt.daten, cid)
+	if frei.is_empty():
+		return
+	var karte := Bausteine.karte_in(inhalt, "Partnersuche")
+	karte.add_child(Stil.matt(
+		"Ein freier Werbeplatz bringt nichts ein. Sie können selbst anklopfen — das braucht Zeit und klappt nicht immer.",
+		Stil.S_KLEIN))
+	for platz in frei:
+		var offen := false
+		for a in Sponsoren.offene_angebote(Welt.daten, cid):
+			if str(a["art"]) == str(platz):
+				offen = true
+		var zeile := Stil.hbox(10)
+		karte.add_child(zeile)
+		var info := Stil.vbox(1)
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(info)
+		info.add_child(Stil.text(str(platz), Stil.S_KLEIN))
+		var chance: float = Sponsoren.akquise_chance(Welt.daten, cid, str(platz))
+		info.add_child(Stil.matt("Rund %d %% Aussicht auf eine Zusage · bis zu %s im Jahr wert" % [
+			int(round(chance * 100.0)),
+			Stil.geld(Sponsoren.marktwert(Welt.daten, cid) * float(Sponsoren.PLAETZE.get(platz, 0.1)))],
+			Stil.S_MINI))
+		var sperre: int = Sponsoren.akquise_sperre(Welt.daten, cid, str(platz))
+		var knopf := Stil.knopf("Anklopfen")
+		knopf.disabled = sperre > 0 or offen
+		if offen:
+			knopf.tooltip_text = "Für diesen Platz liegt schon ein Angebot auf dem Tisch."
+		elif sperre > 0:
+			knopf.tooltip_text = "Erst in %d Tagen wieder." % sperre
+		var welcher := str(platz)
+		knopf.pressed.connect(func():
+			var erg := Sponsoren.akquise(Welt.daten, cid, welcher)
+			_melde(str(erg["grund"]), bool(erg["ok"]))
+			Welt.zustand_geaendert.emit()
+			aktualisieren())
+		zeile.add_child(knopf)
+		if sperre > 0:
+			zeile.add_child(Stil.matt("noch %d Tage" % sperre, Stil.S_MINI))
 
 func _melde(text: String, gut: bool = true) -> void:
 	if meldung != null:

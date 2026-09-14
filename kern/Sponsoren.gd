@@ -135,6 +135,115 @@ static func jahreswechsel(d: Dictionary, mein: String) -> void:
 				Stil.geld(summe)],
 		})
 
+# ---------------------------------------------------------------- Akquise ---
+#
+# Bisher war Sponsoring etwas, das einem zustiess: einmal im Jahr lagen
+# Angebote auf dem Tisch, man nahm sie an oder liess es. Ein Trainer, der einen
+# freien Platz besetzen wollte, konnte nichts tun ausser warten — und was ein
+# Partner zahlt, stand fest, bevor man das erste Wort gewechselt hatte.
+#
+# Jetzt gibt es beides: selbst auf die Suche gehen und ueber das Ergebnis
+# reden. Die Akquise braucht Zeit und liefert nicht immer etwas; die
+# Nachverhandlung kann mehr bringen und den Partner kosten.
+
+## Wie lange nach einem Versuch derselbe Platz gesperrt ist.
+const AKQUISE_SPERRE := 21
+## Wie wahrscheinlich ein Versuch ueberhaupt jemanden findet — bei einem
+## Verein mit mittlerem Ruf und zufriedenen Fans.
+const AKQUISE_GRUNDCHANCE := 0.55
+
+static func _versuche(d: Dictionary, cid: String) -> Dictionary:
+	var v: Dictionary = d["vereine"][cid]
+	if not v.has("sponsorakquise"):
+		v["sponsorakquise"] = {}
+	return v["sponsorakquise"]
+
+## Wie viele Tage der Platz noch gesperrt ist. 0 heisst: jetzt.
+static func akquise_sperre(d: Dictionary, cid: String, platz: String) -> int:
+	var wann: int = int(_versuche(d, cid).get(platz, -9999))
+	return maxi(AKQUISE_SPERRE - (int(d["tag"]) - wann), 0)
+
+## Wie gut die Aussichten stehen, fuer diesen Platz jemanden zu finden.
+static func akquise_chance(d: Dictionary, cid: String, platz: String) -> float:
+	var v: Dictionary = d["vereine"][cid]
+	var fans: Dictionary = v["fans"]
+	var chance: float = AKQUISE_GRUNDCHANCE
+	chance += (float(v["ruf"]) - 55.0) / 260.0
+	chance += (float(fans["zufriedenheit"]) - 55.0) / 340.0
+	# Der grosse Platz ist schwerer zu besetzen als der kleine.
+	chance -= float(PLAETZE.get(platz, 0.1)) * 0.55
+	return clampf(chance, 0.10, 0.92)
+
+## Der Trainer geht selbst auf die Suche.
+static func akquise(d: Dictionary, cid: String, platz: String) -> Dictionary:
+	if not PLAETZE.has(platz):
+		return {"ok": false, "grund": "Diesen Werbeplatz gibt es nicht."}
+	if not freie_plaetze(d, cid).has(platz):
+		return {"ok": false, "grund": "%s ist bereits vergeben." % platz}
+	for a in offene_angebote(d, cid):
+		if str(a["art"]) == platz:
+			return {"ok": false, "grund": "Für %s liegt schon ein Angebot auf dem Tisch." % platz}
+	var rest: int = akquise_sperre(d, cid, platz)
+	if rest > 0:
+		return {"ok": false, "grund": "Sie haben gerade erst angefragt. In %d Tagen wieder." % rest}
+	_versuche(d, cid)[platz] = int(d["tag"])
+	if Namen.zufall() > akquise_chance(d, cid, platz):
+		return {"ok": false, "grund": "Keine Zusage. Für %s hat sich derzeit niemand gefunden." % platz}
+	var neu := angebot(d, cid, platz)
+	# Selbst gesucht heisst nicht besser verhandelt: wer von sich aus anklopft,
+	# sitzt am kuerzeren Hebel.
+	neu["wert"] = float(neu["wert"]) * Namen.bereich(0.88, 1.04)
+	neu["selbst_gesucht"] = true
+	(d["vereine"][cid]["sponsorangebote"] as Array).append(neu)
+	return {"ok": true, "grund": "%s würde einsteigen: %s für %s im Jahr, %d Jahre." % [
+		str(neu["name"]), platz, Stil.geld(float(neu["wert"])), int(neu["jahre"])],
+		"angebot": neu}
+
+# ----------------------------------------------------------- Verhandlung ---
+
+## Wie viel mehr sich hoechstens herausholen laesst.
+const NACHFORDERUNG_MAX := 1.35
+
+## Ueber ein Angebot nachverhandeln. Wer mehr will, riskiert den Partner.
+static func nachverhandeln(d: Dictionary, cid: String, index: int, wunsch: float, jahre: int) -> Dictionary:
+	var angebote: Array = offene_angebote(d, cid)
+	if index < 0 or index >= angebote.size():
+		return {"ok": false, "grund": "Dieses Angebot gibt es nicht mehr."}
+	var a: Dictionary = angebote[index]
+	if int(a.get("runden", 0)) >= 2:
+		return {"ok": false, "grund": "%s hat deutlich gemacht, dass jetzt Schluss ist." % str(a["name"])}
+	var jetzt: float = float(a["wert"])
+	var faktor: float = clampf(wunsch / maxf(jetzt, 1.0), 0.5, 3.0)
+	var jahre_neu: int = clampi(jahre, 1, 5)
+	# Eine laengere Laufzeit ist fuer den Partner ein Zugestaendnis und macht
+	# ihn beim Geld weicher; eine kuerzere kostet.
+	var laufzeit_bonus: float = float(jahre_neu - int(a.get("jahre", 2))) * 0.045
+	a["runden"] = int(a.get("runden", 0)) + 1
+	var schmerzgrenze: float = NACHFORDERUNG_MAX + laufzeit_bonus
+	if faktor <= 1.0:
+		a["wert"] = wunsch
+		a["jahre"] = jahre_neu
+		return {"ok": true, "grund": "%s nimmt an — kein Wunder bei dem Preis." % str(a["name"])}
+	if faktor <= schmerzgrenze * Namen.bereich(0.72, 0.92):
+		a["wert"] = wunsch
+		a["jahre"] = jahre_neu
+		return {"ok": true, "grund": "%s geht mit: %s im Jahr über %d Jahre." % [
+			str(a["name"]), Stil.geld(wunsch), jahre_neu]}
+	if faktor <= schmerzgrenze:
+		var mitte: float = jetzt * (1.0 + (faktor - 1.0) * Namen.bereich(0.35, 0.6))
+		a["wert"] = mitte
+		a["jahre"] = jahre_neu
+		return {"ok": true, "grund": "%s bietet %s im Jahr über %d Jahre — mehr nicht." % [
+			str(a["name"]), Stil.geld(mitte), jahre_neu]}
+	# Zu viel verlangt. Beim ersten Mal bleibt der Partner, beim zweiten geht er.
+	if int(a["runden"]) >= 2 or Namen.zufall() < 0.35:
+		for i in range(angebote.size()):
+			if angebote[i] == a:
+				angebote.remove_at(i)
+				break
+		return {"ok": false, "grund": "%s zieht das Angebot zurück. Das war zu viel verlangt." % str(a["name"])}
+	return {"ok": false, "grund": "%s lehnt ab, bleibt aber im Gespräch. Ein Versuch bleibt Ihnen." % str(a["name"])}
+
 static func _namen(liste: Array) -> Array:
 	var namen: Array = []
 	for s in liste:

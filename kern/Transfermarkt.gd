@@ -277,20 +277,8 @@ static func _vereinsverhandlung(d: Dictionary, a: Dictionary) -> void:
 			str(verkaeufer["name"]), Spielerfabrik.kurz_name(sp)]
 		_melde(d, a, "Verein lehnt ab", a["antwort"])
 		return
-	var forderung: float = ablösevorstellung(d, sid)
 	var geboten: float = float(a["ablöse"])
-	var not_verkauf: bool = float(verkaeufer["kasse"]) < 0.0
-	var schwelle: float = forderung * (0.82 if not_verkauf else 0.97)
-	# Wie wichtig ist der Spieler fuer den abgebenden Verein?
-	var ersatz_vorhanden: bool = _hat_ersatz(d, von, sid)
-	if not ersatz_vorhanden:
-		schwelle *= 1.28
-	if bool(sp.get("transferwunsch", false)):
-		schwelle *= 0.86
-	# In den letzten Tagen wird ein abgebender Verein weicher: laesst er den
-	# Spieler jetzt nicht ziehen, hat er ihn ein halbes Jahr an der Backe und
-	# bekommt gar nichts. Bis zu 16 Prozent unter der normalen Forderung.
-	schwelle *= 1.0 - 0.16 * deadline_druck(d)
+	var schwelle: float = verkaufsschwelle(d, sid)
 	if geboten >= schwelle:
 		a["status"] = "verein_einig"
 		a["antwort"] = "%s stimmt einer Ablöse von %s zu. Jetzt entscheidet der Spieler." % [verkaeufer["name"], Stil.geld(geboten)]
@@ -306,6 +294,32 @@ static func _vereinsverhandlung(d: Dictionary, a: Dictionary) -> void:
 		a["status"] = "abgelehnt"
 		a["antwort"] = "%s lehnt das Angebot deutlich ab." % verkaeufer["name"]
 		_melde(d, a, "Angebot abgelehnt", a["antwort"])
+
+## Was der abgebende Verein wirklich sehen will, bevor er zustimmt.
+##
+## ablösevorstellung() ist der Listenpreis; das hier ist der Preis. Der
+## Unterschied kann erheblich sein: ein Verein ohne Ersatz auf der Position
+## legt achtundzwanzig Prozent drauf, einer mit leerer Kasse geht deutlich
+## runter, und in den letzten Tagen des Fensters wird jeder weicher.
+##
+## Steht als eigene Funktion da, weil die Anfrage denselben Wert nennen muss,
+## den die Verhandlung anschliessend anlegt. Zwei Rechnungen fuer dieselbe
+## Zahl waeren eine Einladung, dass sie auseinanderlaufen — und dann sagt die
+## Anfrage etwas anderes als der Verein hinterher tut.
+static func verkaufsschwelle(d: Dictionary, sid: String) -> float:
+	var sp: Dictionary = d["spieler"][sid]
+	var von: String = str(sp["verein"])
+	if von == "" or not d["vereine"].has(von):
+		return 0.0
+	var verkaeufer: Dictionary = d["vereine"][von]
+	var not_verkauf: bool = float(verkaeufer["kasse"]) < 0.0
+	var schwelle: float = ablösevorstellung(d, sid) * (0.82 if not_verkauf else 0.97)
+	if not _hat_ersatz(d, von, sid):
+		schwelle *= 1.28
+	if bool(sp.get("transferwunsch", false)):
+		schwelle *= 0.86
+	schwelle *= 1.0 - 0.16 * deadline_druck(d)
+	return schwelle
 
 ## Spieler, die ein Verein nicht abgeben kann, ohne handlungsunfaehig zu
 ## werden: der letzte Torwart und jeder, der den Kader unter die Notgrenze
@@ -330,6 +344,89 @@ static func unverkaeuflich(d: Dictionary, sid: String) -> bool:
 		if bool(d["spieler"][anderer].get("ist_torwart", false)):
 			torhueter += 1
 	return torhueter <= 1
+
+# --------------------------------------------------------------- Anfrage ---
+#
+# Vor dem Angebot steht das Gespraech. Bisher gab es das nicht: wer wissen
+# wollte, ob ein Verein einen Spieler ueberhaupt abgibt, musste ein foermliches
+# Angebot abgeben und drei Tage auf die Antwort warten — und hatte dann unter
+# Umstaenden nur gelernt, dass der Mann unverkaeuflich ist. Im Kaderbildschirm
+# stand zwar eine geschaetzte Ablose, aber die kannte weder die Kaderlage des
+# Gegenuebers noch dessen Kassenstand und lag deshalb regelmaessig daneben.
+#
+# Die Anfrage kostet nichts ausser Zeit und liefert dieselbe Zahl, die die
+# Verhandlung anschliessend anlegt. Sie ist keine Zusage: der Verein kann sich
+# bis zum Angebot anders entscheiden, und was der Spieler sagt, steht auf einem
+# anderen Blatt.
+
+## Wie lange dieselbe Anfrage nicht wiederholt werden kann. Ohne diese Sperre
+## waere die Anfrage ein Orakel, das man taeglich befragt, bis die Zahl passt.
+const ANFRAGE_SPERRE := 10
+
+static func _anfragen(d: Dictionary) -> Dictionary:
+	var markt: Dictionary = d["transfermarkt"]
+	if not markt.has("anfragen"):
+		markt["anfragen"] = {}
+	return markt["anfragen"]
+
+static func anfrage_moeglich(d: Dictionary, sid: String) -> int:
+	var wann: int = int(_anfragen(d).get(sid, -9999))
+	return maxi(ANFRAGE_SPERRE - (int(d["tag"]) - wann), 0)
+
+## Fragt beim abgebenden Verein an, ohne ein Angebot abzugeben.
+static func anfrage(d: Dictionary, sid: String, kaeufer: String) -> Dictionary:
+	if not d["spieler"].has(sid):
+		return {"ok": false, "text": "Diesen Spieler gibt es nicht."}
+	var sp: Dictionary = d["spieler"][sid]
+	var von: String = str(sp["verein"])
+	if von == "":
+		return {"ok": true, "haltung": "vereinslos", "forderung": 0.0,
+			"text": "%s ist vereinslos. Es braucht keine Ablöse, nur einen Vertrag." % Spielerfabrik.kurz_name(sp)}
+	if von == kaeufer:
+		return {"ok": false, "text": "Er spielt bereits bei Ihnen."}
+	var rest: int = anfrage_moeglich(d, sid)
+	if rest > 0:
+		return {"ok": false, "text": "Sie haben gerade erst angefragt. In %d Tagen wieder." % rest}
+	_anfragen(d)[sid] = int(d["tag"])
+	var verkaeufer: Dictionary = d["vereine"][von]
+	var name: String = Spielerfabrik.kurz_name(sp)
+
+	if unverkaeuflich(d, sid):
+		return {"ok": true, "haltung": "unverkaeuflich", "forderung": 0.0,
+			"text": "%s winkt sofort ab: %s ist nicht zu haben, der Kader gäbe es nicht her." % [
+				str(verkaeufer["name"]), name]}
+
+	var schwelle: float = verkaufsschwelle(d, sid)
+	var listenpreis: float = ablösevorstellung(d, sid)
+	var haltung := "gespraechsbereit"
+	var ton := "%s ist gesprächsbereit." % str(verkaeufer["name"])
+	if schwelle > listenpreis * 1.15:
+		haltung = "schmerzgrenze"
+		ton = "%s will %s eigentlich behalten — auf der Position steht sonst niemand." % [
+			str(verkaeufer["name"]), name]
+	elif float(verkaeufer["kasse"]) < 0.0:
+		haltung = "verkaufsdruck"
+		ton = "%s steckt in Zahlungsschwierigkeiten und hört sich Angebote an." % str(verkaeufer["name"])
+	elif bool(sp.get("transferwunsch", false)) or bool(sp.get("auf_transferliste", false)):
+		haltung = "abgabebereit"
+		ton = "%s würde %s abgeben." % [str(verkaeufer["name"]), name]
+
+	# Was der Spieler selbst dazu sagt. Ein Verein kann zustimmen, so viel er
+	# will — kommen muss der Mann.
+	var gehalt: float = Spielerfabrik.gehaltsvorstellung(sp, float(d["vereine"][kaeufer].get("ruf", 50.0)))
+	var spielertext := ""
+	if Wechselbereitschaft.hat_abfuhr(d, sid, kaeufer):
+		spielertext = "Er hat Ihnen kürzlich abgesagt."
+	elif Wechselbereitschaft.rivalitaetsabschlag(d, sid, kaeufer) > 0.20:
+		spielertext = "Zu Ihnen käme er ohnehin nicht — dafür sitzt die Rivalität zu tief."
+	elif Wechselbereitschaft.ansprechbar(d, sid, kaeufer, "stammspieler", gehalt * 1.15):
+		spielertext = "Er wäre ansprechbar."
+	else:
+		spielertext = Wechselbereitschaft.absage_grund(d, sid, kaeufer)
+
+	return {"ok": true, "haltung": haltung, "forderung": schwelle,
+		"text": "%s Unter %s braucht Ihnen niemand zu kommen. %s" % [
+			ton, Stil.geld(schwelle), spielertext]}
 
 static func _hat_ersatz(d: Dictionary, cid: String, sid: String) -> bool:
 	var sp: Dictionary = d["spieler"][sid]

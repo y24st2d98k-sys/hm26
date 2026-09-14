@@ -1,6 +1,11 @@
 class_name TransferBildschirm
 extends Bildschirm
 ## Transfermarkt: Spielersuche mit Filtern, laufende Verhandlungen, Gerüchte.
+##
+## Gesucht wird im gesamten Spielerbestand, nicht nur unter den Angebotenen.
+## Wer auf keiner Liste steht, ist trotzdem zu haben — er kostet nur mehr. Über
+## das Spielerfenster lässt sich bei seinem Verein anfragen, was er wirklich
+## sehen will, bevor ein Angebot rausgeht.
 
 var suchergebnis: VBoxContainer
 var verhandlungen: VBoxContainer
@@ -21,6 +26,9 @@ func aufbauen() -> void:
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
 	kopf.add_child(Stil.titel("Transfermarkt", 0))
+	var hinweis := Stil.matt("Die Suche geht über alle Spieler — nicht nur über die, die angeboten werden.", Stil.S_KLEIN)
+	hinweis.tooltip_text = "Einen Spieler ohne Wechselwunsch bekommt man auch, er kostet nur mehr. Im Spielerfenster können Sie vorher bei seinem Verein anfragen."
+	kopf.add_child(hinweis)
 	kopf.add_child(Stil.dehner())
 	kopfinfo = Stil.text("", Stil.S_KLEIN, Stil.AKZENT)
 	kopf.add_child(kopfinfo)
