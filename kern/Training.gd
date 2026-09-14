@@ -141,12 +141,47 @@ static func _verein_trainieren(d: Dictionary, cid: String) -> void:
 		_entwickeln(d, sp, cid, intensitaet, qualitaet, sp_daten, regeneriert, verletzt)
 		_moral_anpassen(d, sp, cid)
 
+## Attribute, die mit den Jahren besser werden statt schlechter. Ein
+## Spielmacher liest die Abwehr mit 34 besser als mit 24, und ein Kreislaeufer
+## weiss, wo er stehen muss. Ohne diese Gegenbewegung war Altern im Spiel eine
+## reine Verlustrechnung, und wer die Dreissig ueberschritt, wurde unbrauchbar.
+const ERFAHRUNG_FELD := ["uebersicht", "entscheidung", "nervenstaerke", "fuehrung",
+	"antizipation", "passspiel", "deckungsarbeit", "siebenmeter"]
+const ERFAHRUNG_TW := ["tw_stellung", "siebenmeterabwehr", "anspiel", "ausstrahlung",
+	"nervenstaerke", "uebersicht", "fuehrung"]
+## Ab wann Erfahrung mehr zaehlt als Zuwachs durch Training.
+const ERFAHRUNG_AB := 28
+## Grundtempo der Entwicklung, je Woche und gezogenem Attribut.
+##
+## Frueher stand hier 0.052. Damit kam ein Zwanzigjaehriger mit 61 in fuenf
+## Jahren auf 64 — er erreichte sein Potenzial nie, und die Liga verlor mit
+## jedem Jahrgang an Niveau, weil niemand nachwuchs.
+const ZUWACHS_BASIS := 0.095
+## Wie schnell Erfahrung waechst, je Woche und Attribut.
+const ERFAHRUNG_TEMPO := 0.020
+
+## Bis zu welchem Alter sich das Potenzial noch verschieben laesst.
+const POTENZIAL_ALTER := 24
+## Wie weit es sich hoechstens vom Ausgangswert entfernt — nach oben mehr als
+## nach unten, denn ein Talent, das liefert, ueberrascht haeufiger als eines,
+## das enttaeuscht, endgueltig abstuerzt.
+const POTENZIAL_HOCH := 10.0
+const POTENZIAL_RUNTER := 5.0
+## Wie schnell sich das Potenzial je Woche bewegt.
+const POTENZIAL_TEMPO := 0.055
+## Ab so vielen benoteten Einsaetzen faengt das Spiel an zu urteilen. Vorher
+## ist jede Note Zufall.
+const POTENZIAL_NOTEN := 12
+## Die Note, an der gemessen wird. Darunter ist gut, darueber ist schwach.
+const NOTE_MITTE := 3.4
+
 static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet: float, qualitaet: float,
 		sp_daten: Dictionary, regeneriert: bool, verletzt: bool) -> void:
 	var gesamt: float = Spielerfabrik.gesamt(sp)
 	var potenzial: float = float(sp["potenzial"])
 	var luft: float = (potenzial - gesamt) / maxf(potenzial, 1.0)
 	var alter_jahre: int = int(sp["alter"])
+	var ist_tw: bool = bool(sp["ist_torwart"])
 	var charakter: Dictionary = sp["charakter"]
 	var arbeitseinsatz: float = float(sp["attr"]["arbeitseinsatz"]) / 20.0
 	var ehrgeiz: float = float(charakter.get("ehrgeiz", 12.0)) / 20.0
@@ -170,7 +205,7 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 	# tatsaechlich abgerufen wird — sie ist der Unterschied zwischen einem
 	# Talent, das mit 21 spielt, und einem, das mit 26 erst so weit ist.
 	var lernkurve: float = clampf(float(sp.get("lernkurve", 1.0)), Spielerfabrik.LERNKURVE_MIN, Spielerfabrik.LERNKURVE_MAX)
-	var zuwachs: float = 0.052 * alters_tempo * lernkurve * (0.4 + 1.1 * luft) * (0.45 + 0.75 * qualitaet) \
+	var zuwachs: float = ZUWACHS_BASIS * alters_tempo * lernkurve * (0.4 + 1.1 * luft) * (0.45 + 0.75 * qualitaet) \
 		* (0.5 + 0.9 * intensitaet) * (0.6 + 0.5 * arbeitseinsatz) * (0.75 + 0.45 * ehrgeiz) \
 		* (0.7 + 0.45 * spielzeit)
 	if regeneriert:
@@ -186,12 +221,34 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 	if attr_liste.is_empty():
 		attr_liste = _positionsattribute(sp)
 
-	# Altersbedingter Abbau
+	# Altersbedingter Abbau. Er trifft nur den Koerper, und er trifft einen
+	# Torwart schwaecher: dort zaehlt Stellungsspiel mehr als Antritt, weshalb
+	# Torhueter bis vierzig spielen und Aussen nicht.
+	#
+	# Frueher stand hier 0.028 je Lebensjahr ueber dreissig und Woche. Das sind
+	# bei einem Fuenfunddreissigjaehrigen sechseinhalb Punkte im Jahr auf jedem
+	# der vier Werte — nach drei Jahren ist so einer bei eins angekommen und
+	# nicht mehr aufstellbar. Genau das war zu sehen.
 	if alter_jahre >= 31:
-		var abbau: float = (float(alter_jahre) - 30.0) * 0.028
+		var abbau: float = (float(alter_jahre) - 30.0) * 0.010
+		if ist_tw:
+			abbau *= 0.45
 		for a in ["tempo", "sprungkraft", "beweglichkeit", "ausdauer"]:
 			sp["attr"][a] = clampf(float(sp["attr"][a]) - abbau * Namen.bereich(0.4, 1.4), 1.0, 20.0)
 		Spielerfabrik.staerke_verwerfen(sp)
+
+	# Erfahrung. Sie waechst, solange einer spielt, und sie waechst gerade
+	# dann weiter, wenn der Trainingszuwachs laengst bei null steht.
+	if alter_jahre >= ERFAHRUNG_AB and not verletzt:
+		var reife: float = ERFAHRUNG_TEMPO * clampf(0.35 + spielzeit, 0.35, 1.4) \
+			* (0.7 + 0.5 * float(charakter.get("ehrgeiz", 12.0)) / 20.0)
+		var liste: Array = ERFAHRUNG_TW if ist_tw else ERFAHRUNG_FELD
+		var welches: String = str(Namen.waehle(liste))
+		if (sp["attr"] as Dictionary).has(welches):
+			sp["attr"][welches] = clampf(float(sp["attr"][welches]) + reife * Namen.bereich(0.4, 1.5), 1.0, 20.0)
+			Spielerfabrik.staerke_verwerfen(sp)
+
+	_potenzial_nachfuehren(sp, alter_jahre)
 
 	if zuwachs <= 0.0001:
 		return
@@ -206,6 +263,45 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 		sp["attr"][a] = clampf(float(sp["attr"][a]) + zuwachs * Namen.bereich(0.5, 1.6), 1.0, 20.0)
 		Spielerfabrik.staerke_verwerfen(sp)
 	sp["wert"] = Spielerfabrik.marktwert(sp)
+
+## Was einer werden kann, steht nicht am ersten Tag fest.
+##
+## Bis hierher war das Potenzial eine Zahl aus der Spielererzeugung, die sich
+## nie wieder bewegte: ueber fuenf simulierte Jahre veraenderte sich das
+## Potenzial von 918 jungen Spielern kein einziges Mal. Wer als Sechzehnjaehriger
+## mit 68 bewertet wurde, kam nie darueber hinaus, egal wie er spielte — und
+## das nahm der Nachwuchsarbeit ihren Sinn: man konnte einen Jungen fuerdern,
+## aber nie ueberrascht werden.
+##
+## Jetzt urteilt das Spiel mit. Wer regelmaessig spielt und dabei besser
+## benotet wird als der Durchschnitt, verschiebt sein Potenzial nach oben; wer
+## seine Einsaetze verstolpert, nach unten. Beides ist begrenzt und beides
+## braucht Zeit: eine gute Halbserie hebt niemanden um zehn Punkte.
+##
+## Nach oben ist mehr Luft als nach unten. Ein Talent, das liefert, ueberrascht
+## in Wirklichkeit haeufiger, als eines endgueltig abstuerzt — das enttaeuschte
+## Talent hoert nicht auf zu existieren, es bleibt nur, was es war.
+static func _potenzial_nachfuehren(sp: Dictionary, alter_jahre: int) -> void:
+	if alter_jahre > POTENZIAL_ALTER:
+		return
+	var stats: Dictionary = sp["stats"]["karriere"]
+	var noten: int = int(stats.get("noten", 0))
+	if noten < POTENZIAL_NOTEN:
+		return
+	var schnitt: float = float(stats.get("note_summe", 0.0)) / float(noten)
+	# Niedrige Note heisst gute Leistung.
+	var guete: float = clampf(NOTE_MITTE - schnitt, -1.2, 1.2)
+	if absf(guete) < 0.08:
+		return
+	if not sp.has("potenzial_start"):
+		sp["potenzial_start"] = float(sp["potenzial"])
+	var start: float = float(sp["potenzial_start"])
+	var jetzt: float = float(sp["potenzial"])
+	var schritt: float = guete * POTENZIAL_TEMPO
+	var ziel: float = clampf(jetzt + schritt, start - POTENZIAL_RUNTER, start + POTENZIAL_HOCH)
+	# Unter die heutige Staerke darf das Potenzial nie fallen — sonst waere ein
+	# Spieler besser, als er je werden koennte.
+	sp["potenzial"] = clampf(ziel, Spielerfabrik.gesamt(sp), 99.0)
 
 static func _positionsattribute(sp: Dictionary) -> Array:
 	if bool(sp["ist_torwart"]):

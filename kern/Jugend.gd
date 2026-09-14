@@ -36,6 +36,11 @@ static func arbeitsqualitaet(d: Dictionary, cid: String) -> float:
 
 # ------------------------------------------------------------ Jahrgang ---
 
+## Wie oft ein Jahrgang jemanden hervorbringt, der die Decke der Jugendarbeit
+## durchstoesst. Bei rund zehn Talenten je Jahrgang und Verein heisst das etwa
+## alle zwei Jahre einen in der ganzen Liga.
+const AUSNAHMETALENT := 0.045
+
 static func erzeuge_jahrgang(d: Dictionary, cid: String, anzahl: int) -> Array:
 	var v: Dictionary = d["vereine"][cid]
 	if not v.has("jugend"):
@@ -52,6 +57,16 @@ static func erzeuge_jahrgang(d: Dictionary, cid: String, anzahl: int) -> Array:
 			Namen.wuerfel(16, 18), ziel, pos, int(d["startjahr"]))
 		# Die Jugendarbeit entscheidet vor allem über das Potenzial.
 		sp["potenzial"] = clampf(float(sp["potenzial"]) + qualitaet * 0.22 + Namen.bereich(-6.0, 10.0), ziel + 4.0, 96.0)
+		# Und selten kommt einer, der alles überragt.
+		#
+		# Ohne diese Ausnahme hatte die Akademie eine harte Decke: das beste
+		# Potenzial, das sie je vergab, lag bei knapp achtzig. Über die Jahre
+		# sank das Niveau der Liga damit zwangsläufig auf das der Jugendarbeit
+		# ab, weil die echten Spieler abtraten und niemand nachkam, der sie
+		# ersetzen konnte. Ein Jahrgang alle paar Jahre bringt jetzt einen, der
+		# es bis ganz nach oben schaffen kann — schaffen muss er es selbst.
+		if Namen.zufall() < AUSNAHMETALENT:
+			sp["potenzial"] = clampf(float(sp["potenzial"]) + Namen.bereich(9.0, 26.0), ziel + 4.0, 97.0)
 		sp["verein"] = cid
 		sp["jugendspieler"] = true
 		sp["aus_eigener_jugend"] = true
