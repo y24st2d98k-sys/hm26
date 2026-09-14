@@ -241,6 +241,12 @@ static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String,
 	# "stammschuetze" sagt wer, "attribute.siebenmeter" sagt wie gut.
 	if bool(eintrag.get("stammschuetze", false)):
 		sp["stammschuetze"] = true
+	# Ausdruecklicher Dateiname fuer das Portraetfoto. Ohne Angabe leitet
+	# Portraet ihn aus dem Namen ab; gebraucht wird das Feld bei
+	# Namensgleichheit und bei Schreibweisen, die sich nicht sauber
+	# umschreiben lassen.
+	if str(eintrag.get("bild", "")) != "":
+		sp["bild"] = str(eintrag["bild"])
 	var werte: Dictionary = eintrag.get("attribute", {})
 	for name in werte.keys():
 		if not (sp["attr"] as Dictionary).has(name):

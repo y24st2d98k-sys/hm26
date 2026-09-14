@@ -25,6 +25,8 @@ var suche: String = ""
 var entwurf: Array = []
 ## Welche Zeile ihren Attributbereich offen hat. -1 heisst: keine.
 var offen: int = -1
+var plan_feld: TextEdit
+var plan_liga: String = ""
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -207,6 +209,7 @@ func _kader_zeichnen() -> void:
 		tabelle.add_child(Stil.matt("Noch keine Spieler eingetragen."))
 
 	_csv_bereich()
+	_spielplanbereich()
 
 func _spielerzeile(index: int) -> HBoxContainer:
 	var e: Dictionary = entwurf[index]
@@ -417,3 +420,113 @@ func _csv_uebernehmen(ersetzen: bool) -> void:
 		text += " %d Hinweis(e): %s" % [meldungen.size(), str(meldungen[0])]
 	_melde(text, meldungen.is_empty())
 	_kader_zeichnen()
+
+
+# ------------------------------------------------------------- Spielplan ---
+#
+# Eine ausgeloste Doppelrunde ist eine Doppelrunde, aber nicht die richtige.
+# Der mitgelieferte Datensatz enthaelt so viel, wie sich belegen liess; den
+# vollstaendigen offiziellen Plan fuegt man hier ein.
+
+func _spielplanbereich() -> void:
+	var ligen: Array = _ligennamen()
+	if ligen.is_empty():
+		return
+	var karte := Bausteine.karte_in(kaderbereich, "Spielplan einspielen")
+	karte.add_child(Stil.matt(
+		"Eine Zeile je Partie: Spieltag ; Datum ; Zeit ; Heim ; Gast. Datum und Zeit dürfen leer bleiben. "
+		+ "Vereinsnamen müssen genau so geschrieben sein wie in der Ligaübersicht. "
+		+ "Ein vollständiger Plan gilt unverändert; ein angefangener wird ergänzt, "
+		+ "solange mindestens ein Spieltag komplett ist.", Stil.S_MINI))
+
+	var wahlzeile := Stil.hbox(8)
+	karte.add_child(wahlzeile)
+	wahlzeile.add_child(Stil.matt("Liga"))
+	var wahl := OptionButton.new()
+	for i in range(ligen.size()):
+		wahl.add_item(str(ligen[i]))
+		wahl.set_item_metadata(i, str(ligen[i]))
+		if str(ligen[i]) == plan_liga:
+			wahl.select(i)
+	if plan_liga == "":
+		plan_liga = str(ligen[0])
+		wahl.select(0)
+	wahl.item_selected.connect(func(i):
+		plan_liga = str(wahl.get_item_metadata(i))
+		_kader_zeichnen())
+	wahlzeile.add_child(wahl)
+	wahlzeile.add_child(Stil.dehner())
+	var vereine: int = _vereinszahl(plan_liga)
+	wahlzeile.add_child(Stil.matt(
+		Spielplanpflege.beurteilen(Spielplanpflege.partien(plan_liga), vereine), Stil.S_KLEIN))
+
+	plan_feld = TextEdit.new()
+	plan_feld.custom_minimum_size = Vector2(0, 150)
+	plan_feld.placeholder_text = "1;2026-08-27;19:00;THW Kiel;TBV Lemgo Lippe\n1;2026-08-27;20:00;Füchse Berlin;MT Melsungen"
+	plan_feld.add_theme_font_size_override("font_size", Stil.S_KLEIN)
+	karte.add_child(plan_feld)
+
+	var knoepfe := Stil.hbox(8)
+	karte.add_child(knoepfe)
+	var einlesen := Stil.knopf_primaer("Einlesen und ersetzen")
+	einlesen.pressed.connect(_spielplan_uebernehmen)
+	knoepfe.add_child(einlesen)
+	knoepfe.add_child(Stil.dehner())
+	var zeigen := Stil.knopf_geist("Aktuellen Plan als CSV zeigen")
+	zeigen.pressed.connect(func():
+		plan_feld.text = Spielplanpflege.csv_ausgeben(plan_liga)
+		_melde("Spielplan als CSV ausgegeben — zum Kopieren markieren."))
+	knoepfe.add_child(zeigen)
+	if Spielplanpflege.ist_eigen(plan_liga):
+		var weg := Stil.knopf_geist("Eigenen Plan verwerfen", Stil.ROT)
+		weg.tooltip_text = "Danach gilt wieder der mitgelieferte Datensatz."
+		weg.pressed.connect(func():
+			Spielplanpflege.setzen(plan_liga, [])
+			_melde("Eigener Spielplan verworfen.")
+			_kader_zeichnen())
+		knoepfe.add_child(weg)
+
+func _spielplan_uebernehmen() -> void:
+	if plan_feld == null or plan_feld.text.strip_edges() == "":
+		_melde("Das Feld ist leer.", false)
+		return
+	var erg := Spielplanpflege.csv_einlesen(plan_feld.text, _vereinsnamen(plan_liga))
+	var neue: Array = erg["eintraege"]
+	if neue.is_empty():
+		_melde("Keine brauchbare Zeile gefunden.", false)
+		return
+	# Unbekannte Vereinsnamen sind kein Hinweis, sondern ein Abbruchgrund: der
+	# ganze Plan wuerde spaeter verworfen, und zwar stillschweigend.
+	if bool(erg["unbekannt"]):
+		_melde("Nicht übernommen — %s" % str((erg["meldungen"] as Array)[-1]), false)
+		return
+	Spielplanpflege.setzen(plan_liga, neue)
+	var text := "%d Partien übernommen. %s" % [neue.size(),
+		Spielplanpflege.beurteilen(neue, _vereinszahl(plan_liga))]
+	var meldungen: Array = erg["meldungen"]
+	if not meldungen.is_empty():
+		text += " %d Hinweis(e): %s" % [meldungen.size(), str(meldungen[0])]
+	_melde(text, meldungen.is_empty())
+	_kader_zeichnen()
+
+func _ligennamen() -> Array:
+	var namen: Array = []
+	for n in Echtdaten.nationen():
+		for l in (n as Dictionary).get("ligen", []):
+			if not (l as Dictionary).get("vereine", []).is_empty():
+				namen.append(str((l as Dictionary)["name"]))
+	return namen
+
+func _vereinsnamen(liganame: String) -> Array:
+	for n in Echtdaten.nationen():
+		for l in (n as Dictionary).get("ligen", []):
+			if str((l as Dictionary).get("name", "")) != liganame:
+				continue
+			var namen: Array = []
+			for v in (l as Dictionary).get("vereine", []):
+				namen.append(str((v as Dictionary)["name"]))
+			return namen
+	return []
+
+func _vereinszahl(liganame: String) -> int:
+	return _vereinsnamen(liganame).size()

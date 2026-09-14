@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "stand": "September 2026",
+  "hinweis": "Echte Ansetzungen. Was hier steht, gilt; was fehlt, ergänzt das Spiel selbst — dann bleiben die hinterlegten Spieltage an ihrem Platz und die übrigen Partien werden auf die freien Spieltage verteilt. Ein Plan, der sich nicht zu einer vollständigen Doppelrunde ergänzen lässt, wird ganz verworfen; dann wird ausgelost wie ohne Datei. Vereinsnamen exakt wie in ligen.json.",
+  "spielplaene": {
+    "Opel Handball-Bundesliga": {
+      "saison": "2026/27",
+      "quelle": "HBL GmbH, vorläufige Spielpläne 2026/27",
+      "partien": [
+        {"spieltag": 1, "datum": "2026-08-27", "zeit": "19:00", "heim": "THW Kiel", "gast": "TBV Lemgo Lippe"},
+        {"spieltag": 1, "datum": "2026-08-27", "zeit": "20:00", "heim": "Füchse Berlin", "gast": "MT Melsungen"},
+        {"spieltag": 1, "datum": "2026-08-29", "zeit": "", "heim": "SG Flensburg-Handewitt", "gast": "ThSV Eisenach"},
+        {"spieltag": 1, "datum": "2026-08-29", "zeit": "", "heim": "VfL Gummersbach", "gast": "SC Magdeburg"},
+        {"spieltag": 1, "datum": "2026-08-29", "zeit": "", "heim": "TSV Hannover-Burgdorf", "gast": "Rhein-Neckar Löwen"},
+        {"spieltag": 1, "datum": "2026-08-29", "zeit": "", "heim": "Frisch Auf Göppingen", "gast": "HC Erlangen"},
+        {"spieltag": 1, "datum": "2026-08-30", "zeit": "", "heim": "TVB Stuttgart", "gast": "Bergischer HC"},
+        {"spieltag": 1, "datum": "2026-08-30", "zeit": "", "heim": "HSG Wetzlar", "gast": "SG BBM Bietigheim"},
+        {"spieltag": 1, "datum": "2026-08-30", "zeit": "", "heim": "HBW Balingen-Weilstetten", "gast": "Handball Sport Verein Hamburg"}
+      ]
+    }
+  }
+}

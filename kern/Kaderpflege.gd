@@ -20,7 +20,7 @@ const FELDER := ["vorname", "nachname", "position", "nation", "alter", "staerke"
 ## Angaben ueber die CSV-Grundfelder hinaus. Sie kommen nicht aus der CSV,
 ## sondern aus dem Datenbildschirm oder aus daten/kader.json, und duerfen beim
 ## Normieren nicht verlorengehen.
-const ZUSATZFELDER := ["nummer", "attribute", "stammschuetze"]
+const ZUSATZFELDER := ["nummer", "attribute", "stammschuetze", "bild"]
 
 static var _eigene: Dictionary = {}
 static var _geladen: bool = false
@@ -160,6 +160,8 @@ static func normieren(e: Dictionary) -> Dictionary:
 		n["nummer"] = nummer
 	if bool(e.get("stammschuetze", false)) and n["position"] != "TW":
 		n["stammschuetze"] = true
+	if str(e.get("bild", "")).strip_edges() != "":
+		n["bild"] = str(e["bild"]).strip_edges()
 	var werte: Dictionary = e.get("attribute", {})
 	var sauber := {}
 	for name in werte.keys():

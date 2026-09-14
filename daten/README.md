@@ -89,6 +89,7 @@ Der Schlüssel ist der **exakte Vereinsname** aus `ligen.json`.
 | `staerke` | Gesamtstärke 0–100. Das Spiel würfelt die Einzelattribute passend zur Position aus und rechnet sie so zurecht, dass dieser Wert getroffen wird. |
 | `attribute` | Einzelne Attribute festschreiben, statt sie auswürfeln zu lassen. Siehe unten. |
 | `stammschuetze` | `true` heißt: dieser Spieler wirft die Siebenmeter seines Vereins, solange er auf dem Feld steht. |
+| `bild` | Dateiname des Portraitfotos in `assets/gesichter/` (ohne Endung). Ohne Angabe wird er aus dem Namen abgeleitet — siehe `assets/README.md`. |
 
 ### Einzelne Attribute festschreiben
 
@@ -159,6 +160,63 @@ unter der Stärke des besten echten Spielers, damit sie die Leistungsträger nic
 
 Kader veralten mit jedem Transferfenster. Die Dateien sind bewusst so einfach
 gehalten, dass sie sich ohne Programmierkenntnisse pflegen lassen.
+
+---
+
+## `spielplan.json` — echte Ansetzungen
+
+Ohne diese Datei lost das Spiel eine Doppelrunde aus. Sie ist eine Doppelrunde,
+aber nicht die richtige — und ob die drei schwersten Auswärtsspiele im
+September oder im April liegen, entscheidet über eine Saison mit.
+
+```json
+{
+  "version": 1,
+  "stand": "September 2026",
+  "spielplaene": {
+    "Opel Handball-Bundesliga": {
+      "saison": "2026/27",
+      "partien": [
+        {"spieltag": 1, "datum": "2026-08-27", "zeit": "19:00",
+         "heim": "THW Kiel", "gast": "TBV Lemgo Lippe"}
+      ]
+    }
+  }
+}
+```
+
+Der Schlüssel ist der **exakte Liganame** aus `ligen.json`, die Vereinsnamen
+ebenso. `datum` und `zeit` dürfen leer bleiben; gebraucht werden `spieltag`,
+`heim` und `gast`.
+
+**Vollständig oder angefangen.** Sind alle Partien hinterlegt — bei 18 Vereinen
+sind das 306 —, gilt der Plan unverändert. Das ist der Normalfall für einen
+offiziellen Spielplan. Ist er unvollständig, muss mindestens ein Spieltag
+komplett sein: an dem verankert sich das Spiel und ergänzt den Rest zu einer
+sauberen Doppelrunde. Ohne einen vollständigen Spieltag gibt es nichts zu
+verankern, dann wird ausgelost.
+
+**Warum nicht einfach auffüllen?** Eine Doppelrunde ist keine beliebige
+Verteilung von Paarungen auf Spieltage, sondern eine Zerlegung in lauter
+vollständige Paarungsrunden. Wer sie Partie für Partie füllt, sitzt am Ende
+zuverlässig mit zwei Mannschaften da, die schon gegeneinander gespielt haben;
+sechzig Anläufe eines gierigen Verfahrens sind in der Erprobung ausnahmslos
+gescheitert. Das Spiel geht deshalb vom Kreisverfahren aus, das eine gültige
+Doppelrunde von sich aus liefert, und benennt die Mannschaften so um, dass der
+verankerte Spieltag genau aufgeht.
+
+**Geht ein Plan nicht auf, wird er ganz verworfen** und die Saison ausgelost.
+Ein halb richtiger Spielplan wäre schlechter als ein ausgeloster: er sähe echt
+aus und wäre es nicht. Warum er verworfen wurde, steht als Warnung im Protokoll.
+
+Einspielen lässt sich ein Plan auch aus dem Spiel heraus: Datenbildschirm,
+Abschnitt „Spielplan einspielen", eine Zeile je Partie als
+`Spieltag;Datum;Zeit;Heim;Gast`. Das landet in `user://spielplan_eigen.json`
+und überlebt jede Aktualisierung des Spiels. Wirksam wird es beim Anlegen
+einer neuen Karriere — eine laufende Saison behält ihren Spielplan, weil ein
+Neuansetzen mitten im Oktober gespielte Partien verwerfen würde.
+
+Geprüft wird das von `werkzeuge/Spielplantest.tscn`.
 
 ---
 

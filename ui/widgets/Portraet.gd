@@ -9,7 +9,12 @@ extends Control
 ##
 ## Alter und Herkunft wirken mit: die Hauttoene folgen der Nation, Haare werden
 ## mit den Jahren grau und weichen zurueck, aeltere Spieler bekommen Falten.
-## Es wird keine einzige Bilddatei benutzt.
+##
+## Fuer echte Spieler kann ein Foto hinterlegt werden: liegt unter
+## `assets/gesichter/` eine Datei mit dem passenden Namen, wird sie anstelle
+## des gezeichneten Gesichts angezeigt — rund beschnitten, im Seitenverhaeltnis
+## erhalten. Fehlt sie, bleibt es beim gezeichneten Kopf. Beides steht
+## nebeneinander, ohne dass am Code etwas zu aendern waere.
 
 ## Hauttoene von hell nach dunkel. Jede Nation zieht aus einem Ausschnitt.
 const HAUT := [
@@ -30,7 +35,61 @@ const HAARFARBEN := [
 	Color("#8c5a2b"), Color("#b3803f"), Color("#d6b271"), Color("#7a3b1f"),
 ]
 
+const GESICHTSORDNER := "res://assets/gesichter"
+const GESICHT_ENDUNGEN := ["png", "jpg", "webp"]
+
+static var _gesicht_zwischenspeicher: Dictionary = {}
+
+## Der Dateiname zu einem Spieler: Vor- und Nachname, kleingeschrieben, ohne
+## Umlaute und Sonderzeichen. "Gísli Þorgeir Kristjánsson" wird zu
+## "gisli_thorgeir_kristjansson". So laesst sich eine Sammlung anlegen, ohne
+## dass es auf Schreibweise oder Tastaturbelegung ankommt.
+const UMSCHRIFT := {
+	"ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss", "å": "aa", "æ": "ae", "ø": "oe",
+	"á": "a", "à": "a", "â": "a", "ã": "a", "é": "e", "è": "e", "ê": "e", "ë": "e",
+	"í": "i", "ì": "i", "î": "i", "ï": "i", "ó": "o", "ò": "o", "ô": "o", "õ": "o",
+	"ú": "u", "ù": "u", "û": "u", "ý": "y", "ñ": "n", "ç": "c", "č": "c", "ć": "c",
+	"š": "s", "ś": "s", "ž": "z", "ź": "z", "ż": "z", "ł": "l", "đ": "d", "ď": "d",
+	"ť": "t", "ň": "n", "ř": "r", "ě": "e", "ů": "u", "ą": "a", "ę": "e", "þ": "th",
+	"ð": "d", "ı": "i", "ğ": "g", "ş": "s",
+}
+
+## Wandelt einen Namen in einen Dateinamen.
+static func dateiname(vorname: String, nachname: String) -> String:
+	var roh: String = ("%s %s" % [vorname, nachname]).strip_edges().to_lower()
+	var aus := ""
+	for i in range(roh.length()):
+		var z: String = roh[i]
+		if UMSCHRIFT.has(z):
+			aus += str(UMSCHRIFT[z])
+		elif z == " " or z == "-" or z == "'" or z == "." or z == "\u00b4":
+			aus += "_"
+		elif (z >= "a" and z <= "z") or (z >= "0" and z <= "9") or z == "_":
+			aus += z
+	while aus.contains("__"):
+		aus = aus.replace("__", "_")
+	return aus.strip_edges().trim_prefix("_").trim_suffix("_")
+
+## Sucht ein hinterlegtes Foto. Auch das Nichtvorhandensein wird gemerkt —
+## sonst wuerde bei jedem Neuzeichnen erneut im Dateisystem gesucht.
+static func gesicht_fuer(schluessel: String) -> Texture2D:
+	if schluessel == "":
+		return null
+	if _gesicht_zwischenspeicher.has(schluessel):
+		return _gesicht_zwischenspeicher[schluessel]
+	var gefunden: Texture2D = null
+	for endung in GESICHT_ENDUNGEN:
+		var pfad := "%s/%s.%s" % [GESICHTSORDNER, schluessel, endung]
+		if ResourceLoader.exists(pfad):
+			var res := ResourceLoader.load(pfad)
+			if res is Texture2D:
+				gefunden = res
+				break
+	_gesicht_zwischenspeicher[schluessel] = gefunden
+	return gefunden
+
 var sid: String = ""
+var foto: Texture2D = null
 var alter: int = 26
 var nation: String = "de"
 var trikot: Color = Color("#c8342f")
@@ -57,6 +116,9 @@ var _glatze: float
 
 func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Fotos liegen deutlich groesser vor, als sie hier gezeigt werden. Ohne
+	# Mipmaps flimmert bei 22 Pixeln jede Kante.
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 ## Portraet eines Spielers aus dem Spielstand.
 static func fuer_spieler(spieler_id: String, groesse: float = 46.0) -> Portraet:
@@ -87,6 +149,12 @@ static func fuer_trainer(t: Dictionary, groesse: float = 42.0) -> Portraet:
 
 func setze(sp: Dictionary) -> void:
 	sid = str(sp.get("id", ""))
+	# Ein ausdruecklich hinterlegter Dateiname geht vor — er loest Namensgleichheit
+	# und Schreibweisen, die sich nicht sauber umschreiben lassen.
+	var schluessel: String = str(sp.get("bild", ""))
+	if schluessel == "":
+		schluessel = dateiname(str(sp.get("vorname", "")), str(sp.get("nachname", "")))
+	foto = gesicht_fuer(schluessel)
 	alter = int(sp.get("alter", 26))
 	nation = str(sp.get("nation", "de"))
 	ist_torwart = bool(sp.get("ist_torwart", false))
@@ -129,6 +197,9 @@ func _draw() -> void:
 	if not _bereit:
 		_merkmale()
 	var o := Vector2((size.x - s) * 0.5, (size.y - s) * 0.5)
+	if foto != null:
+		_foto_zeichnen(o, s)
+		return
 	if not nur_kopf:
 		# Hintergrund in Vereinsfarbe, damit das Portraet auch klein sofort zuordbar ist
 		draw_circle(o + Vector2(s, s) * 0.5, s * 0.5, Color(trikot.r, trikot.g, trikot.b, 0.22))
@@ -342,3 +413,40 @@ func _falten(s: float, o: Vector2) -> void:
 	if alter >= 33:
 		draw_line(_p(0.5 - b * 0.55, 0.60, s, o), _p(0.5 - b * 0.40, 0.665, s, o), f, maxf(s * 0.012, 1.0))
 		draw_line(_p(0.5 + b * 0.55, 0.60, s, o), _p(0.5 + b * 0.40, 0.665, s, o), f, maxf(s * 0.012, 1.0))
+
+## Ein hinterlegtes Foto rund beschnitten.
+##
+## Beschnitten, nicht gestaucht: Portraetfotos kommen im Hochformat, quadratisch
+## und gelegentlich im Breitformat, und ein verzerrtes Gesicht faellt sofort
+## auf. Die kuerzere Kante fuellt den Kreis, der Rest wird abgeschnitten — oben
+## etwas grosszuegiger, weil dort der Kopf sitzt und unten nur Schultern.
+func _foto_zeichnen(o: Vector2, s: float) -> void:
+	var bild: Vector2 = foto.get_size()
+	if bild.x < 1.0 or bild.y < 1.0:
+		return
+	var kante: float = minf(bild.x, bild.y)
+	var quelle := Rect2(
+		(bild.x - kante) * 0.5,
+		(bild.y - kante) * 0.35,
+		kante, kante)
+	var mitte: Vector2 = o + Vector2(s, s) * 0.5
+	if nur_kopf:
+		draw_texture_rect_region(foto, Rect2(o, Vector2(s, s)), quelle)
+		return
+	# Runder Ausschnitt: der Kreis wird als Polygon mit den Bildkoordinaten als
+	# UV gezeichnet. draw_texture_rect_region allein kann nicht beschneiden.
+	var ecken := PackedVector2Array()
+	var uv := PackedVector2Array()
+	var stufen := 40
+	for i in range(stufen):
+		var w: float = TAU * float(i) / float(stufen)
+		var richtung := Vector2(cos(w), sin(w))
+		ecken.append(mitte + richtung * s * 0.5)
+		# Die UV-Koordinaten sind normiert, nicht in Pixeln. In Pixeln
+		# angegeben, tastet das Polygon einen einzigen Texel ab und das
+		# Portraet wird einfarbig — genau so sah es beim ersten Versuch aus.
+		var punkt: Vector2 = quelle.position + (richtung * 0.5 + Vector2(0.5, 0.5)) * kante
+		uv.append(Vector2(punkt.x / bild.x, punkt.y / bild.y))
+	draw_colored_polygon(ecken, Color.WHITE, uv, foto)
+	draw_arc(mitte, s * 0.5 - 0.5, 0.0, TAU, 32,
+		Color(trikot.r, trikot.g, trikot.b, 0.85), maxf(s * 0.035, 1.0), true)

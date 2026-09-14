@@ -9,9 +9,11 @@ extends RefCounted
 
 const PFAD_LIGEN := "res://daten/ligen.json"
 const PFAD_KADER := "res://daten/kader.json"
+const PFAD_SPIELPLAN := "res://daten/spielplan.json"
 
 static var _ligen: Dictionary = {}
 static var _kader: Dictionary = {}
+static var _spielplan: Dictionary = {}
 static var _geladen: bool = false
 
 static func laden() -> void:
@@ -20,6 +22,7 @@ static func laden() -> void:
 	_geladen = true
 	_ligen = _lies(PFAD_LIGEN)
 	_kader = _lies(PFAD_KADER)
+	_spielplan = _lies(PFAD_SPIELPLAN)
 
 static func _lies(pfad: String) -> Dictionary:
 	if not FileAccess.file_exists(pfad):
@@ -72,6 +75,17 @@ static func neu_laden() -> void:
 static func kader_stand() -> String:
 	laden()
 	return str(_kader.get("stand", "unbekannt"))
+
+## Hinterlegte Ansetzungen einer Liga. Leer, wenn nichts hinterlegt ist —
+## dann lost das Spiel aus wie immer.
+static func spielplan_fuer(liganame: String) -> Array:
+	laden()
+	var plaene: Dictionary = _spielplan.get("spielplaene", {})
+	return (plaene.get(liganame, {}) as Dictionary).get("partien", [])
+
+static func spielplan_stand() -> String:
+	laden()
+	return str(_spielplan.get("stand", "unbekannt"))
 
 ## Ein Kennzeichen fuer beide Dateien zusammen. Aendert sich eine von beiden,
 ## erkennt der Spielstand beim Laden, dass er nachzuziehen ist.
@@ -209,6 +223,13 @@ static func abgleich(d: Dictionary) -> Dictionary:
 
 		if bool(e.get("stammschuetze", false)) != bool(sp.get("stammschuetze", false)):
 			sp["stammschuetze"] = bool(e.get("stammschuetze", false))
+			geaendert = true
+
+		if str(e.get("bild", "")) != str(sp.get("bild", "")):
+			if str(e.get("bild", "")) == "":
+				sp.erase("bild")
+			else:
+				sp["bild"] = str(e["bild"])
 			geaendert = true
 
 		var neu_pos: String = str(e.get("position", ""))

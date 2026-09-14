@@ -67,7 +67,12 @@ static func _plane_liga(d: Dictionary, lid: String, basis: int) -> void:
 	var liga: Dictionary = d["ligen"][lid]
 	var teams: Array = (liga["vereine"] as Array).duplicate()
 	teams.shuffle()
-	var runden := doppelrunde(teams)
+	# Hinterlegte Ansetzungen gehen vor. Was dort nicht steht, wird ergaenzt;
+	# laesst sich der Rest nicht zu einer sauberen Doppelrunde schliessen,
+	# faellt der ganze Plan weg und es wird ausgelost wie immer.
+	var runden := echte_runden(d, lid, teams)
+	if runden.is_empty():
+		runden = doppelrunde(teams)
 	liga["spieltage"] = runden.size()
 	liga["aktueller_spieltag"] = 0
 	liga["tabelle"] = {}
@@ -80,6 +85,144 @@ static func _plane_liga(d: Dictionary, lid: String, basis: int) -> void:
 
 static func leere_tabellenzeile() -> Dictionary:
 	return {"sp": 0, "s": 0, "u": 0, "n": 0, "tore": 0, "gegentore": 0, "punkte": 0, "serie": []}
+
+# --------------------------------------------------- Echte Ansetzungen ---
+#
+# Eine ausgeloste Doppelrunde ist eine Doppelrunde, aber nicht die richtige.
+# Wer wissen will, wann sein Verein nach Kiel muss, will den echten Termin —
+# und der Saisonverlauf haengt daran, ob die drei schwersten Auswaertsspiele
+# im September oder im April liegen.
+#
+# Hinterlegt wird in daten/spielplan.json, und zwar so viel, wie bekannt ist.
+# Die HBL veroeffentlicht zeitgenaue Ansetzungen zunaechst nur fuer die ersten
+# Spieltage; der Rest steht spaeter fest. Deshalb ergaenzt das Spiel, was
+# fehlt, statt einen unvollstaendigen Plan abzulehnen.
+
+## Baut die Spieltage einer Liga aus den hinterlegten Ansetzungen.
+## Liefert eine leere Liste, wenn nichts hinterlegt ist oder der Plan nicht
+## aufgeht — dann wird ausgelost.
+static func echte_runden(d: Dictionary, lid: String, teams: Array) -> Array:
+	var liganame: String = str(d["ligen"][lid].get("name", ""))
+	# Selbst eingespielte Plaene schlagen den mitgelieferten Datensatz.
+	var partien: Array = Spielplanpflege.partien(liganame)
+	if partien.is_empty():
+		return []
+	# Vereinsname -> id. Ein Name, den die Liga nicht kennt, macht den ganzen
+	# Plan unbrauchbar: lieber auslosen als die falschen Mannschaften paaren.
+	var nach_name := {}
+	for cid in teams:
+		nach_name[str(d["vereine"][cid]["name"])] = str(cid)
+	var soll: int = (teams.size() - 1) * 2
+	var je_spieltag: int = int(teams.size() / 2)
+
+	var belegt := {}
+	var gesetzt := {}
+	for e in partien:
+		var heim: String = str(nach_name.get(str((e as Dictionary).get("heim", "")), ""))
+		var gast: String = str(nach_name.get(str((e as Dictionary).get("gast", "")), ""))
+		var tag: int = int((e as Dictionary).get("spieltag", 0))
+		if heim == "" or gast == "" or heim == gast or tag < 1 or tag > soll:
+			push_warning("Spielplan %s: unbrauchbare Zeile wird verworfen." % liganame)
+			return []
+		var schluessel: String = "%s>%s" % [heim, gast]
+		if gesetzt.has(schluessel):
+			push_warning("Spielplan %s: %s kommt doppelt vor." % [liganame, schluessel])
+			return []
+		gesetzt[schluessel] = tag
+		if not belegt.has(tag):
+			belegt[tag] = []
+		# Keine Mannschaft zweimal an einem Spieltag.
+		for paar in belegt[tag]:
+			if paar[0] == heim or paar[1] == heim or paar[0] == gast or paar[1] == gast:
+				push_warning("Spielplan %s: doppelter Einsatz am %d. Spieltag." % [liganame, tag])
+				return []
+		(belegt[tag] as Array).append([heim, gast])
+
+	# Ist der Plan vollstaendig, gilt er unveraendert. Das ist der Fall, auf
+	# den es ankommt: wer den offiziellen Spielplan einspielt, will ihn genau
+	# so haben und nicht nachgebaut.
+	if gesetzt.size() == teams.size() * (teams.size() - 1):
+		var voll: Array = []
+		for r in range(soll):
+			voll.append((belegt.get(r + 1, []) as Array).duplicate())
+		for r2 in range(soll):
+			if (voll[r2] as Array).size() != je_spieltag:
+				push_warning("Spielplan %s: %d. Spieltag hat %d statt %d Partien." % [
+					liganame, r2 + 1, (voll[r2] as Array).size(), je_spieltag])
+				return []
+		return voll
+
+	# Sonst wird ergaenzt — und zwar nicht durch Zusammenstueckeln.
+	#
+	# Eine Doppelrunde ist keine beliebige Verteilung von Paarungen auf
+	# Spieltage, sondern eine Zerlegung in lauter vollstaendige Paarungsrunden.
+	# Wer sie Partie fuer Partie fuellt, sitzt am Ende zuverlaessig mit zwei
+	# Mannschaften da, die schon gegeneinander gespielt haben: sechzig Anlaeufe
+	# eines gierigen Verfahrens sind in der Erprobung ausnahmslos gescheitert.
+	#
+	# Stattdessen wird vom Kreisverfahren ausgegangen, das eine gueltige
+	# Doppelrunde von sich aus liefert, und die Mannschaften werden so
+	# umbenannt, dass die erste hinterlegte Runde genau aufgeht. Danach werden
+	# die Spieltage verschoben, bis sie an ihrem Platz liegt.
+	return _um_hinterlegte_runde(teams, belegt, gesetzt, soll, je_spieltag, liganame)
+
+## Baut eine vollstaendige Doppelrunde, in der ein hinterlegter Spieltag
+## genau so vorkommt, wie er hinterlegt ist.
+static func _um_hinterlegte_runde(teams: Array, belegt: Dictionary, gesetzt: Dictionary,
+		soll: int, je_spieltag: int, liganame: String) -> Array:
+	# Der Anker ist der erste vollstaendig hinterlegte Spieltag. Ein halb
+	# gefuellter taugt nicht: dann steht nicht fest, wer gegen wen spielt.
+	var anker := -1
+	var tage: Array = belegt.keys()
+	tage.sort()
+	for tag in tage:
+		if (belegt[tag] as Array).size() == je_spieltag:
+			anker = int(tag)
+			break
+	if anker < 0:
+		push_warning("Spielplan %s: kein vollstaendiger Spieltag hinterlegt — es wird ausgelost." % liganame)
+		return []
+
+	var vorbild: Array = belegt[anker]
+	var basis := doppelrunde(teams)
+	if basis.size() != soll or (basis[0] as Array).size() != je_spieltag:
+		return []
+
+	# Umbenennung: die k-te Paarung der ersten Kreisrunde wird die k-te
+	# Paarung des hinterlegten Spieltags, Heimrecht eingeschlossen.
+	var abbildung := {}
+	for k in range(je_spieltag):
+		abbildung[str((basis[0] as Array)[k][0])] = str(vorbild[k][0])
+		abbildung[str((basis[0] as Array)[k][1])] = str(vorbild[k][1])
+	if abbildung.size() != teams.size():
+		return []
+
+	var runden: Array = []
+	for r in range(soll):
+		# Die Spieltage rotieren, bis die Kreisrunde 0 auf dem Anker liegt.
+		var quelle: int = (r - (anker - 1) + soll) % soll
+		var neu_runde: Array = []
+		for paar in basis[quelle]:
+			neu_runde.append([str(abbildung[str(paar[0])]), str(abbildung[str(paar[1])])])
+		runden.append(neu_runde)
+
+	# Jetzt muss alles Hinterlegte darin stehen — auch die Spieltage jenseits
+	# des Ankers. Tut es das nicht, ist der Plan mit diesem Verfahren nicht zu
+	# treffen, und ein halb richtiger Spielplan waere schlechter als ein
+	# ausgeloster: er saehe echt aus und waere es nicht.
+	for schluessel in gesetzt.keys():
+		var teile: PackedStringArray = str(schluessel).split(">")
+		var tag2: int = int(gesetzt[schluessel])
+		var gefunden := false
+		for paar2 in runden[tag2 - 1]:
+			if str(paar2[0]) == teile[0] and str(paar2[1]) == teile[1]:
+				gefunden = true
+				break
+		if not gefunden:
+			push_warning("Spielplan %s: %s am %d. Spieltag laesst sich nicht einpassen — es wird ausgelost." % [
+				liganame, schluessel, tag2])
+			return []
+	return runden
 
 ## Doppelrunde nach dem Kreisverfahren; Rueckrunde mit getauschtem Heimrecht.
 static func doppelrunde(teams: Array) -> Array:

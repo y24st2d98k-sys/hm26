@@ -30,6 +30,46 @@ einer hellen Fläche hinterlegen.
 Für welche Vereine ein Logo fehlt, ist unproblematisch: dort wird weiterhin
 das gezeichnete Wappen aus Vereinsfarben und Kürzel benutzt.
 
+## Spielergesichter — `assets/gesichter/`
+
+Das Spiel zeichnet jedes Gesicht selbst. Wer für echte Spieler echte Fotos
+möchte, legt sie hier ab:
+
+```
+assets/gesichter/kai_haefner.png
+assets/gesichter/gisli_thorgeir_kristjansson.png
+```
+
+Der Dateiname ist **Vor- und Nachname, kleingeschrieben, ohne Umlaute und
+Sonderzeichen**, Leerzeichen und Bindestriche werden zu Unterstrichen:
+
+| Spieler | Datei |
+|---|---|
+| Kai Häfner | `kai_haefner` |
+| Gísli Þorgeir Kristjánsson | `gisli_thorgeir_kristjansson` |
+| Petter Øverby | `petter_oeverby` |
+| Nikolaj Læsø | `nikolaj_laesoe` |
+| Elias Ellefsen á Skipagøtu | `elias_ellefsen_a_skipagoetu` |
+| Fynn-Luca Nicolaus | `fynn_luca_nicolaus` |
+
+Erlaubte Endungen: `png`, `jpg`, `webp`. Wer den Namen nicht treffen will oder
+zwei gleichnamige Spieler hat, setzt in `daten/kader.json` das Feld `bild`:
+
+```json
+{"vorname": "Max", "nachname": "Müller", "bild": "max_mueller_kiel", …}
+```
+
+Das Bild wird **rund beschnitten, nicht gestaucht**: die kürzere Kante füllt
+den Kreis, oben wird etwas großzügiger stehen gelassen als unten, weil dort der
+Kopf sitzt. Hochformat, Quadrat und Breitformat funktionieren also alle.
+Portraits von 256 bis 512 Pixel reichen; das Spiel zeigt sie zwischen 20 und
+96 Pixeln und verkleinert mit Mipmaps.
+
+Für wen kein Foto daliegt, wird weiterhin gezeichnet — beides steht problemlos
+nebeneinander im selben Kader. Zwei Probebilder (`_probe_hoch`,
+`_probe_quadrat`) liegen bei; sie gehören zu `werkzeuge/Gesichtertest.tscn`
+und tragen bewusst keinen Spielernamen.
+
 ## Eigene Schrift — `assets/schrift/`
 
 Die Engine bringt genau einen Schriftschnitt mit. Das Spiel fettet ihn bei
@@ -80,8 +120,11 @@ Aufnahmen einsetzt, bekommt den Hallenklang also geschenkt.
 
 ## Rechtliches
 
-Die mitgelieferten Wappen sind gezeichnet und enthalten keine fremden Marken.
-Wer echte Vereinslogos einsetzt, sollte das nur für den privaten Gebrauch tun —
-für eine Veröffentlichung wären Namens- und Markenrechte zu klären. Dasselbe
+Die mitgelieferten Wappen und Gesichter sind gezeichnet und enthalten keine
+fremden Marken. Wer echte Vereinslogos einsetzt, sollte das nur für den
+privaten Gebrauch tun — für eine Veröffentlichung wären Namens- und
+Markenrechte zu klären. Für Spielerfotos gilt das doppelt: an einem Portrait
+hängen neben dem Urheberrecht des Fotografen auch die Persönlichkeitsrechte
+des Abgebildeten. Dasselbe
 gilt für Klangdateien: bitte nur eigene Aufnahmen oder solche unter einer
 Lizenz, die die Nutzung erlaubt.
