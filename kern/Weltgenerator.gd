@@ -114,6 +114,15 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 	for cid in clubs(d):
 		Vertrautheit.stammformation_setzen(d, str(cid))
 		Spielzuege.ki_buch_anlegen(d, str(cid))
+	# Kein Verein faengt mit einem leeren Nachwuchszentrum an. Bisher war genau
+	# das der Fall: am ersten Tag stand in jeder Akademie der Liga der Satz
+	# "derzeit ist kein Talent im Nachwuchszentrum", und der erste Jahrgang kam
+	# erst zum Saisonwechsel. Fuer das Jugendzertifikat heisst das ausserdem,
+	# dass in der ersten Spielzeit kein Verein die Auflagen erfuellt haette.
+	for cid2 in clubs(d):
+		var stufe: int = int(d["vereine"][cid2]["infrastruktur"]["jugendarbeit"])
+		Jugend.erzeuge_jahrgang(d, str(cid2), 2 + (1 if stufe >= 4 else 0)
+			+ (1 if stufe >= 7 else 0) + (1 if Namen.zufall() < 0.4 else 0))
 	return d
 
 static func _erzeuge_nationen(d: Dictionary) -> void:
@@ -395,8 +404,16 @@ static func _baue_verein(d: Dictionary, cid: String, vn: Dictionary, nid: String
 			"kapazitaet": kap,
 			"ausbau": 0,
 			"komfort": int(clampf(ruf / 14.0 + Namen.bereich(-1.0, 1.5), 1.0, 8.0)),
+			# Die Beleuchtung ist eine Lizenzauflage: 1.500 Lux auf dem
+			# Spielfeld, 600 im Zuschauerbereich, Gleichmaessigkeit 0,8.
+			# Nicht jede Halle schafft das — siehe kern/Lizenzierung.gd.
+			"licht_feld": int(clampf(1300.0 + ruf * 6.2 + Namen.bereich(-150.0, 200.0), 800.0, 2400.0)),
+			"licht_rang": 0,
+			"gleichmaessigkeit": clampf(0.62 + ruf * 0.0028 + Namen.bereich(-0.06, 0.08), 0.55, 0.95),
 			"bauprojekt": {},
 		},
+		# Trainieren Jugend und Zweite in einer Halle mit Harzverbot?
+		"harzverbot": int(kap) < 4000 and Namen.zufall() < 0.35,
 		"infrastruktur": {
 			"trainingszentrum": int(clampf(ruf / 12.0 + Namen.bereich(-1.5, 1.5), 1.0, 9.0)),
 			"jugendarbeit": int(clampf(ruf / 13.0 + Namen.bereich(-2.0, 2.0), 1.0, 9.0)),

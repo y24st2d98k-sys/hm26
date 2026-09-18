@@ -95,6 +95,11 @@ static func wochenwechsel(d: Dictionary) -> void:
 		if not v.has("jugend"):
 			v["jugend"] = []
 		var qualitaet: float = arbeitsqualitaet(d, cid) / 100.0
+		# Wer in einer kommunalen Halle mit Harzverbot trainiert, wirft mit
+		# einem kleineren, harzfreien Ball. Die Ballbehandlung ist eine
+		# andere, und der Uebergang in den Profikader wird dadurch schwerer —
+		# eine Eigenheit, die es so nur im Handball gibt.
+		qualitaet *= Lizenzierung.nachwuchsfaktor(d, str(cid))
 		for sid in (v["jugend"] as Array).duplicate():
 			if not d["spieler"].has(sid):
 				(v["jugend"] as Array).erase(sid)

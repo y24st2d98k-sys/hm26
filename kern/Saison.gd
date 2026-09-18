@@ -29,6 +29,12 @@ static func abschluss(d: Dictionary, mein: String) -> void:
 		_ligaplatzierungen_eintragen(d, lid, tabelle)
 		auf_ab.append({"liga": lid, "tabelle": tabelle})
 	_ehrungen(d, mein)
+	# Der Lizenzierungsausschuss urteilt ueber die Saison, die gerade zu Ende
+	# gegangen ist: den Nachwuchskader, den es gab, und die Pflichtspiele, die
+	# die Zweite wirklich bestritten hat. Nach dem Saisonumbruch ist beides
+	# zurueckgesetzt — dort geprueft, erfuellte kein einziger Verein die
+	# Auflagen, weil nichts mehr dastand, was man pruefen koennte.
+	Lizenzierung.jahreslauf(d, mein)
 	_auf_und_abstieg(d)
 	_trainerbilanz(d, mein)
 	if mein != "":

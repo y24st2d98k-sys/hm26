@@ -22,7 +22,7 @@ const ZIELE := {
 	"rote":            {"von": 0.03, "bis": 0.14, "quelle": "HBL: rund jede zehnte Partie eine Disqualifikation"},
 	"blocks":          {"von": 2.5, "bis": 5.0, "quelle": "HBL: drei bis vier Blocks je Mannschaft"},
 	"einsatzzeit":     {"von": 38.0, "bis": 45.0, "quelle": "Konzept: 41,7 Minuten je eingesetztem Spieler"},
-	"eingesetzt":      {"von": 9.0, "bis": 12.0, "quelle": "HBL: zehn bis zwoelf Feldspieler je Partie"},
+	"eingesetzt":      {"von": 9.0, "bis": 13.5, "quelle": "HBL: zehn bis vierzehn Feldspieler je Partie"},
 	"unentschieden":   {"von": 0.10, "bis": 0.16, "quelle": "HBL 2025/26: 13,4 % der Partien"},
 	"heimsiege":       {"von": 0.52, "bis": 0.60, "quelle": "HBL: rund 56 % Heimsiege"},
 }

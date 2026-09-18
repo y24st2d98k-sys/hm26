@@ -64,7 +64,18 @@ static func spieltag_abrechnen(d: Dictionary, m: Dictionary) -> void:
 		einnahme *= 1.25
 	elif str(m["art"]) == "test":
 		einnahme *= 0.45
+	# Dem Gastverein stehen fuenf Prozent der Tickets kostenlos zu, mindestens
+	# hundert und hoechstens zweihundert Plaetze, dazu vier VIP-Karten. Das
+	# Geld dafuer sieht der Heimverein nicht.
+	if str(m["art"]) != "test":
+		var kontingent: float = float(Lizenzierung.gaestekontingent(d, cid_heim))
+		einnahme = maxf(einnahme - kontingent * Ticketing.schnittpreis(d, cid_heim), 0.0)
 	buchen(d, cid_heim, einnahme, "Eintritt %s" % Welt.wettbewerb_name(str(m["wettbewerb"])), "zuschauer")
+	# Die Liga verlangt fuer jedes Pflichtspiel geschulte Scouts, die ueber
+	# die Ligasoftware die Live-Statistik erfassen. Der Heimverein stellt sie.
+	if str(m["art"]) != "test":
+		buchen(d, cid_heim, -float(Lizenzierung.SCOUTS_JE_SPIEL) * 180.0,
+			"Spieltagsscouts", "spieltag")
 	# Auswaertsteam: Reisekosten
 	buchen(d, str(m["gast"]), -(1400.0 + float(d["vereine"][m["gast"]]["ruf"]) * 60.0), "Reisekosten", "reise")
 	if str(m["art"]) == "international":
@@ -87,6 +98,11 @@ static func wochenabrechnung(d: Dictionary) -> void:
 		buchen(d, cid, tv, "Medienerlöse", "tv")
 		var betrieb: float = betriebskosten(d, cid)
 		buchen(d, cid, -betrieb, "Betriebskosten", "betrieb")
+		# Haftmittel, Spezialreiniger, Reinigungsmaschine. Ein kleiner Posten
+		# mit einer eigenen Geschichte — siehe kern/Lizenzierung.gd.
+		var harz: float = Lizenzierung.harzkosten(d, str(cid))
+		if harz > 0.0:
+			buchen(d, cid, -harz, "Haftmittel und Hallenreinigung", "betrieb")
 		var merch: float = float(v["fans"]["mitglieder"]) * 0.55 * (0.6 + float(v["fans"]["zufriedenheit"]) / 150.0)
 		buchen(d, cid, merch, "Merchandising", "merch")
 		Darlehen.wochenwechsel(d, cid)

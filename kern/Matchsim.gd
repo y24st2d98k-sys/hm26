@@ -445,7 +445,7 @@ func _erster_anwurf_heim() -> bool:
 ## Ab wie vielen Sekunden vor Schluss der Spielstand das Verhalten aendert.
 ## Wie stark der Unterschied zwischen Angriff und Abwehr auf den einzelnen
 ## Wurf durchschlaegt.
-const WURF_EMPFINDLICHKEIT := 0.0055
+const WURF_EMPFINDLICHKEIT := 0.0072
 
 ## Trefferquote eines Wurfs von dieser Position, wenn sich gleich starke
 ## Mannschaften gegenueberstehen.
@@ -470,7 +470,7 @@ const TREFFER_POSITION := {
 }
 ## Der Tempogegenstoss ist der beste Abschluss, den der Handball kennt: ein
 ## Wurf aus dem Lauf auf einen Torwart, der allein im Tor steht.
-const TREFFER_GEGENSTOSS := 0.804
+const TREFFER_GEGENSTOSS := 0.824
 ## Und in ein wirklich leeres Tor trifft fast jeder.
 const TREFFER_LEERES_TOR := 0.93
 ## Werfer und Torhueter werden aus verschiedenen Attributsaetzen gerechnet, und
@@ -478,12 +478,20 @@ const TREFFER_LEERES_TOR := 0.93
 ## Unterschied jede Positionsquote um gut vier Prozentpunkte nach unten — die
 ## Zahlen oben stuenden dann zwar im Code, aber nicht im Spiel. Der Wert ist
 ## gemessen (werkzeuge/Realismussonde.gd), nicht geschaetzt.
-const WURF_AUSGLEICH := 7.6
+const WURF_AUSGLEICH := 11.1
 ## Wie weit Koennen, Tagesform und Torwart die Positionsquote hoechstens
 ## verschieben. Ein ueberragender Kreislaeufer trifft oefter als ein
 ## durchschnittlicher — aber auch er wirft nicht vom Fluegel wie vom Kreis.
-const WURF_UNTEN_ANTEIL := 0.58
-const WURF_OBEN_ANTEIL := 1.38
+##
+## Die Spanne ist ein Kompromiss, und zwar ein gemessener. Enger gefasst
+## stimmen Unentschieden und Torabstand besser, dafuer wird die Tabelle flach:
+## der Meister kam auf fuenfzig Punkte, in Wirklichkeit sind es knapp
+## fuenfundsechzig. Weiter gefasst steht die Tabelle richtig, dafuer fallen die
+## Unentschieden auf neun Prozent. Beides zugleich geht nicht, solange eine
+## einzelne Partie eine Streuung von sechs Toren hat — und die kommt allein
+## daraus, dass fuenfzig Wuerfe je Mannschaft fallen.
+const WURF_UNTEN_ANTEIL := 0.52
+const WURF_OBEN_ANTEIL := 1.46
 ## Trefferquote am Siebenmeterstrich bei gleich starker Paarung. Der Ligaschnitt
 ## liegt seit Jahren bei rund drei Vierteln.
 const SIEBENMETER_GRUND := 0.805
@@ -586,9 +594,13 @@ func _spielstandsdruck(t: Dictionary) -> Dictionary:
 	var diff: int = int(t["tore"]) - (int(gast["tore"]) if t == heim else int(heim["tore"]))
 	if rest >= SCHLUSSPHASE:
 		return _schongang(diff)
-	# Nicht linear: in der 51. Minute aendert ein Tor Rueckstand wenig, in der
-	# 59. alles.
-	var naehe: float = pow(clampf(1.0 - rest / SCHLUSSPHASE, 0.0, 1.0), 1.2)
+	# Nicht linear, und bewusst steil: in der 45. Minute aendert ein Tor
+	# Rueckstand wenig, in der 59. alles. Mit einem flachen Verlauf zog sich
+	# die Reaktion ueber die ganze zweite Halbzeit — und nahm der besseren
+	# Mannschaft dort ihre Ueberlegenheit, statt nur die Schlussminuten zu
+	# praegen. Messbar war das an der Tabelle: der Meister kam nur noch auf
+	# fuenfzig Punkte statt auf die knapp fuenfundsechzig der Wirklichkeit.
+	var naehe: float = pow(clampf(1.0 - rest / SCHLUSSPHASE, 0.0, 1.0), 2.6)
 	if diff == 0:
 		return _letzter_angriff(rest)
 	var staerke: float = naehe * _abstandsgewicht(absi(diff))

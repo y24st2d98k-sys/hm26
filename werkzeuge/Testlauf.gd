@@ -177,6 +177,15 @@ func _spiele_test(mit_rollen: bool = false) -> void:
 	var deutlich := 0
 	var knapp := 0
 	for mid in partien:
+		# Dieser Lauf rechnet eine ganze Runde hintereinander durch, ohne dass
+		# dazwischen ein Tag vergeht, an dem jemand gesund wird. Ohne
+		# Ruecksetzen stapelten sich die Verletzungen bis zum letzten Spieltag,
+		# und gemessen waere am Ende nicht die Kalibrierung, sondern die
+		# Duenne der Kader: der mittlere Torabstand stieg dadurch von gut
+		# fuenf auf acht Tore. Wie oft und wie lange sich jemand verletzt,
+		# misst werkzeuge/Verletzungssonde.gd mit vollem Tageslauf.
+		for sid in d["spieler"].keys():
+			(d["spieler"][sid] as Dictionary)["verletzung"] = {}
 		var m: Dictionary = d["spiele"][mid]
 		var sim := Matchsim.new(d, m, 0)
 		sim.vorbereiten()
@@ -253,6 +262,10 @@ func _bundesliga_test() -> void:
 	var ueberraschungen := 0
 	var entschieden := 0
 	for mid in partien:
+		# Wie oben: ohne Ruecksetzen misst dieser Lauf nicht die Kalibrierung,
+		# sondern wie duenn die Kader am letzten Spieltag geworden sind.
+		for sid in d["spieler"].keys():
+			(d["spieler"][sid] as Dictionary)["verletzung"] = {}
 		var m: Dictionary = d["spiele"][mid]
 		var sim := Matchsim.new(d, m, 0)
 		sim.vorbereiten()

@@ -341,7 +341,63 @@ func _halle() -> void:
 			str(Finanzen.AUSBAU_STUFEN[str(projekt["bereich"])]["name"]),
 			Kalender.text(int(projekt["fertig_tag"]), Welt.startjahr(), true)], Stil.S_KLEIN, Stil.GELB))
 
-	_darlehen(reihe)
+	_lizenz(reihe)
+	var reihe2 := Stil.hbox(12)
+	inhalt.add_child(reihe2)
+	_darlehen(reihe2)
+
+## Was der Lizenzierungsausschuss an dieser Halle zu beanstanden hat — und was
+## das Haftmittel im Verein anrichtet.
+func _lizenz(eltern: Node) -> void:
+	var cid := Welt.mein_verein_id
+	var karte := Bausteine.karte_in(eltern, "Lizenzauflagen")
+	var wurzel := Stil.karte_wurzel(karte)
+	wurzel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wurzel.custom_minimum_size = Vector2(420, 0)
+	var h := Lizenzierung.halle(Welt.daten, cid)
+	var stufe := Lizenzierung.stufe(Welt.daten, cid)
+	if stufe > 2:
+		karte.add_child(Bausteine.fliesstext("In dieser Spielklasse prüft der Lizenzierungsausschuss die Halle nicht."))
+		return
+	var mindest: int = int(Lizenzierung.KAPAZITAET_MIN.get(stufe, 1000))
+	karte.add_child(Stil.info_zeile("Mindestkapazität", "%s von %s" % [
+		Stil.zahl(int(h["kapazitaet"])), Stil.zahl(mindest)],
+		Stil.GRUEN if int(h["kapazitaet"]) >= mindest else Stil.ROT))
+	karte.add_child(Stil.info_zeile("Licht Spielfeld", "%d von %d Lux" % [
+		int(h["licht_feld"]), Lizenzierung.LUX_FELD],
+		Stil.GRUEN if int(h["licht_feld"]) >= Lizenzierung.LUX_FELD else Stil.ROT))
+	karte.add_child(Stil.info_zeile("Licht Zuschauerbereich", "%d von %d Lux" % [
+		int(h["licht_rang"]), Lizenzierung.LUX_RANG],
+		Stil.GRUEN if int(h["licht_rang"]) >= Lizenzierung.LUX_RANG else Stil.ROT))
+	karte.add_child(Stil.info_zeile("Gleichmäßigkeit", "%s von %s" % [
+		Stil.komma(float(h["gleichmaessigkeit"]), 2), Stil.komma(Lizenzierung.GLEICHMAESSIGKEIT_MIN, 2)],
+		Stil.GRUEN if float(h["gleichmaessigkeit"]) >= Lizenzierung.GLEICHMAESSIGKEIT_MIN else Stil.ROT))
+	karte.add_child(Stil.info_zeile("Gästekontingent", "%d Plätze kostenlos" % Lizenzierung.gaestekontingent(Welt.daten, cid)))
+	var offen: Array = Lizenzierung.auflagen(Welt.daten, cid)
+	if offen.is_empty():
+		karte.add_child(Stil.text("Die Halle erfüllt alle Vorgaben.", Stil.S_KLEIN, Stil.GRUEN))
+	else:
+		for a in offen:
+			karte.add_child(Bausteine.fliesstext(str((a as Dictionary)["text"])))
+		var braucht_licht := false
+		for a2 in offen:
+			if str((a2 as Dictionary)["feld"]) == "licht":
+				braucht_licht = true
+		if braucht_licht:
+			var zeile2 := Stil.hbox(8)
+			karte.add_child(zeile2)
+			zeile2.add_child(Stil.matt("Nachrüstung: %s" % Stil.geld(Lizenzierung.lichtkosten(Welt.daten, cid)), Stil.S_KLEIN))
+			var knopf2 := Stil.knopf_primaer("Beleuchtung nachrüsten")
+			knopf2.pressed.connect(func():
+				var erg := Lizenzierung.licht_nachruesten(Welt.daten, cid)
+				_melde(str(erg["grund"]), bool(erg["ok"]))
+				aktualisieren())
+			zeile2.add_child(knopf2)
+	if Lizenzierung.harzverbot(Welt.daten, cid):
+		karte.add_child(Stil.text("Harzverbot in der Trainingshalle", Stil.S_KLEIN, Stil.GELB))
+		karte.add_child(Bausteine.fliesstext("Jugend und Zweite trainieren in einer kommunalen Halle, in der kein Haftmittel erlaubt ist. Sie weichen auf kleinere, harzfreie Bälle aus — der Übergang in den Profikader wird dadurch spürbar schwerer."))
+	else:
+		karte.add_child(Bausteine.fliesstext("In der Trainingshalle ist Haftmittel erlaubt. Nachwuchs und Zweite spielen mit demselben Ball wie die Profis."))
 
 func _darlehen(eltern: Node) -> void:
 	var cid := Welt.mein_verein_id

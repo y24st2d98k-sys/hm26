@@ -214,7 +214,15 @@ func _zeile(sid: String, index: int = 0) -> Control:
 	knopf.add_child(h)
 	var namenszelle := Stil.hbox(5)
 	namenszelle.add_child(Flagge.fuer(str(sp["nation"]), 16.0))
-	namenszelle.add_child(Stil.text(Spielerfabrik.voller_name(sp), Stil.S_KLEIN))
+	# Ein langer Name schob bisher die ganze Zeile auseinander: die Namenszelle
+	# wuchs mit, und Alter, Stärke und Ablöse standen in jeder Zeile woanders.
+	# Abgeschnitten wird lieber der Name als die Tabelle.
+	var namensschild := Stil.text(Spielerfabrik.voller_name(sp), Stil.S_KLEIN)
+	namensschild.clip_text = true
+	namensschild.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	namensschild.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	namensschild.tooltip_text = Spielerfabrik.voller_name(sp)
+	namenszelle.add_child(namensschild)
 	var zellen := [
 		Bausteine.positions_abzeichen(str(sp["position"])),
 		namenszelle,

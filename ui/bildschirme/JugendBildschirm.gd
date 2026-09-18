@@ -84,6 +84,10 @@ func aktualisieren() -> void:
 	wirkung.add_child(Bausteine.wertzeile("Vorstand wünscht Jugend", jugendfokus, 100.0,
 		"Je höher, desto mehr Anerkennung bringt eine Beförderung."))
 
+	var zweite_reihe := Stil.hbox(12)
+	inhalt.add_child(zweite_reihe)
+	_zertifikat(zweite_reihe)
+
 	var talente := Welt.jugend(cid)
 	var karte := Bausteine.karte_zu(inhalt, "Talente", "scouting",
 		"Zum Scouting — dort holt man Nachwuchs von außerhalb in die Akademie")
@@ -267,3 +271,32 @@ func _zahl(beschriftung: String, wert: String, farbe: Color) -> Control:
 	v.add_child(Stil.etikett(beschriftung))
 	v.add_child(Stil.text(wert, Stil.S_GROSS, farbe))
 	return v
+
+
+## Das Jugendzertifikat der Liga.
+##
+## Es ist kein Abzeichen, sondern eine Rechnung: wer die Auflagen nicht
+## erfuellt, zahlt in einen Solidarfonds, aus dem die zertifizierten Vereine
+## bedient werden. Deshalb steht hier nicht nur, ob es erteilt ist, sondern
+## auch, woran es haengt.
+func _zertifikat(eltern: Node) -> void:
+	var cid := Welt.mein_verein_id
+	var karte := Bausteine.karte_in(eltern, "Jugendzertifikat")
+	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if Lizenzierung.stufe(Welt.daten, cid) > 2:
+		karte.add_child(Bausteine.fliesstext("Das Jugendzertifikat vergibt die Liga nur an Erst- und Zweitligisten."))
+		return
+	var erteilt := Lizenzierung.hat_zertifikat(Welt.daten, cid)
+	var erfuellt := Lizenzierung.zertifikat_erfuellt(Welt.daten, cid)
+	karte.add_child(Stil.text("Zuletzt erteilt" if erteilt else "Zuletzt verweigert",
+		Stil.S_NORMAL, Stil.GRUEN if erteilt else Stil.ROT))
+	for k in Lizenzierung.zertifikatskriterien(Welt.daten, cid):
+		var e: Dictionary = k
+		var zeile := Stil.info_zeile(str(e["text"]), str(e["stand"]),
+			Stil.GRUEN if bool(e["erfuellt"]) else Stil.ROT)
+		karte.add_child(zeile)
+	if erfuellt:
+		karte.add_child(Bausteine.fliesstext("Bei der nächsten Prüfung sind alle Auflagen erfüllt. Der Verein wird aus dem Solidarfonds bedient."))
+	else:
+		var strafe: float = float(Welt.verein(cid).get("jahresetat", 2000000.0)) * Lizenzierung.ZERT_STRAFE_ANTEIL
+		karte.add_child(Bausteine.fliesstext("Bei der nächsten Prüfung fehlt etwas. Das kostet rund %s Strafzahlung — Geld, das an die zertifizierten Vereine geht." % Stil.geld(strafe)))

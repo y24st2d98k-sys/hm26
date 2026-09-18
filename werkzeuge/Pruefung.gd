@@ -79,6 +79,7 @@ func _alles_pruefen(d: Dictionary, soll: Dictionary) -> void:
 	_spielplan(d)
 	_trikotnummern(d)
 	_halle_und_fans(d)
+	_lizenzierung(d)
 	_staerkecache(d)
 
 ## Ligen behalten ihre Größe über Auf- und Abstieg hinweg.
@@ -267,6 +268,32 @@ func _halle_und_fans(d: Dictionary) -> void:
 			_fehler("%s ist mit %s überschuldet" % [str(v["name"]), Stil.geld(Darlehen.restschuld(d, cid))])
 		if not Spieltagsprogramm.PROGRAMME.has(Spieltagsprogramm.gewaehlt(d, cid)):
 			_fehler("%s hat ein unbekanntes Spieltagsprogramm" % str(v["name"]))
+
+## Halle, Beleuchtung und Jugendzertifikat.
+func _lizenzierung(d: Dictionary) -> void:
+	var mit_auflage := 0
+	var zertifiziert := 0
+	var erstliga := 0
+	for cid in Weltgenerator.clubs(d):
+		var c := str(cid)
+		var h := Lizenzierung.halle(d, c)
+		_pruefe(int(h["licht_feld"]) > 0, "%s: Spielfeldbeleuchtung fehlt" % str(d["vereine"][c]["name"]))
+		_pruefe(int(h["licht_rang"]) > 0, "%s: Beleuchtung der Ränge fehlt" % str(d["vereine"][c]["name"]))
+		_pruefe(float(h["gleichmaessigkeit"]) > 0.0 and float(h["gleichmaessigkeit"]) <= 1.0,
+			"%s: unmögliche Gleichmäßigkeit %s" % [str(d["vereine"][c]["name"]), str(h["gleichmaessigkeit"])])
+		var kont := Lizenzierung.gaestekontingent(d, c)
+		_pruefe(kont >= Lizenzierung.GAESTE_MIN and kont <= Lizenzierung.GAESTE_MAX,
+			"%s: Gästekontingent %d liegt außerhalb der Vorgabe" % [str(d["vereine"][c]["name"]), kont])
+		if Lizenzierung.stufe(d, c) != 1:
+			continue
+		erstliga += 1
+		if not Lizenzierung.auflagen(d, c).is_empty():
+			mit_auflage += 1
+		if Lizenzierung.hat_zertifikat(d, c):
+			zertifiziert += 1
+	if erstliga > 0:
+		_log("  Lizenz: %d von %d Erstligavereinen mit Auflage, %d mit Jugendzertifikat" % [
+			mit_auflage, erstliga, zertifiziert])
 
 ## Kein Verein rutscht dauerhaft ins Bodenlose.
 func _finanzen(d: Dictionary) -> void:
