@@ -30,13 +30,14 @@ static func formkurve(kurve: Array, anzahl: int = 5) -> HBoxContainer:
 		var e: String = str(kurve[i])
 		var farbe: Color = Stil.GRUEN if e == "S" else (Stil.GELB if e == "U" else Stil.ROT)
 		var p := PanelContainer.new()
-		var sb := Stil.box(Color(farbe.r, farbe.g, farbe.b, 0.85), 3)
-		sb.content_margin_left = 4
-		sb.content_margin_right = 4
-		sb.content_margin_top = 1
-		sb.content_margin_bottom = 1
+		var sb := Stil.box(Stil.lasur(farbe, 0.22), Stil.R_MINI)
+		sb.content_margin_left = 6
+		sb.content_margin_right = 6
+		sb.content_margin_top = 2
+		sb.content_margin_bottom = 3
 		p.add_theme_stylebox_override("panel", sb)
-		var l := Stil.text(e, Stil.S_MINI, Stil.GRUND)
+		var l := Stil.text(e, Stil.S_MINI, farbe.lightened(0.15))
+		l.add_theme_font_override("font", Stil.schnitt_halbfett())
 		p.add_child(l)
 		h.add_child(p)
 	return h

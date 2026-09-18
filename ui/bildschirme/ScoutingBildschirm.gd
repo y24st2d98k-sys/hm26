@@ -48,11 +48,13 @@ func _scouts() -> void:
 		var zeile := Stil.hbox(10)
 		karte.add_child(zeile)
 		var scoutname := Stil.text("%s %s" % [s["vorname"], s["nachname"]], Stil.S_KLEIN)
-		scoutname.custom_minimum_size = Vector2(180, 0)
+		scoutname.custom_minimum_size = Vector2(150, 0)
+		scoutname.clip_text = true
 		zeile.add_child(scoutname)
 		zeile.add_child(Stil.balken(g, 100.0, 110))
 		var t := Stil.text(Scouting.gespuer_text(g), Stil.S_KLEIN, Stil.wert_farbe(g, 100.0))
-		t.custom_minimum_size = Vector2(170, 0)
+		t.custom_minimum_size = Vector2(120, 0)
+		t.clip_text = true
 		zeile.add_child(t)
 		zeile.add_child(Stil.matt("%d Berichte, %d bestätigt" % [int(s.get("berichte", 0)), int(s.get("treffer", 0))], Stil.S_MINI))
 		zeile.add_child(Stil.dehner())
@@ -67,7 +69,7 @@ func _scouts() -> void:
 func _auftragswahl(pid: String) -> HBoxContainer:
 	var h := Stil.hbox(6)
 	var art := OptionButton.new()
-	art.custom_minimum_size = Vector2(150, 0)
+	art.custom_minimum_size = Vector2(132, 0)
 	for k in Scouting.AUFTRAGSARTEN.keys():
 		if k == "spieler":
 			continue
@@ -75,7 +77,7 @@ func _auftragswahl(pid: String) -> HBoxContainer:
 		art.set_item_metadata(art.item_count - 1, k)
 	h.add_child(art)
 	var ziel := OptionButton.new()
-	ziel.custom_minimum_size = Vector2(190, 0)
+	ziel.custom_minimum_size = Vector2(168, 0)
 	ziel.clip_text = true
 	var fuelle := func():
 		ziel.clear()
@@ -108,7 +110,7 @@ func _auftragswahl(pid: String) -> HBoxContainer:
 	var hinweis := Stil.matt("", Stil.S_MINI)
 	# Fest begrenzt und umbrechend: ohne das schiebt ein langer Regionentext
 	# die ganze Karte über den Bildschirmrand hinaus.
-	hinweis.custom_minimum_size = Vector2(210, 0)
+	hinweis.custom_minimum_size = Vector2(180, 0)
 	hinweis.size_flags_horizontal = Control.SIZE_SHRINK_END
 	hinweis.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var erklaere := func():

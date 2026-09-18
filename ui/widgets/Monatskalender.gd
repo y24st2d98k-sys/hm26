@@ -78,8 +78,8 @@ func _aufbauen() -> void:
 
 	_gitter = GridContainer.new()
 	_gitter.columns = 7
-	_gitter.add_theme_constant_override("h_separation", 4)
-	_gitter.add_theme_constant_override("v_separation", 4)
+	_gitter.add_theme_constant_override("h_separation", 6)
+	_gitter.add_theme_constant_override("v_separation", 6)
 	add_child(_gitter)
 
 	_legende = Stil.hbox(10)
@@ -120,26 +120,34 @@ func _tagfeld(tag_abs: int, tag_im_monat: int) -> Control:
 	var ist_heute: bool = tag_abs == Welt.tag()
 	var vergangen: bool = tag_abs < Welt.tag()
 
+	# Ein Kalender ist ein Raster, kein Setzkasten. Vorher trug jeder Tag
+	# seinen eigenen Rahmen mit harten Ecken — zweiunddreissig Kaesten auf
+	# einer Flaeche, und das Auge sah zuerst die Linien und dann erst die
+	# Termine. Jetzt traegt nur der heutige Tag eine Flaeche, alles andere
+	# steht frei; getrennt wird ueber den Abstand des Rasters.
 	var rahmen := PanelContainer.new()
-	rahmen.custom_minimum_size = Vector2(92, 66)
+	rahmen.custom_minimum_size = Vector2(96, 74)
 	var stil := StyleBoxFlat.new()
-	stil.bg_color = Stil.FLAECHE
+	stil.bg_color = Color(0, 0, 0, 0) if not ist_heute else Stil.lasur(Stil.AKZENT, 0.16)
 	if ist_heute:
-		stil.bg_color = Stil.FLAECHE.lerp(Stil.AKZENT, 0.18)
-		stil.border_color = Stil.AKZENT
+		stil.border_color = Stil.lasur(Stil.AKZENT, 0.75)
 		stil.set_border_width_all(1)
-	elif vergangen:
-		stil.bg_color = Stil.FLAECHE.darkened(0.35)
-	stil.set_corner_radius_all(4)
-	stil.set_content_margin_all(4)
+	elif not vergangen:
+		stil.bg_color = Stil.lasur(Stil.TEXT, 0.028)
+	stil.set_corner_radius_all(Stil.R_KLEIN)
+	stil.content_margin_left = 9
+	stil.content_margin_right = 8
+	stil.content_margin_top = 7
+	stil.content_margin_bottom = 7
 	rahmen.add_theme_stylebox_override("panel", stil)
 
-	var box := Stil.vbox(1)
+	var box := Stil.vbox(2)
 	rahmen.add_child(box)
 	var kopfzeile := Stil.hbox(4)
 	box.add_child(kopfzeile)
 	var nummer := Stil.text("%d" % tag_im_monat, Stil.S_MINI,
-		Stil.AKZENT if ist_heute else (Stil.TEXT_MATT if vergangen else Stil.TEXT))
+		Stil.AKZENT if ist_heute else (Stil.TEXT_SCHWACH if vergangen else Stil.TEXT_MATT))
+	nummer.add_theme_font_override("font", Stil.schnitt_halbfett())
 	kopfzeile.add_child(nummer)
 	kopfzeile.add_child(Stil.dehner())
 
@@ -150,7 +158,7 @@ func _tagfeld(tag_abs: int, tag_im_monat: int) -> Control:
 		box.add_child(zeile)
 		tooltip.append(str(e["lang"]))
 	if eintraege.is_empty():
-		box.add_child(Stil.matt("—", Stil.S_MINI))
+		box.add_child(Stil.text("—", Stil.S_MINI, Stil.TEXT_SCHWACH))
 	rahmen.tooltip_text = "%s\n%s" % [Kalender.text(tag_abs, Welt.startjahr(), true),
 		"\n".join(tooltip) if not tooltip.is_empty() else "Nichts angesetzt."]
 	return rahmen

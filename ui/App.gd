@@ -127,11 +127,13 @@ func _baue_rahmen() -> void:
 ## Linke Spalte: Wortmarke, Navigation nach Gruppen, Trainerzeile unten.
 func _baue_seitenleiste() -> void:
 	var navpanel := PanelContainer.new()
-	navpanel.custom_minimum_size = Vector2(212, 0)
-	var navbox := Stil.box_kante(Stil.FLAECHE_TIEF, "rechts", Stil.RAND)
-	navbox.shadow_color = Color(0, 0, 0, 0.5)
-	navbox.shadow_size = 14
-	navbox.shadow_offset = Vector2(3, 0)
+	navpanel.custom_minimum_size = Vector2(238, 0)
+	# Kein Strich nach rechts: die Leiste liegt tiefer als der Inhalt, und der
+	# Schatten sagt das deutlicher als eine Linie.
+	var navbox := Stil.box(Stil.FLAECHE_TIEF, 0)
+	navbox.shadow_color = Color(0, 0, 0, 0.6)
+	navbox.shadow_size = 22
+	navbox.shadow_offset = Vector2(4, 0)
 	navpanel.add_theme_stylebox_override("panel", navbox)
 	rahmen.add_child(navpanel)
 
@@ -141,22 +143,24 @@ func _baue_seitenleiste() -> void:
 
 	# Wortmarke
 	var marke := PanelContainer.new()
-	var mbox := Stil.box_kante(Color(0, 0, 0, 0), "unten", Stil.RAND)
-	mbox.content_margin_left = 16
-	mbox.content_margin_right = 14
-	mbox.content_margin_top = 12
-	mbox.content_margin_bottom = 12
+	var mbox := Stil.box(Color(0, 0, 0, 0), 0)
+	mbox.content_margin_left = 20
+	mbox.content_margin_right = 16
+	mbox.content_margin_top = 20
+	mbox.content_margin_bottom = 18
 	marke.add_theme_stylebox_override("panel", mbox)
 	spalte.add_child(marke)
-	var mzeile := Stil.hbox(9)
+	var mzeile := Stil.hbox(11)
 	marke.add_child(mzeile)
-	var puls := Stil.Marke.new()
-	puls.custom_minimum_size = Vector2(4, 24)
-	puls.farbe = Stil.AKZENT
+	var puls := Wortzeichen.new()
+	puls.custom_minimum_size = Vector2(30, 30)
+	puls.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	mzeile.add_child(puls)
-	var mtext := Stil.vbox(0)
+	var mtext := Stil.vbox(1)
+	mtext.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	mzeile.add_child(mtext)
 	var wort := Stil.text("HALLENHERZ", Stil.S_GROSS, Stil.TEXT)
+	wort.add_theme_font_override("font", Stil.schnitt_fett())
 	mtext.add_child(wort)
 	mtext.add_child(Stil.etikett("Handball Manager"))
 
@@ -171,11 +175,11 @@ func _baue_seitenleiste() -> void:
 
 	# Fusszeile: wer hier eigentlich arbeitet
 	var fuss := PanelContainer.new()
-	var fbox := Stil.box_kante(Color(0, 0, 0, 0), "oben", Stil.RAND)
-	fbox.content_margin_left = 16
+	var fbox := Stil.box(Stil.lasur(Stil.TEXT, 0.035), 0)
+	fbox.content_margin_left = 18
 	fbox.content_margin_right = 14
-	fbox.content_margin_top = 10
-	fbox.content_margin_bottom = 11
+	fbox.content_margin_top = 13
+	fbox.content_margin_bottom = 14
 	fuss.add_theme_stylebox_override("panel", fbox)
 	spalte.add_child(fuss)
 	var fzeile := Stil.hbox(9)
@@ -196,9 +200,10 @@ func _baue_navigation() -> void:
 	for b in BEREICHE:
 		if str(b["gruppe"]) != letzte_gruppe:
 			letzte_gruppe = str(b["gruppe"])
-			navigation.add_child(Stil.abstand(9))
-			navigation.add_child(Stil.etikett("   " + letzte_gruppe))
-			navigation.add_child(Stil.abstand(1))
+			navigation.add_child(Stil.abstand(14))
+			var rubrik := Stil.etikett("    " + letzte_gruppe, Stil.TEXT_SCHWACH)
+			navigation.add_child(rubrik)
+			navigation.add_child(Stil.abstand(4))
 		var id: String = str(b["id"])
 		var knopf := NavKnopf.neu(id, str(b["name"]))
 		knopf.pressed.connect(func():
@@ -211,31 +216,32 @@ func _baue_navigation() -> void:
 ## Obere Leiste: Vereinsidentitaet links, Lage und Aktionen rechts.
 func _baue_kopfzeile(eltern: Node) -> void:
 	var kopfpanel := PanelContainer.new()
-	var kopfbox := Stil.box_kante(Stil.FLAECHE, "unten", Stil.RAND)
+	var kopfbox := Stil.box(Stil.FLAECHE, 0)
 	# Der Kopf soll über dem Inhalt liegen, nicht neben ihm. Ein Schatten nach
 	# unten trennt die Zone deutlicher als jede Linie und kostet nichts.
 	kopfbox.shadow_color = Color(0, 0, 0, 0.45)
 	kopfbox.shadow_size = 12
 	kopfbox.shadow_offset = Vector2(0, 4)
-	kopfbox.content_margin_left = 18
-	kopfbox.content_margin_right = 18
-	kopfbox.content_margin_top = 10
-	kopfbox.content_margin_bottom = 10
+	kopfbox.content_margin_left = 24
+	kopfbox.content_margin_right = 22
+	kopfbox.content_margin_top = 14
+	kopfbox.content_margin_bottom = 14
 	kopfpanel.add_theme_stylebox_override("panel", kopfbox)
 	eltern.add_child(kopfpanel)
 	kopf = kopfpanel
 
-	var zeile := Stil.hbox(14)
+	var zeile := Stil.hbox(16)
 	kopfpanel.add_child(zeile)
 
 	kopf_wappen_halter = Stil.hbox(0)
-	kopf_wappen_halter.custom_minimum_size = Vector2(36, 36)
+	kopf_wappen_halter.custom_minimum_size = Vector2(42, 42)
 	zeile.add_child(kopf_wappen_halter)
 
 	var namen := Stil.vbox(0)
 	namen.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	zeile.add_child(namen)
 	kopf_verein = Stil.text("", Stil.S_GROSS, Stil.TEXT)
+	kopf_verein.add_theme_font_override("font", Stil.schnitt_halbfett())
 	namen.add_child(kopf_verein)
 	kopf_liga = Stil.matt("", Stil.S_MINI)
 	namen.add_child(kopf_liga)
@@ -243,11 +249,9 @@ func _baue_kopfzeile(eltern: Node) -> void:
 	zeile.add_child(Stil.dehner())
 
 	kopf_kasse = _kopf_wert(zeile, "Kasse")
-	zeile.add_child(_kopf_strich())
 	kopf_datum = _kopf_wert(zeile, "Spieltag")
-	zeile.add_child(_kopf_strich())
 	kopf_saison = _kopf_wert(zeile, "Saison")
-	zeile.add_child(Stil.abstand(4))
+	zeile.add_child(Stil.abstand(6))
 
 	kopf_glocke = Button.new()
 	kopf_glocke.flat = true
@@ -298,19 +302,44 @@ func _baue_kopfzeile(eltern: Node) -> void:
 	zeile.add_child(weiter_knopf)
 
 ## Etikett ueber Wert — die Statusanzeigen der Kopfzeile.
+## Eine Statusanzeige der Kopfzeile.
+##
+## Vorher standen die drei Werte nackt nebeneinander, getrennt durch senkrechte
+## Striche. Als abgesetzte Flaechen lesen sie sich als das, was sie sind: drei
+## Anzeigen, nicht ein Satz — und die Striche fallen weg.
 func _kopf_wert(eltern: Node, beschriftung: String) -> Label:
-	var v := Stil.vbox(0)
-	v.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	eltern.add_child(v)
+	var p := PanelContainer.new()
+	var sb := Stil.box(Stil.FLAECHE_HOCH, Stil.R_KLEIN)
+	sb.content_margin_left = 14
+	sb.content_margin_right = 14
+	sb.content_margin_top = 7
+	sb.content_margin_bottom = 8
+	p.add_theme_stylebox_override("panel", sb)
+	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	eltern.add_child(p)
+	var v := Stil.vbox(1)
+	p.add_child(v)
 	v.add_child(Stil.etikett(beschriftung))
 	var l := Stil.text("—", Stil.S_KLEIN, Stil.TEXT)
+	l.add_theme_font_override("font", Stil.schnitt_halbfett())
 	v.add_child(l)
 	return l
 
-func _kopf_strich() -> Control:
-	var s := VSeparator.new()
-	s.add_theme_constant_override("separation", 10)
-	return s
+## Das Zeichen der Wortmarke: ein Herzschlag in einem Kreis.
+class Wortzeichen extends Control:
+	func _draw() -> void:
+		var s: float = minf(size.x, size.y)
+		var m := size * 0.5
+		draw_circle(m, s * 0.5, Stil.lasur(Stil.AKZENT, 0.18))
+		draw_arc(m, s * 0.5 - 1.0, 0.0, TAU, 32, Stil.lasur(Stil.AKZENT, 0.55), 1.5, true)
+		var p := PackedVector2Array()
+		var kasten := s * 0.62
+		var links := m.x - kasten * 0.5
+		var hoch := kasten * 0.30
+		for punkt in [Vector2(0.00, 0.0), Vector2(0.22, 0.0), Vector2(0.36, -1.0),
+				Vector2(0.52, 0.85), Vector2(0.68, -0.35), Vector2(0.80, 0.0), Vector2(1.0, 0.0)]:
+			p.append(Vector2(links + punkt.x * kasten, m.y + punkt.y * hoch))
+		draw_polyline(p, Stil.AKZENT, 2.0, true)
 
 func _baue_bildschirme() -> void:
 	var liste := {

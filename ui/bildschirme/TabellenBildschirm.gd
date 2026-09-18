@@ -74,14 +74,19 @@ func _zeichne() -> void:
 		var z: Dictionary = liga["tabelle"].get(cid, Spielplan.leere_tabellenzeile())
 		var eigen: bool = cid == Welt.mein_verein_id
 		var farbe: Color = Stil.AKZENT if eigen else Stil.TEXT
-		var platz := Stil.text(str(i + 1), Stil.S_KLEIN, farbe)
+		# Die Zone steht als farbige Kante am Zeilenanfang, nicht in der
+		# Platzziffer. Eine eingefaerbte Zahl las sich wie eine Wertung des
+		# Vereins; die Kante sagt, was sie meint — hier endet Europa, hier
+		# beginnt der Abstieg.
 		if int(liga["stufe"]) == 1 and i < 3:
-			platz.add_theme_color_override("font_color", Stil.TUERKIS if not eigen else Stil.AKZENT)
+			g.setze_zone(i, Stil.TUERKIS)
 		elif i < aufstieg:
-			platz.add_theme_color_override("font_color", Stil.GRUEN if not eigen else Stil.AKZENT)
+			g.setze_zone(i, Stil.GRUEN)
 		elif i >= abstieg:
-			platz.add_theme_color_override("font_color", Stil.ROT if not eigen else Stil.AKZENT)
-		g.add_child(platz)
+			g.setze_zone(i, Stil.ROT)
+		if eigen:
+			g.hebe_zeile(i)
+		g.add_child(Stil.text(str(i + 1), Stil.S_KLEIN, farbe))
 		g.add_child(Wappen.fuer_verein(cid, 18.0))
 		var vereinsknopf := Stil.knopf_flach(str(Welt.verein(cid).get("name", "")), farbe)
 		vereinsknopf.pressed.connect(func(): Vereinsfenster.oeffnen(self, cid))
