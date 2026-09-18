@@ -30,7 +30,6 @@ func aktualisieren() -> void:
 	var v: Dictionary = Welt.verein(cid)
 
 	_kennzahlen(v)
-	_kalender(bereich)
 
 	for e in Anliegen.offene(Welt.daten):
 		var eintrag: Dictionary = e
@@ -79,18 +78,34 @@ func aktualisieren() -> void:
 	_fanlage()
 	_cotrainer()
 
-	var oben := Stil.hbox(12)
-	bereich.add_child(oben)
-	_naechstes_spiel(oben)
-	_tabellenlage(oben)
-	_vorstand(oben)
+	# Der Monat und die Lage nebeneinander.
+	#
+	# Vorher lief der Kalender ueber die volle Breite, obwohl er nur die linke
+	# Haelfte fuellte: rechts daneben stand auf jedem Bildschirm ein
+	# handgrosses Loch, und alles Weitere rutschte unter den Falz. Jetzt sitzt
+	# rechts, was man zusammen mit dem Kalender liest — das naechste Spiel und
+	# der Tabellenplatz.
+	var haupt := Stil.hbox(Stil.A_NORMAL)
+	bereich.add_child(haupt)
+	var links := Stil.vbox(Stil.A_NORMAL)
+	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	links.size_flags_stretch_ratio = 1.9
+	haupt.add_child(links)
+	_kalender(links)
+	var rechts := Stil.vbox(Stil.A_NORMAL)
+	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rechts.size_flags_stretch_ratio = 1.0
+	haupt.add_child(rechts)
+	_naechstes_spiel(rechts)
+	_tabellenlage(rechts)
+	_vorstand(rechts)
 
-	var mitte := Stil.hbox(12)
+	var mitte := Stil.hbox(Stil.A_NORMAL)
 	bereich.add_child(mitte)
 	_kaderlage(mitte)
 	_letzte_spiele(mitte)
 
-	var unten := Stil.hbox(12)
+	var unten := Stil.hbox(Stil.A_NORMAL)
 	bereich.add_child(unten)
 	_presse(unten)
 	_finanzen(unten)
@@ -198,7 +213,7 @@ func _cotrainer() -> void:
 			zeile.add_child(hin)
 
 func _kennzahlen(v: Dictionary) -> void:
-	var reihe := Stil.hbox(10)
+	var reihe := Stil.hbox(8)
 	bereich.add_child(reihe)
 	var lid: String = str(v["liga"])
 	var tabelle := Spielplan.tabelle_sortiert(Welt.daten, lid)

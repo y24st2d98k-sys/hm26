@@ -543,10 +543,10 @@ func karte_aktion(inhalt: Node, steuerung: Control) -> void:
 func kachel(beschriftung: String, wert: String, hinweis: String = "", farbe: Variant = null) -> PanelContainer:
 	var p := PanelContainer.new()
 	var sb := box_erhaben(FLAECHE, R_GROSS, RAND)
-	sb.content_margin_left = 18
-	sb.content_margin_right = 18
-	sb.content_margin_top = 15
-	sb.content_margin_bottom = 17
+	sb.content_margin_left = 15
+	sb.content_margin_right = 14
+	sb.content_margin_top = 14
+	sb.content_margin_bottom = 15
 	if farbe != null:
 		sb.bg_color = FLAECHE.lerp(farbe as Color, 0.05)
 		sb.border_color = RAND.lerp(farbe as Color, 0.32)
@@ -554,18 +554,19 @@ func kachel(beschriftung: String, wert: String, hinweis: String = "", farbe: Var
 	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var v := vbox(3)
 	p.add_child(v)
-	v.add_child(etikett(beschriftung))
+	v.add_child(beschnitten(etikett(beschriftung), float(S_ETIKETT) + 5.0))
 	var w := Label.new()
 	w.text = wert
 	w.add_theme_font_size_override("font_size", S_TITEL)
 	w.add_theme_font_override("font", schnitt_fett())
 	w.add_theme_color_override("font_color", farbe if farbe != null else TEXT)
 	w.clip_text = true
-	v.add_child(w)
+	w.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	v.add_child(beschnitten(w, float(S_TITEL) + 9.0))
 	if hinweis != "":
 		var hl := matt(hinweis, S_MINI)
 		hl.clip_text = true
-		v.add_child(hl)
+		v.add_child(beschnitten(hl, float(S_MINI) + 6.0))
 	p.set_meta("wert", w)
 	return p
 
@@ -695,6 +696,22 @@ class Wortzeichen extends Control:
 				Vector2(0.52, 0.85), Vector2(0.68, -0.35), Vector2(0.80, 0.0), Vector2(1.0, 0.0)]:
 			p.append(Vector2(links + punkt.x * kasten, m.y + punkt.y * hoch))
 		draw_polyline(p, Stil.AKZENT, maxf(s * 0.062, 1.6), true)
+
+## Ein Text, der seine Spalte nicht auseinanderdrueckt.
+##
+## `clip_text` schneidet in Godot zwar die Darstellung ab, senkt aber die
+## Mindestbreite eines Labels nicht: die Zelle bleibt so breit wie der Text,
+## und eine Reihe aus sechs Kacheln schiebt sich aus dem Bild, sobald eine
+## Zahl eine Stelle mehr hat. Ein Control gibt die Mindestgroesse seiner
+## Kinder nicht weiter — darin darf der Text so breit sein, wie er will.
+func beschnitten(inhalt: Control, hoehe: float) -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(0, hoehe)
+	c.clip_contents = true
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inhalt.set_anchors_preset(Control.PRESET_FULL_RECT)
+	c.add_child(inhalt)
+	return c
 
 ## Monogramm — runde Flaeche mit Initialen, als Ersatz fuer ein Portraet.
 func monogramm(initialen: String, farbe: Color, groesse: float = 30.0) -> Control:

@@ -126,7 +126,7 @@ func _tagfeld(tag_abs: int, tag_im_monat: int) -> Control:
 	# Termine. Jetzt traegt nur der heutige Tag eine Flaeche, alles andere
 	# steht frei; getrennt wird ueber den Abstand des Rasters.
 	var rahmen := PanelContainer.new()
-	rahmen.custom_minimum_size = Vector2(96, 74)
+	rahmen.custom_minimum_size = Vector2(76, 74)
 	var stil := StyleBoxFlat.new()
 	stil.bg_color = Color(0, 0, 0, 0) if not ist_heute else Stil.lasur(Stil.AKZENT, 0.16)
 	if ist_heute:

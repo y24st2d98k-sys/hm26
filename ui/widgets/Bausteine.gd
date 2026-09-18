@@ -31,8 +31,8 @@ static func formkurve(kurve: Array, anzahl: int = 5) -> HBoxContainer:
 		var farbe: Color = Stil.GRUEN if e == "S" else (Stil.GELB if e == "U" else Stil.ROT)
 		var p := PanelContainer.new()
 		var sb := Stil.box(Stil.lasur(farbe, 0.22), Stil.R_MINI)
-		sb.content_margin_left = 6
-		sb.content_margin_right = 6
+		sb.content_margin_left = 5
+		sb.content_margin_right = 5
 		sb.content_margin_top = 2
 		sb.content_margin_bottom = 3
 		p.add_theme_stylebox_override("panel", sb)
