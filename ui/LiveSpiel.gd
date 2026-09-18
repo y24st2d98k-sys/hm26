@@ -47,6 +47,14 @@ var gewaehlt_raus: String = ""
 var hinweis: Label
 var anpfiff_knopf: Button
 var ansprache_bereich: VBoxContainer
+## Die rechte Spalte zeigt immer genau einen Abschnitt. Vorher standen alle
+## fuenf untereinander in einem Rollbereich: wer zur Halbzeit eine Ansprache
+## halten wollte, scrollte waehrend der laufenden Uhr durch Taktik, Aufstellung
+## und Statistik. Ein Reiter kostet einen Klick und spart das Suchen.
+var reiter: String = "taktik"
+var reiter_leiste: Control
+var reiter_halter: VBoxContainer
+var bereiche: Dictionary = {}
 var angepfiffen: bool = false
 var wunschtempo: int = 2
 ## Verbleibende Takte des laufenden Angriffs (siehe _zug_bauen).
@@ -80,26 +88,40 @@ func _baue() -> void:
 
 	# Anzeigetafel — Heimseite, Spielstand mit Uhr, Gastseite, darunter der Puls
 	var tafel := PanelContainer.new()
-	var tafelstil := Stil.box(Stil.FLAECHE_TIEF, Stil.R_NORMAL, Stil.RAND_HELL)
-	tafelstil.content_margin_left = 18
-	tafelstil.content_margin_right = 18
-	tafelstil.content_margin_top = 10
-	tafelstil.content_margin_bottom = 10
+	var tafelstil := Stil.box_erhaben(Stil.FLAECHE_TIEF, Stil.R_GROSS, Stil.RAND)
+	tafelstil.content_margin_left = 26
+	tafelstil.content_margin_right = 26
+	tafelstil.content_margin_top = 16
+	tafelstil.content_margin_bottom = 16
 	tafel.add_theme_stylebox_override("panel", tafelstil)
 	v.add_child(tafel)
-	var tafelspalte := Stil.vbox(6)
+	var tafelspalte := Stil.vbox(10)
 	tafel.add_child(tafelspalte)
 
-	var tafelbox := Stil.hbox(14)
+	var tafelbox := Stil.hbox(22)
 	tafelspalte.add_child(tafelbox)
 	heim_seite = _tafelseite(tafelbox, true)
 	var mitte := Stil.vbox(0)
 	mitte.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	tafelbox.add_child(mitte)
 	anzeige_stand = Stil.anzeige("0 : 0", Stil.S_ANZEIGE)
+	anzeige_stand.add_theme_font_override("font", Stil.schnitt_fett())
 	mitte.add_child(anzeige_stand)
+	# Die Uhr steht als eigene Flaeche unter dem Stand. Nackt darunter sah sie
+	# aus wie eine Fussnote des Ergebnisses; sie ist aber die zweite Zahl, auf
+	# die man in einer Live-Ansicht schaut.
+	var uhrkasten := PanelContainer.new()
+	var uhrstil := Stil.box(Stil.lasur(Stil.AKZENT, 0.16), Stil.R_RUND)
+	uhrstil.content_margin_left = 16
+	uhrstil.content_margin_right = 16
+	uhrstil.content_margin_top = 3
+	uhrstil.content_margin_bottom = 4
+	uhrkasten.add_theme_stylebox_override("panel", uhrstil)
+	uhrkasten.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	mitte.add_child(uhrkasten)
 	anzeige_zeit = Stil.anzeige("00:00", Stil.S_GROSS, Stil.AKZENT)
-	mitte.add_child(anzeige_zeit)
+	anzeige_zeit.add_theme_font_override("font", Stil.schnitt_halbfett())
+	uhrkasten.add_child(anzeige_zeit)
 	gast_seite = _tafelseite(tafelbox, false)
 
 	var fusszeile := Stil.hbox(12)
@@ -114,7 +136,7 @@ func _baue() -> void:
 	fusszeile.add_child(puls_balken)
 
 	# Steuerleiste
-	var steuerung := Stil.hbox(10)
+	var steuerung := Stil.hbox(12)
 	v.add_child(steuerung)
 	tempo_leiste = Stil.hbox(0)
 	steuerung.add_child(tempo_leiste)
@@ -162,24 +184,65 @@ func _baue() -> void:
 	ticker_scroll = ScrollContainer.new()
 	ticker_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	ticker_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	ticker_scroll.custom_minimum_size = Vector2(0, 120)
+	# Kein Rollbalken: der Ticker haelt genau so viele Zeilen, wie hineinpassen.
+	ticker_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	ticker_scroll.custom_minimum_size = Vector2(0, 150)
 	tickerkarte.add_child(ticker_scroll)
 	ticker = Stil.vbox(3)
 	ticker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ticker_scroll.add_child(ticker)
 
-	var rechts := ScrollContainer.new()
-	rechts.custom_minimum_size = Vector2(430, 0)
-	rechts.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	haupt.add_child(rechts)
-	var rechtsbox := Stil.vbox(10)
-	rechtsbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rechts.add_child(rechtsbox)
-	ansprache_bereich = Bausteine.karte_in(rechtsbox, "Ansprache")
-	taktik_bereich = Bausteine.karte_in(rechtsbox, "Taktik im Spiel")
-	aufstellung_bereich = Bausteine.karte_in(rechtsbox, "Aufstellung im Spiel")
-	kader_bereich = Bausteine.karte_in(rechtsbox, "Mannschaft & Wechsel")
-	stats_bereich = Bausteine.karte_in(rechtsbox, "Statistik")
+	var rechtskarte := Stil.karte()
+	var rechtswurzel := Stil.karte_wurzel(rechtskarte)
+	rechtswurzel.custom_minimum_size = Vector2(452, 0)
+	rechtswurzel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	haupt.add_child(rechtswurzel)
+	reiter_halter = Stil.vbox(0)
+	rechtskarte.add_child(reiter_halter)
+	var flaeche := ScrollContainer.new()
+	flaeche.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	flaeche.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	rechtskarte.add_child(flaeche)
+	var stapel := Stil.vbox(0)
+	stapel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	flaeche.add_child(stapel)
+	for id in REITER:
+		var b := Stil.vbox(7)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.visible = str((id as Dictionary)["id"]) == reiter
+		stapel.add_child(b)
+		bereiche[str((id as Dictionary)["id"])] = b
+	ansprache_bereich = bereiche["ansprache"]
+	taktik_bereich = bereiche["taktik"]
+	aufstellung_bereich = bereiche["aufstellung"]
+	kader_bereich = bereiche["wechsel"]
+	stats_bereich = bereiche["statistik"]
+	_reiterleiste_bauen()
+
+## Die Abschnitte der rechten Spalte, in der Reihenfolge der Leiste.
+const REITER := [
+	{"id": "ansprache", "name": "Ansprache"},
+	{"id": "taktik", "name": "Taktik"},
+	{"id": "aufstellung", "name": "Aufstellung"},
+	{"id": "wechsel", "name": "Wechsel"},
+	{"id": "statistik", "name": "Statistik"},
+]
+
+func _reiterleiste_bauen() -> void:
+	if reiter_halter == null:
+		return
+	Bildschirm.leeren(reiter_halter)
+	reiter_leiste = Stil.segmente(REITER, reiter, func(id): zeige_reiter(str(id)))
+	reiter_leiste.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	reiter_halter.add_child(reiter_leiste)
+
+func zeige_reiter(id: String) -> void:
+	if not bereiche.has(id):
+		return
+	reiter = id
+	for k in bereiche.keys():
+		(bereiche[k] as Control).visible = str(k) == id
+	_reiterleiste_bauen()
 
 # ------------------------------------------------------------------ Start ---
 
@@ -509,6 +572,9 @@ func _pulstext(wert: float) -> String:
 		return "es wird still"
 	return "eisige Stimmung"
 
+## Wie viele Ereignisse gleichzeitig im Ticker stehen.
+const TICKER_ZEILEN := 7
+
 func _ereignis_anzeigen(e: Dictionary) -> void:
 	_klang_zu(e)
 	var zeile := Stil.hbox(8)
@@ -524,13 +590,15 @@ func _ereignis_anzeigen(e: Dictionary) -> void:
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	zeile.add_child(text)
 	ticker.add_child(zeile)
-	while ticker.get_child_count() > 120:
+	# Der Ticker haelt nur, was hineinpasst. Vorher standen hundertzwanzig
+	# Zeilen in einem Rollbereich, der bei jedem Ereignis ans Ende sprang: die
+	# oberste Zeile war dabei immer halb abgeschnitten, und gescrollt hat
+	# waehrend eines laufenden Spiels ohnehin niemand. Der vollstaendige
+	# Verlauf steht nach dem Schlusspfiff im Spielbericht.
+	while ticker.get_child_count() > TICKER_ZEILEN:
 		var alt := ticker.get_child(0)
 		ticker.remove_child(alt)
 		alt.queue_free()
-	await get_tree().process_frame
-	if is_instance_valid(ticker_scroll):
-		ticker_scroll.scroll_vertical = int(ticker_scroll.get_v_scroll_bar().max_value)
 
 func _ereignisfarbe(e: Dictionary) -> Color:
 	var eigene: bool = str(e["team"]) == ("heim" if mein_team == sim.heim else "gast")
@@ -707,9 +775,15 @@ func _auszeit() -> void:
 		_anzeige_auffrischen()
 
 ## Ansprachebereich. "dringend" hebt ihn optisch hervor (Halbzeit, Auszeit).
+##
+## Ist eine Ansprache faellig, springt die rechte Spalte selbst dorthin. Eine
+## Auszeit zu nehmen und dann den richtigen Reiter suchen zu muessen, waere
+## genau die Handgriff-Suche, die eine laufende Uhr nicht verzeiht.
 func _ansprache_aufbauen(dringend: bool = false) -> void:
 	if ansprache_bereich == null or sim == null:
 		return
+	if dringend:
+		zeige_reiter("ansprache")
 	Bildschirm.leeren(ansprache_bereich)
 	if fertig:
 		ansprache_bereich.add_child(Stil.matt("Das Spiel ist beendet."))
@@ -1081,15 +1155,16 @@ func _stats_auffrischen() -> void:
 ## Eine Seite der Anzeigetafel: Wappen, Vereinsname, Kürzel.
 ## Die Heimmannschaft steht links, der Gast rechts — wie auf jeder Hallenanzeige.
 func _tafelseite(eltern: Node, ist_heim: bool) -> Dictionary:
-	var box := Stil.hbox(10)
+	var box := Stil.hbox(14)
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	box.alignment = BoxContainer.ALIGNMENT_END if ist_heim else BoxContainer.ALIGNMENT_BEGIN
 	eltern.add_child(box)
 	var halter := Stil.hbox(0)
-	halter.custom_minimum_size = Vector2(46, 46)
-	var namen := Stil.vbox(0)
+	halter.custom_minimum_size = Vector2(58, 58)
+	var namen := Stil.vbox(2)
 	namen.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var name := Stil.text("", Stil.S_GROSS)
+	var name := Stil.text("", Stil.S_TITEL - 4)
+	name.add_theme_font_override("font", Stil.schnitt_halbfett())
 	var ort := Stil.etikett("")
 	if ist_heim:
 		name.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -1113,7 +1188,7 @@ func _tafel_beschriften(m: Dictionary) -> void:
 		var halter: Node = seite["halter"]
 		for k in halter.get_children():
 			k.queue_free()
-		halter.add_child(Wappen.fuer_verein(cid, 44.0))
+		halter.add_child(Wappen.fuer_verein(cid, 56.0))
 		var v: Dictionary = Welt.verein(cid)
 		(seite["name"] as Label).text = str(v.get("name", "?"))
 		(seite["ort"] as Label).text = str(v.get("ort", ""))
