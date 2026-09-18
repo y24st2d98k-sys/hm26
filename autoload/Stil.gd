@@ -666,6 +666,36 @@ func abzeichen(beschriftung: String, farbe: Color, gefuellt: bool = false) -> Pa
 	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	return p
 
+## Das Zeichen der Wortmarke: ein Herzschlag in einem Ring.
+##
+## Hallenherz heisst das Spiel, und ein Herzschlag laesst sich in wenigen
+## Linien zeichnen — das spart eine Bilddatei und bleibt bei jeder Groesse
+## scharf.
+func wortzeichen(groesse: float = 32.0) -> Control:
+	var w := Wortzeichen.new()
+	w.custom_minimum_size = Vector2(groesse, groesse)
+	w.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	w.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	w.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return w
+
+class Wortzeichen extends Control:
+	func _draw() -> void:
+		var s: float = minf(size.x, size.y)
+		if s < 8.0:
+			return
+		var m := size * 0.5
+		draw_circle(m, s * 0.5, Stil.lasur(Stil.AKZENT, 0.16))
+		draw_arc(m, s * 0.5 - 1.0, 0.0, TAU, 40, Stil.lasur(Stil.AKZENT, 0.55), maxf(s * 0.045, 1.2), true)
+		var p := PackedVector2Array()
+		var kasten := s * 0.62
+		var links := m.x - kasten * 0.5
+		var hoch := kasten * 0.30
+		for punkt in [Vector2(0.00, 0.0), Vector2(0.22, 0.0), Vector2(0.36, -1.0),
+				Vector2(0.52, 0.85), Vector2(0.68, -0.35), Vector2(0.80, 0.0), Vector2(1.0, 0.0)]:
+			p.append(Vector2(links + punkt.x * kasten, m.y + punkt.y * hoch))
+		draw_polyline(p, Stil.AKZENT, maxf(s * 0.062, 1.6), true)
+
 ## Monogramm — runde Flaeche mit Initialen, als Ersatz fuer ein Portraet.
 func monogramm(initialen: String, farbe: Color, groesse: float = 30.0) -> Control:
 	var m := MonogrammZeichner.new()
@@ -848,14 +878,17 @@ func zeilen_knopf(index: int, hervorgehoben: bool = false, hoehe: int = 36) -> B
 ## optionen: Array von {"id":…, "name":…}. rueckruf bekommt die id.
 func segmente(optionen: Array, aktiv: String, rueckruf: Callable) -> PanelContainer:
 	var p := PanelContainer.new()
-	var sb := box(FLAECHE_TIEF, R_KLEIN, RAND)
-	sb.content_margin_left = 3
-	sb.content_margin_right = 3
-	sb.content_margin_top = 3
-	sb.content_margin_bottom = 3
+	# Der aktive Reiter ist gefuellt, nicht umrandet. Ein Rahmen um den
+	# aktiven und nichts um die anderen liest sich als "dieser ist anklickbar,
+	# die anderen nicht" — genau verkehrt herum.
+	var sb := box(FLAECHE_TIEF, R_KLEIN)
+	sb.content_margin_left = 4
+	sb.content_margin_right = 4
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
 	p.add_theme_stylebox_override("panel", sb)
 	p.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	var h := hbox(2)
+	var h := hbox(3)
 	p.add_child(h)
 	for o in optionen:
 		var id: String = str((o as Dictionary)["id"])
@@ -864,19 +897,19 @@ func segmente(optionen: Array, aktiv: String, rueckruf: Callable) -> PanelContai
 		b.add_theme_font_size_override("font_size", S_KLEIN)
 		b.add_theme_stylebox_override("focus", box_leer())
 		var an: bool = id == aktiv
-		var n := box(lasur(AKZENT, 0.18) if an else Color(0, 0, 0, 0), R_MINI, AKZENT if an else null)
-		n.content_margin_left = 13
-		n.content_margin_right = 13
-		n.content_margin_top = 5
-		n.content_margin_bottom = 6
+		var n := box(AKZENT if an else Color(0, 0, 0, 0), R_KLEIN - 2)
+		n.content_margin_left = 15
+		n.content_margin_right = 15
+		n.content_margin_top = 6
+		n.content_margin_bottom = 7
 		var hb := n.duplicate() as StyleBoxFlat
 		if not an:
-			hb.bg_color = lasur(TEXT, 0.07)
+			hb.bg_color = lasur(TEXT, 0.08)
 		b.add_theme_stylebox_override("normal", n)
 		b.add_theme_stylebox_override("hover", hb)
 		b.add_theme_stylebox_override("pressed", n)
-		b.add_theme_color_override("font_color", AKZENT if an else TEXT_MATT)
-		b.add_theme_color_override("font_hover_color", Color.WHITE if not an else AKZENT)
+		b.add_theme_color_override("font_color", Color.WHITE if an else TEXT_MATT)
+		b.add_theme_color_override("font_hover_color", Color.WHITE)
 		b.pressed.connect(func(): rueckruf.call(id))
 		h.add_child(b)
 	return p

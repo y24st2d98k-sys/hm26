@@ -80,23 +80,27 @@ func _baue_menue() -> void:
 	spalte.custom_minimum_size = Vector2(1000, 0)
 	mitte.add_child(spalte)
 
-	var kopf := Stil.hbox(16)
+	# Der Titel traegt das Zeichen der Wortmarke, nicht einen Strich. Ein
+	# senkrechter Balken vor einem Wort ist eine Behelfsloesung; das Zeichen
+	# ist die Marke.
+	var kopf := Stil.hbox(20)
 	spalte.add_child(kopf)
-	var puls := Stil.Marke.new()
-	puls.custom_minimum_size = Vector2(6, 68)
-	puls.farbe = Stil.AKZENT
+	var puls := Stil.wortzeichen(78.0)
 	kopf.add_child(puls)
-	var titelspalte := Stil.vbox(2)
+	var titelspalte := Stil.vbox(4)
 	titelspalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	kopf.add_child(titelspalte)
 	var t := Stil.titel("HALLENHERZ", 0, Stil.TEXT)
-	t.add_theme_font_size_override("font_size", Stil.S_RIESIG)
+	t.add_theme_font_size_override("font_size", Stil.S_RIESIG + 14)
 	titelspalte.add_child(t)
-	titelspalte.add_child(Stil.text("Handball-Manager — Ihre Karriere an der Seitenlinie",
-		Stil.S_NORMAL, Stil.TEXT_MATT))
+	var unter := Stil.text("HANDBALL-MANAGER · IHRE KARRIERE AN DER SEITENLINIE",
+		Stil.S_KLEIN, Stil.SIGNAL)
+	unter.add_theme_font_override("font", Stil.schnitt_gesperrt())
+	titelspalte.add_child(unter)
 	kopf.add_child(Stil.dehner())
 
-	var knoepfe := Stil.hbox(10)
+	spalte.add_child(Stil.abstand(6))
+	var knoepfe := Stil.hbox(12)
 	spalte.add_child(knoepfe)
 	var neu := Stil.knopf_primaer("Neue Karriere beginnen")
 	neu.pressed.connect(func(): _seite("trainer"))

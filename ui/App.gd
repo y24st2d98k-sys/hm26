@@ -61,7 +61,7 @@ var _tag_laeuft: bool = false
 const SPIELTAG_SCHEIBE := 4
 const WECHSEL_DAUER := 0.14
 const WECHSEL_HUB := 10
-const INHALT_RAND_OBEN := 16
+const INHALT_RAND_OBEN := 22
 var _wechsel: Tween = null
 var _hilfe_schleier: Control
 var _spieltag_schleier: Control
@@ -117,10 +117,10 @@ func _baue_rahmen() -> void:
 	inhalt = MarginContainer.new()
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	inhalt.add_theme_constant_override("margin_left", 18)
-	inhalt.add_theme_constant_override("margin_right", 18)
+	inhalt.add_theme_constant_override("margin_left", 26)
+	inhalt.add_theme_constant_override("margin_right", 24)
 	inhalt.add_theme_constant_override("margin_top", INHALT_RAND_OBEN)
-	inhalt.add_theme_constant_override("margin_bottom", 16)
+	inhalt.add_theme_constant_override("margin_bottom", 20)
 	rechts.add_child(inhalt)
 	_baue_bildschirme()
 
@@ -152,8 +152,8 @@ func _baue_seitenleiste() -> void:
 	spalte.add_child(marke)
 	var mzeile := Stil.hbox(11)
 	marke.add_child(mzeile)
-	var puls := Wortzeichen.new()
-	puls.custom_minimum_size = Vector2(30, 30)
+	var puls := Stil.wortzeichen()
+	puls.custom_minimum_size = Vector2(32, 32)
 	puls.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	mzeile.add_child(puls)
 	var mtext := Stil.vbox(1)
@@ -325,21 +325,6 @@ func _kopf_wert(eltern: Node, beschriftung: String) -> Label:
 	v.add_child(l)
 	return l
 
-## Das Zeichen der Wortmarke: ein Herzschlag in einem Kreis.
-class Wortzeichen extends Control:
-	func _draw() -> void:
-		var s: float = minf(size.x, size.y)
-		var m := size * 0.5
-		draw_circle(m, s * 0.5, Stil.lasur(Stil.AKZENT, 0.18))
-		draw_arc(m, s * 0.5 - 1.0, 0.0, TAU, 32, Stil.lasur(Stil.AKZENT, 0.55), 1.5, true)
-		var p := PackedVector2Array()
-		var kasten := s * 0.62
-		var links := m.x - kasten * 0.5
-		var hoch := kasten * 0.30
-		for punkt in [Vector2(0.00, 0.0), Vector2(0.22, 0.0), Vector2(0.36, -1.0),
-				Vector2(0.52, 0.85), Vector2(0.68, -0.35), Vector2(0.80, 0.0), Vector2(1.0, 0.0)]:
-			p.append(Vector2(links + punkt.x * kasten, m.y + punkt.y * hoch))
-		draw_polyline(p, Stil.AKZENT, 2.0, true)
 
 func _baue_bildschirme() -> void:
 	var liste := {

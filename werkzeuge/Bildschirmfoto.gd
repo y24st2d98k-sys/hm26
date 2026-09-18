@@ -42,6 +42,13 @@ func _ready() -> void:
 	app._zeige_start(false)
 
 	for id in welche:
+		if str(id) == "start":
+			app._zeige_start(true)
+			await get_tree().process_frame
+			await get_tree().process_frame
+			await _foto("%s/start.png" % ordner)
+			app._zeige_start(false)
+			continue
 		if str(id) == "live":
 			await _live(app, ordner)
 			continue
