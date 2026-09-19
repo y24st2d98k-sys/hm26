@@ -15,6 +15,9 @@ extends PanelContainer
 signal gewaehlt(id: String)
 ## Der Stern wurde gedrückt: der Bildschirm soll angeheftet oder abgelöst werden.
 signal merken_umgeschaltet(id: String)
+## Einen Bildschirm zurück beziehungsweise wieder vor.
+signal zurueck_gewaehlt()
+signal vor_gewaehlt()
 
 ## Aufbau: [{"name": "Mannschaft", "eintraege": [{"id":…, "name":…}], "direkt": bool}]
 var gruppen: Array = []
@@ -23,6 +26,8 @@ var aktiv: String = ""
 var _leiste: HBoxContainer
 var _zeichenleiste: HBoxContainer
 var _stern: Button
+var _zurueck: Button
+var _vor: Button
 var _knoepfe: Dictionary = {}     # Gruppenname -> Button
 var _menues: Dictionary = {}      # Gruppenname -> PopupMenu
 var _zaehler: Dictionary = {}     # Bildschirmkennung -> Zahl
@@ -44,6 +49,7 @@ func aufbauen(neue_gruppen: Array) -> Control:
 	gruppen = neue_gruppen
 	_leiste = Stil.hbox(2)
 	add_child(_leiste)
+	_leiste.add_child(_pfeile())
 	for g in gruppen:
 		var gruppe: Dictionary = g
 		var name: String = str(gruppe["name"])
@@ -69,6 +75,46 @@ func aufbauen(neue_gruppen: Array) -> Control:
 	rechts.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_leiste.add_child(rechts)
 	return rechts
+
+## Vor und zurück wie im Browser.
+##
+## Fünfundzwanzig Bildschirme, die einander aufrufen: aus dem Kader ins Profil
+## eines Spielers, von dort in den Transfermarkt, und zurück findet man nur
+## über das Menü. Die beiden Pfeile führen den Weg, den man gegangen ist.
+func _pfeile() -> Control:
+	var halter := Stil.hbox(0)
+	halter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_zurueck = _pfeilknopf("‹", "Einen Bildschirm zurück (Alt + ←)")
+	_zurueck.pressed.connect(func(): zurueck_gewaehlt.emit())
+	halter.add_child(_zurueck)
+	_vor = _pfeilknopf("›", "Wieder vor (Alt + →)")
+	_vor.pressed.connect(func(): vor_gewaehlt.emit())
+	halter.add_child(_vor)
+	var strich := VSeparator.new()
+	strich.custom_minimum_size = Vector2(0, 20)
+	halter.add_child(strich)
+	return halter
+
+func _pfeilknopf(zeichen: String, hinweis: String) -> Button:
+	var b := Button.new()
+	b.text = zeichen
+	b.tooltip_text = hinweis
+	b.focus_mode = Control.FOCUS_NONE
+	b.custom_minimum_size = Vector2(26, 32)
+	_stil_setzen(b, false)
+	return b
+
+## Ob es einen Weg zurück beziehungsweise wieder vor gibt. Ein Pfeil ins Leere
+## wird nicht ausgeblendet, sondern blass: eine Leiste, die ihre Breite
+## aendert, springt bei jedem Wechsel.
+func setze_verlauf(kann_zurueck: bool, kann_vor: bool) -> void:
+	if _zurueck == null:
+		return
+	_zurueck.disabled = not kann_zurueck
+	_vor.disabled = not kann_vor
+	for paar in [[_zurueck, kann_zurueck], [_vor, kann_vor]]:
+		(paar[0] as Button).add_theme_color_override("font_color",
+			Stil.TEXT_MATT if bool(paar[1]) else Stil.TEXT_SCHWACH)
 
 ## Die Lesezeichen: ein Stern für den offenen Bildschirm, daneben die
 ## angehefteten.

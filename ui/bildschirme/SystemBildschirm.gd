@@ -35,6 +35,7 @@ func aktualisieren() -> void:
 	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	oben.add_child(links)
 	links.add_child(_automatik())
+	links.add_child(_verlassen())
 	# Ein Platz ist eine Zeile, keine Karte.
 	#
 	# Vorher trug jeder der sechs Plaetze eine eigene Karte mit vier
@@ -48,6 +49,76 @@ func aktualisieren() -> void:
 	for slot in range(1, Welt.SLOTS + 1):
 		_slot_zeile(plaetze, slot)
 
+
+## Der Weg aus der laufenden Karriere heraus.
+##
+## Bis hierher gab es ihn nicht: Wer einmal im Spiel war, kam ohne das Fenster
+## zu schliessen weder zu einer neuen Karriere noch aus dem Programm. Beides
+## verwirft, was seit dem letzten Speichern passiert ist — deshalb fragt es
+## nach, und deshalb steht daneben, wann zuletzt gespeichert wurde.
+func _verlassen() -> Control:
+	var karte := Stil.karte("Spiel verlassen")
+	karte.add_child(Bausteine.fliesstext(
+		"Eine neue Karriere und das Beenden verwerfen alles, was seit dem letzten Speichern passiert ist.",
+		Stil.S_KLEIN))
+	var stand: Dictionary = Welt.slot_info(Welt.AUTOSLOT)
+	if not stand.is_empty():
+		karte.add_child(Stil.matt("Letzte automatische Sicherung: %s" % str(stand.get("gespeichert", "—")),
+			Stil.S_MINI))
+	karte.add_child(_verlassenzeile(karte, "Zum Startbildschirm",
+		"Dort liegen neue Karriere, Spielstand laden und Beenden.", Stil.AKZENT, false))
+	karte.add_child(_verlassenzeile(karte, "Hallenherz beenden",
+		"Schließt das Programm.", Stil.ROT, true))
+	return Stil.karte_wurzel(karte)
+
+## Eine Zeile, die beim ersten Druck nachfragt und beim zweiten handelt.
+func _verlassenzeile(karte: Node, beschriftung: String, hinweis: String,
+		farbe: Color, beenden: bool) -> Control:
+	var zeile := Stil.hbox(10)
+	var knopf := Stil.knopf(beschriftung)
+	knopf.disabled = Welt.daten.is_empty()
+	zeile.add_child(knopf)
+	var frage := Stil.text("Sicher? Ungesichertes geht verloren.", Stil.S_KLEIN, farbe)
+	frage.visible = false
+	zeile.add_child(frage)
+	var ja := Stil.knopf_flach("Ja", farbe)
+	ja.visible = false
+	zeile.add_child(ja)
+	var nein := Stil.knopf_flach("Abbrechen", Stil.TEXT_MATT)
+	nein.visible = false
+	zeile.add_child(nein)
+	var hilfe := Stil.matt(hinweis, Stil.S_MINI)
+	hilfe.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	zeile.add_child(hilfe)
+	knopf.pressed.connect(func():
+		knopf.visible = false
+		hilfe.visible = false
+		frage.visible = true
+		ja.visible = true
+		nein.visible = true)
+	nein.pressed.connect(func():
+		knopf.visible = true
+		hilfe.visible = true
+		frage.visible = false
+		ja.visible = false
+		nein.visible = false)
+	ja.pressed.connect(func():
+		if beenden:
+			get_tree().quit()
+			return
+		var app := _app()
+		if app != null:
+			app.zum_start())
+	return zeile
+
+## Die App über der Bildschirmhierarchie — sie hält den Startbildschirm.
+func _app() -> Node:
+	var knoten: Node = self
+	while knoten != null:
+		if knoten.has_method("zum_start"):
+			return knoten
+		knoten = knoten.get_parent()
+	return null
 
 ## Schalter für die wöchentliche Sicherung.
 func _automatik() -> Control:

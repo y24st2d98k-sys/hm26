@@ -110,10 +110,10 @@ func aufbauen() -> void:
 	_vorschau_umschalter()
 	feld = Spielfeld.new()
 	feld.hochkant = true
-	# 585 statt 612: der Reiter hat 679 Pixel, die Karte drumherum kostet 94.
+	# 580 statt 612: der Reiter hat 676 Pixel, die Karte drumherum kostet 94.
 	# Das Feld skaliert gleichmaessig und bleibt zentriert, ein kleineres
 	# Rechteck verzerrt also nichts — es rollt nur nichts mehr weg.
-	feld.custom_minimum_size = Vector2(302, 585)
+	feld.custom_minimum_size = Vector2(300, 580)
 	feldkarte.add_child(feld)
 	# Je Reiter eine Spalte. Die Karten hier sind breit — eine Anweisungsliste
 	# mit sieben Positionen braucht fuer sich schon tausend Pixel. Zwei davon

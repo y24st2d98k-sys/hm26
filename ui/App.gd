@@ -55,6 +55,11 @@ var bildschirme: Dictionary = {}
 var aktueller: String = ""
 var inhalt: MarginContainer
 var menueband: Menueband
+## Der Weg durch die Bildschirme, wie im Browser: eine Liste und ein Zeiger
+## darauf. Wer zurueckgeht und dann woandershin abbiegt, verwirft den Rest —
+## genau wie ein Browser es tut.
+var _verlauf: Array = []
+var _verlaufsstelle: int = -1
 var kopf: Control
 var kopf_wappen: Control
 var kopf_wappen_halter: Control
@@ -155,6 +160,8 @@ func _baue_menueband(eltern: Node) -> void:
 	var rechts := menueband.aufbauen(gruppen)
 	menueband.gewaehlt.connect(func(id): zeige(str(id)))
 	menueband.merken_umgeschaltet.connect(func(id): _lesezeichen_umschalten(str(id)))
+	menueband.zurueck_gewaehlt.connect(_verlauf_zurueck)
+	menueband.vor_gewaehlt.connect(_verlauf_vor)
 
 	# Wer hier eigentlich arbeitet — früher der Fuß der Seitenleiste.
 	trainerbild = Stil.hbox(0)
@@ -326,6 +333,16 @@ func _baue_startbildschirm() -> void:
 		_zeige_start(false)
 		zeige("buero"))
 
+## Zurueck zum Startbildschirm — dort liegen neue Karriere, Laden und Beenden.
+##
+## Der Verlauf wird geleert: der Weg durch die alte Karriere hat im naechsten
+## Spielstand nichts zu suchen.
+func zum_start() -> void:
+	_verlauf = []
+	_verlaufsstelle = -1
+	aktueller = ""
+	_zeige_start(true)
+
 func _zeige_start(an: bool) -> void:
 	startbildschirm.visible = an
 	rahmen.visible = not an
@@ -334,9 +351,17 @@ func _zeige_start(an: bool) -> void:
 
 # --------------------------------------------------------------- Wechsel ---
 
-func zeige(id: String) -> void:
+func zeige(id: String, aus_verlauf: bool = false) -> void:
 	if not bildschirme.has(id):
 		return
+	if not aus_verlauf and id != aktueller:
+		_verlauf = _verlauf.slice(0, _verlaufsstelle + 1)
+		_verlauf.append(id)
+		# Der Weg wird nicht unendlich lang. Wer dreißig Bildschirme zurück
+		# will, sucht ihn im Menü, nicht mit dreißig Klicks.
+		if _verlauf.size() > VERLAUF_LAENGE:
+			_verlauf = _verlauf.slice(_verlauf.size() - VERLAUF_LAENGE)
+		_verlaufsstelle = _verlauf.size() - 1
 	if aktueller != "" and bildschirme.has(aktueller):
 		bildschirme[aktueller].visible = false
 	aktueller = id
@@ -346,6 +371,7 @@ func zeige(id: String) -> void:
 	if menueband != null:
 		menueband.setze_aktiv(id)
 		menueband.setze_lesezeichen(Welt.lesezeichen(), Welt.lesezeichen_voll())
+		menueband.setze_verlauf(_verlaufsstelle > 0, _verlaufsstelle < _verlauf.size() - 1)
 	_kopf_auffrischen()
 	_einblenden(bildschirme[id])
 
@@ -576,7 +602,8 @@ func _hilfe_bauen() -> Control:
 			["T / F / N", "Transfermarkt, Finanzen, Nachrichten"],
 			["S / Z / J", "Spielplan, Scouting, Nachwuchs"],
 			["V / M", "Vorstand, Medien"],
-			["L", "Diesen Bildschirm anheften"]]:
+			["L", "Diesen Bildschirm anheften"],
+			["Alt + ← / →", "Einen Bildschirm zurück und wieder vor"]]:
 		var z := Stil.hbox(10)
 		rechts.add_child(z)
 		var taste := Stil.abzeichen(str(e2[0]), Stil.AKZENT)
@@ -675,6 +702,21 @@ const TASTENKUERZEL := {
 	KEY_J: "jugend", KEY_V: "vorstand", KEY_M: "medien",
 }
 
+## Wie viele Schritte der Weg zurueckreicht.
+const VERLAUF_LAENGE := 30
+
+func _verlauf_zurueck() -> void:
+	if _verlaufsstelle <= 0:
+		return
+	_verlaufsstelle -= 1
+	zeige(str(_verlauf[_verlaufsstelle]), true)
+
+func _verlauf_vor() -> void:
+	if _verlaufsstelle >= _verlauf.size() - 1:
+		return
+	_verlaufsstelle += 1
+	zeige(str(_verlauf[_verlaufsstelle]), true)
+
 ## Den offenen Bildschirm anheften oder ablösen.
 ##
 ## Ein voller Balken lehnt still ab — deshalb sagt es hier jemand. Ohne
@@ -690,9 +732,29 @@ func _lesezeichen_umschalten(id: String) -> void:
 func _unhandled_input(ereignis: InputEvent) -> void:
 	if not Welt.laeuft or not rahmen.visible:
 		return
+	# Die Seitentasten der Maus sind an jedem Rechner „zurueck" und „vor".
+	if ereignis is InputEventMouseButton and ereignis.pressed:
+		var knopf: int = (ereignis as InputEventMouseButton).button_index
+		if knopf == MOUSE_BUTTON_XBUTTON1:
+			_verlauf_zurueck()
+			get_viewport().set_input_as_handled()
+			return
+		if knopf == MOUSE_BUTTON_XBUTTON2:
+			_verlauf_vor()
+			get_viewport().set_input_as_handled()
+			return
 	if not (ereignis is InputEventKey and ereignis.pressed and not ereignis.echo):
 		return
 	var taste: int = ereignis.keycode
+	# Alt + Pfeil geht durch den Verlauf — das steht vor der Regel darunter,
+	# sonst faengt sie es ab.
+	if ereignis.alt_pressed and (taste == KEY_LEFT or taste == KEY_RIGHT):
+		if taste == KEY_LEFT:
+			_verlauf_zurueck()
+		else:
+			_verlauf_vor()
+		get_viewport().set_input_as_handled()
+		return
 	# Modifikatoren gehören den Bildschirmen, nicht der Navigation.
 	if ereignis.ctrl_pressed or ereignis.alt_pressed or ereignis.meta_pressed:
 		return
