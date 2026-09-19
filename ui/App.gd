@@ -60,6 +60,9 @@ var menueband: Menueband
 ## genau wie ein Browser es tut.
 var _verlauf: Array = []
 var _verlaufsstelle: int = -1
+## Die Partie, die auf den Anpfiff wartet, weil der Trainer erst aufstellen
+## wollte. Solange sie gesetzt ist, heisst der Weiter-Knopf "Anpfiff".
+var _anpfiff_wartet: String = ""
 var kopf: Control
 var kopf_wappen: Control
 var kopf_wappen_halter: Control
@@ -101,6 +104,7 @@ func _ready() -> void:
 	_baue_rahmen()
 	_baue_startbildschirm()
 	add_child(Nachberichtsfenster.new())
+	add_child(Anpfifffenster.new())
 	add_child(Spielerfenster.new())
 	add_child(Vereinsfenster.new())
 	add_child(Spielbericht.new())
@@ -501,10 +505,15 @@ func _kopf_auffrischen() -> void:
 	kopf_glocke.tooltip_text = "%d ungelesene Nachricht(en)" % offen if offen > 0 else "Nachrichten"
 
 	var naechstes: Dictionary = Welt.naechstes_spiel(Welt.mein_verein_id) if Welt.mein_verein_id != "" else {}
-	if not naechstes.is_empty() and int(naechstes["tag"]) == Welt.tag():
+	if _anpfiff_wartet != "":
+		weiter_knopf.text = "Anpfiff ›"
+		weiter_knopf.tooltip_text = "Die Partie wartet. Wenn die Aufstellung steht: anpfeifen."
+	elif not naechstes.is_empty() and int(naechstes["tag"]) == Welt.tag():
 		weiter_knopf.text = "Zum Spiel"
+		weiter_knopf.tooltip_text = "Einen Tag weiterschalten (Leertaste)"
 	else:
 		weiter_knopf.text = "Weiter"
+		weiter_knopf.tooltip_text = "Einen Tag weiterschalten (Leertaste)"
 
 # ------------------------------------------------------------- Zeitablauf ---
 
@@ -514,6 +523,11 @@ func _kopf_auffrischen() -> void:
 ## zwischen denen die Oberfläche atmen und den Fortschritt zeigen kann.
 func _weiter() -> void:
 	if not Welt.laeuft or _tag_laeuft:
+		return
+	# Eine wartende Partie geht vor: der Tag darf nicht weiterlaufen, solange
+	# sie nicht gespielt ist.
+	if _anpfiff_wartet != "":
+		_live_starten(_anpfiff_wartet)
 		return
 	_tag_laeuft = true
 	weiter_knopf.disabled = true
@@ -715,7 +729,25 @@ func _spieltag_anzeige_verbergen() -> void:
 	if _spieltag_schleier != null:
 		_spieltag_schleier.visible = false
 
+## Vor dem Anpfiff wird gefragt — es sei denn, der Trainer hat abgewinkt.
+##
+## Der Stab stellt auf, und bis hierher lief die Partie einfach los. Das ist
+## bequem und der Grund, warum man nie etwas entscheiden musste. Jetzt zeigt
+## das Spiel einmal, was der Stab entschieden hat, und laesst die Wahl.
 func _starte_live(spiel_id: String) -> void:
+	if not bool(Welt.einstellung("anpfiff_fragen", true)):
+		_live_starten(spiel_id)
+		return
+	_anpfiff_wartet = spiel_id
+	_auffrischen()
+	Anpfifffenster.oeffnen(self, spiel_id,
+		func(id): _live_starten(str(id)),
+		func():
+			zeige("taktik")
+			_auffrischen())
+
+func _live_starten(spiel_id: String) -> void:
+	_anpfiff_wartet = ""
 	rahmen.visible = false
 	live.visible = true
 	live.starte(spiel_id)

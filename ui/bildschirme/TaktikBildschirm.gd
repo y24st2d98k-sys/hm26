@@ -46,6 +46,17 @@ func aufbauen() -> void:
 		_melde("Automatische Aufstellung %s." % ("eingeschaltet" if an else "ausgeschaltet"))
 		aktualisieren())
 	kopf.add_child(auto_haken)
+	# Der Gegenpol zur Automatik: wenn der Stab aufstellt, soll er wenigstens
+	# einmal zeigen, was er entschieden hat. Abschalten laesst sich das im
+	# Anpfifffenster selbst — wieder einschalten nur hier.
+	var frage_haken := Stil.schalter("")
+	frage_haken.text = "Vor dem Anpfiff fragen"
+	frage_haken.tooltip_text = "Zeigt vor jeder eigenen Partie die Aufstellung, die Taktik und wer nicht einsatzfähig ist — mit der Wahl, selbst aufzustellen."
+	frage_haken.button_pressed = bool(Welt.einstellung("anpfiff_fragen", true))
+	frage_haken.toggled.connect(func(an):
+		Welt.setze_einstellung("anpfiff_fragen", an)
+		_melde("Rückfrage vor dem Anpfiff %s." % ("eingeschaltet" if an else "ausgeschaltet")))
+	kopf.add_child(frage_haken)
 	var auto := Stil.knopf("Aufstellung vorschlagen")
 	auto.tooltip_text = "Stellt sofort die beste verfügbare Sieben auf — nach Form, Fitness und Lastkonto."
 	auto.pressed.connect(func():

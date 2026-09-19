@@ -94,6 +94,18 @@ func _ready() -> void:
 				_scrollen(kind, 1120)
 			await _foto("%s/matchplan.png" % ordner)
 			continue
+		if str(id) == "anpfiff":
+			var kommend := Welt.naechstes_spiel(Welt.mein_verein_id)
+			if not kommend.is_empty():
+				app.zeige("buero")
+				Anpfifffenster.oeffnen(app, str(kommend["id"]), func(_i): pass, func(): pass)
+				await get_tree().process_frame
+				await get_tree().process_frame
+				await _foto("%s/anpfiff.png" % ordner)
+				var af = get_tree().get_first_node_in_group("anpfifffenster")
+				if af != null:
+					af.visible = false
+			continue
 		if str(id) == "nachbericht":
 			var partie := Welt.naechstes_spiel(Welt.mein_verein_id)
 			if not partie.is_empty():
