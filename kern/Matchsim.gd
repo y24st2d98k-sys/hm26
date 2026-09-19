@@ -447,6 +447,25 @@ func _erster_anwurf_heim() -> bool:
 ## Wurf durchschlaegt.
 const WURF_EMPFINDLICHKEIT := 0.0072
 
+## Wieviel der reine Mannschaftsunterschied am Wurf wert ist.
+##
+## WURF_EMPFINDLICHKEIT allein reicht dafuer nicht: sie haengt am Koennen des
+## einzelnen Werfers gegen den Torhueter, und das schwankt von Wurf zu Wurf —
+## wer daran dreht, verstaerkt den Zufall genauso wie den Unterschied.
+## Gemessen (werkzeuge/Tabellensonde.gd): die Empfindlichkeit von 0,0072 auf
+## 0,0110 zu heben brachte dem Staerkepunkt 0,08 Tore mehr und der einzelnen
+## Partie 0,6 Tore mehr Streuung — die Tabelle blieb, wo sie war.
+##
+## Dieser Zuschlag haengt dagegen am Unterschied zwischen Angriffs- und
+## Abwehrkraft der beiden Mannschaften. Der steht fuer eine Partie praktisch
+## fest: er traegt Staerke ins Ergebnis, ohne Rauschen mitzubringen. Ohne ihn
+## kam der Meister auf dreiundfuenfzig Punkte und die Tabelle streute um
+## elf — mit ihm sind es siebenundfuenfzig und zwoelfeinhalb. In der
+## Bundesliga holt der Meister zwischen achtundfuenfzig und
+## vierundsechzig Punkten von achtundsechzig.
+const STAERKE_AM_WURF := 0.0036
+const STAERKE_GRENZE := 40.0
+
 ## Trefferquote eines Wurfs von dieser Position, wenn sich gleich starke
 ## Mannschaften gegenueberstehen.
 ##
@@ -466,7 +485,7 @@ const WURF_EMPFINDLICHKEIT := 0.0072
 ## der siebte Feldspieler kommen obendrauf — deshalb liegt der gemessene
 ## Ligaschnitt ein paar Prozentpunkte darueber, genau wie in Wirklichkeit.
 const TREFFER_POSITION := {
-	"LA": 0.583, "RA": 0.583, "KM": 0.677, "RL": 0.456, "RM": 0.475, "RR": 0.456,
+	"LA": 0.583, "RA": 0.583, "KM": 0.692, "RL": 0.456, "RM": 0.475, "RR": 0.456,
 }
 ## Der Tempogegenstoss ist der beste Abschluss, den der Handball kennt: ein
 ## Wurf aus dem Lauf auf einen Torwart, der allein im Tor steht.
@@ -484,12 +503,16 @@ const WURF_AUSGLEICH := 11.1
 ## durchschnittlicher — aber auch er wirft nicht vom Fluegel wie vom Kreis.
 ##
 ## Die Spanne ist ein Kompromiss, und zwar ein gemessener. Enger gefasst
-## stimmen Unentschieden und Torabstand besser, dafuer wird die Tabelle flach:
-## der Meister kam auf fuenfzig Punkte, in Wirklichkeit sind es knapp
-## fuenfundsechzig. Weiter gefasst steht die Tabelle richtig, dafuer fallen die
-## Unentschieden auf neun Prozent. Beides zugleich geht nicht, solange eine
-## einzelne Partie eine Streuung von sechs Toren hat — und die kommt allein
-## daraus, dass fuenfzig Wuerfe je Mannschaft fallen.
+## stimmen Unentschieden und Torabstand besser, weiter gefasst faechern die
+## Ergebnisse auf.
+##
+## Lange stand hier, beides zugleich gehe nicht: eine einzelne Partie streue
+## nun einmal um sechs Tore, und die kaemen allein aus den fuenfzig Wuerfen je
+## Mannschaft. Das erste stimmte, das zweite nicht. Die Streusonde hat die
+## sechs Tore zerlegt — knapp fuenf sind Wurfzufall, der Rest kam aus
+## Hallenpuls, Heimvorteil und der Wurfdifferenz. Der Ausweg lag also nicht in
+## dieser Spanne, sondern darin, den Staerkeunterschied am Wurf getrennt zu
+## gewichten (STAERKE_AM_WURF) und das Rauschen daneben kleiner zu machen.
 const WURF_UNTEN_ANTEIL := 0.52
 const WURF_OBEN_ANTEIL := 1.46
 ## Trefferquote am Siebenmeterstrich bei gleich starker Paarung. Der Ligaschnitt
@@ -573,9 +596,17 @@ const PASSIV_ABPFIFF := 0.13
 ## Zug geht aus dem Angriff, die Abwehr steht nur noch. Genau das fehlte: die
 ## Simulation warf weiter drauf, und die Ergebnisse fielen entsprechend hoch
 ## aus — sieben Tore Abstand im Mittel, in Wirklichkeit gut fuenf.
-const SCHONGANG_AB := 1980.0
-const SCHONGANG_VORSPRUNG := 5
-const SCHONGANG_ABSCHLUSS := -0.175
+##
+## Beide Zahlen sind gemessen und liegen gegenlaeufig: ein staerkerer Abzug am
+## Abschluss drueckt die Partien mit zehn Toren Abstand, kostet aber die
+## Wurfquote der Liga und vor allem Tabellenpunkte — er bestraft ja immer die
+## fuehrende und damit meist die bessere Mannschaft. Bei -0,24 kam der Meister
+## auf dreiundfuenfzig Punkte, bei -0,15 auf siebenundfuenfzig.
+const SCHONGANG_AB := 1800.0
+const SCHONGANG_VORSPRUNG := 4
+const SCHONGANG_ABSCHLUSS := -0.150
+## Und wieviel laenger sie sich fuer einen Angriff Zeit laesst.
+const SCHONGANG_DAUER := 0.55
 const SCHONGANG_VOLL := 10.0
 
 ## Wie eine Mannschaft auf den Spielstand reagiert.
@@ -622,8 +653,14 @@ func _schongang(diff: int) -> Dictionary:
 	var staerke: float = clampf(float(diff - SCHONGANG_VORSPRUNG + 1)
 		/ (SCHONGANG_VOLL - float(SCHONGANG_VORSPRUNG) + 1.0), 0.0, 1.0)
 	staerke *= clampf((zeit - SCHONGANG_AB) / 600.0, 0.25, 1.0)
+	# Eine Mannschaft, die zehn Minuten vor Schluss fuenf vorn liegt, wirft
+	# nicht schlechter — sie wirft spaeter. Deshalb liegt das Gewicht auf der
+	# Dauer des Angriffs und nicht auf der Trefferquote: der Vorsprung
+	# schrumpft nicht, weil der Kreislaeufer ploetzlich daneben wirft, sondern
+	# weil beide Mannschaften weniger Angriffe bekommen. Gemessen hat der
+	# umgekehrte Weg die Wurfquote der Liga unter sechzig Prozent gedrueckt.
 	return {"tempo": 0.0, "risiko": 0.0, "angriff": 1.0, "abwehr": 1.0,
-		"abschluss": SCHONGANG_ABSCHLUSS * staerke, "dauer": 1.0}
+		"abschluss": SCHONGANG_ABSCHLUSS * staerke, "dauer": 1.0 + SCHONGANG_DAUER * staerke}
 
 ## Beim Gleichstand in den Schlussminuten wird der letzte Angriff ausgespielt.
 ## Wer in der 59. Minute den Ball hat, wirft nicht sofort — er laesst die Uhr
@@ -712,6 +749,10 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	var angriffskraft: float = _angriffskraft(a, v)
 	var abwehrkraft: float = _abwehrkraft(v, a)
 	var diff: float = angriffskraft - abwehrkraft
+	# Der Unterschied vor allen Zuschlaegen der Lage: Ueberzahl, Tempogegenstoss
+	# und Freiwurf kommen gleich obendrauf, gehoeren aber nicht zur Staerke der
+	# Mannschaft. Am Wurf wird beides getrennt gewichtet.
+	var grunddiff: float = diff
 	var td: Dictionary = _deckungswerte(v)
 
 	# Unter- bzw. Ueberzahl wirkt direkt am Abschluss (siehe
@@ -782,7 +823,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	# die Wahrscheinlichkeit, überhaupt zum Wurf zu kommen. Ein gut gelaufener
 	# Kreuz bringt die bessere Position, nicht mehr Angriffe.
 	diff += float(zug.get("guete", 0.0)) * ANWEISUNG_GUETE
-	return _wurf(a, v, diff, td)
+	return _wurf(a, v, diff, td, grunddiff)
 
 ## Welcher Zug in diesem Angriff läuft.
 ##
@@ -813,7 +854,7 @@ func _spielzug_waehlen(a: Dictionary, v: Dictionary, ueberzahl: int) -> void:
 		var gel: Dictionary = a["zug_gelaufen"]
 		gel[zug] = int(gel.get(zug, 0)) + 1
 
-func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Dictionary:
+func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary, grunddiff: float = 0.0) -> Dictionary:
 	var pos := _wurfposition(a)
 	var schuetze := _spieler_auf(a, pos)
 	if schuetze == "":
@@ -853,7 +894,8 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary) -> Diction
 		ziel = TREFFER_LEERES_TOR
 	var treffer: float = clampf(ziel + (wurfguete - paradenwert + WURF_AUSGLEICH) * WURF_EMPFINDLICHKEIT
 		+ _puls_abschluss(a) + float(_spielstandsdruck(a)["abschluss"])
-		+ float(int(a.get("ueberzahl", 0))) * UEBERZAHL_ABSCHLUSS,
+		+ float(int(a.get("ueberzahl", 0))) * UEBERZAHL_ABSCHLUSS
+		+ clampf(grunddiff, -STAERKE_GRENZE, STAERKE_GRENZE) * STAERKE_AM_WURF,
 		ziel * WURF_UNTEN_ANTEIL, minf(ziel * WURF_OBEN_ANTEIL, 0.97))
 	var p_vorbei: float = clampf(0.085 - (wurfguete - paradenwert) * 0.0009, 0.04, 0.14)
 	# Blockierte und vorbeigeworfene Baelle gehen von derselben Quote ab. Damit
@@ -1577,32 +1619,38 @@ func _puls_abklingen() -> void:
 ## zurueck: die eigene Halle, die kurze Anreise, der bekannte Hallenboden. Fest
 ## heisst hier ohne Streuung — der Heimvorteil soll den Schnitt verschieben,
 ## nicht die Ergebnisse auffaechern.
-const HEIMVORTEIL := 0.014
+##
+## Genau deshalb sind die Pulsanteile darunter zweimal kleiner geworden: der
+## Heimvorteil lag gemessen bei 2,4 Toren statt bei den 1,4 der Bundesliga, und
+## der groessere Teil davon kam aus einem Hallenpuls, der im Schnitt bei
+## sechsundsiebzig steht und damit fast immer fuer die Heimmannschaft spricht.
+## Jetzt sind es 1,5 Tore und zweiundfuenfzig Prozent Heimsiege.
+const HEIMVORTEIL := 0.018
 
 func _puls_abschluss(t: Dictionary) -> float:
 	var abweichung: float = (hallenpuls - 50.0) / 50.0
 	if bool(t["ist_heim"]):
-		return clampf(abweichung * 0.022, -0.025, 0.025) + HEIMVORTEIL
+		return clampf(abweichung * 0.009, -0.012, 0.012) + HEIMVORTEIL
 	var nerven := 0.0
 	var anzahl := 0
 	for sid in alle_auf_platz(t):
 		nerven += float(daten["spieler"][sid]["attr"]["nervenstaerke"])
 		anzahl += 1
 	var schnitt: float = (nerven / maxf(float(anzahl), 1.0)) / 20.0
-	return clampf(-abweichung * 0.016 * (1.3 - schnitt), -0.025, 0.02) - HEIMVORTEIL * 0.5
+	return clampf(-abweichung * 0.007 * (1.3 - schnitt), -0.012, 0.010) - HEIMVORTEIL * 0.5
 
 ## Wirkung des Hallenpulses auf ein Team (Heim profitiert, Gast leidet je nach Nerven).
 func _puls_wirkung(t: Dictionary) -> float:
 	var abweichung: float = (hallenpuls - 50.0) / 50.0
 	if bool(t["ist_heim"]):
-		return clampf(1.0 + abweichung * 0.075, 0.92, 1.09)
+		return clampf(1.0 + abweichung * 0.030, 0.965, 1.04)
 	var nerven := 0.0
 	var anzahl := 0
 	for sid in alle_auf_platz(t):
 		nerven += float(daten["spieler"][sid]["attr"]["nervenstaerke"])
 		anzahl += 1
 	var schnitt: float = (nerven / maxf(float(anzahl), 1.0)) / 20.0
-	return clampf(1.0 - abweichung * 0.048 * (1.3 - schnitt), 0.92, 1.05)
+	return clampf(1.0 - abweichung * 0.020 * (1.3 - schnitt), 0.965, 1.02)
 
 func _lauf_aktualisieren(seite: String) -> void:
 	if str(lauf["team"]) == seite:

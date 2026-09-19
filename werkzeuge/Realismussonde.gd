@@ -25,6 +25,10 @@ const ZIELE := {
 	"eingesetzt":      {"von": 9.0, "bis": 13.5, "quelle": "HBL: zehn bis vierzehn Feldspieler je Partie"},
 	"unentschieden":   {"von": 0.10, "bis": 0.16, "quelle": "HBL 2025/26: 13,4 % der Partien"},
 	"heimsiege":       {"von": 0.52, "bis": 0.60, "quelle": "HBL: rund 56 % Heimsiege"},
+	"meisterpunkte":   {"von": 56.0, "bis": 66.0, "quelle": "HBL: Meister zwischen 58 und 64 von 68"},
+	"letzterpunkte":   {"von": 6.0, "bis": 18.0, "quelle": "HBL: Schlusslicht zwischen 8 und 16"},
+	"punktestreuung":  {"von": 11.5, "bis": 17.0, "quelle": "HBL: Standardabweichung der Punkte rund 14,5"},
+	"punktespanne":    {"von": 44.0, "bis": 56.0, "quelle": "HBL: Meister minus Schlusslicht rund 50"},
 }
 
 ## Trefferquoten je Wurfposition. Der Konzeptbericht nennt sie als xG-Werte,
@@ -42,6 +46,8 @@ const ZIELE_POSITION := {
 
 var s := {}
 var pos_karte := {}
+## Je Spielzeit die Punkte aller achtzehn Vereine, absteigend sortiert.
+var tabellen: Array = []
 
 func _log(t: String) -> void:
 	printerr(t)
@@ -66,6 +72,10 @@ func _lauf(saat: int) -> void:
 	Welt.daten = Weltgenerator.erzeuge(2026, saat)
 	Welt.mein_verein_id = ""
 	var d := Welt.daten
+	# Der Spielplan mischt mit dem globalen Zufallsgenerator (Array.shuffle).
+	# Ohne feste Saat spielt jeder Lauf einen anderen Plan, und zwei Messungen
+	# derselben Einstellung weichen voneinander ab.
+	seed(saat)
 	Spielplan.erzeuge_saison(d)
 	var partien: Array = []
 	for mid in d["spiele"].keys():
@@ -75,6 +85,7 @@ func _lauf(saat: int) -> void:
 	_log("Simuliere %d Bundesligapartien ..." % partien.size())
 	partien.sort()
 	var n := 0
+	var punkte := {}
 	for mid in partien:
 		# Diese Sonde misst den Verlauf einer Partie, nicht den Verschleiss
 		# einer Spielzeit: sie rechnet Spiel fuer Spiel durch, ohne dass
@@ -93,6 +104,29 @@ func _lauf(saat: int) -> void:
 		sim.schnell_simulieren()
 		n += 1
 		_partie_auswerten(sim)
+		# Zwei Punkte fuer den Sieg, einer fuer das Unentschieden — wie in der
+		# Bundesliga. Aus den vollstaendigen Spielzeiten faellt die
+		# Punkteverteilung ab, ohne dass dafuer etwas zusaetzlich gerechnet
+		# werden muesste.
+		var hid: String = str(m2["heim"])
+		var gid: String = str(m2["gast"])
+		punkte[hid] = int(punkte.get(hid, 0))
+		punkte[gid] = int(punkte.get(gid, 0))
+		var th: int = int(m2["tore_heim"])
+		var tg: int = int(m2["tore_gast"])
+		if th > tg:
+			punkte[hid] = int(punkte[hid]) + 2
+		elif tg > th:
+			punkte[gid] = int(punkte[gid]) + 2
+		else:
+			punkte[hid] = int(punkte[hid]) + 1
+			punkte[gid] = int(punkte[gid]) + 1
+	var stand: Array = []
+	for cid in punkte.keys():
+		stand.append(int(punkte[cid]))
+	stand.sort()
+	stand.reverse()
+	tabellen.append(stand)
 	s["partien"] = float(s.get("partien", 0.0)) + float(n)
 	_log("Saat %d: %d Partien gerechnet." % [saat, n])
 
@@ -207,6 +241,7 @@ func _bericht() -> void:
 	_log("Wurfausgang: %.1f %% Tor, %.1f %% Parade, %.1f %% vorbei, %.1f %% geblockt" % [
 		float(s["feldtore"]) / ges_w * 100.0, float(s["paraden_feld"]) / ges_w * 100.0,
 		float(s["vorbei"]) / ges_w * 100.0, float(s["geblockt"]) / ges_w * 100.0])
+	_tabellenbericht()
 	_log("")
 	_log("=== Trefferquote je Wurfposition ===")
 	_log("")
@@ -226,6 +261,51 @@ func _bericht() -> void:
 			_urteil(quote, ziel), ziel["quelle"]])
 
 
+## Was am Saisonende in der Tabelle steht.
+##
+## Die Einzelpartie kann statistisch stimmen und die Tabelle trotzdem falsch
+## aussehen: wenn jede Partie ein wenig zu zufaellig ausgeht, gewinnt auch der
+## Beste nur zwei von drei Spielen, und der Meister landet bei fuenfzig statt
+## bei dreiundsechzig Punkten. Umgekehrt steht bei zu wenig Zufall der Favorit
+## mit vierundsechzig von achtundsechzig da. Diese Zeilen messen genau das.
+func _tabellenbericht() -> void:
+	if tabellen.is_empty():
+		return
+	var vereine: int = (tabellen[0] as Array).size()
+	var platz := []
+	for i in vereine:
+		platz.append(0.0)
+	var meister := 0.0
+	var letzter := 0.0
+	var streuung := 0.0
+	var spanne := 0.0
+	for t in tabellen:
+		var stand: Array = t
+		var summe := 0.0
+		var quadrate := 0.0
+		for i in stand.size():
+			platz[i] = float(platz[i]) + float(stand[i])
+			summe += float(stand[i])
+			quadrate += float(stand[i]) * float(stand[i])
+		var mittel: float = summe / float(stand.size())
+		streuung += sqrt(maxf(quadrate / float(stand.size()) - mittel * mittel, 0.0))
+		meister += float(stand[0])
+		letzter += float(stand[stand.size() - 1])
+		spanne += float(stand[0]) - float(stand[stand.size() - 1])
+	var laeufe: float = float(tabellen.size())
+	_log("")
+	_log("=== Endtabelle, Mittel aus %d Spielzeiten (%d Vereine, %d Spiele) ===" % [
+		int(laeufe), vereine, (vereine - 1) * 2])
+	_zeile("Punkte des Meisters", meister / laeufe, "meisterpunkte")
+	_zeile("Punkte des Letzten", letzter / laeufe, "letzterpunkte")
+	_zeile("Spanne erster/letzter", spanne / laeufe, "punktespanne")
+	_zeile("Streuung der Punkte", streuung / laeufe, "punktestreuung")
+	var zeile := ""
+	for i in vereine:
+		zeile += "%d." % (i + 1) + " %.0f   " % (float(platz[i]) / laeufe)
+	_log("Punkte je Platz: %s" % zeile.strip_edges())
+
+
 ## Wieviel der Ergebnisstreuung ist Zufall, wieviel ist Kaderqualitaet?
 ##
 ## Dieselbe Paarung sechshundertmal: was dabei streut, ist reiner Spielverlauf.
@@ -237,6 +317,7 @@ func _streuungstest() -> void:
 	Welt.daten = Weltgenerator.erzeuge(2026, 20260)
 	Welt.mein_verein_id = ""
 	var d := Welt.daten
+	seed(20260)
 	Spielplan.erzeuge_saison(d)
 	var paarung := ""
 	for mid in d["spiele"].keys():

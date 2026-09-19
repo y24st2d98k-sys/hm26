@@ -32,7 +32,22 @@ godot4 --headless res://werkzeuge/Oberflaechentest.tscn        # alle Bildschirm
 godot4 --headless res://werkzeuge/Pruefung.tscn -- 740          # Integritätsprüfung über zwei Saisons
 godot4 --headless res://werkzeuge/Testlauf.tscn -- rollen        # Verteilung der Rollenvorschläge
 godot4 --headless res://werkzeuge/Testlauf.tscn -- wirkung       # Wirkung jeder Spieleranweisung
+godot4 --headless res://werkzeuge/Realismussonde.tscn           # Kennzahlen gegen die HBL-Wirklichkeit
+godot4 --headless res://werkzeuge/Tabellensonde.tscn            # Staerke, Zufall und Endtabelle
+godot4 --headless res://werkzeuge/Streusonde.tscn               # Woher die Streuung einer Partie kommt
 ```
+
+Die drei Sonden am Ende messen nicht, ob etwas kaputt ist, sondern ob es sich
+richtig anfuehlt. Die **Realismussonde** haelt jede Kennzahl einer Partie neben
+die veroeffentlichten Zahlen der Bundesliga. Die **Tabellensonde** rechnet ganze
+Spielzeiten durch und regressiert den Torabstand auf den Staerkeunterschied: die
+Steigung sagt, was ein Staerkepunkt wert ist, die Streuung der Abweichung sagt,
+wie viel Zufall daneben steht — und aus beidem folgt, ob der Meister am Ende bei
+vierzig oder bei zweiundsechzig Punkten steht. Die **Streusonde** zerlegt die
+Streuung einer einzelnen Paarung in Wurfzufall, Wurfdifferenz und Hallenpuls.
+Ohne diese Zerlegung schraubt man blind: eine zu flache Tabelle kann daran
+liegen, dass die Mannschaften zu aehnlich sind oder dass die Partie zu zufaellig
+ausgeht, und die Gegenmittel sind gegenlaeufig.
 
 Die **Prüfung** ist der schärfste dieser Tests: Sie simuliert eine ganze Saison
 und misst danach harte Zusagen der Welt — Ligagrößen bleiben konstant, jeder
