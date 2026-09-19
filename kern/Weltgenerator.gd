@@ -87,10 +87,7 @@ static func erzeuge(startjahr: int, saat: int, echte_welt: bool = true) -> Dicti
 		"rekorde": {},
 		"zaehler": {"spieler": 0, "verein": 0, "spiel": 0, "personal": 0, "nachricht": 0, "auftrag": 0},
 		"einstellungen": {"autorotation": true, "auto_aufstellung": true, "presse_filter": "alle", "sim_tempo": 2,
-			"autospeichern": true,
-			"auto_taktik": true,
-			"ton_an": true, "lautstaerke_musik": 55.0,
-			"lautstaerke_effekte": 75.0, "lautstaerke_atmo": 65.0},
+			"autospeichern": true, "auto_taktik": true},
 		"saison_abgeschlossen": false,
 	}
 	var echt: bool = echte_welt and Echtdaten.verfuegbar()

@@ -829,7 +829,6 @@ func _gespraechskarte(eltern: Node, sp: Dictionary) -> void:
 		k.pressed.connect(func():
 			var erg := Gespraech.fuehren(Welt.daten, sid, gespraech_thema, str(eintrag["id"]))
 			_melde(str(erg["text"]), bool(erg.get("gelungen", false)))
-			Klang.spiele("klick", 0.5)
 			_zeichne())
 		karte.add_child(k)
 

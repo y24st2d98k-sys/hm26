@@ -249,7 +249,6 @@ func _senden() -> void:
 		"klausel": feld_klausel.value,
 	}
 	var erg := Verhandlung.anbieten(Welt.daten, angebot)
-	Klang.spiele("klick", 0.6)
 	match str(erg["status"]):
 		"angenommen":
 			_melde("Er ist einverstanden.", true)
@@ -275,7 +274,6 @@ func _abschlussbereich(sp: Dictionary) -> void:
 	abschluss.pressed.connect(func():
 		var erg := Verhandlung.abschliessen(Welt.daten)
 		_melde(str(erg["grund"]), bool(erg["ok"]))
-		Klang.spiele("tor", 0.4)
 		Welt.zustand_geaendert.emit()
 		if bool(erg["ok"]):
 			visible = false)

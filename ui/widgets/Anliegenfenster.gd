@@ -114,7 +114,6 @@ func _zeichne() -> void:
 			k.tooltip_text = "Öffnet den Verhandlungstisch."
 		k.pressed.connect(func():
 			var erg := Anliegen.antworten(Welt.daten, sid, str(antwort["id"]))
-			Klang.spiele("klick", 0.5)
 			_ergebnis(erg, sp)
 			Welt.zustand_geaendert.emit())
 		inhalt.add_child(k)

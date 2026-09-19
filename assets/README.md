@@ -90,34 +90,6 @@ synthetische Fettung für diesen Schnitt abgeschaltet — sie wäre dann nicht n
 Engine-Schnitt. Gut geeignet sind Schriften mit klaren Ziffern und schmalen
 Punzen, etwa Inter, Barlow oder Archivo.
 
-## Klänge — `assets/klang/`
-
-Dateiname ist der Name des Klangs. Erlaubte Endungen: `ogg`, `wav`, `mp3`.
-
-| Datei | Wann er läuft |
-|---|---|
-| `anpfiff` | Anpfiff einer Partie |
-| `pfiff` | Zeitstrafe, Siebenmeter, Auszeit, Halbzeit |
-| `tor` | Tor der eigenen Mannschaft |
-| `tor_gegen` | Gegentor |
-| `parade` | Parade des eigenen Torwarts |
-| `raunen` | Parade des gegnerischen Torwarts |
-| `ball` | technischer Fehler, Block |
-| `sirene` | Schlusssirene |
-| `klick` | Knopfdruck |
-| `blaettern` | Wechsel des Bildschirms |
-| `atmo` | Hallenatmosphäre, läuft während der Partie in Schleife |
-| `musik` | Menümusik, läuft in Schleife |
-
-`atmo` und `musik` sollten sauber schleifenfähig sein (Anfang und Ende
-gleich laut, kein Knacks). Die Lautstärke der Atmosphäre steuert das Spiel
-selbst über den Hallenpuls — die Datei also gleichmäßig laut anlegen und nicht
-selbst ein- und ausblenden.
-
-Alles läuft über zwei Audiobusse: **Halle** (Nachhall, leichte Höhenabsenkung)
-für alle Spielgeräusche und **Musik** (wenig Raum, Kompression). Wer trockene
-Aufnahmen einsetzt, bekommt den Hallenklang also geschenkt.
-
 ## Rechtliches
 
 Die mitgelieferten Wappen und Gesichter sind gezeichnet und enthalten keine

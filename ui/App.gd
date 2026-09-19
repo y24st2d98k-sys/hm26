@@ -153,9 +153,7 @@ func _baue_menueband(eltern: Node) -> void:
 	menueband = Menueband.new()
 	eltern.add_child(menueband)
 	var rechts := menueband.aufbauen(gruppen)
-	menueband.gewaehlt.connect(func(id):
-		Klang.spiele("blaettern", 0.5)
-		zeige(str(id)))
+	menueband.gewaehlt.connect(func(id): zeige(str(id)))
 	menueband.merken_umgeschaltet.connect(func(id): _lesezeichen_umschalten(str(id)))
 
 	# Wer hier eigentlich arbeitet — früher der Fuß der Seitenleiste.
@@ -333,9 +331,6 @@ func _zeige_start(an: bool) -> void:
 	rahmen.visible = not an
 	if an:
 		startbildschirm.aktualisieren()
-		Klang.musik_start()
-	else:
-		Klang.musik_stop()
 
 # --------------------------------------------------------------- Wechsel ---
 
@@ -450,7 +445,6 @@ func _weiter() -> void:
 		return
 	_tag_laeuft = true
 	weiter_knopf.disabled = true
-	Klang.spiele("klick", 0.6)
 
 	var unterbrechung := Welt.tag_beginnen()
 	if unterbrechung.is_empty():
@@ -690,7 +684,6 @@ func _lesezeichen_umschalten(id: String) -> void:
 		return
 	var abgelehnt: bool = Welt.lesezeichen_voll() and not Welt.ist_lesezeichen(id)
 	Welt.lesezeichen_umschalten(id)
-	Klang.spiele("raunen" if abgelehnt else "klick", 0.5 if abgelehnt else 0.7)
 	if menueband != null:
 		menueband.setze_lesezeichen(Welt.lesezeichen(), Welt.lesezeichen_voll(), abgelehnt)
 
