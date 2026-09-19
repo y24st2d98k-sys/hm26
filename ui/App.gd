@@ -33,10 +33,28 @@ const BEREICHE := [
 	{"id": "daten", "name": "Kaderdaten", "gruppe": "Umfeld"},
 ]
 
+## Wie die Bereiche im Menüband zusammenstehen.
+##
+## Vierundzwanzig Einträge sind kein Menü, sondern ein Inhaltsverzeichnis. Wer
+## das Spiel kennt, findet darin alles; wer es zum ersten Mal sieht, sieht
+## vierundzwanzig Einträge und weiß nicht, wo er anfangen soll. Sechs Knöpfe
+## mit je einer Handvoll dahinter beantworten dieselbe Frage — und zwar in der
+## Reihenfolge, in der man sie stellt: erst die Mannschaft, dann der
+## Wettbewerb, dann der Markt, dann das Haus, dann das Umfeld.
+const MENUE := [
+	{"name": "Büro", "eintraege": ["buero"]},
+	{"name": "Mannschaft", "eintraege": ["kader", "taktik", "training", "kabine", "jugend"]},
+	{"name": "Wettbewerb", "eintraege": ["spielplan", "tabellen", "pokale", "national", "statistik", "analyse"]},
+	{"name": "Transfers", "eintraege": ["transfer", "scouting"]},
+	{"name": "Verein", "eintraege": ["finanzen", "halle", "infrastruktur", "personal", "vorstand"]},
+	{"name": "Umfeld", "eintraege": ["nachrichten", "medien", "chronik", "karriere"]},
+	{"name": "Spiel", "eintraege": ["system", "daten"]},
+]
+
 var bildschirme: Dictionary = {}
 var aktueller: String = ""
 var inhalt: MarginContainer
-var navigation: VBoxContainer
+var menueband: Menueband
 var kopf: Control
 var kopf_wappen: Control
 var kopf_wappen_halter: Control
@@ -50,7 +68,7 @@ var seitenfuss: Label
 var trainerbild: Control
 var seitenfuss_ruf: Label
 var weiter_knopf: Button
-var nav_knoepfe: Dictionary = {}
+
 var startbildschirm: Control
 var rahmen: Control
 var live: Control
@@ -99,20 +117,17 @@ func _ready() -> void:
 # ------------------------------------------------------------------ Rahmen ---
 
 func _baue_rahmen() -> void:
-	rahmen = HBoxContainer.new()
+	# Alles untereinander: Kopfzeile, Menüband, Inhalt. Die Navigation stand
+	# früher links und nahm dem Inhalt 238 Pixel Breite ab, ohne dass jemals
+	# mehr als einer ihrer vierundzwanzig Einträge gebraucht wurde.
+	rahmen = VBoxContainer.new()
 	rahmen.set_anchors_preset(Control.PRESET_FULL_RECT)
 	rahmen.add_theme_constant_override("separation", 0)
 	add_child(rahmen)
 
-	_baue_seitenleiste()
-
-	var rechts := VBoxContainer.new()
-	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rechts.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	rechts.add_theme_constant_override("separation", 0)
-	rahmen.add_child(rechts)
-
+	var rechts := rahmen
 	_baue_kopfzeile(rechts)
+	_baue_menueband(rechts)
 
 	inhalt = MarginContainer.new()
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -124,94 +139,35 @@ func _baue_rahmen() -> void:
 	rechts.add_child(inhalt)
 	_baue_bildschirme()
 
-## Linke Spalte: Wortmarke, Navigation nach Gruppen, Trainerzeile unten.
-func _baue_seitenleiste() -> void:
-	var navpanel := PanelContainer.new()
-	navpanel.custom_minimum_size = Vector2(238, 0)
-	# Kein Strich nach rechts: die Leiste liegt tiefer als der Inhalt, und der
-	# Schatten sagt das deutlicher als eine Linie.
-	var navbox := Stil.box(Stil.FLAECHE_TIEF, 0)
-	navbox.shadow_color = Color(0, 0, 0, 0.6)
-	navbox.shadow_size = 22
-	navbox.shadow_offset = Vector2(4, 0)
-	navpanel.add_theme_stylebox_override("panel", navbox)
-	rahmen.add_child(navpanel)
-
-	var spalte := VBoxContainer.new()
-	spalte.add_theme_constant_override("separation", 0)
-	navpanel.add_child(spalte)
-
-	# Wortmarke
-	var marke := PanelContainer.new()
-	var mbox := Stil.box(Color(0, 0, 0, 0), 0)
-	mbox.content_margin_left = 20
-	mbox.content_margin_right = 16
-	mbox.content_margin_top = 20
-	mbox.content_margin_bottom = 18
-	marke.add_theme_stylebox_override("panel", mbox)
-	spalte.add_child(marke)
-	var mzeile := Stil.hbox(11)
-	marke.add_child(mzeile)
-	var puls := Stil.wortzeichen()
-	puls.custom_minimum_size = Vector2(32, 32)
-	puls.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	mzeile.add_child(puls)
-	var mtext := Stil.vbox(1)
-	mtext.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	mzeile.add_child(mtext)
-	var wort := Stil.text("HALLENHERZ", Stil.S_GROSS, Stil.TEXT)
-	wort.add_theme_font_override("font", Stil.schnitt_fett())
-	mtext.add_child(wort)
-	mtext.add_child(Stil.etikett("Handball Manager"))
-
-	var navscroll := ScrollContainer.new()
-	navscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	navscroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	spalte.add_child(navscroll)
-	navigation = Stil.vbox(1)
-	navigation.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	navscroll.add_child(navigation)
-	_baue_navigation()
-
-	# Fusszeile: wer hier eigentlich arbeitet
-	var fuss := PanelContainer.new()
-	var fbox := Stil.box(Stil.lasur(Stil.TEXT, 0.035), 0)
-	fbox.content_margin_left = 18
-	fbox.content_margin_right = 14
-	fbox.content_margin_top = 13
-	fbox.content_margin_bottom = 14
-	fuss.add_theme_stylebox_override("panel", fbox)
-	spalte.add_child(fuss)
-	var fzeile := Stil.hbox(9)
-	fuss.add_child(fzeile)
-	trainerbild = Stil.hbox(0)
-	trainerbild.custom_minimum_size = Vector2(34, 34)
-	fzeile.add_child(trainerbild)
-	var fspalte := Stil.vbox(1)
-	fspalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	fzeile.add_child(fspalte)
-	seitenfuss = Stil.text("", Stil.S_KLEIN, Stil.TEXT)
-	fspalte.add_child(seitenfuss)
-	seitenfuss_ruf = Stil.matt("", Stil.S_MINI)
-	fspalte.add_child(seitenfuss_ruf)
-
-func _baue_navigation() -> void:
-	var letzte_gruppe := ""
+## Das Menüband unter der Kopfzeile: sechs Knöpfe, rechts die Trainerzeile.
+func _baue_menueband(eltern: Node) -> void:
+	var namen := {}
 	for b in BEREICHE:
-		if str(b["gruppe"]) != letzte_gruppe:
-			letzte_gruppe = str(b["gruppe"])
-			navigation.add_child(Stil.abstand(14))
-			var rubrik := Stil.etikett("    " + letzte_gruppe, Stil.TEXT_SCHWACH)
-			navigation.add_child(rubrik)
-			navigation.add_child(Stil.abstand(4))
-		var id: String = str(b["id"])
-		var knopf := NavKnopf.neu(id, str(b["name"]))
-		knopf.pressed.connect(func():
-			Klang.spiele("blaettern", 0.5)
-			zeige(id))
-		navigation.add_child(knopf)
-		nav_knoepfe[id] = knopf
-	navigation.add_child(Stil.abstand(8))
+		namen[str(b["id"])] = str(b["name"])
+	var gruppen: Array = []
+	for g in MENUE:
+		var eintraege: Array = []
+		for id in (g["eintraege"] as Array):
+			eintraege.append({"id": str(id), "name": str(namen.get(str(id), str(id)))})
+		gruppen.append({"name": str(g["name"]), "eintraege": eintraege})
+	menueband = Menueband.new()
+	eltern.add_child(menueband)
+	var rechts := menueband.aufbauen(gruppen)
+	menueband.gewaehlt.connect(func(id):
+		Klang.spiele("blaettern", 0.5)
+		zeige(str(id)))
+
+	# Wer hier eigentlich arbeitet — früher der Fuß der Seitenleiste.
+	trainerbild = Stil.hbox(0)
+	trainerbild.custom_minimum_size = Vector2(26, 26)
+	trainerbild.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	rechts.add_child(trainerbild)
+	seitenfuss = Stil.text("", Stil.S_KLEIN, Stil.TEXT)
+	seitenfuss.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	rechts.add_child(seitenfuss)
+	seitenfuss_ruf = Stil.matt("", Stil.S_MINI)
+	seitenfuss_ruf.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	rechts.add_child(seitenfuss_ruf)
 
 ## Obere Leiste: Vereinsidentitaet links, Lage und Aktionen rechts.
 func _baue_kopfzeile(eltern: Node) -> void:
@@ -232,6 +188,21 @@ func _baue_kopfzeile(eltern: Node) -> void:
 
 	var zeile := Stil.hbox(16)
 	kopfpanel.add_child(zeile)
+
+	# Die Wortmarke stand im Kopf der Seitenleiste. Die gibt es nicht mehr,
+	# also steht sie hier — links, vor dem Verein, den sie verwaltet.
+	var marke := Stil.hbox(10)
+	marke.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	zeile.add_child(marke)
+	var puls := Stil.wortzeichen(26.0)
+	puls.custom_minimum_size = Vector2(26, 26)
+	puls.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	marke.add_child(puls)
+	var wort := Stil.text("HALLENHERZ", Stil.S_NORMAL, Stil.TEXT)
+	wort.add_theme_font_override("font", Stil.schnitt_fett())
+	wort.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	marke.add_child(wort)
+	zeile.add_child(Stil.marke_strich(Stil.RAND_HELL, 1, 26))
 
 	kopf_wappen_halter = Stil.hbox(0)
 	kopf_wappen_halter.custom_minimum_size = Vector2(42, 42)
@@ -372,13 +343,11 @@ func zeige(id: String) -> void:
 		return
 	if aktueller != "" and bildschirme.has(aktueller):
 		bildschirme[aktueller].visible = false
-		if nav_knoepfe.has(aktueller):
-			nav_knoepfe[aktueller].setze_aktiv(false)
 	aktueller = id
 	bildschirme[id].visible = true
 	bildschirme[id].aktualisieren()
-	if nav_knoepfe.has(id):
-		nav_knoepfe[id].setze_aktiv(true)
+	if menueband != null:
+		menueband.setze_aktiv(id)
 	_kopf_auffrischen()
 	_einblenden(bildschirme[id])
 
@@ -448,14 +417,15 @@ func _kopf_auffrischen() -> void:
 	kopf_saison.text = Welt.saison_text()
 
 	var offen: int = Welt.ungelesene_nachrichten()
-	if nav_knoepfe.has("nachrichten"):
-		nav_knoepfe["nachrichten"].setze_zaehler(offen)
-		nav_knoepfe["nachrichten"].tooltip_text = ("%d ungelesene Nachricht(en)" % offen) if offen > 0 else "Posteingang"
-	if nav_knoepfe.has("kabine"):
-		var gespraeche: int = Anliegen.anzahl(Welt.daten)
-		nav_knoepfe["kabine"].setze_zaehler(gespraeche)
+	if menueband != null:
+		menueband.setze_zaehler("nachrichten", offen)
+		menueband.setze_hinweis("nachrichten",
+			("%d ungelesene Nachricht(en)" % offen) if offen > 0 else "Posteingang, Medien, Chronik, Laufbahn")
 		# Eine Zahl ohne Erklaerung ist eine Aufgabe ohne Anleitung.
-		nav_knoepfe["kabine"].tooltip_text = ("%d Spieler möchten Sie sprechen — in der Kabine unter „Gespräche“" % gespraeche) if gespraeche > 0 else "Kabinenklima, Wortführer, Gruppen"
+		var gespraeche: int = Anliegen.anzahl(Welt.daten)
+		menueband.setze_zaehler("kabine", gespraeche)
+		menueband.setze_hinweis("kabine",
+			("%d Spieler möchten Sie sprechen — Kabine, Reiter „Gespräche“" % gespraeche) if gespraeche > 0 else "Kader, Aufstellung, Training, Kabine, Nachwuchs")
 	if kopf_glocke.has_meta("symbol"):
 		(kopf_glocke.get_meta("symbol") as Symbol).setze_farbe(Stil.AKZENT if offen > 0 else Stil.TEXT_MATT)
 	kopf_glocke.tooltip_text = "%d ungelesene Nachricht(en)" % offen if offen > 0 else "Nachrichten"
