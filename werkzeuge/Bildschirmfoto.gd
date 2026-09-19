@@ -22,6 +22,9 @@ func _ready() -> void:
 	Welt.neues_spiel(cid, {"vorname": "Mira", "nachname": "Halden",
 		"hintergrund": "nachwuchs", "nation": "de", "alter": 41}, 424242)
 	_log("Verein: %s" % Welt.mein_verein()["name"])
+	# Ein paar Lesezeichen, damit das Band auf den Bildern so aussieht wie nach
+	# ein paar Spieltagen und nicht wie in der ersten Minute.
+	Welt.daten["lesezeichen"] = ["kader", "taktik", "finanzen"]
 
 	# Erst simulieren, dann die Oberflaeche bauen: sonst faengt die App das
 	# Signal "eigenes Spiel faellig" ab und die Live-Ansicht uebernimmt.

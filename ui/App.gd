@@ -156,6 +156,7 @@ func _baue_menueband(eltern: Node) -> void:
 	menueband.gewaehlt.connect(func(id):
 		Klang.spiele("blaettern", 0.5)
 		zeige(str(id)))
+	menueband.merken_umgeschaltet.connect(func(id): _lesezeichen_umschalten(str(id)))
 
 	# Wer hier eigentlich arbeitet — früher der Fuß der Seitenleiste.
 	trainerbild = Stil.hbox(0)
@@ -349,6 +350,7 @@ func zeige(id: String) -> void:
 	bildschirme[id].aktualisieren()
 	if menueband != null:
 		menueband.setze_aktiv(id)
+		menueband.setze_lesezeichen(Welt.lesezeichen(), Welt.lesezeichen_voll())
 	_kopf_auffrischen()
 	_einblenden(bildschirme[id])
 
@@ -579,7 +581,8 @@ func _hilfe_bauen() -> Control:
 			["B / K / A", "Büro, Kader, Aufstellung"],
 			["T / F / N", "Transfermarkt, Finanzen, Nachrichten"],
 			["S / Z / J", "Spielplan, Scouting, Nachwuchs"],
-			["V / M", "Vorstand, Medien"]]:
+			["V / M", "Vorstand, Medien"],
+			["L", "Diesen Bildschirm anheften"]]:
 		var z := Stil.hbox(10)
 		rechts.add_child(z)
 		var taste := Stil.abzeichen(str(e2[0]), Stil.AKZENT)
@@ -678,6 +681,19 @@ const TASTENKUERZEL := {
 	KEY_J: "jugend", KEY_V: "vorstand", KEY_M: "medien",
 }
 
+## Den offenen Bildschirm anheften oder ablösen.
+##
+## Ein voller Balken lehnt still ab — deshalb sagt es hier jemand. Ohne
+## Rückmeldung drückt man dreimal und hält den Stern für kaputt.
+func _lesezeichen_umschalten(id: String) -> void:
+	if Welt.daten.is_empty() or id == "":
+		return
+	var abgelehnt: bool = Welt.lesezeichen_voll() and not Welt.ist_lesezeichen(id)
+	Welt.lesezeichen_umschalten(id)
+	Klang.spiele("raunen" if abgelehnt else "klick", 0.5 if abgelehnt else 0.7)
+	if menueband != null:
+		menueband.setze_lesezeichen(Welt.lesezeichen(), Welt.lesezeichen_voll(), abgelehnt)
+
 func _unhandled_input(ereignis: InputEvent) -> void:
 	if not Welt.laeuft or not rahmen.visible:
 		return
@@ -689,6 +705,10 @@ func _unhandled_input(ereignis: InputEvent) -> void:
 		return
 	if taste == KEY_SPACE:
 		_weiter()
+		get_viewport().set_input_as_handled()
+		return
+	if taste == KEY_L:
+		_lesezeichen_umschalten(aktueller)
 		get_viewport().set_input_as_handled()
 		return
 	if taste == KEY_F1:

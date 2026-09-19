@@ -129,6 +129,40 @@ func merke_besuch(id: String) -> void:
 		daten["besucht"] = {}
 	(daten["besucht"] as Dictionary)[id] = true
 
+## Angeheftete Bildschirme.
+##
+## Sieben Gruppen mit fünfundzwanzig Bildschirmen sind aufgeräumt, aber sie
+## kosten zwei Klicks für den Bildschirm, den man zehnmal am Tag aufmacht —
+## und welcher das ist, weiß nur der Trainer selbst. Wer ein Jugendprojekt
+## fährt, lebt im Nachwuchs; wer gegen den Abstieg spielt, in den Finanzen.
+## Deshalb sucht das Spiel sie nicht aus, sondern merkt sie sich.
+const LESEZEICHEN_HOECHSTENS := 5
+
+func lesezeichen() -> Array:
+	return (daten.get("lesezeichen", []) as Array).duplicate()
+
+func ist_lesezeichen(id: String) -> bool:
+	return (daten.get("lesezeichen", []) as Array).has(id)
+
+## Heftet an oder löst ab. Gibt zurück, ob der Bildschirm danach angeheftet
+## ist — ein voller Balken lehnt still ab, deshalb sagt es der Aufrufer weiter.
+func lesezeichen_umschalten(id: String) -> bool:
+	if daten.is_empty() or id == "":
+		return false
+	if not daten.has("lesezeichen"):
+		daten["lesezeichen"] = []
+	var liste: Array = daten["lesezeichen"]
+	if liste.has(id):
+		liste.erase(id)
+		return false
+	if liste.size() >= LESEZEICHEN_HOECHSTENS:
+		return false
+	liste.append(id)
+	return true
+
+func lesezeichen_voll() -> bool:
+	return (daten.get("lesezeichen", []) as Array).size() >= LESEZEICHEN_HOECHSTENS
+
 func saison_index() -> int:
 	if daten.is_empty():
 		return 0

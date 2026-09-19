@@ -13,12 +13,16 @@ extends PanelContainer
 ## die Aufräumaktion damit bezahlt, dass man nicht mehr sieht, was ansteht.
 
 signal gewaehlt(id: String)
+## Der Stern wurde gedrückt: der Bildschirm soll angeheftet oder abgelöst werden.
+signal merken_umgeschaltet(id: String)
 
 ## Aufbau: [{"name": "Mannschaft", "eintraege": [{"id":…, "name":…}], "direkt": bool}]
 var gruppen: Array = []
 var aktiv: String = ""
 
 var _leiste: HBoxContainer
+var _zeichenleiste: HBoxContainer
+var _stern: Button
 var _knoepfe: Dictionary = {}     # Gruppenname -> Button
 var _menues: Dictionary = {}      # Gruppenname -> PopupMenu
 var _zaehler: Dictionary = {}     # Bildschirmkennung -> Zahl
@@ -59,11 +63,83 @@ func aufbauen(neue_gruppen: Array) -> Control:
 		add_child(menue)
 		_menues[name] = menue
 		knopf.pressed.connect(func(): _oeffne(name))
+	_leiste.add_child(_lesezeichenbereich())
 	_leiste.add_child(Stil.dehner())
 	var rechts := Stil.hbox(9)
 	rechts.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_leiste.add_child(rechts)
 	return rechts
+
+## Die Lesezeichen: ein Stern für den offenen Bildschirm, daneben die
+## angehefteten.
+##
+## Sie stehen in derselben Zeile wie die Gruppen und nicht darunter. Eine
+## zweite Zeile hätte jeden Bildschirm um dreißig Pixel nach unten geschoben,
+## und dafür ist zu viel Arbeit hineingegangen, dass nirgends mehr gerollt
+## werden muss.
+func _lesezeichenbereich() -> Control:
+	var halter := Stil.hbox(2)
+	halter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var strich := VSeparator.new()
+	strich.custom_minimum_size = Vector2(0, 20)
+	halter.add_child(strich)
+	_stern = Button.new()
+	_stern.focus_mode = Control.FOCUS_NONE
+	_stern.custom_minimum_size = Vector2(0, 32)
+	_stil_setzen(_stern, false)
+	_stern.pressed.connect(func(): merken_umgeschaltet.emit(aktiv))
+	halter.add_child(_stern)
+	_zeichenleiste = Stil.hbox(2)
+	_zeichenleiste.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	halter.add_child(_zeichenleiste)
+	return halter
+
+## Die angehefteten Bildschirme neu zeichnen.
+##
+## `abgelehnt` faerbt den Stern rot: der Balken war voll, und ohne dieses
+## Zeichen drueckt man dreimal und haelt ihn fuer kaputt. Die Farbe bleibt bis
+## zum naechsten Bildschirmwechsel stehen — lange genug zum Lesen, kurz genug,
+## um nicht zu stoeren.
+func setze_lesezeichen(ids: Array, voll: bool, abgelehnt: bool = false) -> void:
+	if _zeichenleiste == null:
+		return
+	for kind in _zeichenleiste.get_children():
+		_zeichenleiste.remove_child(kind)
+		kind.queue_free()
+	for id in ids:
+		var kennung: String = str(id)
+		var b := Button.new()
+		b.text = str(_name_von.get(kennung, kennung))
+		b.focus_mode = Control.FOCUS_NONE
+		# Kein clip_text: bei einem Knopf senkt es die Mindestbreite auf null,
+		# und in einer Zeile ohne Dehner bleibt davon ein leeres Kaestchen
+		# uebrig. Fuenf kurze Bildschirmnamen passen auch so.
+		b.custom_minimum_size = Vector2(0, 32)
+		b.tooltip_text = "%s — angeheftet. Zum Ablösen dort den Stern drücken." % str(
+			_name_von.get(kennung, kennung))
+		_stil_setzen(b, kennung == aktiv)
+		b.add_theme_color_override("font_color",
+			Color.WHITE if kennung == aktiv else Stil.TUERKIS)
+		b.pressed.connect(func(): gewaehlt.emit(kennung))
+		_zeichenleiste.add_child(b)
+	var gemerkt: bool = ids.has(aktiv)
+	# Solange nichts angeheftet ist, steht das Wort dabei. Ein einzelner
+	# blasser Stern zwischen sieben Knoepfen erklaert sich niemandem; sobald
+	# das erste Lesezeichen steht, erklaert es sich von selbst.
+	_stern.text = "★" if gemerkt else ("☆" if not ids.is_empty() else "☆ Anheften")
+	_stern.add_theme_color_override("font_color",
+		Stil.ROT if abgelehnt else (Stil.TUERKIS if gemerkt else Stil.TEXT_SCHWACH))
+	if abgelehnt:
+		_stern.tooltip_text = "Es sind schon %d Bildschirme angeheftet — mehr passen nicht ins Band. Erst einen ablösen." % ids.size()
+	elif gemerkt:
+		_stern.tooltip_text = "„%s“ ist angeheftet. Nochmal drücken löst es ab. (L)" % str(
+			_name_von.get(aktiv, aktiv))
+	elif voll:
+		_stern.tooltip_text = "Es sind schon fünf Bildschirme angeheftet. Erst einen ablösen."
+	elif ids.is_empty():
+		_stern.tooltip_text = "Diesen Bildschirm anheften — er steht dann hier oben und ist einen Klick entfernt. (L)"
+	else:
+		_stern.tooltip_text = "„%s“ anheften. (L)" % str(_name_von.get(aktiv, aktiv))
 
 ## Ein Gruppenknopf: Name, bei Gruppen ein Pfeil, dazu Platz für die Zahl.
 func _gruppenknopf(name: String, einzeln: bool) -> Button:

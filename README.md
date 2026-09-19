@@ -59,6 +59,17 @@ Spielstand wächst und wie die Wirtschaft jedes Vereins tatsächlich aussieht.
 Was hier anschlägt, ist ein Fehler und keine Geschmacksfrage — der erste Lauf
 förderte fünf davon zutage.
 
+### Lesezeichen
+
+Sieben Gruppen mit fünfundzwanzig Bildschirmen sind aufgeräumt, kosten aber
+zwei Klicks für den Bildschirm, den man zehnmal am Tag aufmacht — und welcher
+das ist, weiß nur der Trainer. Wer ein Jugendprojekt fährt, lebt im Nachwuchs;
+wer gegen den Abstieg spielt, in den Finanzen. Der Stern im Menüband heftet den
+offenen Bildschirm an (Taste **L**), bis zu fünf davon stehen danach als eigene
+Knöpfe daneben. Sie liegen in derselben Zeile wie die Gruppen: eine zweite
+Zeile hätte jeden Bildschirm um dreißig Pixel nach unten geschoben, und dass
+nirgends mehr gerollt werden muss, war zu teuer erkämpft.
+
 Und zum Ansehen der Oberfläche ohne Fenster — legt je Bildschirm ein PNG ab:
 
 ```bash
