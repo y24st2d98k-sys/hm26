@@ -12,7 +12,9 @@ func aufbauen() -> void:
 	v.add_child(Stil.titel("Spielstand", 0))
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	v.add_child(meldung)
-	v.add_child(Stil.matt("Jeder Spielstand enthält den kompletten Zustand der Spielwelt. Beim Laden werden fehlende Felder automatisch ergänzt, damit alte Stände auch nach Erweiterungen des Spiels funktionieren.", Stil.S_KLEIN))
+	# Als gewoehnliches Etikett meldete dieser Satz 1199 Pixel Mindestbreite an
+	# und machte damit den ganzen Bildschirm breiter als das Fenster.
+	v.add_child(Bausteine.fliesstext("Jeder Spielstand enthält den kompletten Zustand der Spielwelt. Beim Laden werden fehlende Felder automatisch ergänzt, damit alte Stände auch nach Erweiterungen des Spiels funktionieren.", Stil.S_KLEIN))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -25,23 +27,26 @@ func aktualisieren() -> void:
 	if liste == null:
 		return
 	leeren(liste)
-	# Ton und Automatik nebeneinander, die Spielstände darunter über die volle
-	# Breite: die Spielstandkarte trägt Verein, Trainer, Datum und drei Knöpfe
-	# je Zeile und ist damit breiter als eine halbe Seite.
+	# Gemessen: die Tonkarte ist 866 Pixel breit, die Automatik 826, die
+	# Spielstände 528. Nebeneinander passen nur die schmalste und eine der
+	# beiden anderen — also stehen Ton und Automatik untereinander und die
+	# Spielstände daneben.
 	var oben := Stil.hbox(Stil.A_NORMAL)
 	liste.add_child(oben)
-	var ton := _ton()
-	ton.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	oben.add_child(ton)
-	var auto := _automatik()
-	auto.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	oben.add_child(auto)
+	var links := Stil.vbox(Stil.A_NORMAL)
+	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	oben.add_child(links)
+	links.add_child(_ton())
+	links.add_child(_automatik())
 	# Ein Platz ist eine Zeile, keine Karte.
 	#
 	# Vorher trug jeder der sechs Plaetze eine eigene Karte mit vier
 	# Beschriftungszeilen: zusammen weit mehr als eine Bildschirmhoehe fuer
 	# eine Liste, in der man eine Zeile sucht und einen Knopf drueckt.
-	var plaetze := Bausteine.karte_in(liste, "Spielstände")
+	var rechts := Stil.vbox(Stil.A_NORMAL)
+	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	oben.add_child(rechts)
+	var plaetze := Bausteine.karte_in(rechts, "Spielstände")
 	_slot_zeile(plaetze, Welt.AUTOSLOT)
 	for slot in range(1, Welt.SLOTS + 1):
 		_slot_zeile(plaetze, slot)
