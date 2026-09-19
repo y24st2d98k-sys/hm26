@@ -81,15 +81,15 @@ func aufbauen() -> void:
 	oben.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	inhalt.add_child(oben)
 
-	var listen := Stil.vbox(Stil.A_KLEIN)
+	var listen := Stil.vbox(6)
 	listen.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	oben.add_child(listen)
 	angriff_bereich = Bausteine.karte_in(listen, "Angriffsformation")
 	abwehr_bereich = Bausteine.karte_in(listen, "Abwehrformation")
 	# Enger gesetzt als eine gewoehnliche Karte: vierzehn Positionszeilen
 	# untereinander gewinnen mit jedem Pixel Zeilenabstand eine halbe Zeile.
-	angriff_bereich.add_theme_constant_override("separation", 3)
-	abwehr_bereich.add_theme_constant_override("separation", 3)
+	angriff_bereich.add_theme_constant_override("separation", 2)
+	abwehr_bereich.add_theme_constant_override("separation", 2)
 
 	var feldkarte := Bausteine.karte_in(oben, "Vorschau")
 	Stil.karte_wurzel(feldkarte).size_flags_vertical = Control.SIZE_SHRINK_BEGIN
