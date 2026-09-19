@@ -21,6 +21,8 @@ var profil_bereich: VBoxContainer
 var spielbuch_bereich: VBoxContainer
 var gegnerplan_bereich: VBoxContainer
 var minuten_bereich: VBoxContainer
+## Wonach die Einsatzzeiten sortiert sind: "ziel" oder "position".
+var minuten_sortierung := "ziel"
 var vorschau_angriff: bool = true
 var meldung: Label
 
@@ -189,11 +191,15 @@ func _vorschau_umschalter() -> void:
 func _feld_auffrischen() -> void:
 	if feld == null or Welt.mein_verein_id == "":
 		return
-	feld.angreifer = "heim" if vorschau_angriff else "gast"
-	var eigene := Spielfeld.szene_aus_aufstellung(Welt.mein_verein_id, vorschau_angriff)
+	# Beide Formationen auf einem Feld. Sie stehen an entgegengesetzten Enden —
+	# der Angriff am fremden Tor, die Abwehr am eigenen —, also gibt es kein
+	# Gedraenge, und man sieht mit einem Blick, was die andere Haelfte tut.
+	# Dunkler steht, woran man gerade nicht arbeitet.
 	var v: Dictionary = Welt.verein(Welt.mein_verein_id)
+	feld.angreifer = "heim"
+	feld.abwehr_system = str(v["taktik"]["abwehr"])
 	feld.heim_farbe = v["wappen"]["a"]
-	feld.setze_szene({"heim": eigene, "gast": {}})
+	feld.setze_szene({"heim": Spielfeld.szene_beide(Welt.mein_verein_id, vorschau_angriff), "gast": {}})
 	feld.ball = Vector2(26.0, 10.0) if vorschau_angriff else Vector2(14.0, 10.0)
 
 func _verfuegbar(_ausser: Array) -> Array:
@@ -210,8 +216,22 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 	var auf: Dictionary = v["aufstellung"]
 	var aktuell: String = str((auf[block] as Dictionary).get(pos, ""))
 	var h := Stil.hbox(8)
-	var label := Bausteine.positions_abzeichen(pos if block == "angriff" else pos.replace("A", "Abw "))
+	# Der Abwehrplatz heisst nach dem eingestellten System: in einer 3:2:1
+	# steht auf Platz 3 die Spitze, in einer 6:0 der linke Innenblock. "Abw 3"
+	# sagt das nicht, und dann raet man, wer wo steht.
+	var beschriftung: String = pos
+	var erklaerung := ""
+	if block == "abwehr" and Spielfeld.ist_abwehrplatz(pos):
+		var system: String = str(v["taktik"]["abwehr"])
+		var platz: int = Spielfeld.abwehr_index(pos)
+		beschriftung = str((Spielfeld.ABWEHR_KUERZEL.get(system, Spielfeld.ABWEHR_KUERZEL["6-0"]) as Array)[platz])
+		erklaerung = "%s in der %s-Abwehr" % [
+			str((Spielfeld.ABWEHR_ROLLEN.get(system, Spielfeld.ABWEHR_ROLLEN["6-0"]) as Array)[platz]),
+			system.replace("-", ":")]
+	var label := Bausteine.positions_abzeichen(beschriftung)
 	label.custom_minimum_size = Vector2(58, 0)
+	if erklaerung != "":
+		label.tooltip_text = erklaerung
 	h.add_child(label)
 
 	var wahl := OptionButton.new()
@@ -684,6 +704,10 @@ func _einsatzzeiten() -> void:
 		_melde("Zielminuten aus den Vertragsrollen übernommen.")
 		aktualisieren())
 	kopf.add_child(uebernehmen)
+	kopf.add_child(Stil.segmente([{"id": "ziel", "name": "Nach Ziel"},
+		{"id": "position", "name": "Nach Position"}], minuten_sortierung, func(id):
+			minuten_sortierung = str(id)
+			aktualisieren()))
 	var frei := Stil.knopf_flach("Alle aufheben", Stil.TEXT_MATT)
 	frei.tooltip_text = "Ohne Ziele entscheidet allein der Kraftstand — wie vorher."
 	frei.pressed.connect(func():
@@ -698,17 +722,54 @@ func _einsatzzeiten() -> void:
 			Stil.S_MINI, Stil.GELB))
 	minuten_bereich.add_child(Stil.trenner())
 
-	var kader: Array = (Welt.verein(cid)["kader"] as Array).duplicate()
-	kader.sort_custom(func(a, b):
-		return Einsatzzeit.ziel(Welt.daten, cid, str(a)) > Einsatzzeit.ziel(Welt.daten, cid, str(b)))
-	var g := Stil.tabelle(["Spieler", "Rolle", "Ziel", "Zielminuten", "Bisher", "Stand"])
+	var kader: Array = []
+	for sid_pruef in (Welt.verein(cid)["kader"] as Array):
+		var pruef: Dictionary = Welt.spieler(str(sid_pruef))
+		if pruef.is_empty() or bool(pruef["ist_torwart"]):
+			continue
+		kader.append(str(sid_pruef))
+	# Zwei Ordnungen, zwei Fragen. "Nach Ziel" beantwortet, wer viel spielen
+	# soll; "nach Position" beantwortet, ob jede Position ihre sechzig Minuten
+	# zusammen hat — und das ist die Frage, die man beim Verteilen stellt.
+	var reihenfolge: Array = Spielerfabrik.POSITIONEN
+	if minuten_sortierung == "position":
+		kader.sort_custom(func(a, b):
+			var pa: int = reihenfolge.find(str(Welt.spieler(str(a))["position"]))
+			var pb: int = reihenfolge.find(str(Welt.spieler(str(b))["position"]))
+			if pa != pb:
+				return pa < pb
+			return Einsatzzeit.ziel(Welt.daten, cid, str(a)) > Einsatzzeit.ziel(Welt.daten, cid, str(b)))
+	else:
+		kader.sort_custom(func(a, b):
+			return Einsatzzeit.ziel(Welt.daten, cid, str(a)) > Einsatzzeit.ziel(Welt.daten, cid, str(b)))
+	# Wie viele Zielminuten je Position zusammenkommen — fuer die Bandzeilen.
+	var je_position := {}
+	for sid_summe in kader:
+		var pos_summe: String = str(Welt.spieler(sid_summe)["position"])
+		je_position[pos_summe] = float(je_position.get(pos_summe, 0.0)) \
+			+ Einsatzzeit.ziel(Welt.daten, cid, sid_summe)
+	var g := Stil.tabelle(["Pos", "Spieler", "Rolle", "Ziel", "Zielminuten", "Bisher", "Stand"])
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	minuten_bereich.add_child(g)
+	var letzte_position := ""
 	for sid_roh in kader:
 		var sid: String = str(sid_roh)
 		var sp: Dictionary = Welt.spieler(sid)
-		if sp.is_empty() or bool(sp["ist_torwart"]):
-			continue
+		var pos_sp: String = str(sp["position"])
+		if minuten_sortierung == "position" and pos_sp != letzte_position:
+			letzte_position = pos_sp
+			var summe: float = float(je_position.get(pos_sp, 0.0))
+			var passt: bool = absf(summe - Einsatzzeit.SPIELDAUER) <= 6.0
+			var bandfarbe: Color = Stil.GRUEN if passt else (
+				Stil.GELB if summe > 0.0 else Stil.TEXT_SCHWACH)
+			var band := Stil.text("%s — %d von %d Minuten vergeben" % [
+				str(Spielerfabrik.POSITION_NAME.get(pos_sp, pos_sp)), int(summe),
+				int(Einsatzzeit.SPIELDAUER)], Stil.S_KLEIN, bandfarbe)
+			band.tooltip_text = "Jede Feldposition ist sechzig Minuten lang zu besetzen. Fehlt etwas, entscheidet dort die Tagesform; ist es zu viel, geht die Rechnung nicht auf."
+			g.add_child(band)
+			for _leer in 6:
+				g.add_child(Stil.matt("", Stil.S_MINI))
+		g.add_child(Bausteine.positions_abzeichen(pos_sp))
 		var k := Stil.knopf_flach("%s %s" % [Trikot.text(sp), Spielerfabrik.kurz_name(sp)])
 		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
 		g.add_child(k)

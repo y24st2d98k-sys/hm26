@@ -18,6 +18,59 @@ const ABWEHR_RECHTS := [
 	Vector2(33.8, 13.0), Vector2(33.5, 15.6),
 ]
 
+## Die Abwehr steht so, wie sie eingestellt ist.
+##
+## Vorher stand jede Abwehr als flache Sechserkette da, egal ob 6:0 oder
+## 3:2:1 eingestellt war. Damit war der Vorschau nicht zu entnehmen, wer
+## eigentlich wo steht — man musste raten. Die Zahlen sind Meter vom linken
+## Rand des Feldes aus; das Tor steht bei x = 40, die Sechsmeterlinie also bei
+## etwa x = 34, die Neunmeterlinie bei x = 31.
+##
+## Die Reihenfolge ist die der Abwehrplätze: Platz 1 aussen links bis Platz 6
+## aussen rechts, die vorgezogenen Spieler an ihrer natuerlichen Stelle in
+## der Kette.
+const ABWEHR_SYSTEME := {
+	"6-0": [
+		Vector2(33.5, 4.4), Vector2(33.8, 7.0), Vector2(34.0, 9.0), Vector2(34.0, 11.0),
+		Vector2(33.8, 13.0), Vector2(33.5, 15.6),
+	],
+	"5-1": [
+		Vector2(33.5, 4.6), Vector2(33.9, 7.4), Vector2(30.6, 10.0), Vector2(34.0, 10.0),
+		Vector2(33.9, 12.6), Vector2(33.5, 15.4),
+	],
+	"4-2": [
+		Vector2(33.6, 5.0), Vector2(31.2, 7.6), Vector2(33.9, 8.6), Vector2(33.9, 11.4),
+		Vector2(31.2, 12.4), Vector2(33.6, 15.0),
+	],
+	"3-2-1": [
+		Vector2(33.6, 5.2), Vector2(31.6, 7.4), Vector2(29.9, 10.0), Vector2(33.9, 10.0),
+		Vector2(31.6, 12.6), Vector2(33.6, 14.8),
+	],
+}
+
+## Wie die sechs Plaetze in jedem System heissen. Kuerzel fuers Trikot, der
+## ganze Name steht in der Aufstellungsliste daneben.
+const ABWEHR_ROLLEN := {
+	"6-0": ["Außen links", "Halb links", "Innen links", "Innen rechts", "Halb rechts", "Außen rechts"],
+	"5-1": ["Außen links", "Halb links", "Vorgezogen", "Mitte", "Halb rechts", "Außen rechts"],
+	"4-2": ["Außen links", "Vorgezogen links", "Innen links", "Innen rechts", "Vorgezogen rechts", "Außen rechts"],
+	"3-2-1": ["Außen links", "Halb links vor", "Spitze", "Mitte", "Halb rechts vor", "Außen rechts"],
+}
+const ABWEHR_KUERZEL := {
+	"6-0": ["AL", "HL", "IL", "IR", "HR", "AR"],
+	"5-1": ["AL", "HL", "V", "M", "HR", "AR"],
+	"4-2": ["AL", "VL", "IL", "IR", "VR", "AR"],
+	"3-2-1": ["AL", "HL", "S", "M", "HR", "AR"],
+}
+
+## Ist das eine Abwehrplatz-Kennung (A1 bis A6)?
+static func ist_abwehrplatz(pos: String) -> bool:
+	return pos.length() == 2 and pos.begins_with("A") and pos.substr(1, 1).is_valid_int()
+
+## Der Platz eines Abwehrspielers im eingestellten System, 0-basiert.
+static func abwehr_index(pos: String) -> int:
+	return clampi(int(pos.substr(1, 1)) - 1, 0, 5)
+
 var heim_farbe: Color = Color("#f0a23c")
 var gast_farbe: Color = Color("#48a9f8")
 var heim_kurz: String = "HEI"
@@ -29,6 +82,8 @@ var szene: Dictionary = {"heim": {}, "gast": {}}
 var ball: Vector2 = Vector2(20.0, 10.0)
 var hervorgehoben: String = ""
 var nur_angriff: bool = false
+## Welches Abwehrsystem gezeichnet wird: "6-0", "5-1", "4-2" oder "3-2-1".
+var abwehr_system: String = "6-0"
 var puls: float = 50.0
 var zeige_puls: bool = true
 ## Hochformat: das Feld steht, statt zu liegen. Die Aufstellungsvorschau nutzt
@@ -546,7 +601,13 @@ func _entzerren(s: float) -> void:
 		for pos in spieler.keys():
 			var eintrag: Dictionary = spieler[pos]
 			var sid_e: String = str(eintrag.get("sid", "%s_%s" % [seite, pos]))
-			var meter: Vector2 = _position(str(pos), greift_an, nach_rechts, int(eintrag.get("index", 0)))
+			# Dieselbe Unterscheidung wie beim Zeichnen: ein Abwehrplatz steht
+			# am eigenen Tor, nicht am fremden. Ohne sie rechnete das
+			# Entzerren fuer die Abwehr Angriffskoordinaten aus und schob die
+			# Trikots anschliessend dorthin.
+			var im_block: bool = ist_abwehrplatz(str(pos))
+			var platz: int = abwehr_index(str(pos)) if im_block else int(eintrag.get("index", 0))
+			var meter: Vector2 = _position(str(pos), greift_an and not im_block, nach_rechts, platz)
 			if lebendig and _ist.has(sid_e):
 				meter = _ist[sid_e]
 			schluessel.append("%s|%s" % [seite, pos])
@@ -592,7 +653,13 @@ func _zeichne_koerper(seite: String, s: float) -> void:
 	for pos in spieler.keys():
 		var eintrag: Dictionary = spieler[pos]
 		var sid_e: String = str(eintrag.get("sid", "%s_%s" % [seite, pos]))
-		var meter: Vector2 = _position(pos, greift_an, nach_rechts, int(eintrag.get("index", 0)))
+		# Ein Abwehrplatz ist an seiner Kennung zu erkennen (A1 bis A6). So
+		# koennen Angriff und Abwehr derselben Mannschaft zugleich auf dem Feld
+		# stehen — der eine am fremden Tor, der andere am eigenen.
+		var im_block: bool = ist_abwehrplatz(pos)
+		var greift_an_hier: bool = greift_an and not im_block
+		var platz: int = abwehr_index(pos) if im_block else int(eintrag.get("index", 0))
+		var meter: Vector2 = _position(pos, greift_an_hier, nach_rechts, platz)
 		if lebendig and _ist.has(sid_e):
 			meter = _ist[sid_e]
 			# Ein winziges Wippen: ohne das wirken stehende Spieler wie Pfosten.
@@ -605,8 +672,13 @@ func _zeichne_koerper(seite: String, s: float) -> void:
 		var bestraft: bool = str(eintrag.get("status", "")) == "strafe"
 		if bestraft:
 			f = Color("#5b6068")
-		_punkte["%s|%s" % [seite, pos]] = {"p": p, "r": r, "f": f, "bestraft": bestraft,
-			"greift_an": greift_an, "nach_rechts": nach_rechts, "ist_tw": ist_tw}
+		# Was gerade nicht bearbeitet wird, steht dunkler da: man sieht beide
+		# Formationen, aber es ist klar, an welcher man arbeitet.
+		var matt: bool = bool(eintrag.get("matt", false))
+		if matt:
+			f = f.lerp(Color("#101820"), 0.62)
+		_punkte["%s|%s" % [seite, pos]] = {"p": p, "r": r, "f": f, "bestraft": bestraft or matt,
+			"greift_an": greift_an_hier, "nach_rechts": nach_rechts, "ist_tw": ist_tw}
 		# Schatten, Trikot, Rand — der Rand haelt die Farbe auch auf hellem Parkett lesbar
 		draw_circle(p + Vector2(0, maxf(s * 0.1, 1.0)), r, Color(0, 0, 0, 0.35))
 		draw_circle(p, r, f)
@@ -704,10 +776,56 @@ func _position(pos: String, greift_an: bool, nach_rechts: bool, index: int) -> V
 	if greift_an:
 		var basis: Vector2 = ANGRIFF_RECHTS.get(pos, Vector2(26.0, 10.0))
 		return basis if nach_rechts else Vector2(LAENGE - basis.x, basis.y)
-	# In der Abwehr steht die Mannschaft vor dem eigenen Tor
-	var i: int = clampi(index, 0, ABWEHR_RECHTS.size() - 1)
-	var b: Vector2 = ABWEHR_RECHTS[i]
+	# In der Abwehr steht die Mannschaft vor dem eigenen Tor — und zwar so,
+	# wie das eingestellte System es vorsieht.
+	var kette: Array = ABWEHR_SYSTEME.get(abwehr_system, ABWEHR_RECHTS)
+	var i: int = clampi(index, 0, kette.size() - 1)
+	var b: Vector2 = kette[i]
 	return Vector2(LAENGE - b.x, b.y) if nach_rechts else b
+
+## Beide Formationen auf einem Feld: Angriff am fremden Tor, Abwehr am
+## eigenen, Torwart dazwischen im eigenen Kasten.
+##
+## Vorher zeigte die Vorschau immer nur eine der beiden, und man musste
+## umschalten, um zu sehen, was die andere macht. Zusammen passen sie ohne
+## Gedraenge auf ein Feld — sie stehen ja an entgegengesetzten Enden. Was
+## gerade nicht bearbeitet wird, steht dunkler da.
+static func szene_beide(cid: String, betont_angriff: bool) -> Dictionary:
+	var v: Dictionary = Welt.verein(cid)
+	var auf: Dictionary = v.get("aufstellung", {})
+	var aus := {}
+	var i := 0
+	for pos in (auf.get("angriff", {}) as Dictionary).keys():
+		var sid: String = str(auf["angriff"][pos])
+		if sid == "" or not Welt.daten["spieler"].has(sid):
+			continue
+		if str(pos) == "TW":
+			continue
+		var sp: Dictionary = Welt.spieler(sid)
+		aus[pos] = {"sid": sid, "kurz": str(sp["nachname"]).substr(0, 9),
+			"nummer": int(sp.get("nummer", 0)), "index": i, "matt": not betont_angriff}
+		i += 1
+	for pos2 in (auf.get("abwehr", {}) as Dictionary).keys():
+		var sid2: String = str(auf["abwehr"][pos2])
+		if sid2 == "" or not Welt.daten["spieler"].has(sid2):
+			continue
+		var sp2: Dictionary = Welt.spieler(sid2)
+		var eintrag := {"sid": sid2, "kurz": str(sp2["nachname"]).substr(0, 9),
+			"nummer": int(sp2.get("nummer", 0)), "index": 0, "matt": betont_angriff}
+		if ist_abwehrplatz(str(pos2)):
+			# Auf dem Trikot steht das Kuerzel des Platzes im eingestellten
+			# System — "HL" sagt mehr als "A2".
+			var system: String = str((v.get("taktik", {}) as Dictionary).get("abwehr", "6-0"))
+			var kuerzel: Array = ABWEHR_KUERZEL.get(system, ABWEHR_KUERZEL["6-0"])
+			eintrag["pos"] = str(kuerzel[abwehr_index(str(pos2))])
+		if str(pos2) == "TW":
+			# Den Torwart gibt es nur einmal, und er ist nie matt: er steht in
+			# beiden Formationen im selben Tor.
+			eintrag["matt"] = false
+			aus["TW"] = eintrag
+		else:
+			aus[pos2] = eintrag
+	return aus
 
 ## Baut aus einer Aufstellung eine Szene fuer die Vorschau.
 static func szene_aus_aufstellung(cid: String, angriff: bool) -> Dictionary:
