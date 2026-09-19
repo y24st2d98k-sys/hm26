@@ -39,7 +39,7 @@ func aktualisieren() -> void:
 	# Ton, Automatik und Spielstände nebeneinander. Untereinander waren sie
 	# eine Bildschirmhöhe und ein Stück; seit die Navigation oben steht, ist
 	# die Breite dafür da.
-	mehrspaltig(liste, 3)
+	mehrspaltig(liste, 3, 3)
 
 ## Ton: Hauptschalter und drei Regler. Alle Klänge werden beim Start berechnet,
 ## es liegt keine Audiodatei im Projekt.

@@ -11,6 +11,9 @@ var bank_bereich: VBoxContainer
 var feld: Spielfeld
 ## Die Kopfzeilenleiste der Vorschau — sie wird beim Umschalten neu gebaut.
 var vorschau_leiste: HBoxContainer
+## Hoehe einer Positionszeile. Vierzehn davon stehen im Reiter "Aufstellung"
+## untereinander; ein Pixel mehr ist dort vierzehn Pixel mehr.
+const ZEILENHOEHE := 28
 var warnungen_bereich: VBoxContainer
 var anweisungs_bereich: VBoxContainer
 var profil_bereich: VBoxContainer
@@ -201,8 +204,11 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 
 	var wahl := OptionButton.new()
 	# Flacher als ein gewoehnlicher Knopf: vierzehn dieser Zeilen stehen
-	# untereinander, und jeder Pixel Zeilenhoehe ist dort vierzehn.
-	wahl.custom_minimum_size = Vector2(220, 30)
+	# untereinander, und jeder Pixel Zeilenhoehe ist dort vierzehn. Die Hoehe
+	# der Zeile bestimmt das hoechste Kind — deshalb bekommt auch der
+	# Profilknopf weiter unten dasselbe Mass.
+	wahl.custom_minimum_size = Vector2(220, ZEILENHOEHE)
+	wahl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	wahl.add_item("— frei —")
 	wahl.set_item_metadata(0, "")
 	var index := 1
@@ -252,6 +258,8 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 				warnung.tooltip_text = "Eignung %d %% — der Spieler verliert auf dieser Position deutlich." % int(eignung * 100.0)
 				h.add_child(warnung)
 		var info := Stil.knopf_flach("Profil", Stil.BLAU)
+		info.custom_minimum_size = Vector2(0, ZEILENHOEHE)
+		info.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		info.pressed.connect(func(): Spielerfenster.oeffnen(self, aktuell))
 		h.add_child(info)
 	return h
