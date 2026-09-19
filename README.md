@@ -32,6 +32,7 @@ godot4 --headless res://werkzeuge/Oberflaechentest.tscn        # alle Bildschirm
 godot4 --headless res://werkzeuge/Pruefung.tscn -- 740          # Integritätsprüfung über zwei Saisons
 godot4 --headless res://werkzeuge/Testlauf.tscn -- rollen        # Verteilung der Rollenvorschläge
 godot4 --headless res://werkzeuge/Testlauf.tscn -- wirkung       # Wirkung jeder Spieleranweisung
+godot4 --headless res://werkzeuge/Nachzueglertest.tscn           # Übersprungene eigene Partie
 godot4 --headless res://werkzeuge/Realismussonde.tscn           # Kennzahlen gegen die HBL-Wirklichkeit
 godot4 --headless res://werkzeuge/Tabellensonde.tscn            # Staerke, Zufall und Endtabelle
 godot4 --headless res://werkzeuge/Streusonde.tscn               # Woher die Streuung einer Partie kommt

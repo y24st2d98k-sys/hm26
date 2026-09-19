@@ -297,6 +297,19 @@ func tag_weiter() -> Dictionary:
 ## zurück, wenn der Tag hier enden muss.
 func tag_beginnen() -> Dictionary:
 	unterbrechung = {}
+	# Eine liegengebliebene eigene Partie geht vor.
+	#
+	# Partien werden nur an ihrem eigenen Tag angesetzt: was einmal
+	# uebersprungen ist, bleibt fuer immer ungespielt, und in der Tabelle fehlt
+	# ein Ergebnis. Uebersprungen werden kann seit dem Anpfifffenster — wer
+	# davor speichert und neu laedt oder zum Startbildschirm geht, laesst die
+	# Partie stehen. Deshalb wird hier zuerst nach hinten geschaut, und der Tag
+	# laeuft erst weiter, wenn nichts mehr offen ist.
+	var liegengeblieben := _offene_eigene_partie(tag())
+	if liegengeblieben != "":
+		unterbrechung = {"art": "eigenes_spiel", "spiel": liegengeblieben}
+		live_spiel_faellig.emit(liegengeblieben)
+		return unterbrechung
 	daten["tag"] = tag() + 1
 	var t: int = tag()
 
@@ -328,6 +341,24 @@ func tag_beginnen() -> Dictionary:
 		tag_gewechselt.emit(t)
 		return unterbrechung
 	return {}
+
+## Eine eigene Partie, die an einem vergangenen Tag haengengeblieben ist.
+##
+## Vierzehn Tage zurueck reichen: weiter kommt man nicht, ohne dass der Tag
+## weiterlaeuft, und der laeuft nur, wenn hier nichts gefunden wird.
+const NACHZUEGLER_TAGE := 14
+
+func _offene_eigene_partie(t: int) -> String:
+	for zurueck in range(0, NACHZUEGLER_TAGE):
+		for mid in (spiele_am_tag(t - zurueck) as Array):
+			var m: Dictionary = daten["spiele"].get(str(mid), {})
+			if m.is_empty() or bool(m["gespielt"]):
+				continue
+			if str(m["heim"]) == mein_verein_id or str(m["gast"]) == mein_verein_id:
+				return str(mid)
+			if Nationaltrainer.ist_nationalteam_spiel(daten, m):
+				return str(mid)
+	return ""
 
 ## Letzter Teil eines Tages: Wochen- und Saisonrhythmus, dann die Signale.
 func tag_abschliessen(t: int) -> Dictionary:
