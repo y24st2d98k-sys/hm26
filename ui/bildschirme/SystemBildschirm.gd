@@ -25,8 +25,17 @@ func aktualisieren() -> void:
 	if liste == null:
 		return
 	leeren(liste)
-	liste.add_child(_ton())
-	liste.add_child(_automatik())
+	# Ton und Automatik nebeneinander, die Spielstände darunter über die volle
+	# Breite: die Spielstandkarte trägt Verein, Trainer, Datum und drei Knöpfe
+	# je Zeile und ist damit breiter als eine halbe Seite.
+	var oben := Stil.hbox(Stil.A_NORMAL)
+	liste.add_child(oben)
+	var ton := _ton()
+	ton.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	oben.add_child(ton)
+	var auto := _automatik()
+	auto.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	oben.add_child(auto)
 	# Ein Platz ist eine Zeile, keine Karte.
 	#
 	# Vorher trug jeder der sechs Plaetze eine eigene Karte mit vier
@@ -36,10 +45,7 @@ func aktualisieren() -> void:
 	_slot_zeile(plaetze, Welt.AUTOSLOT)
 	for slot in range(1, Welt.SLOTS + 1):
 		_slot_zeile(plaetze, slot)
-	# Zwei Spalten, nicht drei: die Spielstandzeilen tragen Verein, Trainer,
-	# Datum und drei Knöpfe — die Karte allein ist siebenhundert Pixel breit,
-	# und zu dritt stand das Ganze sechshundert Pixel neben dem Bildschirm.
-	zweispaltig(liste, 3)
+
 
 ## Ton: Hauptschalter und drei Regler. Alle Klänge werden beim Start berechnet,
 ## es liegt keine Audiodatei im Projekt.

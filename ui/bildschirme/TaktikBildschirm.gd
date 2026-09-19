@@ -11,9 +11,10 @@ var bank_bereich: VBoxContainer
 var feld: Spielfeld
 ## Die Kopfzeilenleiste der Vorschau — sie wird beim Umschalten neu gebaut.
 var vorschau_leiste: HBoxContainer
-## Hoehe einer Positionszeile. Vierzehn davon stehen im Reiter "Aufstellung"
-## untereinander; ein Pixel mehr ist dort vierzehn Pixel mehr.
-const ZEILENHOEHE := 28
+## Wie viel Luft ueber und unter der Beschriftung einer Positionszeile bleibt.
+## Vierzehn dieser Zeilen stehen im Reiter "Aufstellung" untereinander; ein
+## Pixel mehr ist dort vierzehn Pixel mehr.
+const ZEILENLUFT := 3
 var warnungen_bereich: VBoxContainer
 var anweisungs_bereich: VBoxContainer
 var profil_bereich: VBoxContainer
@@ -127,6 +128,17 @@ func aufbauen() -> void:
 	minuten_bereich = Bausteine.karte_in(reiter.feld("einsatz"), "Einsatzzeiten")
 	bank_bereich = Bausteine.karte_in(reiter.feld("bank"), "Restlicher Kader")
 
+## Nimmt einem Bedienelement die senkrechte Luft in seinem Rahmen.
+func _flach(steuerung: Control, art: String) -> void:
+	for zustand in ["normal", "hover", "pressed", "focus", "disabled"]:
+		var box: StyleBox = steuerung.get_theme_stylebox(zustand, art)
+		if box == null:
+			continue
+		var eigen: StyleBox = box.duplicate()
+		eigen.content_margin_top = ZEILENLUFT
+		eigen.content_margin_bottom = ZEILENLUFT
+		steuerung.add_theme_stylebox_override(zustand, eigen)
+
 func _melde(text: String, gut: bool = true) -> void:
 	if meldung != null:
 		meldung.text = text
@@ -204,10 +216,13 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 
 	var wahl := OptionButton.new()
 	# Flacher als ein gewoehnlicher Knopf: vierzehn dieser Zeilen stehen
-	# untereinander, und jeder Pixel Zeilenhoehe ist dort vierzehn. Die Hoehe
-	# der Zeile bestimmt das hoechste Kind — deshalb bekommt auch der
-	# Profilknopf weiter unten dasselbe Mass.
-	wahl.custom_minimum_size = Vector2(220, ZEILENHOEHE)
+	# untereinander, und jeder Pixel Zeilenhoehe ist dort vierzehn.
+	#
+	# custom_minimum_size hilft dabei nicht: es hebt die Mindestgroesse an,
+	# senken kann es sie nicht. Was ein Knopf mindestens hoch ist, steht in
+	# den Innenabstaenden seines Rahmens — also werden die gesetzt.
+	wahl.custom_minimum_size = Vector2(220, 0)
+	_flach(wahl, "OptionButton")
 	wahl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	wahl.add_item("— frei —")
 	wahl.set_item_metadata(0, "")
@@ -258,7 +273,7 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 				warnung.tooltip_text = "Eignung %d %% — der Spieler verliert auf dieser Position deutlich." % int(eignung * 100.0)
 				h.add_child(warnung)
 		var info := Stil.knopf_flach("Profil", Stil.BLAU)
-		info.custom_minimum_size = Vector2(0, ZEILENHOEHE)
+		_flach(info, "Button")
 		info.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		info.pressed.connect(func(): Spielerfenster.oeffnen(self, aktuell))
 		h.add_child(info)
