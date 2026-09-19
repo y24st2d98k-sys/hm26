@@ -68,6 +68,10 @@ func aufbauen() -> void:
 	var inhalt := reiter.feld("aufstellung")
 
 	warnungen_bereich = Stil.vbox(4)
+	# Ausgeblendet, solange nichts zu warnen ist. Ein leerer Behaelter ist
+	# zwar null Pixel hoch, kostet im Stapel darueber aber trotzdem einen
+	# Zeilenabstand — und an dem hing der letzte Rollbalken dieses Reiters.
+	warnungen_bereich.visible = false
 	inhalt.add_child(warnungen_bereich)
 
 	# Die Formationen untereinander, das Feld daneben und hochkant.
@@ -138,6 +142,7 @@ func aktualisieren() -> void:
 	leeren(gegnerplan_bereich)
 	leeren(minuten_bereich)
 	leeren(warnungen_bereich)
+	warnungen_bereich.visible = false
 	if Welt.mein_verein_id == "":
 		bank_bereich.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
 		return
@@ -772,6 +777,7 @@ func _warnungen() -> void:
 				betroffen.append({"sid": sid, "form": form})
 	if betroffen.is_empty():
 		return
+	warnungen_bereich.visible = true
 	var karte := Bausteine.karte_in(warnungen_bereich, "")
 	for e in betroffen:
 		var sp2: Dictionary = Welt.spieler(str(e["sid"]))
