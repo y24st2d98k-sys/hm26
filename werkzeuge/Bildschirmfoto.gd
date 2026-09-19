@@ -19,6 +19,10 @@ func _ready() -> void:
 
 	var vorschau := Weltgenerator.erzeuge(2026, 424242)
 	var cid: String = str(vorschau["ligen"]["l_de1"]["vereine"][0])
+	# Der Spielplan mischt mit dem globalen Zufallsgenerator. Ohne feste Saat
+	# misst jeder Lauf eine andere Welt, und ein Vergleich vorher/nachher
+	# zeigt Unterschiede, die keine sind.
+	seed(424242)
 	Welt.neues_spiel(cid, {"vorname": "Mira", "nachname": "Halden",
 		"hintergrund": "nachwuchs", "nation": "de", "alter": 41}, 424242)
 	_log("Verein: %s" % Welt.mein_verein()["name"])
@@ -89,6 +93,13 @@ func _ready() -> void:
 			for kind in tb.get_children():
 				_scrollen(kind, 1120)
 			await _foto("%s/matchplan.png" % ordner)
+			continue
+		if str(id) == "woche":
+			app.zeige("buero")
+			app.bildschirme["buero"].reiter = "woche"
+			app.bildschirme["buero"].aktualisieren()
+			await _foto("%s/woche.png" % ordner)
+			app.bildschirme["buero"].reiter = "heute"
 			continue
 		if str(id) == "zweite":
 			app.zeige("jugend")

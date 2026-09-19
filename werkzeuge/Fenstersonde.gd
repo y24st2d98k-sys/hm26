@@ -18,6 +18,10 @@ func _ready() -> void:
 	await get_tree().process_frame
 	var vorschau := Weltgenerator.erzeuge(2026, 424242)
 	var cid: String = str(vorschau["ligen"]["l_de1"]["vereine"][0])
+	# Der Spielplan mischt mit dem globalen Zufallsgenerator. Ohne feste Saat
+	# misst jeder Lauf eine andere Welt, und ein Vergleich vorher/nachher
+	# zeigt Unterschiede, die keine sind.
+	seed(424242)
 	Welt.neues_spiel(cid, {"vorname": "Mira", "nachname": "Halden",
 		"hintergrund": "nachwuchs", "nation": "de", "alter": 41}, 424242)
 	for i in 120:

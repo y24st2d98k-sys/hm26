@@ -50,6 +50,9 @@ func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0, ec
 	# entwickelt hat — der Vergleichswert entstand bisher erst beim
 	# Saisonwechsel.
 	Saison.attributstand_festhalten(daten)
+	# Derselbe Grund fuer die Woche: ohne einen ersten Stand haette der
+	# Rueckblick nach der ersten Woche nichts, woran er messen koennte.
+	Wochenbericht.festhalten(daten, mein_verein_id)
 	# Der Dauerkartenvorverkauf der ersten Saison. Für die KI-Vereine mit
 	# ihren Marktpreisen, für den eigenen Verein mit dem Standard — wer daran
 	# etwas ändern will, tut es ab dem nächsten Sommer.
@@ -568,6 +571,11 @@ func wochenrhythmus(t: int) -> void:
 		Transfermarkt.geruechtekueche(daten)
 		Anliegen.wochenpruefung(daten)
 	if wt == 0:
+		# Ganz am Ende des Montags: erst rechnen alle anderen, dann wird
+		# festgehalten. Sonst vergleicht der Rueckblick den Stand vor der
+		# Wochenabrechnung mit dem danach und zeigt Veraenderungen, die gar
+		# nicht aus der vergangenen Woche stammen.
+		Wochenbericht.festhalten(daten, mein_verein_id)
 		automatisch_speichern()
 
 func saison_pruefen(t: int) -> void:

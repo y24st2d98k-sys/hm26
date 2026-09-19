@@ -28,6 +28,10 @@ func _log(t: String) -> void:
 func _ready() -> void:
 	var welt := Weltgenerator.erzeuge(2026, 90909)
 	var cid: String = str(welt["ligen"]["l_de1"]["vereine"][0])
+	# Der Spielplan mischt mit dem globalen Zufallsgenerator. Ohne feste Saat
+	# misst jeder Lauf eine andere Welt, und ein Vergleich vorher/nachher
+	# zeigt Unterschiede, die keine sind.
+	seed(90909)
 	Welt.neues_spiel(cid, {"vorname": "Lay", "nachname": "Out",
 		"hintergrund": "spieler", "nation": "de", "alter": 45}, 90909)
 	# Ein Stück Saison spielen, damit die Bildschirme echte Inhalte zeigen:
