@@ -31,6 +31,9 @@ var hervorgehoben: String = ""
 var nur_angriff: bool = false
 var puls: float = 50.0
 var zeige_puls: bool = true
+## Hochformat: das Feld steht, statt zu liegen. Die Aufstellungsvorschau nutzt
+## das, weil daneben die beiden Formationen untereinander Platz brauchen.
+var hochkant: bool = false
 
 # ------------------------------------------------------------- Bewegung ---
 #
@@ -336,17 +339,35 @@ func _gekuerzt(schrift: Font, text: String, groesse: int, hoechstens: float) -> 
 func tormitte(seite: String) -> Vector2:
 	return Vector2(LAENGE - 0.3, 10.0) if seite == "heim" else Vector2(0.3, 10.0)
 
+## Meter zu Bildpunkten. Im Hochformat steht das Feld auf dem Kopfende: die
+## Laenge laeuft von unten nach oben, das Tor, auf das die eigene Mannschaft
+## wirft, liegt oben.
+##
+## Gezeichnet wird ausschliesslich ueber diese Funktion — Torraeume, Boegen,
+## Tore, Trikots, Namen. Deshalb genuegt es, hier die Achsen zu tauschen;
+## nur die drei achsenparallelen Rechtecke brauchen _rechteck().
 func _m(p: Vector2) -> Vector2:
-	var rand := 14.0
-	var sx: float = (size.x - rand * 2.0) / LAENGE
-	var sy: float = (size.y - rand * 2.0) / BREITE
-	var s: float = minf(sx, sy)
-	var versatz := Vector2((size.x - LAENGE * s) * 0.5, (size.y - BREITE * s) * 0.5)
-	return versatz + p * s
- 
+	var q: Vector2 = Vector2(p.y, LAENGE - p.x) if hochkant else p
+	var s := _skala()
+	var versatz := Vector2((size.x - _feldbreite() * s) * 0.5, (size.y - _feldhoehe() * s) * 0.5)
+	return versatz + q * s
+
+## Ein achsenparalleles Rechteck aus zwei Eckpunkten in Metern — in beiden
+## Ausrichtungen richtig herum.
+func _rechteck(von: Vector2, bis: Vector2) -> Rect2:
+	var a := _m(von)
+	var b := _m(bis)
+	return Rect2(Vector2(minf(a.x, b.x), minf(a.y, b.y)), (b - a).abs())
+
+func _feldbreite() -> float:
+	return BREITE if hochkant else LAENGE
+
+func _feldhoehe() -> float:
+	return LAENGE if hochkant else BREITE
+
 func _skala() -> float:
 	var rand := 14.0
-	return minf((size.x - rand * 2.0) / LAENGE, (size.y - rand * 2.0) / BREITE)
+	return minf((size.x - rand * 2.0) / _feldbreite(), (size.y - rand * 2.0) / _feldhoehe())
 
 func _draw() -> void:
 	var s := _skala()
@@ -354,14 +375,14 @@ func _draw() -> void:
 		return
 	_belegt.clear()
 	_punkte.clear()
-	var feld := Rect2(_m(Vector2(0, 0)), Vector2(LAENGE, BREITE) * s)
+	var feld := _rechteck(Vector2(0, 0), Vector2(LAENGE, BREITE))
 
 	# Parkett mit angedeuteten Dielen — sonst wirkt die Flaeche wie ein Loch
 	draw_rect(feld, Color("#182029"), true)
 	var diele := Color(1, 1, 1, 0.012)
 	var x := 0.0
 	while x < LAENGE:
-		draw_rect(Rect2(_m(Vector2(x, 0)), Vector2(1.25, BREITE) * s), diele, true)
+		draw_rect(_rechteck(Vector2(x, 0), Vector2(x + 1.25, BREITE)), diele, true)
 		x += 2.5
 
 	# Torraeume in den Vereinsfarben: man sieht sofort, wer auf welches Tor spielt

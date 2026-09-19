@@ -70,30 +70,37 @@ func aufbauen() -> void:
 	warnungen_bereich = Stil.vbox(4)
 	inhalt.add_child(warnungen_bereich)
 
-	var oben := Stil.hbox(8)
+	# Die Formationen untereinander, das Feld daneben und hochkant.
+	#
+	# Ein Handballfeld ist doppelt so lang wie breit. Liegend frisst es die
+	# ganze Breite und laesst daneben nichts uebrig; stehend passt es neben
+	# die beiden Formationen und wird dabei viermal so gross. Und untereinander
+	# stehen Angriff und Abwehr so, wie man sie liest: erst die eine Sieben,
+	# dann die andere — jede ueber die volle Breite ihrer Spalte.
+	var oben := Stil.hbox(Stil.A_NORMAL)
 	oben.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	inhalt.add_child(oben)
 
-	# Die beiden Formationen nebeneinander statt uebereinander: sie sind
-	# gleichrangig, man vergleicht sie staendig, und gestapelt passte die
-	# zweite nie mit aufs Bild.
-	angriff_bereich = Bausteine.karte_in(oben, "Angriffsformation")
-	abwehr_bereich = Bausteine.karte_in(oben, "Abwehrformation")
+	var listen := Stil.vbox(Stil.A_KLEIN)
+	listen.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	oben.add_child(listen)
+	angriff_bereich = Bausteine.karte_in(listen, "Angriffsformation")
+	abwehr_bereich = Bausteine.karte_in(listen, "Abwehrformation")
+	# Enger gesetzt als eine gewoehnliche Karte: vierzehn Positionszeilen
+	# untereinander gewinnen mit jedem Pixel Zeilenabstand eine halbe Zeile.
+	angriff_bereich.add_theme_constant_override("separation", 3)
+	abwehr_bereich.add_theme_constant_override("separation", 3)
 
-	# Die Vorschau unter die beiden Formationen, nicht daneben: drei Spalten
-	# waren breiter als der Bildschirm, und ein Feld, das rechts aus dem Bild
-	# ragt, zeigt gar nichts.
-	var rechts := Stil.vbox(12)
-	rechts.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	inhalt.add_child(rechts)
-	var feldkarte := Bausteine.karte_in(rechts, "Vorschau")
+	var feldkarte := Bausteine.karte_in(oben, "Vorschau")
+	Stil.karte_wurzel(feldkarte).size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	# Der Umschalter sitzt in der Kopfzeile der Karte, nicht als eigene Zeile
-	# darunter: unter den beiden Formationen zaehlt jede Zeile.
+	# darunter: neben den Formationen zaehlt jede Zeile.
 	vorschau_leiste = Stil.hbox(0)
 	Stil.karte_aktion(feldkarte, vorschau_leiste)
 	_vorschau_umschalter()
 	feld = Spielfeld.new()
-	feld.custom_minimum_size = Vector2(340, 160)
+	feld.hochkant = true
+	feld.custom_minimum_size = Vector2(316, 612)
 	feldkarte.add_child(feld)
 	# Je Reiter eine Spalte. Die Karten hier sind breit — eine Anweisungsliste
 	# mit sieben Positionen braucht fuer sich schon tausend Pixel. Zwei davon
@@ -260,10 +267,13 @@ func _angriff() -> void:
 	Stil.karte_wurzel(angriff_bereich).tooltip_text = "Wer steht im Angriff auf dem Feld? Die Zahl zeigt die Stärke auf genau dieser Position."
 	for pos in ["TW", "LA", "RL", "RM", "RR", "RA", "KM"]:
 		angriff_bereich.add_child(_positionswahl("angriff", pos, pos == "TW"))
+	# Die Staerke steht in der Kopfzeile der Karte, nicht als eigene Zeile mit
+	# Trennlinie darunter: zwei Formationen untereinander brauchen den Platz
+	# fuer ihre Spieler.
 	var staerke := _formationsstaerke("angriff")
-	angriff_bereich.add_child(Stil.trenner())
-	angriff_bereich.add_child(Stil.info_zeile("Angriffsstärke der Sieben", "%d" % int(staerke),
-		Stil.wert_farbe(staerke, 100.0)))
+	_kopfwert(angriff_bereich, [{"text": "Stärke %d" % int(staerke),
+		"farbe": Stil.wert_farbe(staerke, 100.0),
+		"hinweis": "Angriffsstärke der aufgestellten Sieben."}])
 
 func _abwehr() -> void:
 	Stil.karte_wurzel(abwehr_bereich).tooltip_text = "Die Abwehrformation darf komplett anders besetzt sein — Abwehrspezialisten lohnen sich."
@@ -275,14 +285,31 @@ func _abwehr() -> void:
 			auf["abwehr"][pos] = ""
 		abwehr_bereich.add_child(_positionswahl("abwehr", pos, pos == "TW"))
 	var staerke := _formationsstaerke("abwehr")
-	abwehr_bereich.add_child(Stil.trenner())
-	abwehr_bereich.add_child(Stil.info_zeile("Abwehrstärke der Sieben", "%d" % int(staerke),
-		Stil.wert_farbe(staerke, 100.0)))
 	var ueberschneidung := _ueberschneidung()
-	var ueber_zeile := Stil.info_zeile("Spieler in beiden Formationen", "%d von 6" % ueberschneidung,
-		Stil.GRUEN if ueberschneidung >= 4 else Stil.GELB)
-	ueber_zeile.tooltip_text = "Je weniger Überschneidung, desto mehr Wechsel — das kostet Kraft und birgt Wechselfehler."
-	abwehr_bereich.add_child(ueber_zeile)
+	_kopfwert(abwehr_bereich, [
+		{"text": "Stärke %d" % int(staerke), "farbe": Stil.wert_farbe(staerke, 100.0),
+			"hinweis": "Abwehrstärke der aufgestellten Sieben."},
+		{"text": "%d von 6 doppelt" % ueberschneidung,
+			"farbe": Stil.GRUEN if ueberschneidung >= 4 else Stil.GELB,
+			"hinweis": "So viele Spieler stehen in beiden Formationen. Je weniger Überschneidung, desto mehr Wechsel — das kostet Kraft und birgt Wechselfehler."},
+	])
+
+## Setzt Kennwerte in die Kopfzeile einer Karte — rechts neben die Rubrik.
+##
+## Die Kopfzeile wird dabei geleert: aktualisieren() baut den Karteninhalt neu
+## auf, die Karte selbst aber nicht, und sonst stuenden nach dem dritten
+## Wechsel drei Staerkewerte nebeneinander.
+func _kopfwert(karte: Node, werte: Array) -> void:
+	var wurzel := Stil.karte_wurzel(karte)
+	if wurzel == null or not wurzel.has_meta("aktionen"):
+		return
+	var kasten: Node = wurzel.get_meta("aktionen")
+	leeren(kasten)
+	for w in werte:
+		var e: Dictionary = w
+		var abz := Stil.abzeichen(str(e["text"]), e["farbe"])
+		abz.tooltip_text = str(e.get("hinweis", ""))
+		kasten.add_child(abz)
 
 func _formationsstaerke(block: String) -> float:
 	var auf: Dictionary = Welt.verein(Welt.mein_verein_id)["aufstellung"]
