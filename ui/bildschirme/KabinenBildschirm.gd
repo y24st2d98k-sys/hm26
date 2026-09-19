@@ -39,14 +39,27 @@ func aktualisieren() -> void:
 			Stil.GRUEN if meldung_gut else Stil.ROT))
 	bereich.add_child(Stil.matt("Eine Mannschaft ist kein Attributdurchschnitt. Wortführer, Gruppen und persönliche Zufriedenheit entscheiden mit, wie viel vom Kader auf dem Feld ankommt.", Stil.S_KLEIN))
 
+	# Wer etwas auf dem Herzen hat, steht vorn — und der Reiter sagt, wie
+	# viele es sind.
+	#
+	# Die Zahl am Menuepunkt "Kabine" zaehlt genau diese Gespraeche. Sie stand
+	# da, und auf dem Bildschirm dahinter war nichts zu finden, was man
+	# daraufhin haette tun koennen: das Anliegen selbst lag nur im Buero. Jetzt
+	# fuehrt die Zahl dorthin, wo man sie wegarbeitet.
+	var anliegen: Array = Anliegen.offene(Welt.daten)
+	var gespraechsname: String = "Gespräche"
+	if not anliegen.is_empty():
+		gespraechsname = "Gespräche (%d)" % anliegen.size()
 	var gruppe := Stil.reitergruppe([
+		{"id": "gespraeche", "name": gespraechsname},
 		{"id": "klima", "name": "Klima & Hierarchie"},
 		{"id": "geflecht", "name": "Das Geflecht"},
 		{"id": "kader", "name": "Zufriedenheit"},
 		{"id": "paten", "name": "Patenschaften"},
-	], reiter)
+	], "gespraeche" if not anliegen.is_empty() else reiter)
 	gruppe.bei_wechsel = func(id): reiter = str(id)
 	bereich.add_child(gruppe)
+	_gespraeche(gruppe.feld("gespraeche"), anliegen)
 	var f_klima := gruppe.feld("klima")
 
 	var oben := Stil.hbox(12)
@@ -303,3 +316,44 @@ func _geflecht(cid: String, eltern: Node) -> void:
 func _melde(text: String, gut: bool = true) -> void:
 	meldungstext = text
 	meldung_gut = gut
+
+
+## Die Spieler, die von sich aus an die Tür klopfen.
+##
+## Jedes Anliegen hat eine Frist; wer sie verstreichen lässt, zahlt dafür mit
+## Unzufriedenheit. Deshalb steht hier nicht nur, wer etwas will, sondern auch,
+## wie lange man noch Zeit hat — und der Knopf, der das Gespräch öffnet.
+func _gespraeche(eltern: Node, anliegen: Array) -> void:
+	var karte := Bausteine.karte_in(eltern, "Spieler möchten Sie sprechen")
+	if anliegen.is_empty():
+		karte.add_child(Stil.leerzustand(
+			"Derzeit hat niemand ein Anliegen.",
+			"Wer zu wenig spielt, auf eine Vertragsverlängerung wartet oder sich über einen Mitspieler ärgert, kommt von selbst auf Sie zu. Dann steht es hier."))
+		return
+	Stil.karte_betonen(karte)
+	karte.add_child(Stil.matt(
+		"Ein Gespräch dauert eine Minute und entscheidet, ob ein Spieler weiter mitzieht. Wer die Frist verstreichen lässt, bekommt die Antwort auf dem Feld.",
+		Stil.S_KLEIN))
+	for e in anliegen:
+		var eintrag: Dictionary = e
+		var asid: String = str(eintrag["spieler"])
+		if not Welt.daten["spieler"].has(asid):
+			continue
+		var asp: Dictionary = Welt.spieler(asid)
+		var art: Dictionary = Anliegen.ARTEN.get(str(eintrag["art"]), {})
+		var zeile := Stil.hbox(12)
+		karte.add_child(zeile)
+		zeile.add_child(Portraet.fuer_spieler(asid, 40.0))
+		var spalte := Stil.vbox(2)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		zeile.add_child(spalte)
+		spalte.add_child(Stil.text("%s — %s" % [Spielerfabrik.voller_name(asp),
+			str(art.get("titel", "möchte Sie sprechen"))], Stil.S_NORMAL, Stil.AKZENT))
+		spalte.add_child(Stil.beschnitten(Stil.matt("„%s“" % str(art.get("frage", "")), Stil.S_KLEIN), 20.0))
+		var rest: int = maxi(int(eintrag["frist"]) - Welt.tag(), 0)
+		zeile.add_child(Stil.abzeichen("NOCH %d TAG(E)" % rest,
+			Stil.ROT if rest <= 3 else Stil.GELB))
+		var knopf := Stil.knopf_primaer("Anhören")
+		knopf.pressed.connect(func(): Anliegenfenster.oeffnen(self, asid))
+		zeile.add_child(knopf)

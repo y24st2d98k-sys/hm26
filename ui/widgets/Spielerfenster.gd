@@ -207,8 +207,8 @@ func _uebersicht(sp: Dictionary) -> void:
 		saison.add_child(Stil.info_zeile("Paraden", str(int(st["paraden"]))))
 	else:
 		saison.add_child(Stil.info_zeile("Tore", str(int(st["tore"]))))
-		saison.add_child(Stil.info_zeile("Würfe", str(int(st["wuerfe"]))))
-		var quote: float = float(st["tore"]) / maxf(float(st["wuerfe"]), 1.0) * 100.0
+		saison.add_child(Stil.info_zeile("Würfe", str(Statistik.wuerfe_gesamt(st))))
+		var quote: float = Statistik.wurfquote(st)
 		saison.add_child(Stil.info_zeile("Wurfquote", "%.0f %%" % quote, Stil.prozent_farbe(quote)))
 		saison.add_child(Stil.info_zeile("Vorlagen", str(int(st["assists"]))))
 	saison.add_child(Stil.info_zeile("Zeitstrafen", str(int(st["zeitstrafen"]))))
@@ -308,7 +308,7 @@ func _attribute(sp: Dictionary) -> void:
 	# Was sich seit dem Sommer bewegt hat. Ohne diese Spalte sieht man eine
 	# Zahl und weiss nicht, ob sie gestiegen oder gefallen ist — und damit
 	# nicht, ob die Trainingsarbeit etwas bringt.
-	var bewegung: Dictionary = Saison.attributveraenderung(sp)
+	var bewegung: Dictionary = Saison.attributveraenderung_anzeige(sp)
 	var reihe := Stil.hbox(12)
 	inhalt.add_child(reihe)
 	for g in gruppen:
@@ -349,7 +349,7 @@ func _attribute(sp: Dictionary) -> void:
 ## Hier steht, was sich ueberhaupt bewegt hat — und wenn nichts, dann steht
 ## auch das da, statt eine leere Karte zu zeigen.
 func _saisonbilanz(sp: Dictionary) -> void:
-	var bewegung: Dictionary = Saison.attributveraenderung(sp)
+	var bewegung: Dictionary = Saison.attributveraenderung_anzeige(sp)
 	var karte := Bausteine.karte_in(inhalt, "In dieser Saison")
 	if bewegung.is_empty():
 		karte.add_child(Stil.matt(
@@ -377,24 +377,25 @@ func _saisonbilanz(sp: Dictionary) -> void:
 			zeile.add_child(Stil.abzeichen("%s %+d" % [
 				str(Spielerfabrik.ATTR_LABEL.get(a2, a2)), int(round(diff))], gruppe[2]))
 
-## Die Veraenderungsspalte eines Attributs. Sie ist immer da, auch wenn sie
-## leer bleibt — sonst verrutschen die Zeilen gegeneinander, je nachdem wer
-## sich entwickelt hat.
+## Die Veraenderungsspalte eines Attributs, in Anzeigepunkten. Sie ist immer
+## da, auch wenn sie leer bleibt — sonst verrutschen die Zeilen gegeneinander,
+## je nachdem wer sich entwickelt hat.
 func _veraenderung(bewegung: Dictionary, attribut: String) -> Control:
-	var diff: float = float(bewegung.get(attribut, 0.0))
+	var diff: int = int(bewegung.get(attribut, 0))
 	var text := ""
 	var farbe: Color = Stil.TEXT_MATT
-	if diff >= 0.5:
-		text = "+%d" % int(round(diff))
+	if diff > 0:
+		text = "+%d" % diff
 		farbe = Stil.GRUEN
-	elif diff <= -0.5:
-		text = "%d" % int(round(diff))
+	elif diff < 0:
+		text = "%d" % diff
 		farbe = Stil.ROT
 	var l := Stil.text(text, Stil.S_MINI, farbe)
 	l.custom_minimum_size = Vector2(26, 0)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	if text != "":
-		l.tooltip_text = "Seit Saisonbeginn %s" % ("gestiegen" if diff > 0.0 else "gefallen")
+		l.tooltip_text = "Seit Saisonbeginn %s %d Punkte" % [
+			"gestiegen um" if diff > 0 else "gefallen um", absi(diff)]
 	return l
 
 func _statistik(sp: Dictionary) -> void:

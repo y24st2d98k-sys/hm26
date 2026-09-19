@@ -124,8 +124,8 @@ static func _hinweis(d: Dictionary, sp: Dictionary) -> String:
 		return "%s Paraden je Spiel, Quote %s %%" % [
 			Stil.komma(float(st["paraden"]) / float(spiele), 1), Stil.komma(quote, 1)]
 	var teile: Array = ["%s Tore je Spiel" % Stil.komma(float(st["tore"]) / float(spiele), 1)]
-	if int(st["wuerfe"]) >= 15:
-		teile.append("Quote %s %%" % Stil.komma(float(st["tore"]) / float(st["wuerfe"]) * 100.0, 0))
+	if Statistik.wuerfe_gesamt(st) >= 15:
+		teile.append("Quote %s %%" % Stil.komma(Statistik.wurfquote(st), 0))
 	if int(st["siebenmeter_wuerfe"]) >= 5:
 		teile.append("Siebenmeterschütze")
 	if float(st["assists"]) / float(spiele) >= 2.5:

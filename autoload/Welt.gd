@@ -45,6 +45,11 @@ func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0, ec
 			Vorstand.saisonziel_festlegen(daten, cid)
 	Spielplan.erzeuge_saison(daten)
 	Finanzen.saison_budgets(daten)
+	# Der Abzug vom Saisonbeginn, gleich beim ersten Anpfiff. Ohne ihn liesse
+	# sich in der ganzen ersten Saison nicht sagen, ob ein Spieler sich
+	# entwickelt hat — der Vergleichswert entstand bisher erst beim
+	# Saisonwechsel.
+	Saison.attributstand_festhalten(daten)
 	# Der Dauerkartenvorverkauf der ersten Saison. Für die KI-Vereine mit
 	# ihren Marktpreisen, für den eigenen Verein mit dem Standard — wer daran
 	# etwas ändern will, tut es ab dem nächsten Sommer.

@@ -125,7 +125,10 @@ func _zeichne() -> void:
 	Stil.karte_wurzel(werte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var hs: Dictionary = bericht["heim"]["stats"]
 	var gs: Dictionary = bericht["gast"]["stats"]
-	for zeile in [["Würfe", "wuerfe"], ["Tore", "tore"], ["Paraden", "paraden"], ["Blocks", "blocks"],
+	# "Feldwuerfe", nicht "Wuerfe": die Siebenmeter stehen eine Zeile tiefer,
+	# und wer aus beiden Zahlen eine Quote rechnet, soll dasselbe herausbekommen
+	# wie die Rangliste.
+	for zeile in [["Feldwürfe", "wuerfe"], ["Tore", "tore"], ["Paraden", "paraden"], ["Blocks", "blocks"],
 			["Technische Fehler", "technische_fehler"], ["Ballgewinne", "ballgewinne"],
 			["Siebenmeter", "siebenmeter"], ["Zeitstrafen", "zeitstrafen"],
 			["Tore nach Gegenstoß", "gegenstoss_tore"], ["Wechsel", "wechsel"]]:
@@ -225,7 +228,7 @@ func _zeichne() -> void:
 			g.add_child(k)
 			g.add_child(Stil.text("%d" % int(float(z["sekunden"]) / 60.0), Stil.S_KLEIN))
 			g.add_child(Stil.text(str(int(z["tore"])), Stil.S_KLEIN))
-			g.add_child(Stil.text(str(int(z["wuerfe"])), Stil.S_KLEIN))
+			g.add_child(Stil.text(str(Statistik.wuerfe_gesamt(z)), Stil.S_KLEIN))
 			g.add_child(Stil.text(str(int(z["paraden"])), Stil.S_KLEIN))
 			g.add_child(Stil.text(str(int(z["assists"])), Stil.S_KLEIN))
 			g.add_child(Stil.text(str(int(z["fehler"])), Stil.S_KLEIN))

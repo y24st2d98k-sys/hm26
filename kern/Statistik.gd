@@ -2,6 +2,26 @@ class_name Statistik
 extends RefCounted
 ## Verbucht Spielergebnisse in Tabellen, Vereins- und Spielerstatistiken.
 
+## Alle Wurfversuche eines Statistikblocks — Siebenmeter zaehlen mit.
+##
+## Bei den Toren stand der Strafwurf immer drin, bei den Wuerfen nie: ein
+## Fluegel, der die Siebenmeter schiesst, kam damit in der Rangliste auf eine
+## Wurfquote von 240 Prozent. Gezaehlt wird jetzt, was geworfen wurde.
+##
+## Waehrend einer Partie heisst das Feld "siebenmeter", in der Saisonbilanz
+## "siebenmeter_wuerfe" — beide Schreibweisen werden gelesen, damit dieselbe
+## Rechnung fuer den Spielbericht und fuer die Saison gilt.
+static func wuerfe_gesamt(st: Dictionary) -> int:
+	var sieben: int = int(st.get("siebenmeter_wuerfe", st.get("siebenmeter", 0)))
+	return int(st.get("wuerfe", 0)) + sieben
+
+## Wurfquote in Prozent. Ohne Wurf keine Quote: dann null.
+static func wurfquote(st: Dictionary) -> float:
+	var versuche: int = wuerfe_gesamt(st)
+	if versuche <= 0:
+		return 0.0
+	return float(st.get("tore", 0)) / float(versuche) * 100.0
+
 static func spiel_verbuchen(d: Dictionary, m: Dictionary) -> void:
 	var heim: String = str(m["heim"])
 	var gast: String = str(m["gast"])
@@ -186,10 +206,11 @@ static func rangliste(d: Dictionary, lid: String, kategorie: String, anzahl: int
 				"assists":
 					wert = float(st["assists"])
 				"wurfquote":
-					if int(st["wuerfe"]) < 25:
+					var versuche: int = wuerfe_gesamt(st)
+					if versuche < 25:
 						continue
-					wert = float(st["tore"]) / float(st["wuerfe"]) * 100.0
-					zusatz = "%d von %d" % [int(st["tore"]), int(st["wuerfe"])]
+					wert = wurfquote(st)
+					zusatz = "%d von %d" % [int(st["tore"]), versuche]
 				"siebenmeter":
 					wert = float(st["siebenmeter_tore"])
 					zusatz = "von %d Versuchen" % int(st["siebenmeter_wuerfe"])

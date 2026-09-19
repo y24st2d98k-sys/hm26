@@ -146,7 +146,7 @@ static func _mittelwerte(d: Dictionary, cid: String) -> Dictionary:
 	for sid in d["vereine"][cid]["kader"]:
 		var st: Dictionary = d["spieler"][sid]["stats"]["saison"]
 		tore += int(st["tore"])
-		wuerfe += int(st["wuerfe"])
+		wuerfe += Statistik.wuerfe_gesamt(st)
 		fehler += int(st["technische_fehler"])
 		zeitstrafen += int(st["zeitstrafen"])
 		paraden += int(st["paraden"])

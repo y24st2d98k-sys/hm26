@@ -450,8 +450,12 @@ func _kopf_auffrischen() -> void:
 	var offen: int = Welt.ungelesene_nachrichten()
 	if nav_knoepfe.has("nachrichten"):
 		nav_knoepfe["nachrichten"].setze_zaehler(offen)
+		nav_knoepfe["nachrichten"].tooltip_text = ("%d ungelesene Nachricht(en)" % offen) if offen > 0 else "Posteingang"
 	if nav_knoepfe.has("kabine"):
-		nav_knoepfe["kabine"].setze_zaehler(Anliegen.anzahl(Welt.daten))
+		var gespraeche: int = Anliegen.anzahl(Welt.daten)
+		nav_knoepfe["kabine"].setze_zaehler(gespraeche)
+		# Eine Zahl ohne Erklaerung ist eine Aufgabe ohne Anleitung.
+		nav_knoepfe["kabine"].tooltip_text = ("%d Spieler möchten Sie sprechen — in der Kabine unter „Gespräche“" % gespraeche) if gespraeche > 0 else "Kabinenklima, Wortführer, Gruppen"
 	if kopf_glocke.has_meta("symbol"):
 		(kopf_glocke.get_meta("symbol") as Symbol).setze_farbe(Stil.AKZENT if offen > 0 else Stil.TEXT_MATT)
 	kopf_glocke.tooltip_text = "%d ungelesene Nachricht(en)" % offen if offen > 0 else "Nachrichten"

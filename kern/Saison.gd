@@ -493,6 +493,27 @@ static func attributveraenderung(sp: Dictionary, mindestens: float = 0.5) -> Dic
 			aus[a] = diff
 	return aus
 
+## Dieselbe Veraenderung, aber in Anzeigepunkten.
+##
+## Die Attribute laufen intern von 1 bis 20, auf dem Schirm stehen sie von 5
+## bis 100 — ein Punkt Anzeige ist ein Fuenftel intern. Gerechnet wurde bisher
+## in der internen Einheit mit einer Schwelle von einem halben Punkt: das sind
+## zweieinhalb Punkte Anzeige, und darunter blieb jede Verbesserung
+## unsichtbar. Eine Saison Krafttraining bewegt aber genau diese kleinen
+## Betraege.
+static func attributveraenderung_anzeige(sp: Dictionary) -> Dictionary:
+	var start: Dictionary = sp.get("attr_saisonstart", {})
+	var aus := {}
+	if start.is_empty():
+		return aus
+	for a in (sp["attr"] as Dictionary).keys():
+		if not start.has(a):
+			continue
+		var diff: int = Spielerfabrik.anzeige(float(sp["attr"][a])) - Spielerfabrik.anzeige(float(start[a]))
+		if diff != 0:
+			aus[a] = diff
+	return aus
+
 static func _statistiken_umlegen(d: Dictionary) -> void:
 	for sid in d["spieler"].keys():
 		var sp: Dictionary = d["spieler"][sid]
