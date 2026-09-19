@@ -49,6 +49,7 @@ func _ready() -> void:
 		# Gemessen wird die schlechteste — sonst meldet die Sonde "passt",
 		# weil zufaellig der kuerzeste Reiter offen stand.
 		var gruppe := _reiter_finden(b)
+		var reiterzeilen: Array = []
 		if gruppe != null:
 			var schlimmster := ""
 			var hoechster := 0.0
@@ -57,6 +58,9 @@ func _ready() -> void:
 				await get_tree().process_frame
 				await get_tree().process_frame
 				var h: float = _inhaltshoehe(b)
+				# Je Reiter eine Zeile, wenn der Bildschirm ueberlaeuft: sonst
+				# weiss man, dass etwas zu hoch ist, aber nicht welcher Teil.
+				reiterzeilen.append("%s %d" % [str((o as Dictionary)["id"]), int(h)])
 				if h > hoechster:
 					hoechster = h
 					schlimmster = str((o as Dictionary)["id"])
@@ -86,6 +90,8 @@ func _ready() -> void:
 		_log("%-16s %8d %8d %9s   %s" % [str(id) + (" *" if gruppe != null else ""), int(inhalt), int(sicht),
 			("+%d" % ueber) if ueber > 0 else "passt",
 			_groesster(rolle) if rolle != null else "(ohne Rollbereich)"])
+		if ueber > 0 and not reiterzeilen.is_empty():
+			_log("%-16s je Reiter: %s" % ["", ", ".join(reiterzeilen)])
 	_log("")
 	_log("%d von %d Bildschirmen laufen ueber." % [summe, liste.size()])
 	get_tree().quit()

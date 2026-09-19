@@ -36,8 +36,29 @@ func aktualisieren() -> void:
 	var ids: Array = Welt.daten["pokale"].keys()
 	ids.sort_custom(func(a, b):
 		return str(Welt.daten["pokale"][a]["nation"]) == eigene_nation and str(Welt.daten["pokale"][b]["nation"]) != eigene_nation)
+	# Der eigene Pokal ganz, die anderen als Zeile.
+	#
+	# Ein Dutzend Laenderpokale mit allen Paarungen untereinander waren
+	# anderthalb Bildschirmhoehen — und interessant ist daran genau einer.
+	# Von den uebrigen zaehlt, wie weit sie sind und wer sie gewonnen hat.
+	var fremde: Array = []
 	for pid in ids:
-		_pokal(Welt.daten["pokale"][pid], gruppe.feld("national"))
+		var pokal: Dictionary = Welt.daten["pokale"][pid]
+		if str(pokal.get("nation", "")) == eigene_nation:
+			_pokal(pokal, gruppe.feld("national"))
+		else:
+			fremde.append(pokal)
+	if not fremde.is_empty():
+		var karte := Bausteine.karte_in(gruppe.feld("national"), "Pokale anderer Länder")
+		for f in fremde:
+			var pokal2: Dictionary = f
+			var zeile := Stil.hbox(10)
+			karte.add_child(zeile)
+			zeile.add_child(Flagge.fuer(str(pokal2.get("nation", "")), 18.0))
+			var name := Stil.text(str(pokal2["name"]), Stil.S_KLEIN)
+			zeile.add_child(Stil.beschnitten(name, 20.0))
+			zeile.add_child(Stil.dehner())
+			zeile.add_child(Stil.matt(_pokalstand(pokal2), Stil.S_MINI))
 
 func _pokal(pokal: Dictionary, eltern: Node) -> void:
 	var karte := Bausteine.karte_in(eltern, str(pokal["name"]))
@@ -110,3 +131,14 @@ func _international(wb: Dictionary, eltern: Node) -> void:
 	var teilnehmer: Array = wb.get("teilnehmer", [])
 	if not teilnehmer.is_empty() and teilnehmer.has(Welt.mein_verein_id):
 		karte.add_child(Stil.abzeichen("SIE SIND DABEI", Stil.GRUEN, true))
+
+
+## Wie weit ein Pokal ist — in einer Zeile.
+func _pokalstand(pokal: Dictionary) -> String:
+	if bool(pokal.get("beendet", false)):
+		return "Sieger: %s" % str(Welt.verein(str(pokal.get("sieger", ""))).get("name", "—"))
+	var paarungen: Array = pokal.get("paarungen", [])
+	if paarungen.is_empty():
+		return "beginnt in dieser Saison"
+	var uebrig: int = paarungen.size() * 2 + (pokal.get("freilose", []) as Array).size()
+	return "%s · %d Mannschaften" % [Spielplan.pokalrunden_name(uebrig), uebrig]
