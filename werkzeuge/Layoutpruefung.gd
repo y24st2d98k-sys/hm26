@@ -78,10 +78,25 @@ func _ready() -> void:
 			continue
 		_log("")
 		_log("— %s —" % str(id))
-		for b in befunde.slice(0, 8):
+		# Fehler immer vollstaendig, Hinweise gekuerzt.
+		#
+		# Vorher stand hier eine Obergrenze von acht Zeilen fuer beides. Auf
+		# einem Bildschirm mit achtzig harmlosen Hinweisen verschwand der
+		# einzige echte Fehler hinter "und 74 weitere" — die Sonde zaehlte ihn,
+		# nannte ihn aber nicht.
+		var echte: Array = []
+		var milde: Array = []
+		for b in befunde:
+			if str(b).contains("FEHLER"):
+				echte.append(b)
+			else:
+				milde.append(b)
+		for b in echte:
 			_log("   %s" % str(b))
-		if befunde.size() > 8:
-			_log("   … und %d weitere" % (befunde.size() - 8))
+		for b in milde.slice(0, 8):
+			_log("   %s" % str(b))
+		if milde.size() > 8:
+			_log("   … und %d weitere Hinweise" % (milde.size() - 8))
 
 	_log("")
 	_log("%d Layoutfehler, %d Hinweise." % [fehler, warnungen])

@@ -344,6 +344,7 @@ func zeige(id: String) -> void:
 	if aktueller != "" and bildschirme.has(aktueller):
 		bildschirme[aktueller].visible = false
 	aktueller = id
+	Welt.merke_besuch(id)
 	bildschirme[id].visible = true
 	bildschirme[id].aktualisieren()
 	if menueband != null:

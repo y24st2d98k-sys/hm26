@@ -75,6 +75,11 @@ func aktualisieren() -> void:
 	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	rechts.size_flags_stretch_ratio = 1.0
 	haupt.add_child(rechts)
+	# Der Erstspiel-Pfad steht ueber dem, was offen ist: wer noch nicht weiss,
+	# wo die Aufstellung liegt, kann mit einer Frist auch nichts anfangen. Die
+	# dritte Spalte hat den Platz dafuer — gemessen 103 von 580 Pixeln, die die
+	# mittlere Spalte daneben ohnehin belegt.
+	_erste_schritte(rechts)
 	_offene_posten(rechts)
 
 	var vereinsreihe := Stil.hbox(Stil.A_NORMAL)
@@ -426,64 +431,90 @@ func _finanzen(eltern: Node) -> void:
 
 ## Was heute offen ist — in einer Karte, eine Zeile je Sache.
 ##
-## Vorher trug jede offene Sache eine eigene betonte Karte: drei Anliegen und
-## eine Pressekonferenz waren eine halbe Bildschirmhoehe, bevor der Kalender
-## anfing. Eine Zeile je Sache sagt dasselbe und laesst den Rest des Tages
-## sichtbar.
+## Die Regeln, was überhaupt offen sein kann, stehen in kern/Aufgaben.gd. Hier
+## steht nur, wie es aussieht: Dringlichkeit als Farbstrich, ein Satz, warum es
+## wichtig ist, und ein Knopf, der hinführt. Wer das Spiel zum ersten Mal
+## öffnet, soll hier ablesen können, was ein Trainer diese Woche tut.
 func _offene_posten(eltern: Node) -> void:
-	var posten: Array = []
-	for e in Anliegen.offene(Welt.daten):
-		var eintrag: Dictionary = e
-		var asid: String = str(eintrag["spieler"])
-		if not Welt.daten["spieler"].has(asid):
-			continue
-		var asp: Dictionary = Welt.spieler(asid)
-		var rest: int = maxi(int(eintrag["frist"]) - Welt.tag(), 0)
-		posten.append({
-			"farbe": Stil.AKZENT,
-			"text": "%s: %s" % [Spielerfabrik.voller_name(asp),
-				str((Anliegen.ARTEN[str(eintrag["art"])] as Dictionary)["titel"])],
-			"frist": "%d Tag(e)" % rest,
-			"knopf": "Anhören",
-			"tun": func(): Anliegenfenster.oeffnen(self, asid),
-		})
-	var sponsorangebote: Array = Sponsoren.offene_angebote(Welt.daten, Welt.mein_verein_id)
-	if not sponsorangebote.is_empty():
-		var summe := 0.0
-		for a in sponsorangebote:
-			summe += float(a["wert"])
-		posten.append({
-			"farbe": Stil.GELB,
-			"text": "%d Sponsorenangebote · %s im Jahr" % [
-				sponsorangebote.size(), Stil.geld(summe)],
-			"frist": "offen",
-			"knopf": "Zu den Finanzen",
-			"tun": func(): wechsel_zu("finanzen"),
-		})
-	if Presse.offen(Welt.daten):
-		posten.append({
-			"farbe": Stil.AKZENT,
-			"text": "Pressekonferenz steht an",
-			"frist": "vor dem Spiel",
-			"knopf": "Zur Pressekonferenz",
-			"tun": func(): Pressefenster.oeffnen(self),
-		})
-	if posten.is_empty():
-		return
+	var posten: Array = Aufgaben.offene(Welt.daten, Welt.mein_verein_id)
 	var karte := Bausteine.karte_in(eltern, "Das ist offen")
+	if posten.is_empty():
+		karte.add_child(Stil.leerzustand("Nichts liegt an.",
+			"Keine Frist, kein Angebot, keine offene Entscheidung. Ein guter Moment, um weiterzuschalten."))
+		return
 	Stil.karte_betonen(karte)
 	for p in posten:
-		var eintrag2: Dictionary = p
+		var eintrag: Dictionary = p
+		var stufe: int = int(eintrag["stufe"])
+		var farbe: Color = Stil.ROT if stufe == Aufgaben.EILIG else (
+			Stil.GELB if stufe == Aufgaben.OFFEN else Stil.TEXT_MATT)
 		var zeile := Stil.hbox(10)
 		karte.add_child(zeile)
-		zeile.add_child(Stil.marke_strich(eintrag2["farbe"], 3, 18))
-		var text := Stil.text(str(eintrag2["text"]), Stil.S_KLEIN, eintrag2["farbe"])
-		zeile.add_child(Stil.beschnitten(text, 20.0))
-		zeile.add_child(Stil.dehner())
-		# Die Frist steht im Hinweisfenster des Knopfes: als eigene Spalte
-		# machte sie die dritte Spalte des Buros breiter als der Bildschirm.
-		var knopf := Stil.knopf_flach(str(eintrag2["knopf"]), Stil.AKZENT)
-		knopf.tooltip_text = "Frist: %s" % str(eintrag2["frist"])
-		var tun: Callable = eintrag2["tun"]
-		knopf.pressed.connect(func(): tun.call())
+		zeile.add_child(Stil.marke_strich(farbe, 3, 30))
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		zeile.add_child(spalte)
+		var titel := Stil.text(str(eintrag["titel"]), Stil.S_KLEIN, farbe)
+		spalte.add_child(Stil.beschnitten(titel, 18.0))
+		var satz := Stil.matt(str(eintrag["text"]), Stil.S_MINI)
+		spalte.add_child(Stil.beschnitten(satz, 16.0))
+		var knopf := Stil.knopf_flach(str(eintrag["knopf"]), Stil.AKZENT)
+		var ziel: String = str(eintrag["ziel"])
+		knopf.pressed.connect(func():
+			if ziel != "":
+				wechsel_zu(ziel)
+			else:
+				Pressefenster.oeffnen(self))
 		zeile.add_child(knopf)
+
+
+## Der Weg durch die erste Woche.
+##
+## Ein Testspieler war ueberfordert — nicht, weil zu wenig erklaert wird,
+## sondern weil fuenfundzwanzig Bildschirme gleich wichtig aussehen. Diese
+## Karte nennt die vier, auf denen vor dem ersten Spiel etwas zu entscheiden
+## ist, hakt ab, was man gesehen hat, und verschwindet danach von allein. Kein
+## Lehrgang, der den Weg versperrt: jeder Schritt ist ein Knopf, und wer das
+## Spiel kennt, legt die Karte mit einem weiteren weg.
+func _erste_schritte(eltern: Node) -> void:
+	var schritte: Array = Aufgaben.erste_schritte(Welt.daten)
+	if schritte.is_empty():
+		return
+	var erledigt := 0
+	for s in schritte:
+		if bool((s as Dictionary)["erledigt"]):
+			erledigt += 1
+	var karte := Bausteine.karte_in(eltern, "Erste Schritte")
+	Stil.karte_betonen(karte, Stil.TUERKIS)
+	karte.add_child(Stil.matt("%d von %d angesehen. Hier entscheidet ein Trainer, bevor angepfiffen wird." % [
+		erledigt, schritte.size()], Stil.S_MINI))
+	for i in schritte.size():
+		var schritt: Dictionary = schritte[i]
+		var fertig: bool = bool(schritt["erledigt"])
+		var zeile := Stil.hbox(8)
+		karte.add_child(zeile)
+		zeile.add_child(Stil.abzeichen("✓" if fertig else str(i + 1),
+			Stil.GRUEN if fertig else Stil.TUERKIS, fertig))
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		spalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		zeile.add_child(spalte)
+		var titel := Stil.text(str(schritt["titel"]), Stil.S_KLEIN,
+			Stil.TEXT_MATT if fertig else Stil.TEXT)
+		spalte.add_child(Stil.beschnitten(titel, 18.0))
+		# Hier bricht der Satz um, statt abgeschnitten zu werden: er ist der
+		# Grund, warum der Schritt in der Liste steht. Die Spalte hat die Hoehe
+		# dafuer — gemessen 103 von 580 Pixeln, die daneben ohnehin belegt sind.
+		spalte.add_child(Bausteine.fliesstext(str(schritt["text"]), Stil.S_MINI, null, 140.0))
+		var ziel: String = str(schritt["id"])
+		var hin := Stil.knopf_flach("Nochmal" if fertig else "Hinschauen",
+			Stil.TEXT_MATT if fertig else Stil.TUERKIS)
+		hin.pressed.connect(func(): wechsel_zu(ziel))
+		zeile.add_child(hin)
+	var weg := Stil.knopf_flach("Nicht mehr zeigen", Stil.TEXT_MATT)
+	weg.tooltip_text = "Blendet die ersten Schritte dauerhaft aus."
+	weg.pressed.connect(func():
+		Welt.daten["erste_schritte_aus"] = true
+		aktualisieren())
+	karte.add_child(weg)

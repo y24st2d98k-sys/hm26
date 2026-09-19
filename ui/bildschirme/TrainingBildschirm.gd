@@ -466,7 +466,10 @@ func _vorbereitung() -> void:
 func _umschulungen() -> void:
 	leeren(umschulung_bereich)
 	var cid: String = Welt.mein_verein_id
-	umschulung_bereich.add_child(Stil.matt("Eine Umschulung dauert Monate. Danach zählt die neue Position als Zweitposition — der Spieler verliert dort deutlich weniger Stärke.", Stil.S_MINI))
+	# Umbruch statt einer Zeile: als gewoehnliches Etikett meldete dieser Satz
+	# die Karte mit 788 Pixeln Mindestbreite an und schob den Reiter 89 Pixel
+	# über den rechten Rand.
+	umschulung_bereich.add_child(Bausteine.fliesstext("Eine Umschulung dauert Monate. Danach zählt die neue Position als Zweitposition — der Spieler verliert dort deutlich weniger Stärke.", Stil.S_MINI))
 	var laufende := 0
 	for sid in Welt.verein(cid)["kader"]:
 		var sp: Dictionary = Welt.spieler(sid)
@@ -498,6 +501,11 @@ func _umschulungen() -> void:
 	neu.add_child(Stil.matt("Neu beginnen", Stil.S_KLEIN))
 	var swahl := OptionButton.new()
 	swahl.custom_minimum_size = Vector2(230, 0)
+	# Ein Auswahlfeld ist so breit wie sein laengster Eintrag — bei
+	# "Maximilian Löwenstein-Wertheim (LA, 24)" sind das 297 Pixel. Mit
+	# clip_text zaehlt nur die Mindestbreite; anders als bei einem Etikett
+	# senkt clip_text bei einem Knopf das Minimum wirklich.
+	swahl.clip_text = true
 	var kandidaten: Array = []
 	for sid2 in Welt.verein(cid)["kader"]:
 		var sp2: Dictionary = Welt.spieler(sid2)
@@ -506,20 +514,22 @@ func _umschulungen() -> void:
 		kandidaten.append(sid2)
 	for i in range(kandidaten.size()):
 		var sp3: Dictionary = Welt.spieler(str(kandidaten[i]))
-		swahl.add_item("%s (%s, %d)" % [Spielerfabrik.voller_name(sp3), str(sp3["position"]), int(sp3["alter"])])
+		swahl.add_item("%s (%s, %d)" % [Spielerfabrik.kurz_name(sp3), str(sp3["position"]), int(sp3["alter"])])
 		swahl.set_item_metadata(i, str(kandidaten[i]))
 	if kandidaten.is_empty():
 		neu.add_child(Stil.matt("Kein Spieler unter 30 ohne laufende Umschulung.", Stil.S_MINI))
 		return
 	neu.add_child(swahl)
 	var pwahl := OptionButton.new()
-	pwahl.custom_minimum_size = Vector2(170, 0)
+	pwahl.custom_minimum_size = Vector2(150, 0)
+	pwahl.clip_text = true
 	for j in range(Spielerfabrik.POSITIONEN.size()):
 		var p2: String = str(Spielerfabrik.POSITIONEN[j])
 		pwahl.add_item(str(Spielerfabrik.POSITION_NAME[p2]))
 		pwahl.set_item_metadata(j, p2)
 	neu.add_child(pwahl)
-	var los := Stil.knopf_primaer("Umschulung beginnen")
+	var los := Stil.knopf_primaer("Beginnen")
+	los.tooltip_text = "Beginnt die Umschulung des gewählten Spielers auf die gewählte Position."
 	los.pressed.connect(func():
 		var erg := Trainingslager.umschulung_starten(Welt.daten,
 			str(swahl.get_item_metadata(maxi(swahl.selected, 0))),

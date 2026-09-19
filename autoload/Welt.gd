@@ -117,6 +117,18 @@ func datum_vorhanden() -> bool:
 func startjahr() -> int:
 	return int(daten.get("startjahr", 2026))
 
+## Merkt sich, welchen Bildschirm der Trainer schon einmal geöffnet hat.
+##
+## Nur dafür da, dem Erstspiel-Pfad zu sagen, welcher Schritt erledigt ist.
+## Ein Hinweis, der noch dasteht, nachdem man ihn befolgt hat, ist schlimmer
+## als keiner.
+func merke_besuch(id: String) -> void:
+	if daten.is_empty():
+		return
+	if not daten.has("besucht"):
+		daten["besucht"] = {}
+	(daten["besucht"] as Dictionary)[id] = true
+
 func saison_index() -> int:
 	if daten.is_empty():
 		return 0

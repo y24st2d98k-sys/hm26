@@ -149,13 +149,28 @@ func _formtabelle(eltern: Node, cid: String) -> void:
 		karte.add_child(Stil.leerzustand("Noch zu wenige Einsätze für eine Formkurve."))
 		return
 	karte.add_child(Stil.matt("Verglichen wird der Saisonschnitt mit den letzten drei Partien. Kleinere Note ist besser.", Stil.S_MINI))
-	var g := Stil.tabelle(["Spieler", "Pos", "Spiele", "Schnitt", "letzte 3", "Tendenz"])
-	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	karte.add_child(g)
+	# Zwei Tabellen nebeneinander statt einer langen.
+	#
+	# Im Herbst stehen hier sechs Namen, im Fruehjahr der halbe Kader: die
+	# Karte wuchs mit jedem Spieltag und lief im Maerz 51 Pixel unter den Falz.
+	# Nebeneinander bleibt sie halb so hoch — und niemand faellt aus der Liste.
+	var reihe := Stil.hbox(Stil.A_GROSS)
+	reihe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(reihe)
+	var haelfte: int = int(ceil(float(liste.size()) / 2.0))
+	var tabellen: Array = []
+	for i in 2:
+		var t := Stil.tabelle(["Spieler", "Pos", "Sp", "Schnitt", "letzte 3", "Tendenz"], true)
+		t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		reihe.add_child(t)
+		tabellen.append(t)
+	var nummer := 0
 	for e in liste:
+		var g: GridContainer = tabellen[0] if nummer < haelfte else tabellen[1]
+		nummer += 1
 		var sid: String = str(e["spieler"])
 		var sp: Dictionary = Welt.spieler(sid)
-		var knopf := Stil.knopf_flach(Spielerfabrik.voller_name(sp))
+		var knopf := Stil.knopf_flach(Spielerfabrik.kurz_name(sp))
 		knopf.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
 		g.add_child(knopf)
 		g.add_child(Bausteine.positions_abzeichen(str(sp["position"])))
@@ -164,10 +179,10 @@ func _formtabelle(eltern: Node, cid: String) -> void:
 			Stil.wert_farbe(6.0 - float(e["schnitt"]), 5.0)))
 		g.add_child(Stil.text(Stil.komma(float(e["zuletzt"]), 2), Stil.S_KLEIN,
 			Stil.wert_farbe(6.0 - float(e["zuletzt"]), 5.0)))
-		var t: float = float(e["tendenz"])
-		var pfeil: String = "steigend" if t > 0.12 else ("fallend" if t < -0.12 else "gleichbleibend")
+		var t2: float = float(e["tendenz"])
+		var pfeil: String = "steigend" if t2 > 0.12 else ("fallend" if t2 < -0.12 else "gleich")
 		g.add_child(Stil.text(pfeil, Stil.S_KLEIN,
-			Stil.GRUEN if t > 0.12 else (Stil.ROT if t < -0.12 else Stil.TEXT_MATT)))
+			Stil.GRUEN if t2 > 0.12 else (Stil.ROT if t2 < -0.12 else Stil.TEXT_MATT)))
 
 
 ## Die Gespanne, nach Strenge sortiert.
