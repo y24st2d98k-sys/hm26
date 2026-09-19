@@ -100,6 +100,7 @@ func _ready() -> void:
 
 	_baue_rahmen()
 	_baue_startbildschirm()
+	add_child(Nachberichtsfenster.new())
 	add_child(Spielerfenster.new())
 	add_child(Vereinsfenster.new())
 	add_child(Spielbericht.new())
@@ -728,6 +729,10 @@ func _auf_live_ende(_spiel_id: String) -> void:
 	_auffrischen()
 	if bildschirme.has("buero"):
 		zeige("buero")
+	# Der Abend danach. Er steht nach dem Abwickeln, nicht davor: die
+	# Verletzung aus der Partie entsteht erst in Medizin.spiel_nachwirkung,
+	# und der Nachbericht soll sie nennen koennen.
+	Nachberichtsfenster.oeffnen(self, _spiel_id)
 	# Beim allerersten Mal die Kurzanleitung von selbst öffnen. Fünfundzwanzig
 	# Bildschirme ohne ein Wort dazu sind keine Tiefe, sondern eine Wand.
 	if Welt.laeuft and not bool(Welt.einstellung("hilfe_gesehen", false)):

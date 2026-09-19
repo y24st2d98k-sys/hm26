@@ -66,6 +66,7 @@ func _ready() -> void:
 			{"gruppe": "vereinsfenster", "ruf": func(f): f.zeige(Welt.mein_verein_id)},
 			{"gruppe": "spielbericht", "ruf": func(f): f.zeige(mid)},
 			{"gruppe": "vorberichtsfenster", "ruf": func(f): f.zeige(gegner, naechste)},
+			{"gruppe": "nachberichtsfenster", "ruf": func(f): f.zeige(mid)},
 			{"gruppe": "nachrichtenfenster", "ruf": func(f):
 				if not nachrichten.is_empty():
 					f.zeige(nachrichten[0])},

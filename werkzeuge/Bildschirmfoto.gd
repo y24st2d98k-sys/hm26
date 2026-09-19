@@ -94,6 +94,20 @@ func _ready() -> void:
 				_scrollen(kind, 1120)
 			await _foto("%s/matchplan.png" % ordner)
 			continue
+		if str(id) == "nachbericht":
+			var partie := Welt.naechstes_spiel(Welt.mein_verein_id)
+			if not partie.is_empty():
+				Welt.partie_simulieren(str(partie["id"]))
+				Welt.spieltag_abwickeln(Welt.tag())
+				app.zeige("buero")
+				Nachberichtsfenster.oeffnen(app, str(partie["id"]))
+				await get_tree().process_frame
+				await get_tree().process_frame
+				await _foto("%s/nachbericht.png" % ordner)
+				var f = get_tree().get_first_node_in_group("nachberichtsfenster")
+				if f != null:
+					f.visible = false
+			continue
 		if str(id) == "woche":
 			app.zeige("buero")
 			app.bildschirme["buero"].reiter = "woche"

@@ -2142,6 +2142,11 @@ func _team_bericht(t: Dictionary) -> Dictionary:
 		var schlank := {}
 		for feld in BERICHT_FELDER:
 			schlank[feld] = z.get(feld, 0)
+		# Die Note gehoert in den Bereich 1 bis 6, und nur hier ist sicher, dass
+		# sie es auch tut: waehrend der Partie zieht ein Dutzend Stellen an ihr,
+		# und nur ein Teil davon daempft danach. Im Bericht stand deshalb schon
+		# eine Note von 0,9 — die gibt es nicht.
+		schlank["bewertung"] = clampf(float(z.get("bewertung", 3.5)), 1.0, 6.0)
 		spieler[sid] = schlank
 	return {
 		"cid": t["cid"],
