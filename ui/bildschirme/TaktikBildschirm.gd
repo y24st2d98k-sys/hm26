@@ -9,6 +9,8 @@ var abwehr_bereich: VBoxContainer
 var taktik_bereich: VBoxContainer
 var bank_bereich: VBoxContainer
 var feld: Spielfeld
+## Die Kopfzeilenleiste der Vorschau — sie wird beim Umschalten neu gebaut.
+var vorschau_leiste: HBoxContainer
 var warnungen_bereich: VBoxContainer
 var anweisungs_bereich: VBoxContainer
 var profil_bereich: VBoxContainer
@@ -53,9 +55,12 @@ func aufbauen() -> void:
 	# wer die Abwehrformation setzt, will nicht am Spielbuch vorbeiscrollen.
 	var reiter := Stil.reitergruppe([
 		{"id": "aufstellung", "name": "Aufstellung"},
-		{"id": "spielidee", "name": "Spielidee"},
+		{"id": "spielidee", "name": "Ausrichtung"},
+		{"id": "vorlagen", "name": "Vorlagen"},
+		{"id": "anweisungen", "name": "Anweisungen"},
 		{"id": "matchplan", "name": "Matchplan"},
 		{"id": "einsatz", "name": "Einsatzzeiten"},
+		{"id": "bank", "name": "Bank"},
 	])
 	wurzel.add_child(reiter)
 	var inhalt := reiter.feld("aufstellung")
@@ -80,37 +85,31 @@ func aufbauen() -> void:
 	rechts.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	inhalt.add_child(rechts)
 	var feldkarte := Bausteine.karte_in(rechts, "Vorschau")
-	var umschalter := Stil.hbox(8)
-	feldkarte.add_child(umschalter)
-	var knopf_angriff := Stil.knopf("Angriff")
-	knopf_angriff.pressed.connect(func():
-		vorschau_angriff = true
-		_feld_auffrischen())
-	umschalter.add_child(knopf_angriff)
-	var knopf_abwehr := Stil.knopf("Abwehr")
-	knopf_abwehr.pressed.connect(func():
-		vorschau_angriff = false
-		_feld_auffrischen())
-	umschalter.add_child(knopf_abwehr)
+	# Der Umschalter sitzt in der Kopfzeile der Karte, nicht als eigene Zeile
+	# darunter: unter den beiden Formationen zaehlt jede Zeile.
+	vorschau_leiste = Stil.hbox(0)
+	Stil.karte_aktion(feldkarte, vorschau_leiste)
+	_vorschau_umschalter()
 	feld = Spielfeld.new()
-	feld.custom_minimum_size = Vector2(440, 224)
+	feld.custom_minimum_size = Vector2(344, 172)
 	feldkarte.add_child(feld)
 	# Je Reiter eine Spalte. Die Karten hier sind breit — eine Anweisungsliste
 	# mit sieben Positionen braucht fuer sich schon tausend Pixel. Zwei davon
 	# nebeneinander ragen aus dem Bildschirm heraus, und dann sieht man von
 	# beiden die rechte Haelfte nicht.
-	var idee := reiter.feld("spielidee")
-	taktik_bereich = Bausteine.karte_in(idee, "Spielidee")
-	profil_bereich = Bausteine.karte_in(idee, "Spielideen")
-	anweisungs_bereich = Bausteine.karte_in(idee, "Spieleranweisungen")
+	# Die Ausrichtung und die gespeicherten Vorlagen sind zwei Dinge: das eine
+	# stellt man ein, das andere ruft man ab. Zusammen in einem Reiter waren
+	# sie zwanzig Pixel zu hoch — und nebeneinander zu breit.
+	taktik_bereich = Bausteine.karte_in(reiter.feld("spielidee"), "Spielidee")
+	profil_bereich = Bausteine.karte_in(reiter.feld("vorlagen"), "Gespeicherte Spielideen")
+	anweisungs_bereich = Bausteine.karte_in(reiter.feld("anweisungen"), "Spieleranweisungen")
 
 	var plan := reiter.feld("matchplan")
 	gegnerplan_bereich = Bausteine.karte_in(plan, "Der Matchplan")
 	spielbuch_bereich = Bausteine.karte_in(plan, "Das Spielbuch")
 
-	var einsatz := reiter.feld("einsatz")
-	minuten_bereich = Bausteine.karte_in(einsatz, "Einsatzzeiten")
-	bank_bereich = Bausteine.karte_in(einsatz, "Restlicher Kader")
+	minuten_bereich = Bausteine.karte_in(reiter.feld("einsatz"), "Einsatzzeiten")
+	bank_bereich = Bausteine.karte_in(reiter.feld("bank"), "Restlicher Kader")
 
 func _melde(text: String, gut: bool = true) -> void:
 	if meldung != null:
@@ -144,6 +143,19 @@ func aktualisieren() -> void:
 	_einsatzzeiten()
 	_bank()
 	_feld_auffrischen()
+
+## Die Segmentleiste der Vorschau. Sie zeigt, welche Formation zu sehen ist —
+## also muss sie nach einem Umschalten neu gebaut werden.
+func _vorschau_umschalter() -> void:
+	if vorschau_leiste == null:
+		return
+	leeren(vorschau_leiste)
+	vorschau_leiste.add_child(Stil.segmente([{"id": "angriff", "name": "Angriff"},
+		{"id": "abwehr", "name": "Abwehr"}],
+		"angriff" if vorschau_angriff else "abwehr", func(id):
+			vorschau_angriff = str(id) == "angriff"
+			_vorschau_umschalter()
+			_feld_auffrischen()))
 
 func _feld_auffrischen() -> void:
 	if feld == null or Welt.mein_verein_id == "":
@@ -241,7 +253,9 @@ func _setze(block: String, pos: String, sid: String) -> void:
 	aktualisieren()
 
 func _angriff() -> void:
-	angriff_bereich.add_child(Stil.matt("Wer steht im Angriff auf dem Feld? Die Zahl zeigt die Stärke auf genau dieser Position.", Stil.S_MINI))
+	# Der erklaerende Satz haengt an der Karte, nicht als eigene Zeile darin:
+	# unter zwei Formationen und der Vorschau zaehlt jede Zeile.
+	Stil.karte_wurzel(angriff_bereich).tooltip_text = "Wer steht im Angriff auf dem Feld? Die Zahl zeigt die Stärke auf genau dieser Position."
 	for pos in ["TW", "LA", "RL", "RM", "RR", "RA", "KM"]:
 		angriff_bereich.add_child(_positionswahl("angriff", pos, pos == "TW"))
 	var staerke := _formationsstaerke("angriff")
@@ -250,7 +264,7 @@ func _angriff() -> void:
 		Stil.wert_farbe(staerke, 100.0)))
 
 func _abwehr() -> void:
-	abwehr_bereich.add_child(Stil.matt("Die Abwehrformation darf komplett anders besetzt sein — Abwehrspezialisten lohnen sich.", Stil.S_MINI))
+	Stil.karte_wurzel(abwehr_bereich).tooltip_text = "Die Abwehrformation darf komplett anders besetzt sein — Abwehrspezialisten lohnen sich."
 	var auf: Dictionary = Welt.verein(Welt.mein_verein_id)["aufstellung"]
 	if not (auf["abwehr"] as Dictionary).has("TW"):
 		auf["abwehr"]["TW"] = str((auf["angriff"] as Dictionary).get("TW", ""))
@@ -263,9 +277,10 @@ func _abwehr() -> void:
 	abwehr_bereich.add_child(Stil.info_zeile("Abwehrstärke der Sieben", "%d" % int(staerke),
 		Stil.wert_farbe(staerke, 100.0)))
 	var ueberschneidung := _ueberschneidung()
-	abwehr_bereich.add_child(Stil.info_zeile("Spieler in beiden Formationen", "%d von 6" % ueberschneidung,
-		Stil.GRUEN if ueberschneidung >= 4 else Stil.GELB))
-	abwehr_bereich.add_child(Stil.matt("Je weniger Überschneidung, desto mehr Wechsel — das kostet Kraft und birgt Wechselfehler.", Stil.S_MINI))
+	var ueber_zeile := Stil.info_zeile("Spieler in beiden Formationen", "%d von 6" % ueberschneidung,
+		Stil.GRUEN if ueberschneidung >= 4 else Stil.GELB)
+	ueber_zeile.tooltip_text = "Je weniger Überschneidung, desto mehr Wechsel — das kostet Kraft und birgt Wechselfehler."
+	abwehr_bereich.add_child(ueber_zeile)
 
 func _formationsstaerke(block: String) -> float:
 	var auf: Dictionary = Welt.verein(Welt.mein_verein_id)["aufstellung"]

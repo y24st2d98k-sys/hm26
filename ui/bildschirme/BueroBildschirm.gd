@@ -86,6 +86,9 @@ func aktualisieren() -> void:
 	_letzte_spiele(rechts2)
 	_vorstand(rechts2)
 
+	# Drei Spalten: Presse, Kasse, und was Halle und Co-Trainer melden.
+	# Untereinander waren die letzten beiden Karten genau das, was den Reiter
+	# ueber den Rand schob.
 	var unten := Stil.hbox(Stil.A_NORMAL)
 	gruppe.feld("umfeld").add_child(unten)
 	_presse(unten)
@@ -93,8 +96,11 @@ func aktualisieren() -> void:
 	rechts3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	unten.add_child(rechts3)
 	_finanzen(rechts3)
-	_fanlage(gruppe.feld("umfeld"))
-	_cotrainer(gruppe.feld("umfeld"))
+	_fanlage(rechts3)
+	var rechts4 := Stil.vbox(Stil.A_NORMAL)
+	rechts4.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	unten.add_child(rechts4)
+	_cotrainer(rechts4)
 
 ## Die Fanszene, aber nur wenn sie etwas will: eine Gruppe im Unmut oder ein
 ## Heimspiel ohne Programm. Eine Karte, die immer da ist, liest irgendwann
