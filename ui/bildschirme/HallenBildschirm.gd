@@ -7,6 +7,9 @@ extends Bildschirm
 ## dieser Abend gemacht — und was darf er kosten?
 
 var inhalt: VBoxContainer
+## Welcher Reiter offen steht — ueberlebt den Neuaufbau, den jede
+## Preisaenderung ausloest.
+var reiter := "preise"
 var meldung: Label
 
 func aufbauen() -> void:
@@ -19,13 +22,12 @@ func aufbauen() -> void:
 	kopf.add_child(Stil.dehner())
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
 
 func _melde(text: String, gut: bool = true) -> void:
 	if meldung != null:
@@ -40,15 +42,26 @@ func aktualisieren() -> void:
 		inhalt.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
 		return
 	_kennzahlen()
-	var oben := Stil.hbox(12)
-	inhalt.add_child(oben)
-	_preise(oben)
-	_fangruppen(oben)
-	_programm()
-	_halle()
+	# Die Kennzahlen stehen immer da. Alles Weitere liegt hinter Reitern: der
+	# Spieltag, das Gebaeude und das Geld sind drei Entscheidungen, keine
+	# Bahn von sieben Karten.
+	var gruppe := Stil.reitergruppe([
+		{"id": "preise", "name": "Eintrittspreise"},
+		{"id": "fans", "name": "Die Fanszene"},
+		{"id": "programm", "name": "Spieltagsprogramm"},
+		{"id": "gebaeude", "name": "Halle & Lizenz"},
+		{"id": "geld", "name": "Darlehen"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	inhalt.add_child(gruppe)
+	# Preise und Fanszene in getrennten Reitern: nebeneinander ist jede der
+	# beiden Karten fuer sich schon so hoch wie das Fenster.
+	_preise(gruppe.feld("preise"))
+	_fangruppen(gruppe.feld("fans"))
+	_programm(gruppe.feld("programm"))
+	_halle(gruppe.feld("gebaeude"), gruppe.feld("geld"))
 
 # ------------------------------------------------------------ Kennzahlen ---
-
 func _kennzahlen() -> void:
 	var cid := Welt.mein_verein_id
 	var v: Dictionary = Welt.verein(cid)
@@ -90,19 +103,20 @@ func _preise(eltern: Node) -> void:
 		var kat: String = str(k)
 		var info: Dictionary = Ticketing.KATEGORIE[kat]
 		karte.add_child(Stil.trenner())
+		# Name, Platzzahl und Preisfeld in einer Zeile: zwei Zeilen je Kategorie
+		# waren vier Kategorien lang eine halbe Bildschirmhoehe nur fuer
+		# Beschriftungen.
 		var zeile := Stil.hbox(8)
 		karte.add_child(zeile)
 		var name := Stil.text(str(info["name"]), Stil.S_NORMAL)
 		name.custom_minimum_size = Vector2(120, 0)
 		zeile.add_child(name)
 		zeile.add_child(Stil.abzeichen("%s PLÄTZE" % Stil.zahl(int(sitze[kat])), Stil.TEXT_SCHWACH))
-		zeile.add_child(Stil.dehner())
 		var dk: int = Ticketing.dauerkarten(Welt.daten, cid, kat)
 		if dk > 0:
 			zeile.add_child(Stil.abzeichen("%s DAUERKARTEN" % Stil.zahl(dk), Stil.BLAU))
 
-		var steuerung := Stil.hbox(8)
-		karte.add_child(steuerung)
+		var steuerung := zeile
 		var feld := SpinBox.new()
 		feld.min_value = 1
 		feld.max_value = int(Ticketing.referenzpreis(Welt.daten, cid, kat) * 2.5)
@@ -228,9 +242,9 @@ func _fangruppen(eltern: Node) -> void:
 
 # ---------------------------------------------------------- Spieltag ---
 
-func _programm() -> void:
+func _programm(eltern: Node) -> void:
 	var cid := Welt.mein_verein_id
-	var karte := Bausteine.karte_in(inhalt, "Programm des nächsten Heimspiels")
+	var karte := Bausteine.karte_in(eltern, "Programm des nächsten Heimspiels")
 	var naechstes := _naechstes_heimspiel()
 	var kopf := Stil.hbox(10)
 	karte.add_child(kopf)
@@ -310,11 +324,11 @@ func _naechstes_heimspiel() -> Dictionary:
 
 # ---------------------------------------------------------------- Halle ---
 
-func _halle() -> void:
+func _halle(eltern: Node, geldfeld: Node) -> void:
 	var cid := Welt.mein_verein_id
 	var v: Dictionary = Welt.verein(cid)
 	var reihe := Stil.hbox(12)
-	inhalt.add_child(reihe)
+	eltern.add_child(reihe)
 
 	var karte := Bausteine.karte_in(reihe, "Die Halle")
 	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -343,7 +357,7 @@ func _halle() -> void:
 
 	_lizenz(reihe)
 	var reihe2 := Stil.hbox(12)
-	inhalt.add_child(reihe2)
+	geldfeld.add_child(reihe2)
 	_darlehen(reihe2)
 
 ## Was der Lizenzierungsausschuss an dieser Halle zu beanstanden hat — und was

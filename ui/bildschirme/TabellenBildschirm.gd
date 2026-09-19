@@ -20,13 +20,12 @@ func aufbauen() -> void:
 		gewaehlt = str(liga_wahl.get_item_metadata(i))
 		_zeichne())
 	kopf.add_child(liga_wahl)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit, und zwei ineinander sind einer zu viel.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
 
 func aktualisieren() -> void:
 	if liga_wahl == null or Welt.daten.is_empty():
@@ -62,7 +61,15 @@ func _zeichne() -> void:
 		return
 	var liga: Dictionary = Welt.daten["ligen"][gewaehlt]
 	var tabelle := Spielplan.tabelle_sortiert(Welt.daten, gewaehlt)
-	var karte := Bausteine.karte_in(inhalt, "%s — Spieltag %d von %d" % [
+	# Die Tabelle fuellt fuer sich schon eine Bildschirmhoehe. Torjaeger,
+	# Prognose und Meisterhistorie gehoeren daneben, nicht darunter — sonst
+	# scrollt man an achtzehn Zeilen vorbei, um zu sehen, wer trifft.
+	var reiter := Stil.reitergruppe([
+		{"id": "tabelle", "name": "Tabelle"},
+		{"id": "listen", "name": "Torjäger & Prognose"},
+	])
+	inhalt.add_child(reiter)
+	var karte := Bausteine.karte_in(reiter.feld("tabelle"), "%s — Spieltag %d von %d" % [
 		str(liga["name"]), int(liga["aktueller_spieltag"]), int(liga["spieltage"])])
 	var g := Stil.tabelle(["#", "", "Verein", "Sp", "S", "U", "N", "Tore", "Diff", "P", "Form"])
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -102,7 +109,7 @@ func _zeichne() -> void:
 		g.add_child(Bausteine.formkurve(z["serie"], 5))
 
 	var unten := Stil.hbox(12)
-	inhalt.add_child(unten)
+	reiter.feld("listen").add_child(unten)
 	var torjaeger := Bausteine.karte_in(unten, "Torjägerliste")
 	Stil.karte_wurzel(torjaeger).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var liste := Statistik.torjaeger(Welt.daten, gewaehlt, 12)

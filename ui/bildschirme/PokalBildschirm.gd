@@ -3,35 +3,44 @@ extends Bildschirm
 ## Nationale Pokale und die beiden internationalen Wettbewerbe.
 
 var inhalt: VBoxContainer
+## Welcher Reiter offen steht.
+var reiter := "europa"
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
 	v.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(v)
 	v.add_child(Stil.titel("Pokale & Europa", 0))
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
 
 func aktualisieren() -> void:
 	if inhalt == null or Welt.daten.is_empty():
 		return
 	leeren(inhalt)
+	# Europa und die nationalen Pokale hintereinander waren mehr als eine
+	# Bildschirmhoehe, obwohl man immer nur eines davon liest.
+	var gruppe := Stil.reitergruppe([
+		{"id": "europa", "name": "Europa"},
+		{"id": "national", "name": "Nationale Pokale"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	inhalt.add_child(gruppe)
 	for wid in Welt.daten["international"].keys():
-		_international(Welt.daten["international"][wid])
+		_international(Welt.daten["international"][wid], gruppe.feld("europa"))
 	var eigene_nation: String = str(Welt.verein(Welt.mein_verein_id).get("nation", "de")) if Welt.mein_verein_id != "" else "de"
 	var ids: Array = Welt.daten["pokale"].keys()
 	ids.sort_custom(func(a, b):
 		return str(Welt.daten["pokale"][a]["nation"]) == eigene_nation and str(Welt.daten["pokale"][b]["nation"]) != eigene_nation)
 	for pid in ids:
-		_pokal(Welt.daten["pokale"][pid])
+		_pokal(Welt.daten["pokale"][pid], gruppe.feld("national"))
 
-func _pokal(pokal: Dictionary) -> void:
-	var karte := Bausteine.karte_in(inhalt, str(pokal["name"]))
+func _pokal(pokal: Dictionary, eltern: Node) -> void:
+	var karte := Bausteine.karte_in(eltern, str(pokal["name"]))
 	var paarungen: Array = pokal.get("paarungen", [])
 	if bool(pokal.get("beendet", false)):
 		var sieger: String = str(pokal.get("sieger", ""))
@@ -56,8 +65,8 @@ func _pokal(pokal: Dictionary) -> void:
 			karte.add_child(Stil.info_zeile(Kalender.saison_text(Welt.startjahr(), int(e["saison"])),
 				str(Welt.verein(str(e["verein"])).get("name", ""))))
 
-func _international(wb: Dictionary) -> void:
-	var karte := Bausteine.karte_in(inhalt, str(wb["name"]))
+func _international(wb: Dictionary, eltern: Node) -> void:
+	var karte := Bausteine.karte_in(eltern, str(wb["name"]))
 	var phase: String = str(wb["phase"])
 	karte.add_child(Stil.matt("Phase: %s" % phase.capitalize(), Stil.S_KLEIN))
 	if phase == "gruppe":

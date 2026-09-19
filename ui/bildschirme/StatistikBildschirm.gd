@@ -44,13 +44,12 @@ func aufbauen() -> void:
 		_zeichne())
 	kopf.add_child(liga_wahl)
 
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
 
 func aktualisieren() -> void:
 	if liga_wahl == null or Welt.daten.is_empty():
@@ -87,26 +86,35 @@ func _zeichne() -> void:
 	var liga: Dictionary = Welt.daten["ligen"][gewaehlt]
 	var info: Dictionary = Statistik.KATEGORIEN.get(kategorie, Statistik.KATEGORIEN["tore"])
 
+	# Ranglisten, Ehrungen und Mannschaftswerte beantworten drei verschiedene
+	# Fragen. Untereinander war das eine Seite von anderthalb Bildschirmhoehen.
+	var reiter := Stil.reitergruppe([
+		{"id": "spieler", "name": "Spieler"},
+		{"id": "mannschaft", "name": "Mannschaften"},
+		{"id": "ehrungen", "name": "Ehrungen"},
+	])
+	inhalt.add_child(reiter)
 	var oben := Stil.hbox(12)
-	inhalt.add_child(oben)
+	reiter.feld("spieler").add_child(oben)
 	_bestenliste(oben, liga, info)
 	_eigene_karte(oben, liga, info)
 
-	_team_der_woche(liga)
-	_allstar(liga)
-	_ehrungen(liga)
+	var ehrungen := reiter.feld("ehrungen")
+	_team_der_woche(liga, ehrungen)
+	_allstar(liga, ehrungen)
+	_ehrungen(liga, ehrungen)
 
 	var unten := Stil.hbox(12)
-	inhalt.add_child(unten)
+	reiter.feld("mannschaft").add_child(unten)
 	for schluessel in TEAM_KATEGORIEN.keys():
 		_teamkarte(unten, str(schluessel))
 
 ## Die beste Sieben des letzten Spieltags.
-func _team_der_woche(liga: Dictionary) -> void:
+func _team_der_woche(liga: Dictionary, eltern: Node) -> void:
 	var w: Dictionary = Auszeichnungen.team_der_woche(Welt.daten, str(liga["id"]))
 	if w.is_empty():
 		return
-	var karte := Bausteine.karte_in(inhalt, "Team der Woche — Spieltag vom %s" % Kalender.text(int(w["tag"]), Welt.startjahr()))
+	var karte := Bausteine.karte_in(eltern, "Team der Woche — Spieltag vom %s" % Kalender.text(int(w["tag"]), Welt.startjahr()))
 	var zeile := Stil.hbox(10)
 	karte.add_child(zeile)
 	var noten: Dictionary = w.get("noten", {})
@@ -130,13 +138,13 @@ func _team_der_woche(liga: Dictionary) -> void:
 			Stil.wert_farbe(6.0 - note, 5.0)))
 
 ## Monats- und Saisonehrungen dieser Liga.
-func _ehrungen(liga: Dictionary) -> void:
+func _ehrungen(liga: Dictionary, eltern: Node) -> void:
 	var lid: String = str(liga["id"])
 	var monate: Array = Auszeichnungen.monatsliste(Welt.daten, lid)
 	var saisons: Array = Auszeichnungen.saisonliste(Welt.daten, lid)
 	if monate.is_empty() and saisons.is_empty():
 		return
-	var karte := Bausteine.karte_in(inhalt, "Auszeichnungen")
+	var karte := Bausteine.karte_in(eltern, "Auszeichnungen")
 	if not monate.is_empty():
 		karte.add_child(Stil.text("Monatsehrungen", Stil.S_KLEIN, Stil.AKZENT))
 		var g := Stil.tabelle(["Monat", "Spieler des Monats", "Verein", "Mannschaft des Monats"])
@@ -173,11 +181,11 @@ func _ehrungen(liga: Dictionary) -> void:
 		zeile.add_child(Stil.matt(" · ".join(teile) if not teile.is_empty() else "keine Ehrung vergeben", Stil.S_KLEIN))
 
 ## Die beste Sieben der zuletzt abgeschlossenen Saison.
-func _allstar(liga: Dictionary) -> void:
+func _allstar(liga: Dictionary, eltern: Node) -> void:
 	var a: Dictionary = liga.get("allstar", {})
 	if a.is_empty():
 		return
-	var karte := Bausteine.karte_in(inhalt, "Team der Saison %s" % Kalender.saison_text(
+	var karte := Bausteine.karte_in(eltern, "Team der Saison %s" % Kalender.saison_text(
 		Welt.startjahr(), int(a["saison"])))
 	var reihe := Stil.hbox(10)
 	karte.add_child(reihe)

@@ -7,6 +7,9 @@ extends Bildschirm
 
 var inhalt: VBoxContainer
 var eigene_wuerfe: bool = true
+## Welcher Reiter offen steht — ueberlebt den Wechsel zwischen eigenen und
+## gegnerischen Wuerfen.
+var reiter := "mannschaft"
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -21,13 +24,12 @@ func aufbauen() -> void:
 		"eigene" if eigene_wuerfe else "gegner", func(id):
 			eigene_wuerfe = str(id) == "eigene"
 			aktualisieren()))
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit, und zwei ineinander sind einer zu viel.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
 
 func aktualisieren() -> void:
 	if inhalt == null:
@@ -42,20 +44,42 @@ func aktualisieren() -> void:
 		inhalt.add_child(Stil.leerzustand("In dieser Saison ist noch kein Spiel ausgetragen."))
 		return
 	inhalt.add_child(Stil.matt("Ausgewertet werden %d Partien dieser Saison." % partien.size(), Stil.S_MINI))
-	_kennzahlen(cid)
+	# Drei Reiter statt eines Stapels von drei Bildschirmhoehen. Mannschaft,
+	# Spieler und Gespanne beantworten verschiedene Fragen — wer wissen will,
+	# wer gerade in Form ist, will nicht an der Wurfkarte vorbeiscrollen.
+	var gruppe := Stil.reitergruppe([
+		{"id": "mannschaft", "name": "Mannschaft"},
+		{"id": "spieler", "name": "Spieler"},
+		{"id": "gespanne", "name": "Gespanne"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	inhalt.add_child(gruppe)
+	# Drei Spalten: Kennzahlen, Wurfkarte und Torverlauf sind drei Fragen und
+	# stehen zusammen genau einmal ins Fenster. Zu zweit lief der Torverlauf
+	# unter den Falz.
 	var oben := Stil.hbox(12)
-	inhalt.add_child(oben)
-	_wurfkarte(oben, cid)
-	_torverlauf(oben, cid)
-	_formtabelle(cid)
-	_gespanne()
+	gruppe.feld("mannschaft").add_child(oben)
+	var links := Stil.vbox(12)
+	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	oben.add_child(links)
+	var mitte := Stil.vbox(12)
+	mitte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	oben.add_child(mitte)
+	var rechts := Stil.vbox(12)
+	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	oben.add_child(rechts)
+	_kennzahlen(links, cid)
+	_wurfkarte(mitte, cid)
+	_torverlauf(rechts, cid)
+	_formtabelle(gruppe.feld("spieler"), cid)
+	_gespanne(gruppe.feld("gespanne"))
 
 ## Die eigenen Werte gegen den Ligaschnitt.
-func _kennzahlen(cid: String) -> void:
+func _kennzahlen(eltern: Node, cid: String) -> void:
 	var werte: Array = Saisonanalyse.kennzahlen(Welt.daten, cid)
 	if werte.is_empty():
 		return
-	var karte := Bausteine.karte_in(inhalt, "Kennzahlen gegen den Ligaschnitt")
+	var karte := Bausteine.karte_in(eltern, "Kennzahlen gegen den Ligaschnitt")
 	var g := Stil.tabelle(["Kennzahl", "Wir", "Liga", "Abstand"])
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	karte.add_child(g)
@@ -118,9 +142,9 @@ func _torverlauf(eltern: Node, cid: String) -> void:
 	k.add_child(Stil.matt("Grün: eigene Tore. Rot: Gegentore. Wo Rot überwiegt, geht das Spiel verloren.", Stil.S_MINI))
 
 ## Wer in Form kommt und wer abfällt.
-func _formtabelle(cid: String) -> void:
+func _formtabelle(eltern: Node, cid: String) -> void:
 	var liste: Array = Saisonanalyse.formtabelle(Welt.daten, cid)
-	var karte := Bausteine.karte_in(inhalt, "Form über die Saison")
+	var karte := Bausteine.karte_in(eltern, "Form über die Saison")
 	if liste.is_empty():
 		karte.add_child(Stil.leerzustand("Noch zu wenige Einsätze für eine Formkurve."))
 		return
@@ -152,21 +176,34 @@ func _formtabelle(cid: String) -> void:
 ## Zeitstrafen verteilt, stellt vor dem Spiel die Härte anders ein. Aufgeführt
 ## werden nur Gespanne, die schon gepfiffen haben — über die anderen wäre jede
 ## Aussage erfunden.
-func _gespanne() -> void:
+func _gespanne(eltern: Node) -> void:
 	var liste: Array = []
 	for g in Schiedsrichter.alle(Welt.daten):
 		if int((g as Dictionary)["spiele"]) > 0:
 			liste.append(g)
 	if liste.is_empty():
 		return
-	var karte := Bausteine.karte_in(inhalt, "Die Gespanne")
+	var karte := Bausteine.karte_in(eltern, "Die Gespanne")
 	karte.add_child(Stil.matt(
 		"Wer viel pfeift, macht harte Abwehr teuer. Der Vorbericht nennt vor jedem Spiel das angesetzte Duo.",
 		Stil.S_MINI))
-	var gr := Stil.tabelle(["Gespann", "Spiele", "Zeitstrafen/Spiel", "7m/Spiel", "Rot", "Ruf"])
-	gr.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	karte.add_child(gr)
+	# Zwei Tabellen nebeneinander statt einer langen: zwei Dutzend Gespanne
+	# untereinander reichen ueber den Bildschirmrand, und wer sein angesetztes
+	# Duo sucht, will nicht rollen.
+	var reihe := Stil.hbox(Stil.A_GROSS)
+	reihe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(reihe)
+	var haelfte: int = int(ceil(float(liste.size()) / 2.0))
+	var tabellen: Array = []
+	for i in 2:
+		var t := Stil.tabelle(["Gespann", "Sp", "Zeitstr.", "7m", "Rot", "Ruf"])
+		t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		reihe.add_child(t)
+		tabellen.append(t)
+	var nummer := 0
 	for g in liste:
+		var gr: GridContainer = tabellen[0] if nummer < haelfte else tabellen[1]
+		nummer += 1
 		var q: float = Schiedsrichter.zeitstrafen_quote(g)
 		var farbe: Color = Stil.prozent_farbe(clampf(100.0 - (q - 2.0) * 24.0, 0.0, 100.0))
 		gr.add_child(Stil.text(Schiedsrichter.namen(g), Stil.S_KLEIN))

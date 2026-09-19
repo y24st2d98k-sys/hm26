@@ -4,6 +4,9 @@ extends Bildschirm
 
 var inhalt: VBoxContainer
 var meldung: Label
+## Welcher Reiter offen steht — ueberlebt den Neuaufbau, den jede
+## Unterschrift ausloest.
+var reiter := "lage"
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -15,13 +18,12 @@ func aufbauen() -> void:
 	kopf.add_child(Stil.dehner())
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
 
 func aktualisieren() -> void:
 	if inhalt == null:
@@ -34,8 +36,16 @@ func aktualisieren() -> void:
 	var v: Dictionary = Welt.verein(cid)
 	var u := Finanzen.wochenuebersicht(Welt.daten, cid)
 
+	var gruppe := Stil.reitergruppe([
+		{"id": "lage", "name": "Lage"},
+		{"id": "sponsoren", "name": "Sponsoren"},
+		{"id": "buchungen", "name": "Buchungen"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	inhalt.add_child(gruppe)
+
 	var oben := Stil.hbox(12)
-	inhalt.add_child(oben)
+	gruppe.feld("lage").add_child(oben)
 	var lage := Bausteine.karte_in(oben, "Lage")
 	Stil.karte_wurzel(lage).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	lage.add_child(Stil.info_zeile("Kasse", Stil.geld(float(v["kasse"])), Stil.GRUEN if float(v["kasse"]) > 0.0 else Stil.ROT))
@@ -86,9 +96,9 @@ func aktualisieren() -> void:
 	var saldo: float = float(u["sponsoring"]) + float(u["tv"]) + float(u["merch"]) - float(u["gehalt_spieler"]) - float(u["gehalt_personal"]) - float(u["betrieb"]) - praemien_zugesagt - kreditrate
 	ausgaben.add_child(Stil.info_zeile("Saldo ohne Spieltage", Stil.geld(saldo), Stil.GRUEN if saldo > 0.0 else Stil.ROT))
 
-	_sponsoren(cid, v)
+	_sponsoren(cid, v, gruppe.feld("sponsoren"))
 
-	var buchungen := Bausteine.karte_in(inhalt, "Letzte Buchungen")
+	var buchungen := Bausteine.karte_in(gruppe.feld("buchungen"), "Letzte Buchungen")
 	var buchungsliste: Array = v["finanz_log"]
 	if buchungsliste.is_empty():
 		buchungen.add_child(Stil.matt("Noch keine Buchungen."))
@@ -96,7 +106,7 @@ func aktualisieren() -> void:
 		var g2 := Stil.tabelle(["Datum", "Vorgang", "Kategorie", "Betrag"])
 		g2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		buchungen.add_child(g2)
-		for e in buchungsliste.slice(0, 30):
+		for e in buchungsliste.slice(0, 20):
 			g2.add_child(Stil.matt(Kalender.kurz(int(e["tag"]), Welt.startjahr()), Stil.S_KLEIN))
 			g2.add_child(Stil.text(str(e["grund"]), Stil.S_KLEIN))
 			g2.add_child(Stil.matt(Finanzen.kategorie_name(str(e["kategorie"])), Stil.S_KLEIN))
@@ -104,9 +114,9 @@ func aktualisieren() -> void:
 			g2.add_child(Stil.text(Stil.geld(betrag), Stil.S_KLEIN, Stil.GRUEN if betrag > 0.0 else Stil.ROT))
 
 ## Laufende Sponsorenverträge und offene Angebote.
-func _sponsoren(cid: String, v: Dictionary) -> void:
+func _sponsoren(cid: String, v: Dictionary, eltern: Node) -> void:
 	var angebote: Array = Sponsoren.offene_angebote(Welt.daten, cid)
-	var sponsoren := Bausteine.karte_in(inhalt, "Sponsoren")
+	var sponsoren := Bausteine.karte_in(eltern, "Sponsoren")
 	sponsoren.add_child(Stil.info_zeile("Sponsoring im Jahr", Stil.geld(Sponsoren.jahressumme(Welt.daten, cid)), Stil.GRUEN))
 	var g := Stil.tabelle(["Partner", "Platz", "Jahreswert", "Titelprämie", "Laufzeit"])
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -122,12 +132,12 @@ func _sponsoren(cid: String, v: Dictionary) -> void:
 	if (v["sponsoren"] as Array).is_empty():
 		sponsoren.add_child(Stil.leerzustand("Kein Partner unter Vertrag."))
 
-	_akquise(cid)
+	_akquise(cid, eltern)
 
 	if angebote.is_empty():
 		return
 
-	var karte := Bausteine.karte_in(inhalt, "Angebote von Sponsoren")
+	var karte := Bausteine.karte_in(eltern, "Angebote von Sponsoren")
 	var summe := 0.0
 	for a in angebote:
 		summe += float(a["wert"])
@@ -193,11 +203,11 @@ func _sponsoren(cid: String, v: Dictionary) -> void:
 ## Der Trainer musste bisher warten, bis zum Saisonwechsel Angebote hereinkamen.
 ## Ein freier Werbeplatz blieb dazwischen frei, egal wie dringend das Geld
 ## gebraucht wurde.
-func _akquise(cid: String) -> void:
+func _akquise(cid: String, eltern: Node) -> void:
 	var frei: Array = Sponsoren.freie_plaetze(Welt.daten, cid)
 	if frei.is_empty():
 		return
-	var karte := Bausteine.karte_in(inhalt, "Partnersuche")
+	var karte := Bausteine.karte_in(eltern, "Partnersuche")
 	karte.add_child(Stil.matt(
 		"Ein freier Werbeplatz bringt nichts ein. Sie können selbst anklopfen — das braucht Zeit und klappt nicht immer.",
 		Stil.S_KLEIN))

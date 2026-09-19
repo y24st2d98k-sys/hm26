@@ -28,7 +28,9 @@ func _ready() -> void:
 	mitte.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(mitte)
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(860, 600)
+	# Fast die ganze Fensterhoehe: der Kader allein ist mit achtzehn Namen so
+	# hoch wie ein halbes Fenster.
+	panel.custom_minimum_size = Vector2(940, 860)
 	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
 	mitte.add_child(panel)
 	var m := MarginContainer.new()
@@ -46,13 +48,15 @@ func _ready() -> void:
 	var zu := Stil.knopf("Schließen")
 	zu.pressed.connect(func(): visible = false)
 	kopf.add_child(zu)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	# Kein Rollbereich um das ganze Fenster: die Reiter bringen ihren eigenen
+	# mit, und zwei ineinander sind einer zu viel.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
+
+## Welcher Reiter offen steht.
+var reiter := "profil"
 
 func zeige(verein_id: String) -> void:
 	cid = verein_id
@@ -75,8 +79,18 @@ func _zeichne() -> void:
 		str(v["ort"]), int(v["gegruendet"]), str(v["halle"]["name"]), Stil.zahl(int(v["halle"]["kapazitaet"]))]))
 	box.add_child(Bausteine.formkurve(v["formkurve"], 8))
 
+	# Profil und Kader in zwei Reitern: der Kader allein ist mit achtzehn
+	# Namen so hoch wie das ganze Fenster.
+	var gruppe := Stil.reitergruppe([
+		{"id": "profil", "name": "Profil"},
+		{"id": "kader", "name": "Kader"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	inhalt.add_child(gruppe)
+	var f_profil := gruppe.feld("profil")
+
 	var oben := Stil.hbox(12)
-	inhalt.add_child(oben)
+	f_profil.add_child(oben)
 	var lage := Bausteine.karte_in(oben, "Saison")
 	Stil.karte_wurzel(lage).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var s: Dictionary = v["saison"]
@@ -104,7 +118,7 @@ func _zeichne() -> void:
 
 	var rivalen := Chronik.rivalen(Welt.daten, cid, 4)
 	if not rivalen.is_empty():
-		var rk := Bausteine.karte_in(inhalt, "Rivalitäten")
+		var rk := Bausteine.karte_in(f_profil, "Rivalitäten")
 		for r in rivalen:
 			var zeile := Stil.hbox(8)
 			rk.add_child(zeile)
@@ -114,8 +128,8 @@ func _zeichne() -> void:
 			zeile.add_child(Stil.balken(float(r["intensitaet"]), 100.0, 110, Stil.ROT))
 			zeile.add_child(Stil.abzeichen(Chronik.rivalitaet_stufe(float(r["intensitaet"])), Stil.ROT))
 
-	var kaderkarte := Bausteine.karte_in(inhalt, "Kader")
-	var g := Stil.tabelle(["Pos", "Spieler", "Alter", "Stärke", "Vertrag", "Wert"])
+	var kaderkarte := Bausteine.karte_in(gruppe.feld("kader"), "Kader")
+	var g := Stil.tabelle(["Pos", "Spieler", "Alter", "Stärke", "Vertrag", "Wert"], true)
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	kaderkarte.add_child(g)
 	for sid in Welt.kader(cid):

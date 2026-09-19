@@ -119,6 +119,43 @@ static func spielzeile(mid: String, eigener: String = "") -> HBoxContainer:
 	h.add_child(gast_label)
 	return h
 
+## Dieselbe Partie schmal: Kuerzel statt Vereinsnamen.
+##
+## Eine Saison hat rund vierzig Termine. Nebeneinander in drei Monatsspalten
+## passen sie nur, wenn eine Zeile mit zweihundert Pixeln auskommt — mit
+## ausgeschriebenen Namen braucht sie sechshundert. Der ganze Name steht im
+## Hinweisfenster.
+static func spielzeile_kurz(mid: String, eigener: String = "") -> HBoxContainer:
+	var m: Dictionary = Welt.partie(mid)
+	var heim: Dictionary = Welt.verein(str(m["heim"]))
+	var gast: Dictionary = Welt.verein(str(m["gast"]))
+	var h := Stil.hbox(6)
+	h.tooltip_text = "%s · %s\n%s gegen %s" % [
+		Kalender.text(int(m["tag"]), Welt.startjahr(), true),
+		Welt.wettbewerb_name(str(m["wettbewerb"])),
+		str(heim.get("name", "")), str(gast.get("name", ""))]
+	var datum := Stil.matt(Kalender.kurz(int(m["tag"]), Welt.startjahr()), Stil.S_MINI)
+	datum.custom_minimum_size = Vector2(50, 0)
+	h.add_child(datum)
+	var heim_label := Stil.text(str(heim.get("kurz", "")), Stil.S_KLEIN,
+		Stil.AKZENT if str(m["heim"]) == eigener else Stil.TEXT)
+	heim_label.custom_minimum_size = Vector2(46, 0)
+	heim_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	h.add_child(heim_label)
+	var mitte: Label
+	if bool(m["gespielt"]):
+		mitte = Stil.text("%d : %d" % [int(m["tore_heim"]), int(m["tore_gast"])], Stil.S_KLEIN)
+	else:
+		mitte = Stil.matt("– : –", Stil.S_KLEIN)
+	mitte.custom_minimum_size = Vector2(52, 0)
+	mitte.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	h.add_child(mitte)
+	var gast_label := Stil.text(str(gast.get("kurz", "")), Stil.S_KLEIN,
+		Stil.AKZENT if str(m["gast"]) == eigener else Stil.TEXT)
+	gast_label.custom_minimum_size = Vector2(46, 0)
+	h.add_child(gast_label)
+	return h
+
 ## Ein Absatz, der umbricht statt seine Karte breiter zu machen.
 ##
 ## Ein Label mit Umbruch reicht dafuer nicht: ohne SIZE_EXPAND_FILL meldet es

@@ -4,6 +4,9 @@ extends Bildschirm
 
 var inhalt: VBoxContainer
 var meldung: Label
+## Welcher Reiter offen steht — ueberlebt den Neuaufbau, den jede
+## Entscheidung ueber ein Angebot ausloest.
+var reiter := "laufbahn"
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -15,13 +18,12 @@ func aufbauen() -> void:
 	kopf.add_child(Stil.dehner())
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
 
 func aktualisieren() -> void:
 	if inhalt == null or Welt.daten.is_empty():
@@ -47,8 +49,23 @@ func aktualisieren() -> void:
 		Namen.KULTUR_NAME.get(str(t["nation"]), ""), str(t.get("hintergrund_name", ""))]))
 	box.add_child(Stil.matt("%s — Ruf %d" % [Trainerkarriere.ruf_stufe(float(t["ruf"])), int(float(t["ruf"]))]))
 
+	# Vier Reiter: wer man ist, wo man war, was man gewonnen hat und was auf
+	# dem Tisch liegt. Untereinander war das eine Seite von anderthalb
+	# Bildschirmhoehen — und die Angebote standen ganz unten.
+	var gruppe := Stil.reitergruppe([
+		{"id": "laufbahn", "name": "Laufbahn"},
+		{"id": "stationen", "name": "Stationen & Titel"},
+		{"id": "angebote", "name": "Angebote"},
+		{"id": "ruhm", "name": "Ruhmeshalle"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	inhalt.add_child(gruppe)
+	var f_laufbahn := gruppe.feld("laufbahn")
+	var f_stationen := gruppe.feld("stationen")
+	var f_angebote := gruppe.feld("angebote")
+
 	var oben := Stil.hbox(12)
-	inhalt.add_child(oben)
+	f_laufbahn.add_child(oben)
 
 	var bilanz := Bausteine.karte_in(oben, "Bilanz")
 	Stil.karte_wurzel(bilanz).size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -78,7 +95,7 @@ func aktualisieren() -> void:
 		rechts.custom_minimum_size = Vector2(120, 0)
 		zeile.add_child(rechts)
 
-	var praegungen := Bausteine.karte_in(inhalt, "Prägungen")
+	var praegungen := Bausteine.karte_in(f_laufbahn, "Prägungen")
 	var liste: Array = t.get("praegungen", [])
 	if liste.is_empty():
 		praegungen.add_child(Stil.matt("Noch keine Prägung erreicht. Prägungen entstehen, wenn eine Achse Ihrer Handschrift einen Extremwert erreicht — und wirken sich dann dauerhaft aus."))
@@ -89,7 +106,7 @@ func aktualisieren() -> void:
 		zeile2.add_child(Stil.abzeichen(str(d["name"]), Stil.LILA, true))
 		zeile2.add_child(Stil.text(str(d["text"]), Stil.S_KLEIN, Stil.TEXT_MATT))
 
-	var stationen := Bausteine.karte_in(inhalt, "Stationen")
+	var stationen := Bausteine.karte_in(f_stationen, "Stationen")
 	var g := Stil.tabelle(["Verein", "Von", "Bis", "Sp", "S", "U", "N", "Titel"])
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stationen.add_child(g)
@@ -103,7 +120,7 @@ func aktualisieren() -> void:
 		g.add_child(Stil.text(str(int(st["niederlagen"])), Stil.S_KLEIN))
 		g.add_child(Stil.text(str((st["titel"] as Array).size()), Stil.S_KLEIN, Stil.AKZENT))
 
-	var titelkarte := Bausteine.karte_in(inhalt, "Titelsammlung")
+	var titelkarte := Bausteine.karte_in(f_stationen, "Titelsammlung")
 	if (t["titel"] as Array).is_empty():
 		titelkarte.add_child(Stil.matt("Noch kein Titel gewonnen."))
 	for e in t["titel"]:
@@ -113,7 +130,7 @@ func aktualisieren() -> void:
 	var eigenes: Dictionary = t.get("eigenes_angebot", {})
 	if not eigenes.is_empty() and Welt.daten["vereine"].has(str(eigenes["verein"])):
 		var ev: Dictionary = Welt.verein(str(eigenes["verein"]))
-		var vk := Bausteine.karte_in(inhalt, "Angebot Ihres Vereins")
+		var vk := Bausteine.karte_in(f_angebote, "Angebot Ihres Vereins")
 		vk.add_child(Stil.text("%s bietet Ihnen eine Verlängerung an." % str(ev["name"]), Stil.S_NORMAL, Stil.AKZENT))
 		vk.add_child(Stil.info_zeile("Laufzeit", "%d Jahre" % int(eigenes["jahre"])))
 		vk.add_child(Stil.info_zeile("Wochengehalt", Stil.geld(float(eigenes["gehalt"]))))
@@ -133,11 +150,11 @@ func aktualisieren() -> void:
 			aktualisieren())
 		vz.add_child(nein)
 
-	_verbandsangebote(t)
-	_ruhmeshalle()
+	_verbandsangebote(t, f_angebote)
+	_ruhmeshalle(gruppe.feld("ruhm"))
 
 	var angebote: Array = t.get("jobangebote", [])
-	var jobs := Bausteine.karte_in(inhalt, "Angebote anderer Vereine")
+	var jobs := Bausteine.karte_in(f_angebote, "Angebote anderer Vereine")
 	if angebote.is_empty():
 		jobs.add_child(Stil.matt("Derzeit liegen keine Angebote vor."))
 	for a in angebote:
@@ -165,10 +182,10 @@ func aktualisieren() -> void:
 		zeile3.add_child(annehmen)
 
 ## Anfragen von Nationalverbänden — ein zweiter Karrierestrang neben dem Verein.
-func _verbandsangebote(t: Dictionary) -> void:
+func _verbandsangebote(t: Dictionary, eltern: Node) -> void:
 	if Nationaltrainer.ist_nationaltrainer(Welt.daten):
 		var nid: String = Nationaltrainer.nation(Welt.daten)
-		var karte := Bausteine.karte_in(inhalt, "Verbandsamt")
+		var karte := Bausteine.karte_in(eltern, "Verbandsamt")
 		var zeile := Stil.hbox(10)
 		karte.add_child(zeile)
 		zeile.add_child(Flagge.fuer(nid, 24.0))
@@ -182,7 +199,7 @@ func _verbandsangebote(t: Dictionary) -> void:
 	var liste: Array = Nationaltrainer.angebote(Welt.daten)
 	if liste.is_empty():
 		return
-	var karte2 := Bausteine.karte_in(inhalt, "Anfragen von Nationalverbänden")
+	var karte2 := Bausteine.karte_in(eltern, "Anfragen von Nationalverbänden")
 	karte2.add_child(Stil.matt("Ein Verbandsamt lässt sich neben dem Vereinsjob führen. Sie nominieren dann selbst und werden am Turnierziel gemessen.", Stil.S_MINI))
 	for a in liste:
 		var nid2: String = str(a["nation"])
@@ -224,9 +241,9 @@ func _melde(text: String, gut: bool = true) -> void:
 ## Auszeichnungswesen — für den, der das alles entschieden hat, gab es nichts.
 ## Die Zeile mit der nächsten Marke ist dabei die wichtigste: ohne sie wäre
 ## das hier ein Rückblick, mit ihr ist es ein Ziel.
-func _ruhmeshalle() -> void:
+func _ruhmeshalle(eltern: Node) -> void:
 	var spalten := Stil.hbox(12)
-	inhalt.add_child(spalten)
+	eltern.add_child(spalten)
 
 	var zahlen := Bausteine.karte_in(spalten, "Lebensbilanz")
 	Stil.karte_wurzel(zahlen).size_flags_horizontal = Control.SIZE_EXPAND_FILL

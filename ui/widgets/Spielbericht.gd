@@ -11,9 +11,10 @@ static func oeffnen(von: Node, spiel_id: String) -> void:
 	if f != null:
 		f.zeige(spiel_id)
 
-## Der Scrollbereich. Oeffentlich, damit Werkzeuge auch den unteren Teil des
-## Berichts aufnehmen koennen — sonst sieht man nie, was unter dem Falz steht.
-var rolle: ScrollContainer
+## Welcher Reiter offen steht — bleibt ueber mehrere Berichte hinweg stehen,
+## damit man nicht nach jedem Spiel wieder dahin klickt, wo man ohnehin
+## immer hinsieht.
+var reiter := "ueberblick"
 
 func _init() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -33,7 +34,9 @@ func _ready() -> void:
 	mitte.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(mitte)
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(1180, 800)
+	# Fast die ganze Fensterhoehe: nach jedem Spiel liest man diesen Bericht,
+	# und ein Rollbalken darin kostet jedes Mal den Ueberblick.
+	panel.custom_minimum_size = Vector2(1240, 880)
 	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
 	mitte.add_child(panel)
 	var m := MarginContainer.new()
@@ -51,14 +54,12 @@ func _ready() -> void:
 	var zu := Stil.knopf("Schließen")
 	zu.pressed.connect(func(): visible = false)
 	kopf.add_child(zu)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
-	rolle = scroll
+	# Kein Rollbereich um das ganze Fenster: die Reiter bringen ihren eigenen
+	# mit, und zwei ineinander sind einer zu viel.
 	inhalt = Stil.vbox(12)
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	inhalt.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(inhalt)
 
 func zeige(spiel_id: String) -> void:
 	mid = spiel_id
@@ -98,10 +99,28 @@ func _zeichne() -> void:
 		inhalt.add_child(Stil.matt("Zu dieser Partie liegt kein ausführlicher Bericht vor."))
 		return
 
-	_torverlauf(m, bericht)
+	# Das Ergebnis steht oben und bleibt. Der Rest liegt hinter Reitern: sechs
+	# Abschnitte untereinander waren drei Fensterhoehen, und den Spielverlauf
+	# hat in einem Fenster mit Rollbalken niemand zu Ende gelesen.
+	# Je Mannschaft ein eigener Reiter fuer die Einzelwerte: zwei Tabellen mit
+	# je sechzehn Namen passen nicht zugleich in ein Fenster, und wer sie
+	# vergleichen will, klickt einmal.
+	var gruppe := Stil.reitergruppe([
+		{"id": "ueberblick", "name": "Überblick"},
+		{"id": "verlauf", "name": "Spielverlauf"},
+		{"id": "szenen", "name": "Schlüsselszenen"},
+		{"id": "heim", "name": str(Welt.verein(str(m["heim"])).get("kurz", "Heim"))},
+		{"id": "gast", "name": str(Welt.verein(str(m["gast"])).get("kurz", "Gast"))},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	inhalt.add_child(gruppe)
+	var f_ueber := gruppe.feld("ueberblick")
+	var f_verlauf := gruppe.feld("verlauf")
+
+	_torverlauf(m, bericht, f_verlauf)
 
 	var spalten := Stil.hbox(12)
-	inhalt.add_child(spalten)
+	f_ueber.add_child(spalten)
 	var werte := Bausteine.karte_in(spalten, "Mannschaftswerte")
 	Stil.karte_wurzel(werte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var hs: Dictionary = bericht["heim"]["stats"]
@@ -138,7 +157,7 @@ func _zeichne() -> void:
 	# nicht wie ein Fehler aussehen.
 	var knapp: bool = bool(bericht.get("knapp", false))
 	if knapp:
-		inhalt.add_child(Stil.banner("Von Partien ohne eigene Beteiligung bewahrt das Archiv nur Ergebnis und Mannschaftswerte auf — Einzelbewertungen, Wurfkarte und Spielverlauf werden nicht dauerhaft gespeichert.", "info"))
+		f_ueber.add_child(Stil.banner("Von Partien ohne eigene Beteiligung bewahrt das Archiv nur Ergebnis und Mannschaftswerte auf — Einzelbewertungen, Wurfkarte und Spielverlauf werden nicht dauerhaft gespeichert.", "info"))
 	for seite2 in ["heim", "gast"]:
 		var cid2: String = str(bericht[seite2]["cid"])
 		var wk: Dictionary = bericht[seite2].get("wurfkarte", {})
@@ -152,13 +171,20 @@ func _zeichne() -> void:
 		kk.add_child(w)
 		kk.add_child(Stil.matt("Kreisgröße: Würfe · Füllung: Trefferquote", Stil.S_MINI))
 
-	_szenen(bericht)
+	_szenen(bericht, gruppe.feld("szenen"))
 
 	if knapp:
+		# Sonst stehen drei Reiter da, hinter denen nichts ist.
+		for leer in ["heim", "gast"]:
+			gruppe.feld(leer).add_child(Stil.leerzustand(
+				"Von dieser Partie sind keine Einzelbewertungen gespeichert."))
+		if gruppe.feld("szenen").get_child_count() == 0:
+			gruppe.feld("szenen").add_child(Stil.leerzustand(
+				"Von dieser Partie sind keine Schlüsselszenen gespeichert."))
 		return
-	var ticker := Bausteine.karte_in(inhalt, "Spielverlauf")
+	var ticker := Bausteine.karte_in(f_verlauf, "Ticker")
 	var tickerscroll := ScrollContainer.new()
-	tickerscroll.custom_minimum_size = Vector2(0, 260)
+	tickerscroll.custom_minimum_size = Vector2(0, 320)
 	tickerscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	ticker.add_child(tickerscroll)
 	var tickerliste := Stil.vbox(2)
@@ -182,7 +208,7 @@ func _zeichne() -> void:
 
 	for seite in ["heim", "gast"]:
 		var cid: String = str(bericht[seite]["cid"])
-		var karte := Bausteine.karte_in(inhalt, "Einzelbewertungen — %s" % Welt.verein(cid).get("name", ""))
+		var karte := Bausteine.karte_in(gruppe.feld(seite), "Einzelbewertungen — %s" % Welt.verein(cid).get("name", ""))
 		var g := Stil.tabelle(["Spieler", "Min", "Tore", "Würfe", "Paraden", "Vorl.", "Fehler", "2min", "Note"])
 		g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		karte.add_child(g)
@@ -225,8 +251,8 @@ func _farbe(typ: String) -> Color:
 	return Stil.TEXT
 
 ## Der Torverlauf über der Nulllinie, direkt unter dem Ergebnis.
-func _torverlauf(m: Dictionary, bericht: Dictionary) -> void:
-	var verlauf := Bausteine.karte_in(inhalt, "Torverlauf")
+func _torverlauf(m: Dictionary, bericht: Dictionary, eltern: Node) -> void:
+	var verlauf := Bausteine.karte_in(eltern, "Torverlauf")
 	var heim_f: Color = Welt.verein(str(m["heim"])).get("wappen", {}).get("a", Stil.AKZENT)
 	var gast_f: Color = Welt.verein(str(m["gast"])).get("wappen", {}).get("a", Stil.BLAU)
 	var kurve := Torverlauf.new()
@@ -319,11 +345,11 @@ class Torverlauf extends Control:
 ## einer fremden Partie, von der der Spielstand nur noch das Ergebnis
 ## aufhebt, bleiben die sieben Momente erhalten. Sie kosten fast nichts und
 ## sind das Einzige, was man sich von einem Spiel merkt.
-func _szenen(bericht: Dictionary) -> void:
+func _szenen(bericht: Dictionary, eltern: Node) -> void:
 	var liste: Array = bericht.get("szenen", [])
 	if liste.is_empty():
 		return
-	var karte := Bausteine.karte_in(inhalt, "Schlüsselszenen")
+	var karte := Bausteine.karte_in(eltern, "Schlüsselszenen")
 	karte.add_child(Stil.matt(Schluesselszenen.fazit(liste), Stil.S_KLEIN))
 	var leiste := Szenenleiste.new()
 	leiste.size_flags_horizontal = Control.SIZE_EXPAND_FILL

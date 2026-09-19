@@ -120,15 +120,29 @@ func _fortschritt_zeichnen() -> void:
 	fortschrittsleiste.add_child(Stil.kachel("Selbst gepflegt",
 		str(Kaderpflege.eigene().size()), "Vereine", Stil.TUERKIS))
 
+## Die Vereinsliste — aber nicht alle auf einmal.
+##
+## Die Welt hat mehrere hundert Vereine. Untereinander sind das gut drei
+## Bildschirmhoehen: wer den gesuchten Verein durch Rollen findet, hat Glueck
+## gehabt. Deshalb stehen die ersten GRENZE da und der Rest hinter der Suche —
+## das Suchfeld ist der schnellere Weg, und jetzt auch der angebotene.
+const GRENZE := 14
+
 func _vereine_zeichnen() -> void:
 	leeren(vereinsliste)
 	var letzte_liga := ""
 	var nummer := 0
+	var gezeigt := 0
+	var uebrig := 0
 	for e in Kaderpflege.vereinsliste():
 		var eintrag: Dictionary = e
 		var name: String = str(eintrag["name"])
 		if suche != "" and not name.to_lower().contains(suche):
 			continue
+		if gezeigt >= GRENZE:
+			uebrig += 1
+			continue
+		gezeigt += 1
 		if str(eintrag["liga"]) != letzte_liga:
 			letzte_liga = str(eintrag["liga"])
 			vereinsliste.add_child(Stil.abstand(6))
@@ -157,6 +171,10 @@ func _vereine_zeichnen() -> void:
 			h.add_child(Stil.abzeichen("EIGEN", Stil.TUERKIS))
 		h.add_child(Stil.text(str(anzahl), Stil.S_KLEIN, farbe))
 		vereinsliste.add_child(knopf)
+	if uebrig > 0:
+		vereinsliste.add_child(Stil.abstand(6))
+		vereinsliste.add_child(Stil.matt("%d weitere Vereine — über die Suche erreichbar." % uebrig,
+			Stil.S_MINI))
 
 # ------------------------------------------------------------------ Kader ---
 

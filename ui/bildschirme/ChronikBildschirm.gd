@@ -117,3 +117,5 @@ func aktualisieren() -> void:
 			g2.add_child(Stil.text("%s : %s" % [str(s.get("tore", "—")), str(s.get("gegentore", "—"))], Stil.S_KLEIN))
 			g2.add_child(Stil.text(Stil.zahl(int(s.get("zuschauer", 0))), Stil.S_KLEIN))
 			g2.add_child(Stil.text(str(s.get("ereignis", "")), Stil.S_KLEIN, Stil.AKZENT))
+	# Karten nebeneinander statt untereinander — siehe Bildschirm.zweispaltig.
+	zweispaltig(inhalt, 3)

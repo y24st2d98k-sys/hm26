@@ -4,8 +4,10 @@ extends Bildschirm
 
 var inhalt: VBoxContainer
 var meldung: Label
-## "akademie" oder "zweite". Die beiden gehören zusammen — ein Talent ohne
-## Spielpraxis ist eine halbe Entscheidung — aber nicht auf denselben Schirm.
+## "akademie", "talente" oder "zweite". Das gehört alles zusammen — ein Talent
+## ohne Spielpraxis ist eine halbe Entscheidung — aber nicht auf denselben
+## Schirm: die Übersicht und eine Tabelle mit zwölf Namen passen nicht
+## zugleich ins Fenster, und dann scrollt man an der Übersicht vorbei.
 var reiter := "akademie"
 var reiterleiste: HBoxContainer
 
@@ -33,7 +35,8 @@ func aufbauen() -> void:
 func _baue_reiter() -> void:
 	leeren(reiterleiste)
 	reiterleiste.add_child(Stil.segmente([
-		{"id": "akademie", "name": "Akademie"}, {"id": "zweite", "name": "Die Zweite"}],
+		{"id": "akademie", "name": "Akademie"}, {"id": "talente", "name": "Talente"},
+		{"id": "zweite", "name": "Die Zweite"}],
 		reiter, func(id):
 			reiter = str(id)
 			_baue_reiter()
@@ -50,6 +53,9 @@ func aktualisieren() -> void:
 		return
 	if reiter == "zweite":
 		_zweite()
+		return
+	if reiter == "talente":
+		_talente()
 		return
 	var cid := Welt.mein_verein_id
 	var v: Dictionary = Welt.verein(cid)
@@ -88,6 +94,10 @@ func aktualisieren() -> void:
 	inhalt.add_child(zweite_reihe)
 	_zertifikat(zweite_reihe)
 
+
+## Der Jahrgang selbst: eine Tabelle, die für sich eine Bildschirmhöhe füllt.
+func _talente() -> void:
+	var cid := Welt.mein_verein_id
 	var talente := Welt.jugend(cid)
 	var karte := Bausteine.karte_zu(inhalt, "Talente", "scouting",
 		"Zum Scouting — dort holt man Nachwuchs von außerhalb in die Akademie")

@@ -28,7 +28,9 @@ func aufbauen() -> void:
 	kopf.add_child(Stil.titel("Aufstellung & Taktik", 0))
 	kopf.add_child(Stil.dehner())
 	var auto_haken := Stil.schalter("")
-	auto_haken.text = "Aufstellung vor jedem Spiel automatisch optimieren"
+	# Kurz beschriftet, ausfuehrlich im Hinweisfenster: der ganze Satz machte
+	# die Kopfzeile breiter als der Bildschirm.
+	auto_haken.text = "Automatisch aufstellen"
 	auto_haken.tooltip_text = "Der Trainerstab stellt vor jeder Partie die beste verfügbare Sieben auf — nach Form, Fitness und Lastkonto. Ausschalten, wenn Sie selbst aufstellen wollen."
 	auto_haken.button_pressed = bool(Welt.einstellung("auto_aufstellung", true))
 	auto_haken.toggled.connect(func(an):
@@ -36,7 +38,8 @@ func aufbauen() -> void:
 		_melde("Automatische Aufstellung %s." % ("eingeschaltet" if an else "ausgeschaltet"))
 		aktualisieren())
 	kopf.add_child(auto_haken)
-	var auto := Stil.knopf("Beste Aufstellung vorschlagen")
+	var auto := Stil.knopf("Aufstellung vorschlagen")
+	auto.tooltip_text = "Stellt sofort die beste verfügbare Sieben auf — nach Form, Fitness und Lastkonto."
 	auto.pressed.connect(func():
 		Weltgenerator.setze_standardaufstellung(Welt.daten, Welt.mein_verein_id)
 		_melde("Aufstellung automatisch gesetzt.")
@@ -45,29 +48,37 @@ func aufbauen() -> void:
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
 
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	wurzel.add_child(scroll)
-	var inhalt := Stil.vbox(12)
-	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
+	# Vier Reiter statt einer Seite von drei Bildschirmhoehen. Aufstellung,
+	# Spielidee, Matchplan und Einsatzzeiten haben nichts miteinander zu tun —
+	# wer die Abwehrformation setzt, will nicht am Spielbuch vorbeiscrollen.
+	var reiter := Stil.reitergruppe([
+		{"id": "aufstellung", "name": "Aufstellung"},
+		{"id": "spielidee", "name": "Spielidee"},
+		{"id": "matchplan", "name": "Matchplan"},
+		{"id": "einsatz", "name": "Einsatzzeiten"},
+	])
+	wurzel.add_child(reiter)
+	var inhalt := reiter.feld("aufstellung")
 
 	warnungen_bereich = Stil.vbox(4)
 	inhalt.add_child(warnungen_bereich)
 
-	var oben := Stil.hbox(12)
+	var oben := Stil.hbox(8)
+	oben.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	inhalt.add_child(oben)
 
-	var links := Stil.vbox(12)
-	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	oben.add_child(links)
-	angriff_bereich = Bausteine.karte_in(links, "Angriffsformation")
-	abwehr_bereich = Bausteine.karte_in(links, "Abwehrformation")
+	# Die beiden Formationen nebeneinander statt uebereinander: sie sind
+	# gleichrangig, man vergleicht sie staendig, und gestapelt passte die
+	# zweite nie mit aufs Bild.
+	angriff_bereich = Bausteine.karte_in(oben, "Angriffsformation")
+	abwehr_bereich = Bausteine.karte_in(oben, "Abwehrformation")
 
+	# Die Vorschau unter die beiden Formationen, nicht daneben: drei Spalten
+	# waren breiter als der Bildschirm, und ein Feld, das rechts aus dem Bild
+	# ragt, zeigt gar nichts.
 	var rechts := Stil.vbox(12)
-	rechts.custom_minimum_size = Vector2(560, 0)
-	oben.add_child(rechts)
+	rechts.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	inhalt.add_child(rechts)
 	var feldkarte := Bausteine.karte_in(rechts, "Vorschau")
 	var umschalter := Stil.hbox(8)
 	feldkarte.add_child(umschalter)
@@ -82,16 +93,24 @@ func aufbauen() -> void:
 		_feld_auffrischen())
 	umschalter.add_child(knopf_abwehr)
 	feld = Spielfeld.new()
-	feld.custom_minimum_size = Vector2(520, 262)
+	feld.custom_minimum_size = Vector2(440, 224)
 	feldkarte.add_child(feld)
-	taktik_bereich = Bausteine.karte_in(rechts, "Spielidee")
+	# Je Reiter eine Spalte. Die Karten hier sind breit — eine Anweisungsliste
+	# mit sieben Positionen braucht fuer sich schon tausend Pixel. Zwei davon
+	# nebeneinander ragen aus dem Bildschirm heraus, und dann sieht man von
+	# beiden die rechte Haelfte nicht.
+	var idee := reiter.feld("spielidee")
+	taktik_bereich = Bausteine.karte_in(idee, "Spielidee")
+	profil_bereich = Bausteine.karte_in(idee, "Spielideen")
+	anweisungs_bereich = Bausteine.karte_in(idee, "Spieleranweisungen")
 
-	gegnerplan_bereich = Bausteine.karte_in(inhalt, "Der Matchplan")
-	spielbuch_bereich = Bausteine.karte_in(inhalt, "Das Spielbuch")
-	profil_bereich = Bausteine.karte_in(inhalt, "Spielideen")
-	anweisungs_bereich = Bausteine.karte_in(inhalt, "Spieleranweisungen")
-	minuten_bereich = Bausteine.karte_in(inhalt, "Einsatzzeiten")
-	bank_bereich = Bausteine.karte_in(inhalt, "Restlicher Kader")
+	var plan := reiter.feld("matchplan")
+	gegnerplan_bereich = Bausteine.karte_in(plan, "Der Matchplan")
+	spielbuch_bereich = Bausteine.karte_in(plan, "Das Spielbuch")
+
+	var einsatz := reiter.feld("einsatz")
+	minuten_bereich = Bausteine.karte_in(einsatz, "Einsatzzeiten")
+	bank_bereich = Bausteine.karte_in(einsatz, "Restlicher Kader")
 
 func _melde(text: String, gut: bool = true) -> void:
 	if meldung != null:

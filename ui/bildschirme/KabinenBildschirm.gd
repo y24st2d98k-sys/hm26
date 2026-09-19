@@ -8,15 +8,19 @@ var bereich: VBoxContainer
 ## verschwaende genau in dem Moment, in dem es etwas zu sagen hat.
 var meldungstext := ""
 var meldung_gut := true
+## Welcher Reiter offen steht. Eine Aussprache baut den Bildschirm neu auf;
+## wer dabei zurueck auf den ersten Reiter geworfen wird, sucht sich seine
+## Stelle jedes Mal neu.
+var reiter := "klima"
 
 func aufbauen() -> void:
-	var scroll := ScrollContainer.new()
-	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit, und zwei ineinander sind einer zu viel.
 	bereich = Stil.vbox(12)
+	bereich.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bereich.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(bereich)
+	bereich.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	add_child(bereich)
 
 func aktualisieren() -> void:
 	if bereich == null:
@@ -35,8 +39,18 @@ func aktualisieren() -> void:
 			Stil.GRUEN if meldung_gut else Stil.ROT))
 	bereich.add_child(Stil.matt("Eine Mannschaft ist kein Attributdurchschnitt. Wortführer, Gruppen und persönliche Zufriedenheit entscheiden mit, wie viel vom Kader auf dem Feld ankommt.", Stil.S_KLEIN))
 
+	var gruppe := Stil.reitergruppe([
+		{"id": "klima", "name": "Klima & Hierarchie"},
+		{"id": "geflecht", "name": "Das Geflecht"},
+		{"id": "kader", "name": "Zufriedenheit"},
+		{"id": "paten", "name": "Patenschaften"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	bereich.add_child(gruppe)
+	var f_klima := gruppe.feld("klima")
+
 	var oben := Stil.hbox(12)
-	bereich.add_child(oben)
+	f_klima.add_child(oben)
 
 	var klima := Bausteine.karte_in(oben, "Kabinenklima")
 	Stil.karte_wurzel(klima).size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -89,10 +103,10 @@ func aktualisieren() -> void:
 		aktualisieren())
 	kapzeile.add_child(wahl)
 
-	_geflecht(cid)
-	_patenschaften(cid, v)
+	_geflecht(cid, gruppe.feld("geflecht"))
+	_patenschaften(cid, v, gruppe.feld("paten"))
 
-	var unzufrieden := Bausteine.karte_in(bereich, "Zufriedenheit im Kader")
+	var unzufrieden := Bausteine.karte_in(gruppe.feld("kader"), "Zufriedenheit im Kader")
 	var g2 := Stil.tabelle(["Spieler", "Rolle", "Minuten/Spiel", "Moral", "Unzufriedenheit", "Status"])
 	g2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	unzufrieden.add_child(g2)
@@ -111,8 +125,8 @@ func aktualisieren() -> void:
 		g2.add_child(Bausteine.status_zeichen(sid4))
 
 ## Patenschaften: wer nimmt wen unter seine Fittiche.
-func _patenschaften(cid: String, _v: Dictionary) -> void:
-	var karte := Bausteine.karte_in(bereich, "Patenschaften")
+func _patenschaften(cid: String, _v: Dictionary, eltern: Node) -> void:
+	var karte := Bausteine.karte_in(eltern, "Patenschaften")
 	karte.add_child(Stil.matt("Ein erfahrener Spieler nimmt ein Talent an die Hand. Der Junge lernt schneller — und übernimmt mit der Zeit den Charakter seines Vorbilds. Auch den schlechten.", Stil.S_MINI))
 	var liste: Array = Mentoring.paare(Welt.daten, cid)
 	if liste.is_empty():
@@ -207,8 +221,8 @@ func _klimatext(wert: float) -> String:
 ## Etiketten. Sie behauptete, drei Dänen bildeten eine Gruppe, weil sie Dänen
 ## sind. Was hier steht, kommt aus tatsächlichen Bindungen; dass die oft
 ## entlang der Sprache verlaufen, ist ein Ergebnis und keine Annahme.
-func _geflecht(cid: String) -> void:
-	var karte := Bausteine.karte_in(bereich, "Das Geflecht")
+func _geflecht(cid: String, eltern: Node) -> void:
+	var karte := Bausteine.karte_in(eltern, "Das Geflecht")
 	var geschlossen := Beziehungen.geschlossenheit(Welt.daten, cid)
 	var kopf := Stil.hbox(10)
 	karte.add_child(kopf)

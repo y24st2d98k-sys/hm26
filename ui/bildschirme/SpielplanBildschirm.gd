@@ -5,6 +5,14 @@ extends Bildschirm
 var liste: VBoxContainer
 var kalender: VBoxContainer
 var nur_eigene: bool = true
+## "termine" oder "saison". Die naechsten drei Wochen und der ganze
+## Spielplan standen untereinander: zusammen zwei Bildschirmhoehen, von denen
+## man immer nur eine braucht.
+## In wie vielen Spalten die Saison steht. Eine Saison hat rund vierzig
+## Termine; untereinander sind das zwei Bildschirmhoehen.
+const SPALTEN := 3
+var reiter := "termine"
+var gruppe: Stil.Reitergruppe
 
 func aufbauen() -> void:
 	var v := Stil.vbox(10)
@@ -20,14 +28,16 @@ func aufbauen() -> void:
 		umschalter.text = "Alle Partien der Liga anzeigen" if nur_eigene else "Nur eigene Partien anzeigen"
 		aktualisieren())
 	kopf.add_child(umschalter)
-	kalender = Bausteine.karte_in(v, "Die nächsten drei Wochen")
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	v.add_child(scroll)
+	gruppe = Stil.reitergruppe([
+		{"id": "termine", "name": "Die nächsten drei Wochen"},
+		{"id": "saison", "name": "Ganze Saison"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	v.add_child(gruppe)
+	kalender = Bausteine.karte_in(gruppe.feld("termine"), "Was ansteht")
 	liste = Stil.vbox(4)
 	liste.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(liste)
+	gruppe.feld("saison").add_child(liste)
 
 func aktualisieren() -> void:
 	if liste == null:
@@ -52,23 +62,44 @@ func aktualisieren() -> void:
 			continue
 		partien.append(m)
 	partien.sort_custom(func(a, b): return int(a["tag"]) < int(b["tag"]))
+	# Eine Saison hat rund vierzig Termine. Untereinander sind das zwei
+	# Bildschirmhoehen; in zwei Spalten ist es eine — und ein Spielplan, den
+	# man ganz sieht, ist der halbe Zweck eines Spielplans.
+	var reihe := Stil.hbox(Stil.A_NORMAL)
+	reihe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	liste.add_child(reihe)
+	var spalten: Array = []
+	for i in SPALTEN:
+		var sp := Stil.vbox(4)
+		sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		reihe.add_child(sp)
+		spalten.append(sp)
+	var pro_spalte: int = int(ceil(float(partien.size()) / float(SPALTEN)))
 	var letzter_monat := -1
 	var nummer := 0
+	var zaehler := 0
 	for m in partien:
+		var spalte: int = mini(zaehler / maxi(pro_spalte, 1), SPALTEN - 1)
+		var ziel: VBoxContainer = spalten[spalte]
+		var neue_spalte: bool = zaehler > 0 and zaehler % maxi(pro_spalte, 1) == 0
 		var d := Kalender.datum(int(m["tag"]), Welt.startjahr())
-		if int(d["monat"]) != letzter_monat:
+		if int(d["monat"]) != letzter_monat or neue_spalte:
 			letzter_monat = int(d["monat"])
-			liste.add_child(Stil.abstand(6))
-			liste.add_child(Stil.band("%s %d" % [Kalender.MONATSNAMEN[letzter_monat - 1], int(d["jahr"])]))
+			if zaehler > 0 and not neue_spalte:
+				ziel.add_child(Stil.abstand(6))
+			ziel.add_child(Stil.band("%s %d" % [Kalender.MONATSNAMEN[letzter_monat - 1], int(d["jahr"])]))
 			nummer = 0
-		var zeile := _zeile(m, cid, nummer)
+		ziel.add_child(_zeile(m, cid, nummer))
 		nummer += 1
-		liste.add_child(zeile)
+		zaehler += 1
 
 func _zeile(m: Dictionary, cid: String, index: int = 0) -> Control:
 	var eigenes: bool = str(m["heim"]) == cid or str(m["gast"]) == cid
 	var knopf := Stil.zeilen_knopf(index, eigenes and int(m["tag"]) >= Welt.tag(), 30)
-	var h := Bausteine.spielzeile(str(m["id"]), cid)
+	var h := Bausteine.spielzeile_kurz(str(m["id"]), cid)
+	# Die Zeile nimmt keine Maus an, damit der Knopf darunter den Klick
+	# bekommt — also traegt der Knopf auch den Hinweis mit den ganzen Namen.
+	knopf.tooltip_text = h.tooltip_text
 	h.set_anchors_preset(Control.PRESET_FULL_RECT)
 	h.offset_left = 6
 	h.offset_right = -6

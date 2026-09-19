@@ -153,9 +153,10 @@ func _ready() -> void:
 				var sb: Node = get_tree().get_first_node_in_group("spielbericht")
 				sb.zeige(gespielt)
 				await _foto("%s/bericht.png" % ordner)
-				# Zweite Aufnahme weiter unten: Schluesselszenen und
-				# Einzelbewertungen stehen unter dem Falz.
-				sb.rolle.scroll_vertical = 760
+				# Zweite Aufnahme aus dem Verlaufsreiter: Torverlauf, Szenen
+				# und Ticker stehen dort, nicht mehr unter dem Falz.
+				sb.reiter = "verlauf"
+				sb.zeige(gespielt)
 				await _foto("%s/bericht_unten.png" % ordner)
 				sb.visible = false
 			continue

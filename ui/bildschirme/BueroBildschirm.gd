@@ -9,15 +9,19 @@ var bereich: VBoxContainer
 ## Knoten würde dabei heimatlos zurückbleiben.
 var meldungstext: String = ""
 var meldung_gut: bool = true
+## Welcher Reiter offen steht — ueberlebt den Neuaufbau, den jede
+## Entscheidung im Buero ausloest.
+var reiter := "heute"
 
 func aufbauen() -> void:
-	var scroll := ScrollContainer.new()
-	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	add_child(scroll)
+	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
+	# eigenen mit. Das Buero ist der Bildschirm, den man am haeufigsten sieht —
+	# gerade hier soll nichts unter dem Falz liegen.
 	bereich = Stil.vbox(12)
+	bereich.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bereich.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(bereich)
+	bereich.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	add_child(bereich)
 
 func aktualisieren() -> void:
 	if bereich == null:
@@ -31,89 +35,71 @@ func aktualisieren() -> void:
 
 	_kennzahlen(v)
 
-	for e in Anliegen.offene(Welt.daten):
-		var eintrag: Dictionary = e
-		var asid: String = str(eintrag["spieler"])
-		if not Welt.daten["spieler"].has(asid):
-			continue
-		var asp: Dictionary = Welt.spieler(asid)
-		var karte := Bausteine.karte_in(bereich, "%s möchte Sie sprechen" % Spielerfabrik.voller_name(asp))
-		Stil.karte_betonen(karte)
-		var zeile := Stil.hbox(12)
-		karte.add_child(zeile)
-		zeile.add_child(Portraet.fuer_spieler(asid, 44.0))
-		var spalte := Stil.vbox(2)
-		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		spalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		zeile.add_child(spalte)
-		spalte.add_child(Stil.text(str((Anliegen.ARTEN[str(eintrag["art"])] as Dictionary)["titel"]),
-			Stil.S_NORMAL, Stil.AKZENT))
-		var rest: int = int(eintrag["frist"]) - Welt.tag()
-		spalte.add_child(Stil.matt("Antwort binnen %d Tag(en)" % maxi(rest, 0)))
-		var knopf := Stil.knopf_primaer("Anhören")
-		knopf.pressed.connect(func(): Anliegenfenster.oeffnen(self, asid))
-		zeile.add_child(knopf)
-
-	var sponsorangebote: Array = Sponsoren.offene_angebote(Welt.daten, Welt.mein_verein_id)
-	if not sponsorangebote.is_empty():
-		var summe := 0.0
-		for a in sponsorangebote:
-			summe += float(a["wert"])
-		var sk := Bausteine.karte_in(bereich, "Sponsorenplätze sind frei")
-		Stil.karte_betonen(sk, Stil.GELB)
-		sk.add_child(Stil.text("%d Angebote über zusammen %s im Jahr liegen auf dem Tisch. Bis Sie unterschreiben, bleibt das Geld aus." % [
-			sponsorangebote.size(), Stil.geld(summe)], Stil.S_KLEIN, Stil.GELB))
-		var sk_knopf := Stil.knopf_primaer("Zu den Finanzen")
-		sk_knopf.pressed.connect(func(): wechsel_zu("finanzen"))
-		sk.add_child(sk_knopf)
-
-	if Presse.offen(Welt.daten):
-		var pk := Bausteine.karte_in(bereich, "Pressekonferenz steht an")
-		Stil.karte_betonen(pk)
-		pk.add_child(Stil.text("Die Journalisten warten auf Ihre Einschätzung vor dem nächsten Spiel.", Stil.S_KLEIN))
-		var pk_knopf := Stil.knopf_primaer("Zur Pressekonferenz")
-		pk_knopf.pressed.connect(func(): Pressefenster.oeffnen(self))
-		pk.add_child(pk_knopf)
-
-	_fanlage()
-	_cotrainer()
+	# Was dringend ist, steht im ersten Reiter — und der ist der offene, wenn
+	# man das Buero betritt. Ueber den Reitern bleibt nur die Kennzahlenreihe:
+	# was darueber hinaus fest stehenbleibt, nimmt den Reitern die Hoehe weg,
+	# die sie gerade gewinnen sollen.
+	var gruppe := Stil.reitergruppe([
+		{"id": "heute", "name": "Heute"},
+		{"id": "verein", "name": "Der Verein"},
+		{"id": "umfeld", "name": "Umfeld & Kasse"},
+	], reiter)
+	gruppe.bei_wechsel = func(id): reiter = str(id)
+	bereich.add_child(gruppe)
+	var f_heute := gruppe.feld("heute")
 
 	# Der Monat und die Lage nebeneinander.
 	#
 	# Vorher lief der Kalender ueber die volle Breite, obwohl er nur die linke
 	# Haelfte fuellte: rechts daneben stand auf jedem Bildschirm ein
-	# handgrosses Loch, und alles Weitere rutschte unter den Falz. Jetzt sitzt
-	# rechts, was man zusammen mit dem Kalender liest — das naechste Spiel und
-	# der Tabellenplatz.
+	# handgrosses Loch, und alles Weitere rutschte unter den Falz. Jetzt stehen
+	# daneben, was man zusammen mit dem Kalender liest — das naechste Spiel,
+	# der Tabellenplatz und was noch offen ist.
 	var haupt := Stil.hbox(Stil.A_NORMAL)
-	bereich.add_child(haupt)
+	f_heute.add_child(haupt)
 	var links := Stil.vbox(Stil.A_NORMAL)
 	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	links.size_flags_stretch_ratio = 1.9
 	haupt.add_child(links)
 	_kalender(links)
+	var mitte := Stil.vbox(Stil.A_NORMAL)
+	mitte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mitte.size_flags_stretch_ratio = 1.15
+	haupt.add_child(mitte)
+	_naechstes_spiel(mitte)
+	_tabellenlage(mitte)
+	# Was offen ist, steht in der dritten Spalte statt ueber dem Kalender:
+	# darueber schob es alles Weitere um seine eigene Hoehe nach unten, und
+	# genau das soll das Buero nicht tun.
 	var rechts := Stil.vbox(Stil.A_NORMAL)
 	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	rechts.size_flags_stretch_ratio = 1.0
 	haupt.add_child(rechts)
-	_naechstes_spiel(rechts)
-	_tabellenlage(rechts)
-	_vorstand(rechts)
+	_offene_posten(rechts)
 
-	var mitte := Stil.hbox(Stil.A_NORMAL)
-	bereich.add_child(mitte)
-	_kaderlage(mitte)
-	_letzte_spiele(mitte)
+	var vereinsreihe := Stil.hbox(Stil.A_NORMAL)
+	gruppe.feld("verein").add_child(vereinsreihe)
+	_kaderlage(vereinsreihe)
+	var rechts2 := Stil.vbox(Stil.A_NORMAL)
+	rechts2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vereinsreihe.add_child(rechts2)
+	_letzte_spiele(rechts2)
+	_vorstand(rechts2)
 
 	var unten := Stil.hbox(Stil.A_NORMAL)
-	bereich.add_child(unten)
+	gruppe.feld("umfeld").add_child(unten)
 	_presse(unten)
-	_finanzen(unten)
+	var rechts3 := Stil.vbox(Stil.A_NORMAL)
+	rechts3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	unten.add_child(rechts3)
+	_finanzen(rechts3)
+	_fanlage(gruppe.feld("umfeld"))
+	_cotrainer(gruppe.feld("umfeld"))
 
 ## Die Fanszene, aber nur wenn sie etwas will: eine Gruppe im Unmut oder ein
 ## Heimspiel ohne Programm. Eine Karte, die immer da ist, liest irgendwann
 ## niemand mehr.
-func _fanlage() -> void:
+func _fanlage(eltern: Node) -> void:
 	var cid: String = Welt.mein_verein_id
 	var unruhig: Array = []
 	for g in Fanszene.GRUPPEN:
@@ -126,7 +112,7 @@ func _fanlage() -> void:
 	var naechstes: Dictionary = _naechstes_heimspiel()
 	if unruhig.is_empty() and naechstes.is_empty():
 		return
-	var karte := Bausteine.karte_zu(bereich, "Aus der Halle", "halle", "Zu Preisen, Fangruppen und Spieltagsprogramm")
+	var karte := Bausteine.karte_zu(eltern, "Aus der Halle", "halle", "Zu Preisen, Fangruppen und Spieltagsprogramm")
 	for e in unruhig:
 		var info: Dictionary = Fanszene.GRUPPE[str(e["gruppe"])]
 		var zeile := Stil.hbox(10)
@@ -178,10 +164,10 @@ func _naechstes_heimspiel() -> Dictionary:
 
 ## Kennzahlenband: die sechs Zahlen, die den Zustand des Vereins beschreiben.
 ## Was dem Trainerstab zwischen zwei Spielen aufgefallen ist.
-func _cotrainer() -> void:
+func _cotrainer(eltern: Node) -> void:
 	var cid: String = Welt.mein_verein_id
 	var befunde: Array = Cotrainer.befunde(Welt.daten, cid)
-	var karte := Bausteine.karte_zu(bereich, "Der Co-Trainer", "")
+	var karte := Bausteine.karte_zu(eltern, "Der Co-Trainer", "")
 	if befunde.is_empty():
 		karte.add_child(Stil.leerzustand("Nichts zu beanstanden — der Stab sieht die Mannschaft gut aufgestellt."))
 		return
@@ -423,3 +409,68 @@ func _finanzen(eltern: Node) -> void:
 	karte.add_child(Stil.info_zeile("Zuschauerschnitt", Stil.zahl(int(float(u["zuschauer_schnitt"])))))
 	var saldo: float = float(u["sponsoring"]) + float(u["tv"]) + float(u["merch"]) - float(u["gehalt_spieler"]) - float(u["gehalt_personal"]) - float(u["betrieb"])
 	karte.add_child(Stil.info_zeile("Wochensaldo (ohne Spieltag)", Stil.geld(saldo), Stil.GRUEN if saldo > 0.0 else Stil.ROT))
+
+
+## Was heute offen ist — in einer Karte, eine Zeile je Sache.
+##
+## Vorher trug jede offene Sache eine eigene betonte Karte: drei Anliegen und
+## eine Pressekonferenz waren eine halbe Bildschirmhoehe, bevor der Kalender
+## anfing. Eine Zeile je Sache sagt dasselbe und laesst den Rest des Tages
+## sichtbar.
+func _offene_posten(eltern: Node) -> void:
+	var posten: Array = []
+	for e in Anliegen.offene(Welt.daten):
+		var eintrag: Dictionary = e
+		var asid: String = str(eintrag["spieler"])
+		if not Welt.daten["spieler"].has(asid):
+			continue
+		var asp: Dictionary = Welt.spieler(asid)
+		var rest: int = maxi(int(eintrag["frist"]) - Welt.tag(), 0)
+		posten.append({
+			"farbe": Stil.AKZENT,
+			"text": "%s: %s" % [Spielerfabrik.voller_name(asp),
+				str((Anliegen.ARTEN[str(eintrag["art"])] as Dictionary)["titel"])],
+			"frist": "%d Tag(e)" % rest,
+			"knopf": "Anhören",
+			"tun": func(): Anliegenfenster.oeffnen(self, asid),
+		})
+	var sponsorangebote: Array = Sponsoren.offene_angebote(Welt.daten, Welt.mein_verein_id)
+	if not sponsorangebote.is_empty():
+		var summe := 0.0
+		for a in sponsorangebote:
+			summe += float(a["wert"])
+		posten.append({
+			"farbe": Stil.GELB,
+			"text": "%d Sponsorenangebote · %s im Jahr" % [
+				sponsorangebote.size(), Stil.geld(summe)],
+			"frist": "offen",
+			"knopf": "Zu den Finanzen",
+			"tun": func(): wechsel_zu("finanzen"),
+		})
+	if Presse.offen(Welt.daten):
+		posten.append({
+			"farbe": Stil.AKZENT,
+			"text": "Pressekonferenz steht an",
+			"frist": "vor dem Spiel",
+			"knopf": "Zur Pressekonferenz",
+			"tun": func(): Pressefenster.oeffnen(self),
+		})
+	if posten.is_empty():
+		return
+	var karte := Bausteine.karte_in(eltern, "Das ist offen")
+	Stil.karte_betonen(karte)
+	for p in posten:
+		var eintrag2: Dictionary = p
+		var zeile := Stil.hbox(10)
+		karte.add_child(zeile)
+		zeile.add_child(Stil.marke_strich(eintrag2["farbe"], 3, 18))
+		var text := Stil.text(str(eintrag2["text"]), Stil.S_KLEIN, eintrag2["farbe"])
+		zeile.add_child(Stil.beschnitten(text, 20.0))
+		zeile.add_child(Stil.dehner())
+		# Die Frist steht im Hinweisfenster des Knopfes: als eigene Spalte
+		# machte sie die dritte Spalte des Buros breiter als der Bildschirm.
+		var knopf := Stil.knopf_flach(str(eintrag2["knopf"]), Stil.AKZENT)
+		knopf.tooltip_text = "Frist: %s" % str(eintrag2["frist"])
+		var tun: Callable = eintrag2["tun"]
+		knopf.pressed.connect(func(): tun.call())
+		zeile.add_child(knopf)

@@ -30,24 +30,38 @@ func aufbauen() -> void:
 	kopf.add_child(Stil.dehner())
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	wurzel.add_child(scroll)
-	var inhalt := Stil.vbox(12)
-	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(inhalt)
-	var oben := Stil.hbox(12)
-	inhalt.add_child(oben)
-	plan_bereich = Bausteine.karte_in(oben, "Wochenplan")
-	Stil.karte_wurzel(plan_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	entwicklung_bereich = Bausteine.karte_in(oben, "Entwicklung im Kader")
-	Stil.karte_wurzel(entwicklung_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	video_bereich = Bausteine.karte_in(inhalt, "Videostudium")
-	lager_bereich = Bausteine.karte_in(inhalt, "Trainingslager")
-	vorbereitung_bereich = Bausteine.karte_in(inhalt, "Vorbereitungsspiele")
-	umschulung_bereich = Bausteine.karte_in(inhalt, "Umschulungen")
-	last_bereich = Bausteine.karte_in(inhalt, "Lastkonto & Regenerationsbudget")
+	# Drei Reiter: die Woche, die Belastung und was ausserhalb des Alltags
+	# ansteht. Gestapelt war der Bildschirm zweieinhalb Bildschirmhoehen lang.
+	var reiter := Stil.reitergruppe([
+		{"id": "woche", "name": "Die Woche"},
+		{"id": "entwicklung", "name": "Entwicklung"},
+		{"id": "belastung", "name": "Lastkonto"},
+		{"id": "sonder", "name": "Lager & Vorbereitung"},
+	])
+	wurzel.add_child(reiter)
+	var woche := reiter.feld("woche")
+	plan_bereich = Bausteine.karte_in(woche, "Wochenplan")
+	# Das Videostudium unter den Wochenplan, nicht daneben: die Liste der
+	# Studienstunden ist fuer sich schon tausend Pixel breit.
+	video_bereich = Bausteine.karte_in(woche, "Videostudium")
+
+	# Entwicklung und Lastkonto getrennt: das Lastkonto fuehrt den ganzen Kader,
+	# die Entwicklungsliste die groessten Reserven. Nebeneinander lief die
+	# laengere der beiden unter den Falz. Die Umschulung steht bei der
+	# Entwicklung, weil sie eine ist — und weil sie neben dem Wochenplan den
+	# Bildschirm zu breit machte.
+	entwicklung_bereich = Bausteine.karte_in(reiter.feld("entwicklung"), "Entwicklung im Kader")
+	umschulung_bereich = Bausteine.karte_in(reiter.feld("entwicklung"), "Umschulungen")
+	last_bereich = Bausteine.karte_in(reiter.feld("belastung"), "Lastkonto & Regenerationsbudget")
+	Stil.karte_wurzel(last_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var sonder := reiter.feld("sonder")
+	var sonderzeile := Stil.hbox(12)
+	sonder.add_child(sonderzeile)
+	lager_bereich = Bausteine.karte_in(sonderzeile, "Trainingslager")
+	Stil.karte_wurzel(lager_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vorbereitung_bereich = Bausteine.karte_in(sonderzeile, "Vorbereitungsspiele")
+	Stil.karte_wurzel(vorbereitung_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 func aktualisieren() -> void:
 	if plan_bereich == null:
@@ -141,7 +155,7 @@ func _entwicklung() -> void:
 	var g := Stil.tabelle(["Spieler", "Alter", "Stärke", "Perspektive", "Entwicklung", "Förderung"])
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	entwicklung_bereich.add_child(g)
-	for sid in kader.slice(0, 9):
+	for sid in kader.slice(0, 12):
 		var sp: Dictionary = Welt.spieler(sid)
 		var k := Stil.knopf_flach(Spielerfabrik.kurz_name(sp))
 		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
@@ -181,7 +195,7 @@ func _lastkonto() -> void:
 	kopf.add_child(leer)
 	last_bereich.add_child(Stil.matt("Ein Regenerationsplatz senkt das Lastkonto deutlich schneller — der Spieler entwickelt sich in dieser Woche aber kaum.", Stil.S_MINI))
 
-	var g := Stil.tabelle(["Spieler", "Pos", "Lastkonto", "Fitness", "Minuten/Spiel", "Verletzungsrisiko", "Regeneration"])
+	var g := Stil.tabelle(["Spieler", "Pos", "Lastkonto", "Fitness", "Minuten/Spiel", "Verletzungsrisiko", "Regeneration"], true)
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	last_bereich.add_child(g)
 	var kader2: Array = (Welt.verein(cid)["kader"] as Array).duplicate()

@@ -45,32 +45,102 @@ func _ready() -> void:
 		await get_tree().process_frame
 		await get_tree().process_frame
 		var b: Node = app.bildschirme[str(id)]
+		# Ein Bildschirm mit Reitern hat so viele Lagen, wie er Reiter hat.
+		# Gemessen wird die schlechteste — sonst meldet die Sonde "passt",
+		# weil zufaellig der kuerzeste Reiter offen stand.
+		var gruppe := _reiter_finden(b)
+		if gruppe != null:
+			var schlimmster := ""
+			var hoechster := 0.0
+			for o in gruppe.optionen:
+				gruppe.zeige(str((o as Dictionary)["id"]))
+				await get_tree().process_frame
+				await get_tree().process_frame
+				var h: float = _inhaltshoehe(b)
+				if h > hoechster:
+					hoechster = h
+					schlimmster = str((o as Dictionary)["id"])
+			if schlimmster != "":
+				gruppe.zeige(schlimmster)
+				await get_tree().process_frame
+				await get_tree().process_frame
 		var rolle := _rolle_finden(b)
-		if rolle == null:
-			_log("%-16s %8s" % [str(id), "—"])
-			continue
 		var inhalt: float = 0.0
-		for k in rolle.get_children():
-			if k is Control:
-				inhalt = maxf(inhalt, (k as Control).get_combined_minimum_size().y)
-		var sicht: float = rolle.size.y
+		var sicht: float = 0.0
+		if rolle == null:
+			# Kein Rollbereich: dann zaehlt, ob der Bildschirm selbst passt.
+			# Die Bildschirmwurzel ist ein nacktes Control und meldet null.
+			# Gemessen wird ihr Aufbau — die erste echte Spalte darin.
+			for k in (b as Control).get_children():
+				if k is Control:
+					inhalt = maxf(inhalt, (k as Control).get_combined_minimum_size().y)
+			sicht = (b as Control).size.y
+		else:
+			for k in rolle.get_children():
+				if k is Control:
+					inhalt = maxf(inhalt, (k as Control).get_combined_minimum_size().y)
+			sicht = rolle.size.y
 		var ueber: int = int(maxf(inhalt - sicht, 0.0))
 		if ueber > 0:
 			summe += 1
-		_log("%-16s %8d %8d %9s   %s" % [str(id), int(inhalt), int(sicht),
-			("+%d" % ueber) if ueber > 0 else "passt", _groesster(rolle)])
+		_log("%-16s %8d %8d %9s   %s" % [str(id) + (" *" if gruppe != null else ""), int(inhalt), int(sicht),
+			("+%d" % ueber) if ueber > 0 else "passt",
+			_groesster(rolle) if rolle != null else "(ohne Rollbereich)"])
 	_log("")
 	_log("%d von %d Bildschirmen laufen ueber." % [summe, liste.size()])
 	get_tree().quit()
 
-## Der Rollbereich eines Bildschirms. Jeder Bildschirm hat hoechstens einen.
-func _rolle_finden(k: Node) -> ScrollContainer:
-	if k is ScrollContainer:
-		return k as ScrollContainer
+## Die Inhaltshoehe eines Bildschirms in seiner aktuellen Lage.
+func _inhaltshoehe(b: Node) -> float:
+	var rolle := _rolle_finden(b)
+	var hoch := 0.0
+	if rolle != null:
+		for k in rolle.get_children():
+			if k is Control:
+				hoch = maxf(hoch, (k as Control).get_combined_minimum_size().y)
+		return hoch
+	for k in (b as Control).get_children():
+		if k is Control:
+			hoch = maxf(hoch, (k as Control).get_combined_minimum_size().y)
+	return hoch
+
+func _reiter_finden(k: Node) -> Stil.Reitergruppe:
+	if k is Stil.Reitergruppe:
+		return k as Stil.Reitergruppe
 	for kind in k.get_children():
-		var t := _rolle_finden(kind)
+		var t := _reiter_finden(kind)
 		if t != null:
 			return t
+	return null
+
+## Der Rollbereich eines Bildschirms. Jeder Bildschirm hat hoechstens einen.
+func _rolle_finden(k: Node) -> ScrollContainer:
+	# Nur sichtbare Bereiche zaehlen: ein Bildschirm mit Reitern haelt fuer
+	# jeden Reiter einen eigenen, und die ausgeblendeten sagen nichts darueber,
+	# was der Nutzer gerade vor sich hat.
+	# Gesucht ist der Rollbereich, der die freie Hoehe besitzt — der also
+	# waechst, wenn das Fenster waechst. Erst nach innen sehen: liegt in einem
+	# Rollbereich noch einer, weil ein Reiter seinen eigenen mitbringt, zaehlt
+	# der innere; der aeussere rollt dann ohnehin nicht.
+	var t := _rolle_suchen(k, true)
+	if t != null:
+		return t
+	# Kein dehnbarer dabei: dann zaehlt eben irgendeiner.
+	return _rolle_suchen(k, false)
+
+## Eine Liste mit fester Hoehe (etwa der Ticker im Spielbericht) rollt
+## absichtlich und ist kein Befund: sie waechst nicht mit dem Fenster.
+func _rolle_suchen(k: Node, nur_dehnbar: bool) -> ScrollContainer:
+	for kind in k.get_children():
+		if kind is Control and not (kind as Control).visible:
+			continue
+		var t := _rolle_suchen(kind, nur_dehnbar)
+		if t != null:
+			return t
+	if k is ScrollContainer and (k as Control).visible:
+		var dehnbar: bool = ((k as Control).size_flags_vertical & Control.SIZE_EXPAND) != 0
+		if dehnbar or not nur_dehnbar:
+			return k as ScrollContainer
 	return null
 
 ## Welcher direkte Abschnitt im Rollbereich die meiste Hoehe verlangt.

@@ -42,7 +42,10 @@ func _ready() -> void:
 	add_child(mitte)
 
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(1120, 760)
+	# Fast die ganze Fensterhoehe: ein Spielerprofil ist die Seite, die man im
+	# Spiel am haeufigsten liest, und ein Rollbalken darin kostet jedes Mal
+	# den Ueberblick.
+	panel.custom_minimum_size = Vector2(1220, 880)
 	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
 	mitte.add_child(panel)
 
@@ -155,6 +158,8 @@ func _kopf(sp: Dictionary) -> void:
 	rechts.add_child(Stil.info_zeile("Kenntnis", Scouting.kenntnis_text(float(sp["kenntnis"])), Stil.TEXT_MATT))
 	kopfbereich.add_child(Stil.trenner())
 
+## Drei Spalten statt zwei: zu zweit lief die Uebersicht ueber den Fensterrand,
+## und ausgerechnet das Gespraech mit dem Spieler stand unter dem Falz.
 func _uebersicht(sp: Dictionary) -> void:
 	var spalten := Stil.hbox(14)
 	inhalt.add_child(spalten)
@@ -180,7 +185,10 @@ func _uebersicht(sp: Dictionary) -> void:
 		zeile.tooltip_text = "Eine überstandene Verletzung kommt an derselben Stelle häufiger wieder — bei der Schulter am stärksten."
 		zustand.add_child(zeile)
 
-	var typ := Bausteine.karte_in(links, "Persönlichkeit")
+	var mitte := Stil.vbox(10)
+	mitte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spalten.add_child(mitte)
+	var typ := Bausteine.karte_in(mitte, "Persönlichkeit")
 	typ.add_child(Stil.text(str(sp["persoenlichkeit"]), Stil.S_NORMAL, Stil.AKZENT))
 	var ch: Dictionary = sp["charakter"]
 	for k in [["ehrgeiz", "Ehrgeiz"], ["loyalitaet", "Loyalität"], ["temperament", "Temperament"], ["profitum", "Professionalität"]]:
@@ -191,7 +199,7 @@ func _uebersicht(sp: Dictionary) -> void:
 	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spalten.add_child(rechts)
 
-	var saison := Bausteine.karte_in(rechts, "Diese Saison")
+	var saison := Bausteine.karte_in(mitte, "Diese Saison")
 	var st: Dictionary = sp["stats"]["saison"]
 	saison.add_child(Stil.info_zeile("Spiele", str(int(st["spiele"]))))
 	saison.add_child(Stil.info_zeile("Minuten", "%d" % int(st["minuten"])))

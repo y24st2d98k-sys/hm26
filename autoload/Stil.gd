@@ -931,6 +931,92 @@ func segmente(optionen: Array, aktiv: String, rueckruf: Callable) -> PanelContai
 		h.add_child(b)
 	return p
 
+## Reiter fuer einen ganzen Bildschirm: eine Leiste, darunter genau ein
+## Abschnitt.
+##
+## Scrollen ist die teuerste Bedienhandlung, die eine Oberflaeche verlangen
+## kann — man verliert den Ueberblick, den man sich gerade aufgebaut hat. Wo
+## ein Bildschirm mehr zeigen will, als auf den Schirm passt, ist ein Reiter
+## fast immer die bessere Antwort als eine laengere Seite: er kostet einen
+## Klick und spart das Suchen.
+##
+## `optionen` ist ein Array von {"id":…, "name":…}. Die Abschnitte holt man
+## sich mit feld(id) und fuellt sie wie jede andere Spalte.
+func reitergruppe(optionen: Array, start: String = "") -> Reitergruppe:
+	var g := Reitergruppe.new()
+	g.add_theme_constant_override("separation", A_NORMAL)
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	g.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	g.optionen = optionen
+	# Eine Kennung, die es nicht gibt, wuerde jeden Abschnitt ausblenden: der
+	# Bildschirm waere leer. Lieber der erste Reiter als keiner.
+	g.aktiv = str((optionen[0] as Dictionary)["id"])
+	for o in optionen:
+		if str((o as Dictionary)["id"]) == start:
+			g.aktiv = start
+	g.aufbauen()
+	return g
+
+class Reitergruppe extends VBoxContainer:
+	var optionen: Array = []
+	var aktiv: String = ""
+	var _leiste_halter: HBoxContainer
+	var _felder: Dictionary = {}
+	var _rollen: Dictionary = {}
+	## Wird gerufen, wenn der Nutzer den Reiter wechselt — fuer Bildschirme,
+	## die ihren Inhalt erst beim Anzeigen aufbauen.
+	var bei_wechsel: Callable = Callable()
+
+	func aufbauen() -> void:
+		_leiste_halter = HBoxContainer.new()
+		_leiste_halter.add_theme_constant_override("separation", Stil.A_KLEIN)
+		add_child(_leiste_halter)
+		for o in optionen:
+			var id: String = str((o as Dictionary)["id"])
+			# Jeder Abschnitt liegt in einem eigenen Rollbereich. Im Normalfall
+			# rollt dort nichts — das ist ja der Zweck der Reiter. Aber ein
+			# Abschnitt, der auf einem kleinen Fenster doch einmal nicht passt,
+			# darf nicht unerreichbar werden: eine Oberflaeche ohne Scrollen
+			# ist gut, eine mit verstecktem Inhalt ist kaputt.
+			var rolle := ScrollContainer.new()
+			rolle.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+			rolle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			rolle.size_flags_vertical = Control.SIZE_EXPAND_FILL
+			rolle.visible = id == aktiv
+			add_child(rolle)
+			var f := VBoxContainer.new()
+			f.add_theme_constant_override("separation", Stil.A_NORMAL)
+			f.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			rolle.add_child(f)
+			_felder[id] = f
+			_rollen[id] = rolle
+		_leiste_bauen()
+
+	func _leiste_bauen() -> void:
+		for k in _leiste_halter.get_children():
+			_leiste_halter.remove_child(k)
+			k.queue_free()
+		_leiste_halter.add_child(Stil.segmente(optionen, aktiv, func(id): zeige(str(id))))
+		_leiste_halter.add_child(Stil.dehner())
+
+	## Der Abschnitt zu einer Reiter-Kennung.
+	func feld(id: String) -> VBoxContainer:
+		return _felder.get(id, null) as VBoxContainer
+
+	## Haengt ein Control rechts in die Reiterleiste (Filter, kleine Knoepfe).
+	func leistenaktion(steuerung: Control) -> void:
+		_leiste_halter.add_child(steuerung)
+
+	func zeige(id: String) -> void:
+		if not _felder.has(id):
+			return
+		aktiv = id
+		for k in _rollen.keys():
+			(_rollen[k] as Control).visible = str(k) == id
+		_leiste_bauen()
+		if bei_wechsel.is_valid():
+			bei_wechsel.call(id)
+
 ## Kleiner Balken mit Beschriftung, z. B. fuer Fitness oder Moral.
 func balken(wert: float, maximum: float = 100.0, breite: int = 110, farbe: Variant = null) -> Control:
 	var b := BalkenZeichner.new()
@@ -1092,11 +1178,14 @@ func info_zeile(beschriftung: String, wert: String, wertfarbe: Variant = null) -
 	return h
 
 ## Raster fuer Tabellen: GridContainer mit Kopfzeile, Kopflinie und Zebrastreifen.
-func tabelle(spalten: Array) -> GridContainer:
+## dicht: engere Zeilen fuer Tabellen, die den ganzen Kader fuehren. Elf Pixel
+## Luft je Zeile sind bei achtzehn Zeilen zweihundert Pixel, die dann unten
+## fehlen.
+func tabelle(spalten: Array, dicht: bool = false) -> GridContainer:
 	var g := RasterTabelle.new()
 	g.columns = maxi(spalten.size(), 1)
 	g.add_theme_constant_override("h_separation", 14)
-	g.add_theme_constant_override("v_separation", 11)
+	g.add_theme_constant_override("v_separation", 6 if dicht else 11)
 	for s in spalten:
 		var l := Label.new()
 		l.text = str(s).to_upper()

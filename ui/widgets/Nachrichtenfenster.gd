@@ -80,28 +80,41 @@ func _zeichne() -> void:
 	if nachricht.is_empty():
 		visible = false
 		return
-	var typ: String = str(nachricht.get("typ", "info"))
+	artikel_bauen(inhalt, nachricht, self, func(): visible = false, 700.0)
+
+## Der Artikel in einen beliebigen Behälter — nicht nur in dieses Fenster.
+##
+## Der Posteingang zeigt die gewählte Meldung gleich neben der Liste: ein
+## Klick, kein Fenster, kein Rollen. Damit dort nicht derselbe Artikel ein
+## zweites Mal steht, baut ihn beides über diese Funktion.
+##
+## knoten ist der Knoten, von dem aus Fenster geöffnet werden (er muss im
+## Baum hängen); schliessen wird vorher gerufen, sofern gesetzt.
+static func artikel_bauen(eltern: Node, n: Dictionary, knoten: Node,
+		schliessen: Callable, breite: float = 700.0) -> void:
+	var typ: String = str(n.get("typ", "info"))
 	var kopf := Stil.hbox(10)
-	inhalt.add_child(kopf)
-	kopf.add_child(Stil.abzeichen(str(NachrichtenBildschirm.TYPEN.get(typ, typ)).to_upper(), _farbe(typ), true))
-	kopf.add_child(Stil.matt(Kalender.text(int(nachricht.get("tag", 0)), Welt.startjahr()), Stil.S_MINI))
+	eltern.add_child(kopf)
+	kopf.add_child(Stil.abzeichen(str(NachrichtenBildschirm.TYPEN.get(typ, typ)).to_upper(), farbe_zu(typ), true))
+	kopf.add_child(Stil.matt(Kalender.text(int(n.get("tag", 0)), Welt.startjahr()), Stil.S_MINI))
 	kopf.add_child(Stil.dehner())
-	if bool(nachricht.get("wichtig", false)):
+	if bool(n.get("wichtig", false)):
 		kopf.add_child(Stil.abzeichen("WICHTIG", Stil.AKZENT))
-	var zu := Stil.knopf_flach("Schließen", Stil.TEXT_MATT)
-	zu.pressed.connect(func(): visible = false)
-	kopf.add_child(zu)
+	if schliessen.is_valid():
+		var zu := Stil.knopf_flach("Schließen", Stil.TEXT_MATT)
+		zu.pressed.connect(func(): schliessen.call())
+		kopf.add_child(zu)
 
-	var schlagzeile := Stil.titel(str(nachricht.get("betreff", "")), 1)
+	var schlagzeile := Stil.titel(str(n.get("betreff", "")), 1)
 	schlagzeile.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	inhalt.add_child(schlagzeile)
-	inhalt.add_child(Stil.trenner())
+	eltern.add_child(schlagzeile)
+	eltern.add_child(Stil.trenner())
 
-	var daten: Dictionary = nachricht.get("daten", {})
+	var daten: Dictionary = n.get("daten", {})
 	var sid: String = str(daten.get("spieler", ""))
 	if sid != "" and Welt.daten["spieler"].has(sid):
 		var zeile := Stil.hbox(12)
-		inhalt.add_child(zeile)
+		eltern.add_child(zeile)
 		zeile.add_child(Portraet.fuer_spieler(sid, 64.0))
 		var sp: Dictionary = Welt.spieler(sid)
 		var spalte := Stil.vbox(2)
@@ -112,65 +125,69 @@ func _zeichne() -> void:
 			Spielerfabrik.POSITION_NAME.get(str(sp["position"]), str(sp["position"])),
 			int(sp["alter"]), str(Welt.verein(str(sp["verein"])).get("name", "vereinslos"))], Stil.S_KLEIN))
 
-	var text := Stil.text(str(nachricht.get("text", "")), Stil.S_NORMAL, Stil.TEXT_MATT)
+	var text := Stil.text(str(n.get("text", "")), Stil.S_NORMAL, Stil.TEXT_MATT)
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.custom_minimum_size = Vector2(700, 0)
-	inhalt.add_child(text)
+	text.custom_minimum_size = Vector2(breite, 0)
+	eltern.add_child(text)
 
 	var wege := Stil.hbox(8)
 	wege.custom_minimum_size = Vector2(0, 34)
-	inhalt.add_child(wege)
-	_wege_bauen(wege, typ, daten)
+	eltern.add_child(wege)
+	_wege_bauen(wege, n, typ, daten, knoten, schliessen)
 
 ## Die Wege aus der Meldung heraus. Erst die Sonderfälle, die wirklich etwas
 ## auslösen, dann Profile, dann der zuständige Bildschirm.
-func _wege_bauen(wege: HBoxContainer, typ: String, daten: Dictionary) -> void:
+static func _wege_bauen(wege: HBoxContainer, nachricht: Dictionary, typ: String,
+		daten: Dictionary, knoten: Node, schliessen: Callable) -> void:
+	var zu := func():
+		if schliessen.is_valid():
+			schliessen.call()
 	var aktion: String = str(nachricht.get("aktion", ""))
 	var sid: String = str(daten.get("spieler", ""))
 	if aktion == "anliegen" and not Anliegen.fuer_spieler(Welt.daten, sid).is_empty():
 		var ak := Stil.knopf_primaer("Anhören")
 		ak.pressed.connect(func():
-			visible = false
-			Anliegenfenster.oeffnen(self, sid))
+			zu.call()
+			Anliegenfenster.oeffnen(knoten, sid))
 		wege.add_child(ak)
 	if aktion == "pressekonferenz" and Presse.offen(Welt.daten):
 		var pk := Stil.knopf_primaer("Zur Pressekonferenz")
 		pk.pressed.connect(func():
-			visible = false
-			Pressefenster.oeffnen(self))
+			zu.call()
+			Pressefenster.oeffnen(knoten))
 		wege.add_child(pk)
 	if sid != "" and Welt.daten["spieler"].has(sid):
 		var k := Stil.knopf("Spielerprofil")
 		k.pressed.connect(func():
-			visible = false
-			Spielerfenster.oeffnen(self, sid))
+			zu.call()
+			Spielerfenster.oeffnen(knoten, sid))
 		wege.add_child(k)
 	var vid: String = str(daten.get("verein", ""))
 	if vid != "" and Welt.daten["vereine"].has(vid):
 		var kv := Stil.knopf("Verein ansehen")
 		kv.pressed.connect(func():
-			visible = false
-			Vereinsfenster.oeffnen(self, vid))
+			zu.call()
+			Vereinsfenster.oeffnen(knoten, vid))
 		wege.add_child(kv)
 	var spid: String = str(daten.get("spiel", ""))
 	if spid != "":
 		var ks := Stil.knopf("Spielbericht")
 		ks.pressed.connect(func():
-			visible = false
-			Spielbericht.oeffnen(self, spid))
+			zu.call()
+			Spielbericht.oeffnen(knoten, spid))
 		wege.add_child(ks)
 	wege.add_child(Stil.dehner())
 	var ziel: Dictionary = ZIELBILDSCHIRM.get(typ, {})
 	if not ziel.is_empty():
 		var kb := Stil.knopf_primaer(str(ziel["name"]))
 		kb.pressed.connect(func():
-			visible = false
-			var app := get_tree().get_first_node_in_group("app")
+			zu.call()
+			var app := knoten.get_tree().get_first_node_in_group("app")
 			if app != null:
 				app.zeige(str(ziel["id"])))
 		wege.add_child(kb)
 
-func _farbe(typ: String) -> Color:
+static func farbe_zu(typ: String) -> Color:
 	match typ:
 		"vorstand", "medizin":
 			return Stil.ROT

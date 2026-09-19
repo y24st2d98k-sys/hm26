@@ -27,9 +27,15 @@ func aktualisieren() -> void:
 	leeren(liste)
 	liste.add_child(_ton())
 	liste.add_child(_automatik())
-	liste.add_child(_slot(Welt.AUTOSLOT))
+	# Ein Platz ist eine Zeile, keine Karte.
+	#
+	# Vorher trug jeder der sechs Plaetze eine eigene Karte mit vier
+	# Beschriftungszeilen: zusammen weit mehr als eine Bildschirmhoehe fuer
+	# eine Liste, in der man eine Zeile sucht und einen Knopf drueckt.
+	var plaetze := Bausteine.karte_in(liste, "Spielstände")
+	_slot_zeile(plaetze, Welt.AUTOSLOT)
 	for slot in range(1, Welt.SLOTS + 1):
-		liste.add_child(_slot(slot))
+		_slot_zeile(plaetze, slot)
 
 ## Ton: Hauptschalter und drei Regler. Alle Klänge werden beim Start berechnet,
 ## es liegt keine Audiodatei im Projekt.
@@ -115,19 +121,25 @@ func _automatik() -> Control:
 	karte.add_child(jetzt)
 	return Stil.karte_wurzel(karte)
 
-func _slot(slot: int) -> Control:
+func _slot_zeile(eltern: Node, slot: int) -> void:
 	var info := Welt.slot_info(slot)
-	var karte := Stil.karte("Platz 0 — Automatik" if slot == Welt.AUTOSLOT else "Platz %d" % slot)
+	var zeile := Stil.hbox(10)
+	eltern.add_child(zeile)
+	zeile.add_child(Stil.abzeichen("PLATZ 0 · AUTOMATIK" if slot == Welt.AUTOSLOT else "PLATZ %d" % slot,
+		Stil.TUERKIS if slot == Welt.AUTOSLOT else Stil.TEXT_SCHWACH))
 	if info.is_empty():
-		karte.add_child(Stil.matt("— leer —"))
+		zeile.add_child(Stil.matt("— leer —", Stil.S_KLEIN))
+		zeile.add_child(Stil.dehner())
 	else:
-		karte.add_child(Stil.info_zeile("Verein", str(info.get("verein", ""))))
-		karte.add_child(Stil.info_zeile("Trainer", str(info.get("trainer", ""))))
-		karte.add_child(Stil.info_zeile("Stand", "%s · %s" % [str(info.get("saison", "")), str(info.get("datum", ""))]))
-		karte.add_child(Stil.info_zeile("Gespeichert", str(info.get("gespeichert", ""))))
-	var zeile := Stil.hbox(8)
-	karte.add_child(zeile)
-	var speichern := Stil.knopf_primaer("Speichern")
+		var verein := Stil.text("%s · %s" % [str(info.get("verein", "")), str(info.get("trainer", ""))],
+			Stil.S_KLEIN)
+		zeile.add_child(Stil.beschnitten(verein, 20.0))
+		zeile.add_child(Stil.dehner())
+		var stand := Stil.matt("%s · %s" % [str(info.get("saison", "")),
+			str(info.get("datum", ""))], Stil.S_MINI)
+		stand.tooltip_text = "Gespeichert am %s" % str(info.get("gespeichert", ""))
+		zeile.add_child(stand)
+	var speichern := Stil.knopf_flach("Speichern", Stil.AKZENT)
 	speichern.pressed.connect(func():
 		if Welt.speichern(slot):
 			_melde("Auf Platz %d gespeichert." % slot)
@@ -135,24 +147,24 @@ func _slot(slot: int) -> Control:
 			_melde("Speichern fehlgeschlagen.", false)
 		aktualisieren())
 	zeile.add_child(speichern)
-	if not info.is_empty():
-		var laden := Stil.knopf("Laden")
-		laden.pressed.connect(func():
-			if Welt.laden(slot):
-				_melde("Spielstand geladen.")
-				Welt.zustand_geaendert.emit()
-			else:
-				# Den Grund nennen: "fehlgeschlagen" hilft niemandem weiter.
-				_melde(Welt.ladefehler if Welt.ladefehler != "" else "Laden fehlgeschlagen.", false)
-			aktualisieren())
-		zeile.add_child(laden)
-		var loeschen := Stil.knopf("Löschen")
-		loeschen.pressed.connect(func():
-			Welt.slot_loeschen(slot)
-			_melde("Spielstand gelöscht.")
-			aktualisieren())
-		zeile.add_child(loeschen)
-	return Stil.karte_wurzel(karte)
+	if info.is_empty():
+		return
+	var laden := Stil.knopf_flach("Laden")
+	laden.pressed.connect(func():
+		if Welt.laden(slot):
+			_melde("Spielstand geladen.")
+			Welt.zustand_geaendert.emit()
+		else:
+			# Den Grund nennen: "fehlgeschlagen" hilft niemandem weiter.
+			_melde(Welt.ladefehler if Welt.ladefehler != "" else "Laden fehlgeschlagen.", false)
+		aktualisieren())
+	zeile.add_child(laden)
+	var loeschen := Stil.knopf_flach("Löschen", Stil.ROT)
+	loeschen.pressed.connect(func():
+		Welt.slot_loeschen(slot)
+		_melde("Spielstand gelöscht.")
+		aktualisieren())
+	zeile.add_child(loeschen)
 
 func _melde(text: String, gut: bool = true) -> void:
 	meldung.text = text

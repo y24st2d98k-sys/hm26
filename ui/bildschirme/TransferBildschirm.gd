@@ -11,7 +11,7 @@ var suchergebnis: VBoxContainer
 var verhandlungen: VBoxContainer
 var kopfinfo: Label
 ## Wie viele Trefferzeilen gebaut werden. Mehr auf Knopfdruck.
-const ZEILEN_START := 25
+const ZEILEN_START := 20
 const ZEILEN_SCHRITT := 25
 var sichtbare_zeilen: int = ZEILEN_START
 

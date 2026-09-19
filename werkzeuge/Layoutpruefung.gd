@@ -58,7 +58,22 @@ func _ready() -> void:
 		await get_tree().process_frame
 		await get_tree().process_frame
 		var befunde: Array = []
-		_pruefe(app.bildschirme[id], breite, befunde)
+		# Ein Bildschirm mit Reitern hat so viele Lagen, wie er Reiter hat.
+		# Geprüft wird jede: ein Abschnitt, der zu breit ist, fällt sonst erst
+		# auf, wenn ihn jemand aufschlägt.
+		var gruppe := _reiter_finden(app.bildschirme[id])
+		if gruppe != null:
+			for o in gruppe.optionen:
+				var rid: String = str((o as Dictionary)["id"])
+				gruppe.zeige(rid)
+				await get_tree().process_frame
+				await get_tree().process_frame
+				var teil: Array = []
+				_pruefe(app.bildschirme[id], breite, teil)
+				for t in teil:
+					befunde.append("[%s] %s" % [rid, str(t)])
+		else:
+			_pruefe(app.bildschirme[id], breite, befunde)
 		if befunde.is_empty():
 			continue
 		_log("")
@@ -162,10 +177,21 @@ func _spalten_pruefen(eltern: Node, befunde: Array) -> void:
 func _pruefe_control(c: Control, fensterbreite: float, befunde: Array) -> void:
 	var rechts: float = c.global_position.x + c.size.x
 	# Überstand nach rechts: der Inhalt ist außerhalb des Fensters.
+	#
+	# Ausser er liegt in einem Behaelter, der abschneidet: Stil.beschnitten()
+	# setzt genau das absichtlich ein, damit eine lange Beschriftung ihre
+	# Spalte nicht auseinanderdrueckt. Das Etikett ist dann breiter als sein
+	# Rahmen, gezeichnet wird aber nur, was hineinpasst. Das ist ein Hinweis
+	# wert, kein Fehler — Fehler ist ein Layout, das wirklich aus dem Bild
+	# laeuft.
 	if rechts > fensterbreite + TOLERANZ and c.size.x > 4.0:
-		fehler += 1
-		befunde.append("FEHLER  ragt %d px über den rechten Rand: %s" % [
-			int(rechts - fensterbreite), _beschreibe(c)])
+		if _wird_abgeschnitten(c):
+			warnungen += 1
+			befunde.append("Hinweis beschnitten (bewusst): %s" % _beschreibe(c))
+		else:
+			fehler += 1
+			befunde.append("FEHLER  ragt %d px über den rechten Rand: %s" % [
+				int(rechts - fensterbreite), _beschreibe(c)])
 	# Abgeschnittene Beschriftung.
 	if c is Label:
 		var l: Label = c
@@ -234,3 +260,22 @@ func _schlimmsten_fall_herstellen() -> void:
 		# Erkenntnis. Dreissig Zeichen sind die ehrliche Obergrenze.
 		sp["vorname"] = "Maximilian"
 		sp["nachname"] = "Löwenstein-Wertheim"
+
+## Die Reitergruppe eines Bildschirms, falls er eine hat.
+func _reiter_finden(k: Node) -> Stil.Reitergruppe:
+	if k is Stil.Reitergruppe:
+		return k as Stil.Reitergruppe
+	for kind in k.get_children():
+		var t := _reiter_finden(kind)
+		if t != null:
+			return t
+	return null
+
+## Liegt dieser Knoten in einem Behaelter, der seinen Inhalt abschneidet?
+func _wird_abgeschnitten(c: Control) -> bool:
+	var eltern := c.get_parent()
+	while eltern != null and eltern is Control:
+		if (eltern as Control).clip_contents:
+			return true
+		eltern = eltern.get_parent()
+	return false
