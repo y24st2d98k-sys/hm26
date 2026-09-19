@@ -34,6 +34,7 @@ godot4 --headless res://werkzeuge/Testlauf.tscn -- rollen        # Verteilung de
 godot4 --headless res://werkzeuge/Testlauf.tscn -- wirkung       # Wirkung jeder Spieleranweisung
 godot4 --headless res://werkzeuge/Nachzueglertest.tscn           # Übersprungene eigene Partie
 godot4 --headless res://werkzeuge/Entscheidungssonde.tscn        # Was die Trainingsarbeit ausmacht
+godot4 --headless res://werkzeuge/Langzeitsonde.tscn             # Kippt die Liga über fünf Spielzeiten?
 godot4 --headless res://werkzeuge/Saatsonde.tscn                 # Wie verschieden zwei Spielstände sind
 godot4 --headless res://werkzeuge/Realismussonde.tscn           # Kennzahlen gegen die HBL-Wirklichkeit
 godot4 --headless res://werkzeuge/Tabellensonde.tscn            # Staerke, Zufall und Endtabelle

@@ -257,6 +257,43 @@ static func _trainingsplan(d: Dictionary, cid: String) -> void:
 		if float(d["spieler"][kader[i]]["last"]) > 45.0:
 			zuteilung[kader[i]] = 1
 	p["regeneration_zuteilung"] = zuteilung
+	_talente_foerdern(d, cid)
+
+## Sonderprogramme fuer die eigenen Talente — auch bei der KI.
+##
+## Das Sonderprogramm ist der staerkste Hebel, den ein Trainer auf die
+## Entwicklung hat (vierzig Prozent mehr Zuwachs). Ihn allein dem Menschen zu
+## geben hiesse: wer sich kuemmert, entwickelt dreimal so schnell wie die
+## ganze Liga, und nach fuenf Spielzeiten stellt ein Verein die Auswahl. Das
+## waere kein Managerspiel mehr, sondern eine Abkuerzung.
+##
+## Also kuemmern sich die anderen auch — aber unterschiedlich gut. Wie
+## zuverlaessig ein Verein seine Talente foerdert, haengt an seiner
+## Jugendarbeit und an der Guete des Stabs. Ein Spitzenverein erwischt fast
+## jeden, ein Aufsteiger jeden zweiten. Damit bleibt dem Menschen ein
+## Vorsprung, wenn er es besser macht — aber kein geschenkter.
+const FOERDERUNG_JE_POSITION := {
+	"TW": "torwart", "LA": "athletik", "RA": "athletik", "KM": "athletik",
+	"RL": "wurf", "RM": "spielaufbau", "RR": "wurf",
+}
+
+static func _talente_foerdern(d: Dictionary, cid: String) -> void:
+	# Nicht jede Woche neu entscheiden: ein Programm, das alle sieben Tage
+	# wechselt, ist keines.
+	if Namen.zufall() > 0.12:
+		return
+	var v: Dictionary = d["vereine"][cid]
+	var jugendarbeit: float = clampf(float((v.get("infrastruktur", {}) as Dictionary).get("jugendarbeit", 3.0)) / 9.0, 0.0, 1.0)
+	var guete: float = Training.trainerqualitaet(d, cid) / 100.0
+	var treffsicherheit: float = clampf(0.35 + 0.35 * jugendarbeit + 0.45 * guete, 0.3, 0.95)
+	for sid in (v.get("kader", []) as Array):
+		var sp: Dictionary = (d["spieler"] as Dictionary).get(str(sid), {})
+		if sp.is_empty() or int(sp["alter"]) > 23:
+			continue
+		if Namen.zufall() > treffsicherheit:
+			sp["trainingsfokus"] = ""
+			continue
+		sp["trainingsfokus"] = str(FOERDERUNG_JE_POSITION.get(str(sp["position"]), "athletik"))
 
 ## Verlaengert auslaufende Vertraege. Ein Verein laesst nur gehen, wen er wirklich
 ## nicht braucht — sonst wuerde die Liga binnen weniger Saisons ausbluten.
