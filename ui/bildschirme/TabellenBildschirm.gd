@@ -71,7 +71,7 @@ func _zeichne() -> void:
 	inhalt.add_child(reiter)
 	var karte := Bausteine.karte_in(reiter.feld("tabelle"), "%s — Spieltag %d von %d" % [
 		str(liga["name"]), int(liga["aktueller_spieltag"]), int(liga["spieltage"])])
-	var g := Stil.tabelle(["#", "", "Verein", "Sp", "S", "U", "N", "Tore", "Diff", "P", "Form"])
+	var g := Stil.tabelle(["#", "", "Verein", "Sp", "S", "U", "N", "Tore", "Diff", "P", "Form"], true)
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	karte.add_child(g)
 	var aufstieg: int = 2 if int(liga["stufe"]) > 1 else 0

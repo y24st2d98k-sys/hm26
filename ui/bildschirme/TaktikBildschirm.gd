@@ -200,7 +200,9 @@ func _positionswahl(block: String, pos: String, nur_torwart: bool) -> HBoxContai
 	h.add_child(label)
 
 	var wahl := OptionButton.new()
-	wahl.custom_minimum_size = Vector2(220, 0)
+	# Flacher als ein gewoehnlicher Knopf: vierzehn dieser Zeilen stehen
+	# untereinander, und jeder Pixel Zeilenhoehe ist dort vierzehn.
+	wahl.custom_minimum_size = Vector2(220, 30)
 	wahl.add_item("— frei —")
 	wahl.set_item_metadata(0, "")
 	var index := 1

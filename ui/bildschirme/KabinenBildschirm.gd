@@ -120,7 +120,7 @@ func aktualisieren() -> void:
 	_patenschaften(cid, v, gruppe.feld("paten"))
 
 	var unzufrieden := Bausteine.karte_in(gruppe.feld("kader"), "Zufriedenheit im Kader")
-	var g2 := Stil.tabelle(["Spieler", "Rolle", "Minuten/Spiel", "Moral", "Unzufriedenheit", "Status"])
+	var g2 := Stil.tabelle(["Spieler", "Rolle", "Minuten/Spiel", "Moral", "Unzufriedenheit", "Status"], true)
 	g2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	unzufrieden.add_child(g2)
 	var kader: Array = (v["kader"] as Array).duplicate()

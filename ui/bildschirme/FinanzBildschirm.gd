@@ -106,7 +106,7 @@ func aktualisieren() -> void:
 		var g2 := Stil.tabelle(["Datum", "Vorgang", "Kategorie", "Betrag"])
 		g2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		buchungen.add_child(g2)
-		for e in buchungsliste.slice(0, 20):
+		for e in buchungsliste.slice(0, 18):
 			g2.add_child(Stil.matt(Kalender.kurz(int(e["tag"]), Welt.startjahr()), Stil.S_KLEIN))
 			g2.add_child(Stil.text(str(e["grund"]), Stil.S_KLEIN))
 			g2.add_child(Stil.matt(Finanzen.kategorie_name(str(e["kategorie"])), Stil.S_KLEIN))

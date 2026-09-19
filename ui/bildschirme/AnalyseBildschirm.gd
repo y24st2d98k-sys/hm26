@@ -101,7 +101,7 @@ func _wurfkarte(eltern: Node, cid: String) -> void:
 		k.add_child(Stil.leerzustand("Für diese Partien liegen keine Wurfkarten im Archiv."))
 		return
 	var farbe: Color = Welt.verein(cid).get("wappen", {}).get("a", Stil.AKZENT)
-	var bild := Wurfkarte.neu(karte, farbe if eigene_wuerfe else Stil.ROT, 320.0)
+	var bild := Wurfkarte.neu(karte, farbe if eigene_wuerfe else Stil.ROT, 296.0)
 	bild.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	k.add_child(bild)
 	k.add_child(Stil.matt("Kreisgröße: Würfe · Füllung: Trefferquote", Stil.S_MINI))

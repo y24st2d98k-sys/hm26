@@ -707,6 +707,9 @@ class Wortzeichen extends Control:
 func beschnitten(inhalt: Control, hoehe: float) -> Control:
 	var c := Control.new()
 	c.custom_minimum_size = Vector2(0, hoehe)
+	# Der Rahmen nimmt die freie Breite. Ohne das bleibt er in einer Zeile mit
+	# einem Dehner genau null Pixel breit — und der Text darin unsichtbar.
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c.clip_contents = true
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	inhalt.set_anchors_preset(Control.PRESET_FULL_RECT)

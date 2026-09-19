@@ -205,14 +205,29 @@ func _fangruppen(eltern: Node) -> void:
 	wurzel.size_flags_stretch_ratio = 1.0
 	wurzel.custom_minimum_size = Vector2(360, 0)
 	karte.add_child(Bausteine.fliesstext("Vier Gruppen, vier Erwartungen. Wer es allen recht macht, macht es niemandem recht."))
+	# Zwei Gruppen nebeneinander: untereinander sind die vier zusammen hoeher
+	# als das Fenster, und die vierte las nie jemand.
+	var paare := Stil.hbox(Stil.A_GROSS)
+	paare.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(paare)
+	var spalten: Array = []
+	for i in 2:
+		var sp := Stil.vbox(7)
+		sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		paare.add_child(sp)
+		spalten.append(sp)
 	var gruende := Fanszene.begruendungen(Welt.daten, cid)
+	var nummer := 0
 	for g in Fanszene.GRUPPEN:
 		var gruppe: String = str(g)
 		var info: Dictionary = Fanszene.GRUPPE[gruppe]
-		karte.add_child(Stil.trenner())
+		var karte2: VBoxContainer = spalten[nummer % 2]
+		nummer += 1
+		if nummer > 2:
+			karte2.add_child(Stil.trenner())
 		var wert: float = Fanszene.stimmung(Welt.daten, cid, gruppe)
 		var kopf := Stil.hbox(8)
-		karte.add_child(kopf)
+		karte2.add_child(kopf)
 		# Kurzname in der Kopfzeile, der volle Name steht im Beschreibungstext
 		# und in den Meldungen — sonst wird die Zeile abgeschnitten.
 		var name := Stil.text(str(info.get("kurzname", info["name"])), Stil.S_NORMAL)
@@ -226,14 +241,14 @@ func _fangruppen(eltern: Node) -> void:
 			kopf.add_child(Stil.abzeichen("UNMUT", Stil.ROT, true))
 		elif wert >= Fanszene.BEGEISTERT:
 			kopf.add_child(Stil.abzeichen("GESCHLOSSEN", Stil.GRUEN))
-		karte.add_child(Bausteine.fliesstext(str(info["text"])))
+		karte2.add_child(Bausteine.fliesstext(str(info["text"])))
 		# Was diese Gruppe gerade bewegt — die drei stärksten Gründe.
 		var liste: Array = (gruende[gruppe] as Array).duplicate()
 		liste.sort_custom(func(a, b): return absf(float(a["wert"])) > absf(float(b["wert"])))
 		for e in liste.slice(0, 3):
 			var w: float = float(e["wert"])
 			var z := Stil.hbox(6)
-			karte.add_child(z)
+			karte2.add_child(z)
 			var punkt := Stil.text("%+d" % int(round(w)), Stil.S_MINI, Stil.GRUEN if w > 0.0 else Stil.ROT)
 			punkt.custom_minimum_size = Vector2(34, 0)
 			punkt.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT

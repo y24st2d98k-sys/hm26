@@ -21,7 +21,6 @@ var aktiv: String = ""
 var _leiste: HBoxContainer
 var _knoepfe: Dictionary = {}     # Gruppenname -> Button
 var _menues: Dictionary = {}      # Gruppenname -> PopupMenu
-var _marken: Dictionary = {}      # Gruppenname -> Label (die Zahl am Knopf)
 var _zaehler: Dictionary = {}     # Bildschirmkennung -> Zahl
 var _gruppe_von: Dictionary = {}  # Bildschirmkennung -> Gruppenname
 var _name_von: Dictionary = {}    # Bildschirmkennung -> Anzeigename
@@ -69,20 +68,10 @@ func aufbauen(neue_gruppen: Array) -> Control:
 ## Ein Gruppenknopf: Name, bei Gruppen ein Pfeil, dazu Platz für die Zahl.
 func _gruppenknopf(name: String, einzeln: bool) -> Button:
 	var b := Button.new()
-	b.text = name if einzeln else name + "  ⌄"
+	b.text = name if einzeln else name + "  ▾"
 	b.focus_mode = Control.FOCUS_NONE
 	b.custom_minimum_size = Vector2(0, 32)
 	_stil_setzen(b, false)
-	var marke := Stil.text("", Stil.S_MINI, Stil.SIGNAL)
-	marke.add_theme_font_override("font", Stil.schnitt_fett())
-	marke.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	marke.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	marke.offset_left = -22.0
-	marke.offset_right = -6.0
-	marke.offset_top = 3.0
-	marke.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	b.add_child(marke)
-	_marken[name] = marke
 	return b
 
 func _stil_setzen(b: Button, hervorgehoben: bool) -> void:
@@ -130,10 +119,11 @@ func setze_aktiv(id: String) -> void:
 		var eigen: bool = str(_gruppe_von.get(id, "")) == name
 		var einzeln: bool = (gruppe["eintraege"] as Array).size() == 1
 		if eigen and not einzeln:
-			knopf.text = "%s · %s  ⌄" % [name, str(_name_von.get(id, ""))]
+			knopf.text = "%s · %s  ▾" % [name, str(_name_von.get(id, ""))]
 		else:
-			knopf.text = name if einzeln else name + "  ⌄"
+			knopf.text = name if einzeln else name + "  ▾"
 		_stil_setzen(knopf, eigen)
+	_marken_auffrischen()
 
 ## Die Zahl an einem Bildschirm — sie summiert sich am Knopf seiner Gruppe.
 func setze_zaehler(id: String, wert: int) -> void:
@@ -141,15 +131,32 @@ func setze_zaehler(id: String, wert: int) -> void:
 	_marken_auffrischen()
 	_menues_auffrischen()
 
+## Die Zahl steht im Knopftext, nicht als Aufkleber darueber.
+##
+## Ein frei gesetztes Etikett hat sich bei schmalen Knoepfen ueber den
+## Nachbarn geschoben — "Umfeld³⁰ Spiel". Im Text nimmt es Platz ein, und die
+## Leiste rueckt selbst zur Seite.
 func _marken_auffrischen() -> void:
 	for g in gruppen:
 		var gruppe: Dictionary = g
 		var name: String = str(gruppe["name"])
+		var einzeln: bool = (gruppe["eintraege"] as Array).size() == 1
 		var summe := 0
 		for e in (gruppe["eintraege"] as Array):
 			summe += int(_zaehler.get(str((e as Dictionary)["id"]), 0))
-		var marke: Label = _marken[name]
-		marke.text = "%d" % summe if summe > 0 else ""
+		var knopf: Button = _knoepfe[name]
+		var eigen: bool = str(_gruppe_von.get(aktiv, "")) == name
+		var grund: String = name
+		if eigen and not einzeln:
+			grund = "%s · %s" % [name, str(_name_von.get(aktiv, ""))]
+		if summe > 0:
+			grund += "  %d" % summe
+		knopf.text = grund if einzeln else grund + "  ▾"
+		# Magenta, solange etwas offen ist: die Farbe ist im ganzen Spiel das
+		# Zeichen fuer "hier steht etwas an".
+		if not eigen:
+			knopf.add_theme_color_override("font_color",
+				Stil.SIGNAL if summe > 0 else Stil.TEXT_MATT)
 
 ## Im Menü steht die Zahl hinter dem Eintrag: "Kabine (1)".
 func _menues_auffrischen() -> void:

@@ -50,8 +50,14 @@ func aufbauen() -> void:
 	# laengere der beiden unter den Falz. Die Umschulung steht bei der
 	# Entwicklung, weil sie eine ist — und weil sie neben dem Wochenplan den
 	# Bildschirm zu breit machte.
-	entwicklung_bereich = Bausteine.karte_in(reiter.feld("entwicklung"), "Entwicklung im Kader")
-	umschulung_bereich = Bausteine.karte_in(reiter.feld("entwicklung"), "Umschulungen")
+	# Nebeneinander, seit die Navigation oben steht: der Inhalt ist 238 Pixel
+	# breiter geworden, und die beiden Karten passen zusammen in eine Zeile.
+	var entwicklungszeile := Stil.hbox(12)
+	reiter.feld("entwicklung").add_child(entwicklungszeile)
+	entwicklung_bereich = Bausteine.karte_in(entwicklungszeile, "Entwicklung im Kader")
+	Stil.karte_wurzel(entwicklung_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	umschulung_bereich = Bausteine.karte_in(entwicklungszeile, "Umschulungen")
+	Stil.karte_wurzel(umschulung_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	last_bereich = Bausteine.karte_in(reiter.feld("belastung"), "Lastkonto & Regenerationsbudget")
 	Stil.karte_wurzel(last_bereich).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 

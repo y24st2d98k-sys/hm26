@@ -12,7 +12,7 @@ var filter: String = ""
 var offen: Dictionary = {}
 ## Wie viele Zeilen die Liste zeigt. Achtzig Meldungen sind eineinhalb
 ## Bildschirmhoehen; wer weiter zurueck will, sagt es.
-const ZEILEN_START := 19
+const ZEILEN_START := 17
 const ZEILEN_SCHRITT := 25
 var sichtbare_zeilen: int = ZEILEN_START
 
