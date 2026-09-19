@@ -68,6 +68,8 @@ var kopf_liga: Label
 var kopf_kasse: Label
 var kopf_datum: Label
 var kopf_saison: Label
+var kopf_spiel: Dictionary = {}
+var kopf_draengt: Dictionary = {}
 var kopf_glocke: Button
 var seitenfuss: Label
 var trainerbild: Control
@@ -228,6 +230,11 @@ func _baue_kopfzeile(eltern: Node) -> void:
 	kopf_kasse = _kopf_wert(zeile, "Kasse")
 	kopf_datum = _kopf_wert(zeile, "Spieltag")
 	kopf_saison = _kopf_wert(zeile, "Saison")
+	# Worauf man zuspielt und was drängt — auf jedem Bildschirm, nicht nur im
+	# Büro. Ein Manager-Spiel hält einen dadurch, dass immer etwas ansteht;
+	# das nützt nur, wenn man es sieht, ohne danach zu suchen.
+	kopf_spiel = _kopf_kachel(zeile, "Nächstes Spiel", "spielplan")
+	kopf_draengt = _kopf_kachel(zeile, "Was drängt", "buero")
 	zeile.add_child(Stil.abstand(6))
 
 	kopf_glocke = Button.new()
@@ -302,6 +309,43 @@ func _kopf_wert(eltern: Node, beschriftung: String) -> Label:
 	v.add_child(l)
 	return l
 
+
+## Eine Kachel wie _kopf_wert, nur anklickbar.
+##
+## Zwei Zeilen und nicht drei: eine Unterzeile fuer den Gegner sah besser aus,
+## machte die Kopfzeile aber siebzehn Pixel hoeher — und damit liefen vier
+## Bildschirme wieder unter den Falz. Der Gegner steht jetzt hinter dem Wert
+## in derselben Zeile.
+func _kopf_kachel(eltern: Node, beschriftung: String, ziel: String) -> Dictionary:
+	var b := Button.new()
+	b.focus_mode = Control.FOCUS_NONE
+	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var sb := Stil.box(Stil.FLAECHE_HOCH, Stil.R_KLEIN)
+	sb.content_margin_left = 14
+	sb.content_margin_right = 14
+	sb.content_margin_top = 7
+	sb.content_margin_bottom = 8
+	b.add_theme_stylebox_override("normal", sb)
+	b.add_theme_stylebox_override("hover", Stil.box(Stil.lasur(Stil.TEXT, 0.10), Stil.R_KLEIN))
+	b.add_theme_stylebox_override("pressed", Stil.box(Stil.lasur(Stil.AKZENT, 0.16), Stil.R_KLEIN))
+	b.add_theme_stylebox_override("focus", Stil.box_leer())
+	eltern.add_child(b)
+	var v := Stil.vbox(1)
+	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	v.set_anchors_preset(Control.PRESET_FULL_RECT)
+	b.add_child(v)
+	v.add_child(Stil.etikett(beschriftung))
+	var wert := Stil.text("—", Stil.S_KLEIN, Stil.TEXT)
+	wert.add_theme_font_override("font", Stil.schnitt_halbfett())
+	v.add_child(wert)
+	# Der Knopf muss so hoch sein wie sein Inhalt — der liegt als
+	# freigestellter Kasten darin und meldet von sich aus keine Groesse an.
+	v.resized.connect(func(): b.custom_minimum_size = Vector2(
+		maxf(b.custom_minimum_size.x, v.get_combined_minimum_size().x + 28.0),
+		v.get_combined_minimum_size().y + 15.0))
+	var kennung := ziel
+	b.pressed.connect(func(): zeige(kennung))
+	return {"knopf": b, "wert": wert}
 
 func _baue_bildschirme() -> void:
 	var liste := {
@@ -439,6 +483,7 @@ func _kopf_auffrischen() -> void:
 			Stil.TEXT if float(v["kasse"]) >= 0.0 else Stil.ROT)
 	kopf_datum.text = Welt.datum_text()
 	kopf_saison.text = Welt.saison_text()
+	_kopf_termine()
 
 	var offen: int = Welt.ungelesene_nachrichten()
 	if menueband != null:
@@ -716,6 +761,45 @@ func _verlauf_vor() -> void:
 		return
 	_verlaufsstelle += 1
 	zeige(str(_verlauf[_verlaufsstelle]), true)
+
+## Die beiden Kacheln, die sagen, worauf es zuläuft.
+func _kopf_termine() -> void:
+	if kopf_spiel.is_empty():
+		return
+	var m: Dictionary = Welt.naechstes_spiel(Welt.mein_verein_id) if Welt.mein_verein_id != "" else {}
+	if m.is_empty():
+		(kopf_spiel["wert"] as Label).text = "kein Spiel angesetzt"
+		(kopf_spiel["wert"] as Label).add_theme_color_override("font_color", Stil.TEXT_MATT)
+		(kopf_spiel["knopf"] as Button).tooltip_text = "Zum Spielplan"
+	else:
+		var tage: int = int(m["tag"]) - Welt.tag()
+		var heim: bool = str(m["heim"]) == Welt.mein_verein_id
+		var gid: String = str(m["gast"]) if heim else str(m["heim"])
+		var gegner: String = str(Welt.verein(gid).get("name", "?"))
+		var wann: String = "heute" if tage <= 0 else ("morgen" if tage == 1 else "in %d Tagen" % tage)
+		(kopf_spiel["wert"] as Label).text = "%s · %s %s" % [wann, "gegen" if heim else "bei",
+			gegner.substr(0, 20)]
+		(kopf_spiel["wert"] as Label).add_theme_color_override("font_color",
+			Stil.SIGNAL if tage <= 1 else Stil.TEXT)
+		(kopf_spiel["knopf"] as Button).tooltip_text = "%s %s — %s. Zum Spielplan." % [
+			"gegen" if heim else "bei", gegner, Kalender.text(int(m["tag"]), Welt.startjahr(), true)]
+
+	var posten: Array = Aufgaben.offene(Welt.daten, Welt.mein_verein_id)
+	var wert: Label = kopf_draengt["wert"]
+	var knopf: Button = kopf_draengt["knopf"]
+	if posten.is_empty():
+		wert.text = "nichts — weiterschalten"
+		wert.add_theme_color_override("font_color", Stil.GRUEN)
+		knopf.tooltip_text = "Keine offene Entscheidung. Zum Büro."
+		return
+	var erster: Dictionary = posten[0]
+	var stufe: int = int(erster["stufe"])
+	var rest: String = "  +%d" % (posten.size() - 1) if posten.size() > 1 else ""
+	wert.text = str(erster["titel"]).substr(0, 30) + rest
+	wert.add_theme_color_override("font_color",
+		Stil.ROT if stufe == Aufgaben.EILIG else (Stil.GELB if stufe == Aufgaben.OFFEN else Stil.TEXT))
+	knopf.tooltip_text = "%s\n%s\n\nInsgesamt %d offene Sachen — zum Büro." % [
+		str(erster["titel"]), str(erster["text"]), posten.size()]
 
 ## Den offenen Bildschirm anheften oder ablösen.
 ##
