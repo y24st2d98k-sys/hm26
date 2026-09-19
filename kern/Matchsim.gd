@@ -497,7 +497,13 @@ const TREFFER_LEERES_TOR := 0.93
 ## Unterschied jede Positionsquote um gut vier Prozentpunkte nach unten — die
 ## Zahlen oben stuenden dann zwar im Code, aber nicht im Spiel. Der Wert ist
 ## gemessen (werkzeuge/Realismussonde.gd), nicht geschaetzt.
-const WURF_AUSGLEICH := 11.1
+##
+## Von 11,1 auf 13,6 gehoben, nachdem der Schongang und die selteneren
+## Tempogegenstoesse die Ligaquote unter sechzig Prozent gedrueckt hatten. Ein
+## weiterer Schritt auf 14,6 brachte die Quote zwar ueber die Schwelle, kostete
+## aber zweieinhalb Punkte an der Tabellenspitze: mehr Tore heisst frueher
+## sechs Tore Vorsprung, und dort greift der Schongang.
+const WURF_AUSGLEICH := 13.6
 ## Wie weit Koennen, Tagesform und Torwart die Positionsquote hoechstens
 ## verschieben. Ein ueberragender Kreislaeufer trifft oefter als ein
 ## durchschnittlicher — aber auch er wirft nicht vom Fluegel wie vom Kreis.
@@ -602,12 +608,16 @@ const PASSIV_ABPFIFF := 0.13
 ## Wurfquote der Liga und vor allem Tabellenpunkte — er bestraft ja immer die
 ## fuehrende und damit meist die bessere Mannschaft. Bei -0,24 kam der Meister
 ## auf dreiundfuenfzig Punkte, bei -0,15 auf siebenundfuenfzig.
+## Sechs Tore und nicht vier: bei vier traf der Abzug die Fuehrung in Spielen,
+## die noch zu kippen waren, und kostete damit genau die Mannschaft Punkte, die
+## am haeufigsten fuehrt — die beste. Ab sechs greift er nur noch dort, wo die
+## Kantersiege entstehen.
 const SCHONGANG_AB := 1800.0
-const SCHONGANG_VORSPRUNG := 4
-const SCHONGANG_ABSCHLUSS := -0.150
+const SCHONGANG_VORSPRUNG := 6
+const SCHONGANG_ABSCHLUSS := -0.300
 ## Und wieviel laenger sie sich fuer einen Angriff Zeit laesst.
-const SCHONGANG_DAUER := 0.55
-const SCHONGANG_VOLL := 10.0
+const SCHONGANG_DAUER := 0.90
+const SCHONGANG_VOLL := 12.0
 
 ## Wie eine Mannschaft auf den Spielstand reagiert.
 ##
@@ -910,7 +920,7 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary, grunddiff:
 		var t1 := "%s setzt den Ball an den Pfosten." % Spielerfabrik.kurz_name(sp) if rng.randf() < 0.4 else "%s wirft vorbei." % Spielerfabrik.kurz_name(sp)
 		_warteschlange.append(_ereignis("fehlwurf", _seite(a), schuetze, t1, {"position": pos}))
 		_puls_aendern(a, -2.0)
-		return {"gegenstoss": rng.randf() < 0.24}
+		return {"gegenstoss": rng.randf() < 0.19}
 	elif w < p_vorbei + (1.0 - p_vorbei) * p_tor:
 		_wurf_notieren(a, pos, "tor")
 		return _tor(a, v, schuetze, pos, false)
@@ -1223,7 +1233,7 @@ func _parade(a: Dictionary, v: Dictionary, schuetze: String, tw: String, pos: St
 		text = "%s pariert den Wurf von %s." % [Spielerfabrik.kurz_name(daten["spieler"][tw]), Spielerfabrik.kurz_name(daten["spieler"][schuetze])]
 	_puls_aendern(v, 5.0 if v["ist_heim"] else -3.0)
 	_warteschlange.append(_ereignis("parade", _seite(v), tw, text, {"position": pos, "schuetze": schuetze}))
-	return {"gegenstoss": rng.randf() < 0.36}
+	return {"gegenstoss": rng.randf() < 0.29}
 
 func _block(a: Dictionary, v: Dictionary, schuetze: String, pos: String) -> Dictionary:
 	var blocker := _zufaelliger_abwehrspieler(v)
@@ -1236,7 +1246,7 @@ func _block(a: Dictionary, v: Dictionary, schuetze: String, pos: String) -> Dict
 		text = "%s stellt sich in den Wurf von %s." % [Spielerfabrik.kurz_name(daten["spieler"][blocker]), Spielerfabrik.kurz_name(daten["spieler"][schuetze])]
 	_warteschlange.append(_ereignis("block", _seite(v), blocker, text, {"position": pos}))
 	_puls_aendern(v, 3.0 if v["ist_heim"] else -2.0)
-	return {"gegenstoss": rng.randf() < 0.28}
+	return {"gegenstoss": rng.randf() < 0.22}
 
 func _ballverlust(a: Dictionary, v: Dictionary, ursache: String = "") -> Dictionary:
 	var verursacher := _zufaelliger_angreifer(a)
@@ -1281,7 +1291,7 @@ func _ballverlust(a: Dictionary, v: Dictionary, ursache: String = "") -> Diction
 		return {"gegenstoss": false}
 	_warteschlange.append(_ereignis("ballverlust", _seite(a), verursacher, text))
 	_puls_aendern(a, -3.0)
-	return {"gegenstoss": rng.randf() < 0.40}
+	return {"gegenstoss": rng.randf() < 0.32}
 
 func _siebenmeter(a: Dictionary, v: Dictionary) -> Dictionary:
 	var schuetze: String = str(a["siebenmeter_schuetze"])
