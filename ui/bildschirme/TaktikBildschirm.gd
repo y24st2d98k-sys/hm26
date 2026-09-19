@@ -48,7 +48,9 @@ func aufbauen() -> void:
 		aktualisieren())
 	kopf.add_child(auto)
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
-	kopf.add_child(meldung)
+	# Beschnitten: eine lange Rückmeldung darf die Kopfzeile nicht über den
+	# Bildschirmrand hinaus schieben.
+	kopf.add_child(Stil.beschnitten(meldung, 20.0))
 
 	# Vier Reiter statt einer Seite von drei Bildschirmhoehen. Aufstellung,
 	# Spielidee, Matchplan und Einsatzzeiten haben nichts miteinander zu tun —
@@ -91,7 +93,7 @@ func aufbauen() -> void:
 	Stil.karte_aktion(feldkarte, vorschau_leiste)
 	_vorschau_umschalter()
 	feld = Spielfeld.new()
-	feld.custom_minimum_size = Vector2(344, 172)
+	feld.custom_minimum_size = Vector2(340, 160)
 	feldkarte.add_child(feld)
 	# Je Reiter eine Spalte. Die Karten hier sind breit — eine Anweisungsliste
 	# mit sieben Positionen braucht fuer sich schon tausend Pixel. Zwei davon

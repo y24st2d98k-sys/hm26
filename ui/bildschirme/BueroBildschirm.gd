@@ -86,9 +86,9 @@ func aktualisieren() -> void:
 	_letzte_spiele(rechts2)
 	_vorstand(rechts2)
 
-	# Drei Spalten: Presse, Kasse, und was Halle und Co-Trainer melden.
-	# Untereinander waren die letzten beiden Karten genau das, was den Reiter
-	# ueber den Rand schob.
+	# Zwei Spalten, nicht drei: drei Karten dieser Art nebeneinander sind
+	# breiter als der Bildschirm. Was den Reiter vorher zu hoch machte, war
+	# nicht die Anordnung, sondern die Laenge der Co-Trainer-Liste.
 	var unten := Stil.hbox(Stil.A_NORMAL)
 	gruppe.feld("umfeld").add_child(unten)
 	_presse(unten)
@@ -97,10 +97,7 @@ func aktualisieren() -> void:
 	unten.add_child(rechts3)
 	_finanzen(rechts3)
 	_fanlage(rechts3)
-	var rechts4 := Stil.vbox(Stil.A_NORMAL)
-	rechts4.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	unten.add_child(rechts4)
-	_cotrainer(rechts4)
+	_cotrainer(gruppe.feld("umfeld"))
 
 ## Die Fanszene, aber nur wenn sie etwas will: eine Gruppe im Unmut oder ein
 ## Heimspiel ohne Programm. Eine Karte, die immer da ist, liest irgendwann
@@ -178,7 +175,14 @@ func _cotrainer(eltern: Node) -> void:
 		karte.add_child(Stil.leerzustand("Nichts zu beanstanden — der Stab sieht die Mannschaft gut aufgestellt."))
 		return
 	karte.add_child(Stil.matt(Cotrainer.kompetenz_text(Cotrainer.kompetenz(Welt.daten, cid)), Stil.S_MINI))
-	for b in befunde:
+	# Die drei dringendsten Befunde, nicht alle.
+	#
+	# Der Stab findet in einem vollen Kader schnell sieben Dinge; untereinander
+	# sind das dreihundert Pixel, und gelesen wird davon das Erste. Der Rest
+	# steht auf den Bildschirmen, um die es geht.
+	befunde.sort_custom(func(a, b): return int(a["stufe"]) > int(b["stufe"]))
+	var uebrig: int = maxi(befunde.size() - 3, 0)
+	for b in befunde.slice(0, 3):
 		var zeile := Stil.hbox(10)
 		karte.add_child(zeile)
 		var marke := Stil.abzeichen(Cotrainer.stufentext(int(b["stufe"])), Cotrainer.farbe(int(b["stufe"])),
@@ -203,6 +207,9 @@ func _cotrainer(eltern: Node) -> void:
 			var hin := Stil.knopf_flach("Ansehen")
 			hin.pressed.connect(func(): wechsel_zu(ziel))
 			zeile.add_child(hin)
+	if uebrig > 0:
+		karte.add_child(Stil.matt("%d weitere Hinweise von geringerer Dringlichkeit." % uebrig,
+			Stil.S_MINI))
 
 func _kennzahlen(v: Dictionary) -> void:
 	var reihe := Stil.hbox(8)
