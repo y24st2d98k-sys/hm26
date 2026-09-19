@@ -565,6 +565,8 @@ func _wochenrueckblick(eltern: Node) -> void:
 	reihe.add_child(rechts)
 	_wochenspiele(rechts)
 	_wochendeutung(rechts, posten)
+	_projekte(links)
+	_ehemalige(rechts)
 
 ## Die Partien der vergangenen sieben Tage — sie erklären die Hälfte der
 ## Zahlen nebenan.
@@ -621,3 +623,77 @@ func _wochendeutung(eltern: Node, posten: Array) -> void:
 		spalte.add_child(Stil.text("%s: %s" % [str(e2["name"]),
 			Wochenbericht.delta_text(float(e2["delta"]), str(e2["art"]))], Stil.S_KLEIN, paar[1]))
 		spalte.add_child(Bausteine.fliesstext(str(e2["deutung"]), Stil.S_MINI, null, 160.0))
+
+
+## Die Spieler, für die Sie geradestehen.
+##
+## Der Faden, der eine Wette am Laufen hält: seit wann, wie viele Spiele, wie
+## viel Stärke. Er steht im Wochenreiter und nicht im Kader, weil er nicht in
+## eine Liste gehört — er gehört dorthin, wo man liest, was sich verändert hat.
+func _projekte(eltern: Node) -> void:
+	var stand: Array = Projekte.stand(Welt.daten, Welt.mein_verein_id)
+	var karte := Bausteine.karte_in(eltern, "Ihre Projekte")
+	if stand.is_empty():
+		karte.add_child(Stil.leerzustand("Sie haben noch kein Projekt.",
+			"Im Profil eines Spielers unter 25 können Sie sich seiner annehmen — höchstens drei gleichzeitig."))
+		return
+	for e in stand:
+		var eintrag: Dictionary = e
+		var sid: String = str(eintrag["spieler"])
+		var sp: Dictionary = Welt.spieler(sid)
+		var zeile := Stil.hbox(10)
+		karte.add_child(zeile)
+		var staerke: float = float(eintrag["staerke"])
+		zeile.add_child(Stil.marke_strich(
+			Stil.GRUEN if staerke >= 1.5 else (Stil.ROT if staerke < -0.5 else Stil.GELB), 3, 34))
+		var spalte := Stil.vbox(1)
+		spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		zeile.add_child(spalte)
+		var kopf := Stil.hbox(8)
+		spalte.add_child(kopf)
+		var k := Stil.knopf_flach("%s (%d)" % [Spielerfabrik.kurz_name(sp), int(sp["alter"])], Stil.TUERKIS)
+		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		kopf.add_child(k)
+		kopf.add_child(Stil.abzeichen("STÄRKE %+.1f" % staerke,
+			Stil.GRUEN if staerke > 0.0 else Stil.ROT))
+		kopf.add_child(Stil.matt("%d Spiele · %d Tore · seit %d Tagen" % [
+			int(eintrag["spiele"]), int(eintrag["tore"]), int(eintrag["tage"])], Stil.S_MINI))
+		spalte.add_child(Bausteine.fliesstext(str(eintrag["urteil"]), Stil.S_MINI, null, 200.0))
+
+## Wer gegangen ist, und was aus ihm geworden ist.
+##
+## Reue und Genugtuung sind die stärksten Gefühle, die ein Managerspiel
+## erzeugen kann, und sie kosten nichts: diese Spieler werden ohnehin
+## weitergerechnet. Sie wurden nur nie wieder erwähnt.
+func _ehemalige(eltern: Node) -> void:
+	var liste: Array = Ehemalige.stand(Welt.daten, Welt.mein_verein_id)
+	if liste.is_empty():
+		return
+	var karte := Bausteine.karte_in(eltern, "Die Ehemaligen")
+	Stil.karte_wurzel(karte).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(Stil.matt("Was aus denen geworden ist, die Sie gehen ließen.", Stil.S_MINI))
+	var g := Stil.tabelle(["Spieler", "Heute bei", "Stärke", "seither"], true)
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(g)
+	for e in liste.slice(0, 6):
+		var eintrag: Dictionary = e
+		var sid: String = str(eintrag["spieler"])
+		var sp: Dictionary = Welt.spieler(sid)
+		var k := Stil.knopf_flach(Spielerfabrik.kurz_name(sp))
+		k.tooltip_text = "%s — %s vor %d Tagen" % [Spielerfabrik.voller_name(sp),
+			_abgangsart(str(eintrag["art"])), int(eintrag["tage"])]
+		k.pressed.connect(func(): Spielerfenster.oeffnen(self, sid))
+		g.add_child(k)
+		var wo: String = str(Welt.verein(str(eintrag["verein"])).get("name", "vereinslos"))
+		g.add_child(Stil.matt(wo.substr(0, 18), Stil.S_KLEIN))
+		var wandel: float = float(eintrag["jetzt"]) - float(eintrag["damals"])
+		g.add_child(Stil.text("%d (%+.0f)" % [int(float(eintrag["jetzt"])), wandel], Stil.S_KLEIN,
+			Stil.ROT if wandel > 1.0 else (Stil.GRUEN if wandel < -1.0 else Stil.TEXT_MATT)))
+		g.add_child(Stil.matt("%d Sp · %d Tore" % [int(eintrag["spiele_seither"]),
+			int(eintrag["tore_seither"])], Stil.S_MINI))
+
+func _abgangsart(art: String) -> String:
+	match art:
+		"leihe": return "verliehen"
+		"freistellung": return "freigestellt"
+	return "verkauft"

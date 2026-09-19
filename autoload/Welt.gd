@@ -514,6 +514,7 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 	Chronik.spiel_eintragen(daten, m)
 	if str(m["heim"]) == mein_verein_id or str(m["gast"]) == mein_verein_id:
 		Medien.spielbericht(daten, m, mein_verein_id)
+		Ehemalige.partie_pruefen(daten, m, mein_verein_id)
 		Vorstand.nach_spiel(daten, mein_verein_id, m)
 		# Ein Sieg schweisst zusammen, eine Klatsche zerlegt. Das gilt fuer
 		# jedes Paar in der Kabine, nicht nur fuer den Mittelwert.

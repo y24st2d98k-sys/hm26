@@ -33,6 +33,8 @@ godot4 --headless res://werkzeuge/Pruefung.tscn -- 740          # Integritätspr
 godot4 --headless res://werkzeuge/Testlauf.tscn -- rollen        # Verteilung der Rollenvorschläge
 godot4 --headless res://werkzeuge/Testlauf.tscn -- wirkung       # Wirkung jeder Spieleranweisung
 godot4 --headless res://werkzeuge/Nachzueglertest.tscn           # Übersprungene eigene Partie
+godot4 --headless res://werkzeuge/Entscheidungssonde.tscn        # Was die Trainingsarbeit ausmacht
+godot4 --headless res://werkzeuge/Saatsonde.tscn                 # Wie verschieden zwei Spielstände sind
 godot4 --headless res://werkzeuge/Realismussonde.tscn           # Kennzahlen gegen die HBL-Wirklichkeit
 godot4 --headless res://werkzeuge/Tabellensonde.tscn            # Staerke, Zufall und Endtabelle
 godot4 --headless res://werkzeuge/Streusonde.tscn               # Woher die Streuung einer Partie kommt

@@ -159,7 +159,13 @@ const ERFAHRUNG_AB := 28
 ## Frueher stand hier 0.052. Damit kam ein Zwanzigjaehriger mit 61 in fuenf
 ## Jahren auf 64 — er erreichte sein Potenzial nie, und die Liga verlor mit
 ## jedem Jahrgang an Niveau, weil niemand nachwuchs.
-const ZUWACHS_BASIS := 0.095
+## Gemessen (werkzeuge/Entscheidungssonde.gd): über zwei Spielzeiten trennten
+## gute und schlechte Trainingsarbeit die unter 23-Jährigen um 0,65
+## Stärkepunkte und den ganzen Kader um nichts. Auf einer Skala von hundert
+## ist das unsichtbar — und damit war die Arbeit des Trainers folgenlos.
+## Ein Achtzehnjähriger wuchs um knapp zwei Punkte im Jahr; in Wirklichkeit
+## geht ein Talent in zwei Jahren von 60 auf 75.
+const ZUWACHS_BASIS := 0.125
 ## Wie schnell Erfahrung waechst, je Woche und Attribut.
 const ERFAHRUNG_TEMPO := 0.020
 
@@ -202,9 +208,9 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 
 	var alters_tempo: float = 1.0
 	if alter_jahre <= 19:
-		alters_tempo = 1.9
+		alters_tempo = 2.6
 	elif alter_jahre <= 22:
-		alters_tempo = 1.5
+		alters_tempo = 2.0
 	elif alter_jahre <= 25:
 		alters_tempo = 1.0
 	elif alter_jahre <= 28:
@@ -219,11 +225,23 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 	# tatsaechlich abgerufen wird — sie ist der Unterschied zwischen einem
 	# Talent, das mit 21 spielt, und einem, das mit 26 erst so weit ist.
 	var lernkurve: float = clampf(float(sp.get("lernkurve", 1.0)), Spielerfabrik.LERNKURVE_MIN, Spielerfabrik.LERNKURVE_MAX)
-	var zuwachs: float = ZUWACHS_BASIS * alters_tempo * lernkurve * (0.4 + 1.1 * luft) * (0.45 + 0.75 * qualitaet) \
+	# Die Spannweite der Faktoren ist das, worüber der Trainer verfügt.
+	#
+	# Sie war zu eng: Einsatzzeit bewegte den Zuwachs um höchstens fünfzehn
+	# Prozent, die Güte des Stabs um dreißig. Beides sind Entscheidungen, die
+	# ein Trainer über Monate trifft, und beide waren im Ergebnis nicht zu
+	# sehen. Jetzt entscheidet die Einsatzzeit über mehr als das Doppelte und
+	# die Trainerqualität über fast das Vierfache.
+	var zuwachs: float = ZUWACHS_BASIS * alters_tempo * lernkurve * (0.4 + 1.1 * luft) * (0.30 + 1.05 * qualitaet) \
 		* (0.5 + 0.9 * intensitaet) * (0.6 + 0.5 * arbeitseinsatz) * (0.75 + 0.45 * ehrgeiz) \
-		* (0.7 + 0.45 * spielzeit)
+		* (0.30 + 1.05 * spielzeit)
+	# Eine Woche Regeneration kostet Entwicklung — aber nicht sieben Achtel
+	# davon. Bei 0,3 war jede Schonung ein Rückschritt, und die Regeneration
+	# damit eine Falle für den, der sie benutzt.
 	if regeneriert:
-		zuwachs *= 0.3
+		zuwachs *= 0.75
+	# Wer sich persönlich um einen Spieler kümmert, bekommt etwas dafür.
+	zuwachs *= Projekte.vorteil(d, str(sp["id"]))
 	if verletzt:
 		zuwachs *= 0.15
 	# Individualfoerderung des Trainers
@@ -231,7 +249,7 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 	var attr_liste: Array = (sp_daten["attr"] as Array).duplicate()
 	if fokus != "" and FOKUS_ATTRIBUTE.has(fokus):
 		attr_liste.append_array(FOKUS_ATTRIBUTE[fokus])
-		zuwachs *= 1.22
+		zuwachs *= 1.40
 	if attr_liste.is_empty():
 		attr_liste = _positionsattribute(sp)
 	if alter_jahre < TAKTIKREIFE_BIS:

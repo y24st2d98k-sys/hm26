@@ -95,6 +95,8 @@ func aktualisieren() -> void:
 		rechts.custom_minimum_size = Vector2(120, 0)
 		zeile.add_child(rechts)
 
+	_fingerabdruck(f_laufbahn)
+
 	var praegungen := Bausteine.karte_in(f_laufbahn, "Prägungen")
 	var liste: Array = t.get("praegungen", [])
 	if liste.is_empty():
@@ -281,3 +283,39 @@ func _ruhmeshalle(eltern: Node) -> void:
 		var wo: String = str((Welt.daten["vereine"].get(str(e.get("verein", "")), {}) as Dictionary).get("kurz", ""))
 		zeile.add_child(Stil.abzeichen("%s · Saison %d" % [wo, int(e.get("saison", 0)) + 1],
 			Stil.TEXT_SCHWACH))
+
+
+## Was für ein Trainer man geworden ist — in Sätzen, nicht in Balken.
+##
+## Die Handschrift daneben zeigt sechs Achsen mit Werten. Das beschreibt, aber
+## es erkennt nicht: "Jugend 78" sagt niemandem etwas über sich selbst. Hier
+## steht dieselbe Information als Satz, und daneben die harten Zahlen, die sich
+## nachprüfen lassen.
+func _fingerabdruck(eltern: Node) -> void:
+	var saetze: Array = Fingerabdruck.saetze(Welt.daten, Welt.mein_verein_id)
+	var karte := Bausteine.karte_in(eltern, "Ihr Fingerabdruck")
+	if saetze.is_empty():
+		karte.add_child(Stil.leerzustand("Noch zu früh.",
+			"Nach ein paar Wochen Arbeit steht hier, woran man Sie erkennt."))
+		return
+	var reihe := Stil.hbox(Stil.A_GROSS)
+	reihe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(reihe)
+	var spalten: Array = []
+	for i in 2:
+		var sp := Stil.vbox(4)
+		sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		reihe.add_child(sp)
+		spalten.append(sp)
+	var haelfte: int = int(ceil(float(saetze.size()) / 2.0))
+	var nummer := 0
+	for e in saetze:
+		var eintrag: Dictionary = e
+		var ziel: VBoxContainer = spalten[0] if nummer < haelfte else spalten[1]
+		nummer += 1
+		var zeile := Stil.hbox(8)
+		ziel.add_child(zeile)
+		var handschrift: bool = str(eintrag["art"]) == "handschrift"
+		zeile.add_child(Stil.abzeichen(str(eintrag["titel"]).to_upper(),
+			Stil.LILA if handschrift else Stil.TUERKIS))
+		zeile.add_child(Bausteine.fliesstext(str(eintrag["text"]), Stil.S_KLEIN, null, 180.0))

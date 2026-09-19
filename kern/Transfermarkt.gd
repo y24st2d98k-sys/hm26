@@ -548,6 +548,9 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 	# der neue Vertrag sie überschreibt.
 	var alte_beteiligung: float = float(sp.get("vertrag", {}).get("weiterverkauf", 0.0))
 	if von != "" and d["vereine"].has(von):
+		# Bevor der Kader ihn vergisst: wer geht, bleibt als Ehemaliger stehen.
+		Ehemalige.vermerken(d, von, sid, "transfer", nach, ablöse)
+		Projekte.aufgeben(d, von, sid)
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		Finanzen.buchen(d, von, ablöse, "Transfererlös %s" % Spielerfabrik.voller_name(sp), "transfer")
 		aufstellung_saeubern(d, von, sid)
@@ -615,6 +618,7 @@ static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: 
 	var von: String = str(sp["verein"])
 	sp["leihe"] = {"stammverein": von, "bis_saison": Welt.saison_index() + maxi(saisons, 1)}
 	if von != "" and d["vereine"].has(von):
+		Ehemalige.vermerken(d, von, sid, "leihe", nach, 0.0)
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		aufstellung_saeubern(d, von, sid)
 	(d["vereine"][nach]["kader"] as Array).append(sid)
@@ -765,6 +769,8 @@ static func vertrag_aufloesen(d: Dictionary, sid: String) -> Dictionary:
 	if float(d["vereine"][cid]["kasse"]) < abfindung:
 		return {"ok": false, "grund": "Die Abfindung von %s ist nicht finanzierbar." % Stil.geld(abfindung)}
 	Finanzen.buchen(d, cid, -abfindung, "Abfindung %s" % Spielerfabrik.voller_name(sp), "transfer")
+	Ehemalige.vermerken(d, cid, sid, "freistellung", "", 0.0)
+	Projekte.aufgeben(d, cid, sid)
 	(d["vereine"][cid]["kader"] as Array).erase(sid)
 	aufstellung_saeubern(d, cid, sid)
 	sp["verein"] = ""

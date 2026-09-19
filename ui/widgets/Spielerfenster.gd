@@ -185,6 +185,8 @@ func _uebersicht(sp: Dictionary) -> void:
 		zeile.tooltip_text = "Eine überstandene Verletzung kommt an derselben Stelle häufiger wieder — bei der Schulter am stärksten."
 		zustand.add_child(zeile)
 
+	_projektkarte(links, sp)
+
 	var mitte := Stil.vbox(10)
 	mitte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spalten.add_child(mitte)
@@ -1051,3 +1053,52 @@ func _vorvertragszeile(karte: Node, sid: String, sp: Dictionary, gehaltswunsch: 
 			int(jahre.value), "stammspieler", "vorvertrag")
 		_melde(str(erg["grund"]), bool(erg["ok"])))
 	zeile.add_child(senden)
+
+
+## Sich persönlich um einen Spieler kümmern — oder es sein lassen.
+##
+## Das ist die einzige Stelle im Spiel, an der man auf einen einzelnen Menschen
+## setzt statt auf eine Mannschaft. Deshalb steht hier auch, was daraus
+## geworden ist: ohne den Rückblick wäre es eine Einstellung und keine Wette.
+func _projektkarte(eltern: Node, sp: Dictionary) -> void:
+	var cid: String = Welt.mein_verein_id
+	if cid == "" or str(sp.get("verein", "")) != cid:
+		return
+	var karte := Bausteine.karte_in(eltern, "Ihr Projekt")
+	if Projekte.ist_projekt(Welt.daten, cid, sid):
+		var eintrag: Dictionary = {}
+		for e in Projekte.stand(Welt.daten, cid):
+			if str((e as Dictionary)["spieler"]) == sid:
+				eintrag = e
+				break
+		if not eintrag.is_empty():
+			karte.add_child(Stil.text("Seit %d Tagen unter Ihren Fittichen." % int(eintrag["tage"]),
+				Stil.S_KLEIN, Stil.TUERKIS))
+			karte.add_child(Stil.info_zeile("Stärke seither", "%+.1f" % float(eintrag["staerke"]),
+				Stil.GRUEN if float(eintrag["staerke"]) > 0.0 else Stil.ROT))
+			karte.add_child(Stil.info_zeile("Perspektive seither", "%+.1f" % float(eintrag["potenzial"]),
+				Stil.LILA))
+			karte.add_child(Stil.info_zeile("Spiele · Tore", "%d · %d" % [
+				int(eintrag["spiele"]), int(eintrag["tore"])]))
+			karte.add_child(Bausteine.fliesstext(str(eintrag["urteil"]), Stil.S_MINI))
+		var weg := Stil.knopf_flach("Projekt beenden", Stil.TEXT_MATT)
+		weg.tooltip_text = "Er entwickelt sich danach wie jeder andere."
+		weg.pressed.connect(func():
+			Projekte.aufgeben(Welt.daten, cid, sid)
+			_melde("%s ist nicht mehr Ihr Projekt." % Spielerfabrik.kurz_name(sp), false)
+			_zeichne())
+		karte.add_child(weg)
+		return
+	var moeglich := Projekte.moeglich(Welt.daten, cid, sid)
+	karte.add_child(Bausteine.fliesstext(
+		"Höchstens %d Spieler gleichzeitig. Ein Schützling lernt etwas schneller — vor allem aber sehen Sie, was aus ihm wird." % Projekte.HOECHSTENS,
+		Stil.S_MINI))
+	if not bool(moeglich["ok"]):
+		karte.add_child(Stil.matt(str(moeglich["grund"]), Stil.S_MINI))
+		return
+	var los := Stil.knopf("Zu meinem Projekt machen")
+	los.pressed.connect(func():
+		var erg := Projekte.annehmen(Welt.daten, cid, sid)
+		_melde(str(erg["grund"]), bool(erg["ok"]))
+		_zeichne())
+	karte.add_child(los)
