@@ -616,7 +616,15 @@ const SCHONGANG_AB := 1800.0
 const SCHONGANG_VORSPRUNG := 6
 const SCHONGANG_ABSCHLUSS := -0.300
 ## Und wieviel laenger sie sich fuer einen Angriff Zeit laesst.
-const SCHONGANG_DAUER := 0.90
+##
+## Hier und nicht am Abschluss liegt der Hebel gegen die Kantersiege. Ein
+## staerkerer Abzug an der Trefferquote druckt zwar die hohen Ergebnisse,
+## bestraft aber immer die fuehrende und damit meist die bessere Mannschaft
+## und kostet sie Tabellenpunkte — der Meister steht ohnehin schon knapp unter
+## dem Zielband. Eine laengere Angriffszeit kostet dagegen kaum Siege: sie
+## nimmt beiden Mannschaften Angriffe, und wer mit acht Toren vorn liegt,
+## gewinnt auch mit sechs.
+const SCHONGANG_DAUER := 1.45
 const SCHONGANG_VOLL := 12.0
 
 ## Wie eine Mannschaft auf den Spielstand reagiert.
