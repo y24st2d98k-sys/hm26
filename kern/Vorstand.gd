@@ -151,21 +151,22 @@ static func _konsequenzen(d: Dictionary, cid: String, platz: int, gewicht: float
 		Welt.nachricht({
 			"typ": "vorstand", "wichtig": true,
 			"betreff": "Der Vorstand ist unzufrieden",
-			"text": "Platz %d entspricht nicht dem Saisonziel (%s). Der Vorstand erwartet in den nächsten Wochen eine deutliche Reaktion." % [platz, v["vorstand"]["saisonziel"]],
+			"text": "Platz %d entspricht nicht dem Saisonziel (%s). %s" % [platz,
+				v["vorstand"]["saisonziel"], Namen.waehle(Textbank.VORSTAND_MAHNUNG)],
 		})
 	elif vertrauen < 14.0 and warnstufe < 2:
 		v["vorstand"]["warnstufe"] = 2
 		Welt.nachricht({
 			"typ": "vorstand", "wichtig": true,
 			"betreff": "Letzte Warnung",
-			"text": "Der Vorstand hat eine Krisensitzung einberufen. Ohne Ergebnisse in den nächsten Partien wird über Ihre Zukunft entschieden.",
+			"text": "%s Ohne Ergebnisse in den nächsten Partien wird über Ihre Zukunft entschieden." % Namen.waehle(Textbank.VORSTAND_WARNUNG),
 		})
 	elif vertrauen > 45.0 and warnstufe > 0:
 		v["vorstand"]["warnstufe"] = 0
 		Welt.nachricht({
 			"typ": "vorstand",
 			"betreff": "Rückendeckung",
-			"text": "Der Vorstand stellt sich öffentlich hinter Sie. Die Krise gilt als überwunden.",
+			"text": "%s Die Krise gilt als überwunden." % Namen.waehle(Textbank.VORSTAND_ZUFRIEDEN),
 		})
 	# Entlassen wird nur, wer nach ausdruecklicher Warnung nicht reagiert.
 	if vertrauen < 8.0 and gewicht > 0.3 and warnstufe >= 2:

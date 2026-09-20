@@ -917,7 +917,7 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary, grunddiff:
 		_wurf_notieren(a, pos, "vorbei")
 		zst["bewertung"] += 0.16
 		_bewertung_dampfen(zst)
-		var t1 := "%s setzt den Ball an den Pfosten." % Spielerfabrik.kurz_name(sp) if rng.randf() < 0.4 else "%s wirft vorbei." % Spielerfabrik.kurz_name(sp)
+		var t1 := Textbank.satz(Textbank.FEHLWURF, rng, Spielerfabrik.kurz_name(sp))
 		_warteschlange.append(_ereignis("fehlwurf", _seite(a), schuetze, t1, {"position": pos}))
 		_puls_aendern(a, -2.0)
 		return {"gegenstoss": rng.randf() < 0.19}
@@ -1173,25 +1173,14 @@ func _tor(a: Dictionary, v: Dictionary, schuetze: String, pos: String, ist_7m: b
 func _tortext(sp: Dictionary, pos: String, ist_7m: bool, assist: String, a: Dictionary) -> String:
 	var n := Spielerfabrik.kurz_name(sp)
 	if ist_7m:
-		return "%s verwandelt den Siebenmeter sicher." % n
+		return Textbank.satz(Textbank.TOR["SIEBENMETER"], rng, n)
 	if _gegenstoss:
-		return "Tempogegenstoß! %s schließt eiskalt ab." % n
+		return Textbank.satz(Textbank.TOR["GEGENSTOSS"], rng, n)
 	if a["sieben_gegen_sechs"]:
-		return "Im 7-gegen-6 findet %s die Lücke." % n
-	var varianten: Array = []
-	match pos:
-		"KM":
-			varianten = ["%s dreht sich am Kreis durch." % n, "Anspiel an den Kreis — %s trifft." % n,
-				"%s setzt sich im Zweikampf durch und trifft." % n]
-		"LA", "RA":
-			varianten = ["%s fliegt vom Flügel ein." % n, "%s hebelt den Torwart vom Flügel aus." % n,
-				"Sauberer Winkel: %s trifft von außen." % n]
-		"RM":
-			varianten = ["%s zieht selbst ab und trifft." % n, "%s findet die Lücke im Zentrum." % n]
-		_:
-			varianten = ["%s hämmert den Ball aus dem Rückraum ins Netz." % n,
-				"Schlagwurf von %s — drin." % n, "%s trifft nach Doppelpass aus dem Rückraum." % n]
-	var t := str(varianten[rng.randi_range(0, varianten.size() - 1)])
+		return Textbank.satz(Textbank.TOR["SIEBEN_GEGEN_SECHS"], rng, n)
+	# Die Sätze stehen in kern/Textbank.gd, gezogen wird mit dem Generator
+	# dieser Partie: derselbe Anwurf ergibt denselben Ticker.
+	var t := Textbank.satz(Textbank.tortexte(pos), rng, n)
 	if assist != "":
 		t += " Vorarbeit: %s." % Spielerfabrik.kurz_name(daten["spieler"][assist])
 	return t
@@ -1228,9 +1217,8 @@ func _parade(a: Dictionary, v: Dictionary, schuetze: String, tw: String, pos: St
 	var zs: Dictionary = a["zustand"][schuetze]
 	zs["bewertung"] += 0.1
 	_bewertung_dampfen(zs)
-	var text := "Parade!"
-	if tw != "":
-		text = "%s pariert den Wurf von %s." % [Spielerfabrik.kurz_name(daten["spieler"][tw]), Spielerfabrik.kurz_name(daten["spieler"][schuetze])]
+	var text := Textbank.satz(Textbank.PARADE, rng,
+		Spielerfabrik.kurz_name(daten["spieler"][tw]) if tw != "" else "Der Torwart")
 	_puls_aendern(v, 5.0 if v["ist_heim"] else -3.0)
 	_warteschlange.append(_ereignis("parade", _seite(v), tw, text, {"position": pos, "schuetze": schuetze}))
 	return {"gegenstoss": rng.randf() < 0.29}
@@ -1241,7 +1229,7 @@ func _block(a: Dictionary, v: Dictionary, schuetze: String, pos: String) -> Dict
 	if blocker != "":
 		v["zustand"][blocker]["blocks"] += 1
 		v["zustand"][blocker]["bewertung"] -= 0.12
-	var text := "Block! Der Wurf von %s wird abgewehrt." % Spielerfabrik.kurz_name(daten["spieler"][schuetze])
+	var text := Textbank.satz(Textbank.BLOCK, rng, Spielerfabrik.kurz_name(daten["spieler"][schuetze]))
 	if blocker != "":
 		text = "%s stellt sich in den Wurf von %s." % [Spielerfabrik.kurz_name(daten["spieler"][blocker]), Spielerfabrik.kurz_name(daten["spieler"][schuetze])]
 	_warteschlange.append(_ereignis("block", _seite(v), blocker, text, {"position": pos}))
@@ -1262,7 +1250,7 @@ func _ballverlust(a: Dictionary, v: Dictionary, ursache: String = "") -> Diction
 		v["zustand"][gewinner]["bewertung"] -= 0.1
 	var arten := ["Schrittfehler", "Stürmerfoul", "technischer Fehler", "Fehlpass", "Doppelfehler"]
 	var art := ursache if ursache != "" else str(arten[rng.randi_range(0, arten.size() - 1)])
-	var text := "%s: %s." % [art, Spielerfabrik.kurz_name(daten["spieler"][verursacher])] if verursacher != "" else "Ballverlust."
+	var text := "%s: %s." % [art, Spielerfabrik.kurz_name(daten["spieler"][verursacher])] if verursacher != "" else Textbank.satz(Textbank.BALLVERLUST, rng)
 	var leeres_tor_risiko: float = LEERES_TOR_WURF
 	if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "hasardeur"):
 		leeres_tor_risiko = 0.26
@@ -1672,7 +1660,7 @@ func _lauf_aktualisieren(seite: String) -> void:
 		var t: Dictionary = heim if seite == "heim" else gast
 		_puls_aendern(t, 3.0 if t["ist_heim"] else -2.5)
 		if int(lauf["tore"]) == 3 or int(lauf["tore"]) == 5:
-			_warteschlange.append(_ereignis("lauf", seite, "", "%d Tore in Folge für %s!" % [int(lauf["tore"]), t["name"]]))
+			_warteschlange.append(_ereignis("lauf", seite, "", Textbank.satz(Textbank.LAUF, rng, [int(lauf["tore"]), t["name"]])))
 
 # ---------------------------------------------------------- Wechsel / KI ---
 

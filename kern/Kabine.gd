@@ -234,11 +234,11 @@ static func gespraech(d: Dictionary, sid: String, tonlage: String) -> Dictionary
 		match tonlage:
 			"lob":
 				moral_delta = 6.0
-				text = "%s nimmt das Lob dankbar an." % Spielerfabrik.kurz_name(sp)
+				text = str(Namen.waehle(Textbank.SPIELER_LOB_ANGENOMMEN)) % Spielerfabrik.kurz_name(sp)
 			"kritik":
 				moral_delta = -2.0
 				unzufrieden_delta = -14.0
-				text = "%s nimmt die Kritik an und verspricht mehr Einsatz." % Spielerfabrik.kurz_name(sp)
+				text = str(Namen.waehle(Textbank.SPIELER_KRITIK_ANGENOMMEN)) % Spielerfabrik.kurz_name(sp)
 			"vertrauen":
 				moral_delta = 9.0
 				unzufrieden_delta = -18.0
@@ -251,11 +251,11 @@ static func gespraech(d: Dictionary, sid: String, tonlage: String) -> Dictionary
 		match tonlage:
 			"lob":
 				moral_delta = 1.0
-				text = "%s wirkt unbeeindruckt." % Spielerfabrik.kurz_name(sp)
+				text = str(Namen.waehle(Textbank.SPIELER_LOB_ABGEPRALLT)) % Spielerfabrik.kurz_name(sp)
 			"kritik":
 				moral_delta = -9.0
 				unzufrieden_delta = 12.0
-				text = "%s fühlt sich ungerecht behandelt." % Spielerfabrik.kurz_name(sp)
+				text = str(Namen.waehle(Textbank.SPIELER_KRITIK_ABGEPRALLT)) % Spielerfabrik.kurz_name(sp)
 			"vertrauen":
 				moral_delta = -2.0
 				text = "%s bleibt skeptisch." % Spielerfabrik.kurz_name(sp)

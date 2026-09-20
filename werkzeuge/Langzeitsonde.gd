@@ -51,9 +51,19 @@ func _ready() -> void:
 
 	_log("%-8s %6s %7s %8s %10s %9s %8s" % ["Saison", "Platz", "Punkte", "Kader Ø",
 		"Ligaschnitt", "Abstand", "u23 Ø"])
+	# Der Bericht wird nicht an der Unterbrechung "saisonende" gezogen.
+	#
+	# Die Sonde ruft Welt.saison_pruefen() nach jeder Partie selbst auf, und
+	# dabei kann der Saisonwechsel schon durchgelaufen sein, bevor die
+	# Unterbrechung hier ankommt. Gemeldet wurden dann Platz 18 mit null
+	# Punkten und ein Ligaschnitt von 58 — die frisch zurueckgesetzte Tabelle
+	# der neuen Spielzeit. Stattdessen wird jeden Tag ein Abzug mitgefuehrt
+	# und der letzte vor dem Wechsel gedruckt.
 	var saison := 0
 	var tage := 0
 	var wochentag := -1
+	var letzter_stand: Array = []
+	var saison_index: int = Welt.saison_index()
 	while saison < spielzeiten and tage < spielzeiten * 380:
 		var u := Welt.tag_weiter()
 		tage += 1
@@ -64,19 +74,23 @@ func _ready() -> void:
 			if art == "gut":
 				_besser_arbeiten(d, cid)
 		wochentag = wt
-		if u.has("art"):
-			match str(u["art"]):
-				"eigenes_spiel":
-					Welt.partie_simulieren(str(u["spiel"]))
-					Welt.spieltag_abwickeln(Welt.tag())
-					Welt.wochenrhythmus(Welt.tag())
-					Welt.saison_pruefen(Welt.tag())
-				"saisonende":
-					_bericht(d, cid, saison)
-					saison += 1
+		if u.has("art") and str(u["art"]) == "eigenes_spiel":
+			Welt.partie_simulieren(str(u["spiel"]))
+			Welt.spieltag_abwickeln(Welt.tag())
+			Welt.wochenrhythmus(Welt.tag())
+			Welt.saison_pruefen(Welt.tag())
 		if Welt.mein_verein_id == "":
 			_log("   Verein nach %d Tagen verloren — entlassen." % tage)
 			break
+		var stand := _abzug(d, cid)
+		if not stand.is_empty():
+			letzter_stand = stand
+		var jetzt: int = Welt.saison_index()
+		if jetzt != saison_index:
+			saison_index = jetzt
+			if not letzter_stand.is_empty():
+				_drucken(saison, letzter_stand)
+			saison += 1
 	_log("")
 	_log("Ein Abstand, der von Spielzeit zu Spielzeit wächst, heißt: die Liga kippt.")
 	get_tree().quit()
@@ -100,14 +114,17 @@ func _besser_arbeiten(d: Dictionary, cid: String) -> void:
 		if int(sp["alter"]) <= 23:
 			sp["trainingsfokus"] = "athletik" if int(sp["alter"]) <= 20 else "wurf"
 
-func _bericht(d: Dictionary, cid: String, saison: int) -> void:
+## Der heutige Stand als Zahlenreihe. Leer, solange noch keine Partie gespielt
+## ist — eine Tabelle mit null Spielen sagt nichts.
+func _abzug(d: Dictionary, cid: String) -> Array:
 	if not (d.get("vereine", {}) as Dictionary).has(cid):
-		return
+		return []
 	var lid: String = str(d["vereine"][cid]["liga"])
-	var tabelle: Array = Spielplan.tabelle_sortiert(d, lid)
-	var platz: int = tabelle.find(cid) + 1
 	var zeile: Dictionary = (d["ligen"][lid]["tabelle"] as Dictionary).get(cid,
 		Spielplan.leere_tabellenzeile())
+	if int(zeile["sp"]) <= 0:
+		return []
+	var tabelle: Array = Spielplan.tabelle_sortiert(d, lid)
 	var eigen: float = _staerke(d, cid)
 	var summe := 0.0
 	var anzahl := 0
@@ -115,8 +132,13 @@ func _bericht(d: Dictionary, cid: String, saison: int) -> void:
 		summe += _staerke(d, str(c))
 		anzahl += 1
 	var schnitt: float = summe / maxf(float(anzahl), 1.0)
-	_log("%-8d %6d %7d %8.1f %10.1f %9.1f %8.1f" % [saison + 1, platz, int(zeile["punkte"]),
-		eigen, schnitt, eigen - schnitt, _jung(d, cid)])
+	return [float(tabelle.find(cid) + 1), float(int(zeile["punkte"])), eigen, schnitt,
+		eigen - schnitt, _jung(d, cid), float(int(zeile["sp"]))]
+
+func _drucken(saison: int, stand: Array) -> void:
+	_log("%-8d %6d %7d %8.1f %10.1f %9.1f %8.1f   (%d Spiele)" % [saison + 1,
+		int(stand[0]), int(stand[1]), float(stand[2]), float(stand[3]), float(stand[4]),
+		float(stand[5]), int(stand[6])])
 
 ## Die acht Stärksten — sie beschreiben eine Mannschaft besser als der
 ## Kaderschnitt, in dem der dritte Torwart mitzählt.

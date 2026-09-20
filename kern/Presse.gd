@@ -65,34 +65,28 @@ static func _erzeugen(d: Dictionary, cid: String, spiel: Dictionary, gegner: Str
 
 # ------------------------------------------------------------- Fragen ---
 
+## Eine Frage zum Gegner. Welche Liste gezogen wird, haengt an der Lage; die
+## Saetze selbst stehen in kern/Textbank.gd.
+##
+## Vorher stand hier genau eine Frage je Lage mit vier festen Antworten. Nach
+## zwei Spieltagen kannte man sie auswendig, und eine Pressekonferenz, deren
+## Fragen man auswendig kennt, ist ein Formular.
 static func _frage_gegner(d: Dictionary, cid: String, gegner: String, spiel: Dictionary) -> Dictionary:
 	var v: Dictionary = d["vereine"][cid]
 	var g: Dictionary = d["vereine"][gegner]
 	var staerker: bool = float(v["ruf"]) > float(g["ruf"]) + 8.0
 	var derby: bool = float((v["rivalen"] as Dictionary).get(gegner, 0.0)) > 45.0
-	var frage := "Wie gehen Sie die Partie gegen %s an?" % str(g["name"])
+	var quelle: Array = Textbank.PRESSE_GEGNER
 	if derby:
-		frage = "Derby gegen %s — was bedeutet dieses Spiel für Sie?" % str(g["name"])
+		quelle = Textbank.PRESSE_DERBY
 	elif not staerker:
-		frage = "%s gilt als Favorit. Sehen Sie das auch so?" % str(g["name"])
-	return {
-		"frage": frage,
-		"antworten": [
-			{"text": "Wir sind klar besser und werden das zeigen.",
-			 "fans": 3.0, "vorstand": 0.0, "moral": 2.0, "gegner_motivation": 0.045,
-			 "echo": "Selbstbewusste Ansage vor dem Spiel."},
-			{"text": "Ein starker Gegner. Wir müssen an unser Limit gehen.",
-			 "fans": 0.5, "vorstand": 1.0, "moral": 0.5, "gegner_motivation": -0.015,
-			 "echo": "Respektvolle Töne vor dem Anpfiff."},
-			{"text": "Über den Gegner rede ich nicht, nur über uns.",
-			 "fans": -1.0, "vorstand": 0.5, "moral": 1.0, "gegner_motivation": 0.0,
-			 "echo": "Wortkarg vor dem Spiel."},
-			{"text": "Wir sind Außenseiter, der Druck liegt woanders.",
-			 "fans": -2.0, "vorstand": -0.5, "moral": 3.0, "gegner_motivation": 0.02,
-			 "echo": "Der Trainer nimmt seiner Mannschaft die Last."},
-		],
-	}
+		quelle = Textbank.PRESSE_AUSSENSEITER
+	var vorlage: Dictionary = Namen.waehle(quelle)
+	var frage: Dictionary = vorlage.duplicate(true)
+	frage["frage"] = str(frage["frage"]) % str(g["name"]) if str(frage["frage"]).contains("%s") else str(frage["frage"])
+	return frage
 
+## Eine Frage zur Lage: Krise, Hoehenflug oder der eigene Stuhl.
 static func _frage_lage(d: Dictionary, cid: String) -> Dictionary:
 	var v: Dictionary = d["vereine"][cid]
 	var kurve: Array = v["formkurve"]
@@ -104,80 +98,49 @@ static func _frage_lage(d: Dictionary, cid: String) -> Dictionary:
 		if str(kurve[i]) == "N":
 			niederlagen += 1
 	if niederlagen >= 3:
-		return {
-			"frage": "Drei Niederlagen nacheinander. Was läuft schief?",
-			"antworten": [
-				{"text": "Die Mannschaft arbeitet hart, das dreht sich wieder.",
-				 "fans": 0.0, "vorstand": 0.5, "moral": 3.0, "gegner_motivation": 0.0,
-				 "echo": "Rückendeckung für die Mannschaft."},
-				{"text": "Das war zu wenig. So kann es nicht weitergehen.",
-				 "fans": 3.0, "vorstand": 1.5, "moral": -3.5, "gegner_motivation": 0.0,
-				 "echo": "Deutliche Kritik an der eigenen Mannschaft."},
-				{"text": "Verletzungen und der Terminplan fordern ihren Tribut.",
-				 "fans": -2.5, "vorstand": -1.5, "moral": 1.0, "gegner_motivation": 0.0,
-				 "echo": "Der Trainer verweist auf die Umstände."},
-				{"text": "Die Verantwortung dafür trage ich.",
-				 "fans": 2.0, "vorstand": -0.5, "moral": 2.5, "gegner_motivation": 0.0,
-				 "echo": "Der Trainer nimmt die Schuld auf sich."},
-			],
-		}
+		return (Namen.waehle(Textbank.PRESSE_KRISE) as Dictionary).duplicate(true)
 	if platz > 0 and platz <= 2 and int(liga["tabelle"].get(cid, {}).get("sp", 0)) >= 8:
-		return {
-			"frage": "Platz %d — reden Sie schon von der Meisterschaft?" % platz,
-			"antworten": [
-				{"text": "Ja. Wir wollen diesen Titel.",
-				 "fans": 4.0, "vorstand": 1.0, "moral": 1.5, "gegner_motivation": 0.035,
-				 "echo": "Der Trainer ruft das Titelziel aus."},
-				{"text": "Wir schauen von Spiel zu Spiel.",
-				 "fans": 0.0, "vorstand": 1.0, "moral": 0.5, "gegner_motivation": 0.0,
-				 "echo": "Betont nüchtern trotz Tabellenführung."},
-				{"text": "Dafür ist es viel zu früh.",
-				 "fans": -1.5, "vorstand": 0.5, "moral": 1.0, "gegner_motivation": -0.01,
-				 "echo": "Der Trainer bremst die Erwartungen."},
-			],
-		}
+		var hoch: Dictionary = (Namen.waehle(Textbank.PRESSE_HOEHENFLUG) as Dictionary).duplicate(true)
+		if str(hoch["frage"]).contains("%d"):
+			hoch["frage"] = str(hoch["frage"]) % platz
+		return hoch
 	if float(v["vorstand"]["vertrauen"]) < 35.0:
-		return {
-			"frage": "Wie sicher ist Ihr Stuhl noch?",
-			"antworten": [
-				{"text": "Ich mache mir keine Gedanken darüber.",
-				 "fans": 0.0, "vorstand": 0.0, "moral": 1.0, "gegner_motivation": 0.0,
-				 "echo": "Gelassen trotz der Lage."},
-				{"text": "Das entscheidet der Vorstand, nicht ich.",
-				 "fans": -2.0, "vorstand": -1.5, "moral": -1.5, "gegner_motivation": 0.0,
-				 "echo": "Der Trainer weicht aus."},
-				{"text": "Ich stehe für meine Arbeit ein. Die Ergebnisse kommen.",
-				 "fans": 2.5, "vorstand": 2.0, "moral": 2.0, "gegner_motivation": 0.0,
-				 "echo": "Kämpferischer Auftritt."},
-			],
-		}
+		return (Namen.waehle(Textbank.PRESSE_STUHL) as Dictionary).duplicate(true)
 	return {}
 
+## Eine Frage zu einem einzelnen Spieler — zum Wechselwilligen, zum Mann in
+## Form oder zum Nachwuchs, der nicht spielt.
 static func _frage_spieler(d: Dictionary, cid: String) -> Dictionary:
-	var kandidat := ""
+	var wechsler := ""
+	var bester := ""
+	var beste_note := 9.0
+	var jung := 0
 	for sid in d["vereine"][cid]["kader"]:
 		var sp: Dictionary = d["spieler"][sid]
-		if bool(sp.get("transferwunsch", false)):
-			kandidat = sid
-			break
-	if kandidat == "":
+		if bool(sp.get("transferwunsch", false)) and wechsler == "":
+			wechsler = sid
+		var note: float = Spielerfabrik.note(sp)
+		if note > 0.0 and note < beste_note and int(sp["stats"]["saison"]["spiele"]) >= 4:
+			beste_note = note
+			bester = sid
+		if int(sp["alter"]) <= 21:
+			jung += 1
+	var moeglich: Array = []
+	if wechsler != "":
+		moeglich.append({"index": 0, "spieler": wechsler})
+	if bester != "" and beste_note <= 2.6:
+		moeglich.append({"index": 1, "spieler": bester})
+	if jung >= 2:
+		moeglich.append({"index": 2, "spieler": ""})
+	if moeglich.is_empty():
 		return {}
-	var sp2: Dictionary = d["spieler"][kandidat]
-	return {
-		"frage": "%s soll wechseln wollen. Bleibt er?" % Spielerfabrik.voller_name(sp2),
-		"spieler": kandidat,
-		"antworten": [
-			{"text": "Er ist unverkäuflich. Punkt.",
-			 "fans": 3.0, "vorstand": -1.5, "moral": 0.0, "spieler_moral": 6.0, "gegner_motivation": 0.0,
-			 "echo": "Klares Bekenntnis zum Leistungsträger."},
-			{"text": "Bei einem passenden Angebot reden wir.",
-			 "fans": -2.0, "vorstand": 1.5, "moral": -0.5, "spieler_moral": -5.0, "gegner_motivation": 0.0,
-			 "echo": "Der Trainer lässt einen Abgang offen."},
-			{"text": "Das ist Vereinssache, nicht meine.",
-			 "fans": -0.5, "vorstand": 0.5, "moral": 0.0, "spieler_moral": -1.5, "gegner_motivation": 0.0,
-			 "echo": "Der Trainer verweist an die Vereinsführung."},
-		],
-	}
+	var wahl: Dictionary = Namen.waehle(moeglich)
+	var vorlage: Dictionary = (Textbank.PRESSE_SPIELER[int(wahl["index"])] as Dictionary).duplicate(true)
+	var sid2: String = str(wahl["spieler"])
+	if sid2 != "" and str(vorlage["frage"]).contains("%s"):
+		vorlage["frage"] = str(vorlage["frage"]) % Spielerfabrik.voller_name(d["spieler"][sid2])
+		vorlage["spieler"] = sid2
+	return vorlage
 
 # ----------------------------------------------------------- Antworten ---
 
@@ -231,10 +194,10 @@ static func _fanreaktion(zeilen: Array, stimmung: float) -> String:
 	if zeilen.is_empty():
 		return "Wieder nichts Konkretes auf der PK."
 	if stimmung > 65.0:
-		return "Endlich mal einer, der sagt, was Sache ist."
+		return str(Namen.waehle(Textbank.FANECHO["gut"]))
 	if stimmung < 40.0:
-		return "Große Worte. Auf dem Feld sehen wir davon wenig."
-	return "Solide PK. Zählen tut trotzdem nur Samstag."
+		return str(Namen.waehle(Textbank.FANECHO["schlecht"]))
+	return str(Namen.waehle(Textbank.FANECHO["mittel"]))
 
 ## Überspringt eine offene Konferenz (kostet Sympathie).
 static func absagen(d: Dictionary) -> void:
