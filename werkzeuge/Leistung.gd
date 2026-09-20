@@ -16,6 +16,13 @@ func _ready() -> void:
 	Welt.neues_spiel(cid, {"vorname": "Leis", "nachname": "Tung",
 		"hintergrund": "spieler", "nation": "de", "alter": 44}, 20260913)
 	_log("Neues Spiel anlegen: %d ms" % (Time.get_ticks_msec() - start))
+	# Der Spielstand am ersten Tag als Bezugsgroesse: waechst er im Lauf einer
+	# Saison stark, liegt es an den Partien; ist er von Anfang an gross, an
+	# der Welt selbst. Ohne beide Zahlen raet man.
+	var t_erst := Time.get_ticks_msec()
+	Welt.speichern(9, "Leistungstest")
+	_log("Speichern am ersten Tag: %d ms, %.1f MB" % [Time.get_ticks_msec() - t_erst,
+		_slotgroesse() / 1048576.0])
 	_log("Spieler in der Welt: %d, Vereine: %d" % [
 		(Welt.daten["spieler"] as Dictionary).size(), (Welt.daten["vereine"] as Dictionary).size()])
 
@@ -80,12 +87,7 @@ func _ready() -> void:
 	var t3 := Time.get_ticks_msec()
 	Welt.laden(9)
 	_log("Laden: %d ms" % (Time.get_ticks_msec() - t3))
-	var groesse := 0
-	var f := FileAccess.open(Welt.slot_pfad(9), FileAccess.READ)
-	if f != null:
-		groesse = f.get_length()
-		f.close()
-	_log("Spielstandgröße: %.1f MB" % (float(groesse) / 1048576.0))
+	_log("Spielstandgröße: %.1f MB" % (_slotgroesse() / 1048576.0))
 	Welt.slot_loeschen(9)
 	get_tree().quit()
 
@@ -102,3 +104,12 @@ func _kennzahlen(werte: Array, einheit: String) -> void:
 		float(sortiert[sortiert.size() / 2]), einheit,
 		float(sortiert[mini(int(float(sortiert.size()) * 0.95), sortiert.size() - 1)]), einheit,
 		float(sortiert[sortiert.size() - 1]), einheit])
+
+
+func _slotgroesse() -> float:
+	var f := FileAccess.open(Welt.slot_pfad(9), FileAccess.READ)
+	if f == null:
+		return 0.0
+	var g: int = f.get_length()
+	f.close()
+	return float(g)
