@@ -126,7 +126,9 @@ static func ablösevorstellung(d: Dictionary, sid: String) -> float:
 		faktor *= 0.9
 	if rest <= 0:
 		faktor = 0.0
-	return wert * faktor
+	# Wer begehrt ist, wird teurer. Das ist der ganze Unterschied
+	# zwischen einer Preisliste und einem Markt.
+	return (wert * faktor) * Konkurrenz.preisaufschlag(d, sid)
 
 # --------------------------------------------------------------- Angebote ---
 
@@ -194,6 +196,10 @@ static func tageswechsel(d: Dictionary) -> void:
 	d["transfermarkt"]["angebote"] = behalten
 	if Kalender.wochentag(int(d["tag"])) == 1:
 		_ki_transferrunde(d)
+		# Wer beobachtet und nicht handelt, verliert den Spieler an einen, der
+		# handelt. Das gilt nur fuer die Spieler, die der Mensch im Blick hat —
+		# alles andere erledigt die gewoehnliche Transferrunde.
+		Konkurrenz.wochenrunde(d)
 		# Auslaufende Vertraege werden das ganze Jahr ueber gesichert, nicht
 		# nur im offenen Fenster.
 		Vorvertrag.ki_runde(d)

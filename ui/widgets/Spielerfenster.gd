@@ -559,6 +559,7 @@ func _angebotsbereich(sp: Dictionary) -> void:
 	var gehaltswunsch: float = Spielerfabrik.gehaltsvorstellung(sp, float(Welt.mein_verein().get("ruf", 50.0)))
 	karte.add_child(Stil.matt("Geschätzte Ablöseforderung: %s · Gehaltsvorstellung: %s pro Woche" % [
 		"ablösefrei" if frei else Stil.geld(forderung), Stil.geld(gehaltswunsch)], Stil.S_KLEIN))
+	_konkurrenzzeile(karte)
 
 	# Die Anfrage. Sie steht vor allem anderen, weil sie zuerst kommt: erst
 	# fragt man, was der Verein will, dann bietet man. Die Schaetzung darueber
@@ -1102,3 +1103,29 @@ func _projektkarte(eltern: Node, sp: Dictionary) -> void:
 		_melde(str(erg["grund"]), bool(erg["ok"]))
 		_zeichne())
 	karte.add_child(los)
+
+
+## Wer sonst hinter ihm her ist.
+##
+## Ein Transfer war bisher ein Gespräch unter vier Augen: niemand sonst wollte
+## denselben Mann. Damit fehlte dem Markt die einzige Kraft, die ihn zu einem
+## Markt macht — dass ein anderer schneller sein kann. Hier steht sie, und
+## zwar bevor man bietet und nicht nachdem man ihn verloren hat.
+func _konkurrenzzeile(eltern: Node) -> void:
+	var liste: Array = Konkurrenz.interessenten(Welt.daten, sid)
+	var satz: String = Konkurrenz.lage(Welt.daten, sid)
+	var zeile := Stil.hbox(8)
+	eltern.add_child(zeile)
+	if liste.is_empty():
+		zeile.add_child(Stil.abzeichen("FREIE BAHN", Stil.GRUEN))
+		zeile.add_child(Bausteine.fliesstext(satz, Stil.S_MINI, null, 220.0))
+		return
+	var stufe: Color = Stil.ROT if liste.size() >= 3 else (
+		Stil.GELB if liste.size() == 2 else Stil.TEXT_MATT)
+	zeile.add_child(Stil.abzeichen("%d MITBEWERBER" % liste.size(), stufe))
+	zeile.add_child(Bausteine.fliesstext(satz, Stil.S_MINI, null, 220.0))
+	var aufschlag: float = Konkurrenz.preisaufschlag(Welt.daten, sid)
+	if aufschlag > 1.03:
+		var marke := Stil.abzeichen("+%d %% PREIS" % int(round((aufschlag - 1.0) * 100.0)), stufe)
+		marke.tooltip_text = "Die Nachfrage treibt Ablöse und Gehaltsvorstellung."
+		zeile.add_child(marke)
