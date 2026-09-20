@@ -195,20 +195,29 @@ static func wochenlogik(d: Dictionary) -> void:
 			# bis zum naechsten Pruefzeitpunkt kann viel passieren.
 			_notkader_sichern(d, cid)
 			continue
-		if Namen.zufall() < 0.06:
-			Ticketing.ki_preise(d, cid)
-		if Namen.zufall() < 0.12:
-			Darlehen.ki_pruefen(d, cid)
-		_trainingsplan(d, cid)
-		_videostudium(d, cid)
-		_vertraege_pflegen(d, cid)
-		kader_auffuellen(d, cid)
-		if Namen.zufall() < 0.05:
-			Mentoring.automatisch(d, cid)
-		if Namen.zufall() < 0.08:
-			_personal_pflegen(d, cid)
-		if Namen.zufall() < 0.1:
-			_infrastruktur(d, cid)
+		verein_fuehren(d, cid)
+
+## Eine Woche Vereinsführung, wie ein ordentlicher Manager sie erledigt.
+##
+## Steht als eigene Funktion da und nicht mehr im Schleifenrumpf, weil sie
+## auch für den Verein des Menschen zu gebrauchen ist — die Langzeitsonde
+## misst damit, was ein durchschnittlich kompetenter Manager über zehn
+## Spielzeiten erreicht, und ein Urlaubsmodus hätte hier seinen Platz.
+static func verein_fuehren(d: Dictionary, cid: String) -> void:
+	if Namen.zufall() < 0.06:
+		Ticketing.ki_preise(d, cid)
+	if Namen.zufall() < 0.12:
+		Darlehen.ki_pruefen(d, cid)
+	_trainingsplan(d, cid)
+	_videostudium(d, cid)
+	_vertraege_pflegen(d, cid)
+	kader_auffuellen(d, cid)
+	if Namen.zufall() < 0.05:
+		Mentoring.automatisch(d, cid)
+	if Namen.zufall() < 0.08:
+		_personal_pflegen(d, cid)
+	if Namen.zufall() < 0.1:
+		_infrastruktur(d, cid)
 
 ## Wie viel der Gegner vor dem Bildschirm sitzt.
 ##
