@@ -300,6 +300,27 @@ static func gegnervorteil(d: Dictionary, cid: String, gegner: String) -> float:
 
 # ---------------------------------------------------------- Darstellung ---
 
+## Der Irrtum eines Scouts ist keine Laune.
+##
+## Die Einschaetzung wurde bei jedem Zeichnen neu gewuerfelt. Damit sprang die
+## Perspektive eines Nachwuchsspielers zwischen zwei Klicks von
+## "Zweitliganiveau" auf "Nationalmannschaftsformat", und dieselbe
+## Attributspanne stand bei jedem Aufruf woanders. Wer so etwas sieht, glaubt
+## keiner Zahl im Spiel mehr — zu Recht, denn sie bedeutete nichts.
+##
+## Ein Scout liegt aber nicht bei jedem Hinsehen anders falsch. Er hat eine
+## Meinung: in eine bestimmte Richtung daneben, und je laenger er hinschaut,
+## desto naeher an der Wahrheit. Deshalb haengt der Irrtum am Spieler und
+## nicht am Augenblick. Abgeleitet wird er aus der Spielerkennung, damit er
+## ohne neues Feld auskommt und in aelteren Spielstaenden genauso gilt.
+##
+## Der Wert liegt zwischen -1 und 1 und wird mit der Unschaerfe skaliert, die
+## an der Kenntnis haengt. Steigt die Kenntnis, schrumpft die Unschaerfe, und
+## die Schaetzung wandert ruhig auf den echten Wert zu, statt zu flackern.
+static func _schaetzfehler(sp: Dictionary, feld: String) -> float:
+	var roh: int = absi(hash("%s|%s" % [str(sp.get("id", "")), feld]))
+	return float(roh % 2001 - 1000) / 1000.0
+
 ## Unschaerfe eines Attributs: liefert {min, max, sicher}
 static func schaetzung(d: Dictionary, sid: String, attribut: String) -> Dictionary:
 	var sp: Dictionary = d["spieler"][sid]
@@ -308,7 +329,7 @@ static func schaetzung(d: Dictionary, sid: String, attribut: String) -> Dictiona
 	if kenntnis >= 97.0:
 		return {"min": wert, "max": wert, "sicher": true}
 	var spanne: float = (100.0 - kenntnis) / 100.0 * 7.0
-	var versatz: float = Namen.bereich(-spanne * 0.3, spanne * 0.3)
+	var versatz: float = _schaetzfehler(sp, "attr:" + attribut) * spanne * 0.3
 	return {
 		"min": clampf(wert - spanne + versatz, 1.0, 20.0),
 		"max": clampf(wert + spanne + versatz, 1.0, 20.0),
@@ -331,15 +352,18 @@ static func gesamt_text(d: Dictionary, sid: String) -> String:
 	var spanne: float = (100.0 - kenntnis) / 100.0 * 14.0
 	return "%d–%d" % [int(round(maxf(g - spanne, 1.0))), int(round(minf(g + spanne, 99.0)))]
 
+## Was der Beobachter dem Spieler zutraut — die Zahl hinter dem Satz.
+static func potenzialschaetzung(d: Dictionary, sid: String) -> float:
+	var sp: Dictionary = d["spieler"][sid]
+	var unschaerfe: float = (100.0 - float(sp["kenntnis"])) / 100.0 * 18.0
+	return float(sp["potenzial"]) + _schaetzfehler(sp, "potenzial") * unschaerfe
+
 ## Potenzialbeschreibung statt nackter Zahl.
 static func potenzial_text(d: Dictionary, sid: String) -> String:
 	var sp: Dictionary = d["spieler"][sid]
-	var kenntnis: float = float(sp["kenntnis"])
-	var pot: float = float(sp["potenzial"])
-	if kenntnis < 35.0:
+	if float(sp["kenntnis"]) < 35.0:
 		return "kaum einzuschätzen"
-	var unschaerfe: float = (100.0 - kenntnis) / 100.0 * 18.0
-	var geschaetzt: float = pot + Namen.bereich(-unschaerfe, unschaerfe)
+	var geschaetzt: float = potenzialschaetzung(d, sid)
 	if geschaetzt >= 88.0:
 		return "Weltklassepotenzial"
 	elif geschaetzt >= 78.0:
@@ -361,7 +385,7 @@ static func tempo_text(d: Dictionary, sid: String) -> String:
 		return "Entwicklungstempo unklar"
 	var wert: float = float(sp.get("lernkurve", 1.0))
 	var unschaerfe: float = (100.0 - kenntnis) / 100.0 * 0.30
-	return Spielerfabrik.lernkurve_text(wert + Namen.bereich(-unschaerfe, unschaerfe))
+	return Spielerfabrik.lernkurve_text(wert + _schaetzfehler(sp, "lernkurve") * unschaerfe)
 
 ## Wie weit ein Spieler von seiner Decke entfernt ist (0..1).
 static func ausschoepfung(sp: Dictionary) -> float:
