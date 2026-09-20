@@ -198,3 +198,98 @@ static func formtabelle(d: Dictionary, cid: String) -> Array:
 		})
 	liste.sort_custom(func(a, b): return float(a["schnitt"]) < float(b["schnitt"]))
 	return liste
+
+
+# ============================================================ Glück & Pech ===
+#
+# Eine Spielzeit schwankt, und zwar stark: gemessen (werkzeuge/Saisonsonde.gd)
+# holt dieselbe Mannschaft mit demselben Kader und ohne eine einzige
+# Verletzung zwischen 22 und 43 Punkten — Streuung 6,9 Punkte, Platz 6 bis 15.
+# Das ist kein Fehler der Simulation, das ist Handball: fünfzig Würfe je
+# Mannschaft und ein Tor Unterschied entscheiden über zwei Punkte.
+#
+# Für den Spieler ist es trotzdem ein Ärgernis, solange es unerklärt bleibt.
+# Eine Saison, in der man alles richtig macht und Zwölfter wird, fühlt sich
+# willkürlich an — es sei denn, jemand sagt einem, dass die Tordifferenz für
+# Platz sieben gesprochen hätte. Dann ist es Pech, und Pech kann man ertragen.
+#
+# Gerechnet wird nicht mit einer Formel aus dem Fußball, sondern mit der Liga
+# selbst: eine Gerade durch die achtzehn Punkte (Tordifferenz je Spiel gegen
+# Punkte je Spiel) sagt, was diese Tordifferenz in dieser Liga wert ist.
+
+## Was die Tordifferenz an Punkten hergeben sollte.
+## {erwartet, tatsaechlich, differenz, spiele} — leer bei zu wenigen Partien.
+static func punkteerwartung(d: Dictionary, cid: String, in_liga: String = "") -> Dictionary:
+	var v: Dictionary = (d.get("vereine", {}) as Dictionary).get(cid, {})
+	if v.is_empty():
+		return {}
+	# Am Saisonende steht der Verein schon in der neuen Liga. Wer dann urteilt,
+	# muss sagen, welche Tabelle gemeint ist.
+	var lid: String = in_liga if in_liga != "" else str(v.get("liga", ""))
+	var liga: Dictionary = (d.get("ligen", {}) as Dictionary).get(lid, {})
+	if liga.is_empty():
+		return {}
+	var tab: Dictionary = liga.get("tabelle", {})
+	var xs: Array = []
+	var ys: Array = []
+	var eigen_x := 0.0
+	var eigen_y := 0.0
+	var eigene_spiele := 0
+	for c in (liga.get("vereine", []) as Array):
+		var z: Dictionary = tab.get(str(c), {})
+		var sp: int = int(z.get("sp", 0))
+		if sp < 4:
+			continue
+		var diff: float = float(int(z.get("tore", 0)) - int(z.get("gegentore", 0))) / float(sp)
+		var pkt: float = float(int(z.get("punkte", 0))) / float(sp)
+		xs.append(diff)
+		ys.append(pkt)
+		if str(c) == cid:
+			eigen_x = diff
+			eigen_y = pkt
+			eigene_spiele = sp
+	if xs.size() < 6 or eigene_spiele < 4:
+		return {}
+	var mx := 0.0
+	var my := 0.0
+	for i in xs.size():
+		mx += float(xs[i])
+		my += float(ys[i])
+	mx /= float(xs.size())
+	my /= float(ys.size())
+	var kov := 0.0
+	var varx := 0.0
+	for i in xs.size():
+		kov += (float(xs[i]) - mx) * (float(ys[i]) - my)
+		varx += (float(xs[i]) - mx) * (float(xs[i]) - mx)
+	if varx < 0.0001:
+		return {}
+	var steigung: float = kov / varx
+	var erwartet_je_spiel: float = my + steigung * (eigen_x - mx)
+	var erwartet: float = clampf(erwartet_je_spiel * float(eigene_spiele), 0.0,
+		float(eigene_spiele) * 2.0)
+	return {
+		"erwartet": erwartet,
+		"tatsaechlich": eigen_y * float(eigene_spiele),
+		"differenz": eigen_y * float(eigene_spiele) - erwartet,
+		"spiele": eigene_spiele,
+	}
+
+## Ein Satz dazu. Leer, wenn die Abweichung im Rauschen liegt.
+##
+## Die Schwelle liegt bei vier Punkten, also gut einer halben Streuung einer
+## Spielzeit. Darunter etwas zu behaupten hiesse, Rauschen zu deuten.
+const GLUECK_SCHWELLE := 4.0
+
+static func gluecksatz(d: Dictionary, cid: String, in_liga: String = "") -> String:
+	var e := punkteerwartung(d, cid, in_liga)
+	if e.is_empty():
+		return ""
+	var diff: float = float(e["differenz"])
+	if absf(diff) < GLUECK_SCHWELLE:
+		return "Punkte und Tordifferenz passen zusammen — die Tabelle sagt die Wahrheit über diese Saison."
+	if diff < 0.0:
+		return "Mit dieser Tordifferenz stünden hier eher %d Punkte. Es fehlen %d — die engen Spiele sind gegen Sie ausgegangen." % [
+			int(round(float(e["erwartet"]))), int(round(absf(diff)))]
+	return "Mit dieser Tordifferenz wären eher %d Punkte zu erwarten gewesen. Sie haben %d mehr — die engen Spiele sind für Sie ausgegangen." % [
+		int(round(float(e["erwartet"]))), int(round(diff))]

@@ -67,13 +67,14 @@ func _ready() -> void:
 	var tage := 0
 	var wochentag := -1
 	var letzter_stand: Array = []
+	var entlassen := false
 	var saison_index: int = Welt.saison_index()
 	while saison < spielzeiten and tage < spielzeiten * 380:
 		var u := Welt.tag_weiter()
 		tage += 1
 		# Einmal die Woche führen, wie die KI es für ihre Vereine tut.
 		var wt: int = Kalender.wochentag(Welt.tag())
-		if wt == 0 and wt != wochentag and Welt.mein_verein_id != "":
+		if wt == 0 and wt != wochentag and Welt.mein_verein_id != "" and not entlassen:
 			KI.verein_fuehren(d, cid)
 			if art == "gut":
 				_besser_arbeiten(d, cid)
@@ -83,14 +84,20 @@ func _ready() -> void:
 			Welt.spieltag_abwickeln(Welt.tag())
 			Welt.wochenrhythmus(Welt.tag())
 			Welt.saison_pruefen(Welt.tag())
-		if Welt.mein_verein_id == "":
-			# Erst die letzte Spielzeit drucken, dann abbrechen: die
+		if Welt.mein_verein_id == "" and not entlassen:
+			# Erst die letzte Spielzeit drucken, dann weitermachen: die
 			# Entlassung faellt am Saisonende, und ohne diese Reihenfolge
 			# stand von der Saison, die dazu gefuehrt hat, keine Zeile da.
+			#
+			# Abgebrochen wird nicht mehr. Die Frage dieser Sonde ist, ob die
+			# Liga kippt — und die Liga laeuft weiter, auch wenn der Trainer
+			# gehen musste. Bis hierher endete jeder Lauf nach zwei
+			# Spielzeiten, und die Frage blieb offen.
 			if not letzter_stand.is_empty():
 				_drucken(saison, letzter_stand)
-			_log("   Verein nach %d Tagen verloren — entlassen." % tage)
-			break
+				saison += 1
+			_log("   Nach %d Tagen entlassen. Die Messung laeuft ohne Verein weiter." % tage)
+			entlassen = true
 		var stand := _abzug(d, cid)
 		if not stand.is_empty():
 			letzter_stand = stand
@@ -102,7 +109,37 @@ func _ready() -> void:
 			saison += 1
 	_log("")
 	_log("Ein Abstand, der von Spielzeit zu Spielzeit wächst, heißt: die Liga kippt.")
+	_ligaspreizung(d, cid)
 	get_tree().quit()
+
+## Wie weit die Liga am Ende auseinanderliegt.
+##
+## Das ist die Frage hinter der Frage: nicht, ob ein Verein davonzieht,
+## sondern ob die Liga auseinanderfällt. Eine Liga, deren Streuung über acht
+## Spielzeiten wächst, hat ein Problem, egal wer oben steht.
+func _ligaspreizung(d: Dictionary, cid: String) -> void:
+	if not (d.get("vereine", {}) as Dictionary).has(cid):
+		return
+	var lid: String = str(d["vereine"][cid]["liga"])
+	var tabelle: Array = Spielplan.tabelle_sortiert(d, lid)
+	if tabelle.is_empty():
+		return
+	var werte: Array = []
+	for c in tabelle:
+		werte.append(_staerke(d, str(c)))
+	var summe := 0.0
+	for w in werte:
+		summe += float(w)
+	var mittel: float = summe / float(werte.size())
+	var quadrate := 0.0
+	for w2 in werte:
+		quadrate += (float(w2) - mittel) * (float(w2) - mittel)
+	werte.sort()
+	_log("")
+	_log("Liga am Ende: Schnitt %.1f, Streuung %.2f, stärkster %.1f, schwächster %.1f" % [
+		mittel, sqrt(quadrate / float(werte.size())), float(werte[werte.size() - 1]),
+		float(werte[0])])
+	_log("(Zum Vergleich der Beginn: Schnitt rund 79,7, Streuung rund 3,85, Spanne 13,2.)")
 
 ## Was ein Trainer zusätzlich tut, der sich wirklich kümmert.
 func _besser_arbeiten(d: Dictionary, cid: String) -> void:
@@ -129,6 +166,8 @@ func _abzug(d: Dictionary, cid: String) -> Array:
 	if not (d.get("vereine", {}) as Dictionary).has(cid):
 		return []
 	var lid: String = str(d["vereine"][cid]["liga"])
+	if lid == "":
+		return []
 	var zeile: Dictionary = (d["ligen"][lid]["tabelle"] as Dictionary).get(cid,
 		Spielplan.leere_tabellenzeile())
 	if int(zeile["sp"]) <= 0:

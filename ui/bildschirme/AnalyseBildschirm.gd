@@ -91,6 +91,30 @@ func _kennzahlen(eltern: Node, cid: String) -> void:
 		var gut: bool = delta < 0.0 if bool(w["niedriger_besser"]) else delta > 0.0
 		g.add_child(Stil.text("%s%s" % ["+" if delta >= 0.0 else "", Stil.komma(delta, 1)],
 			Stil.S_KLEIN, Stil.GRUEN if gut else (Stil.ROT if absf(delta) > 0.05 else Stil.TEXT_MATT)))
+	_gluecksrechnung(eltern, cid)
+
+## Wie viele Punkte die Tordifferenz eigentlich hergibt.
+func _gluecksrechnung(eltern: Node, cid: String) -> void:
+	var e: Dictionary = Saisonanalyse.punkteerwartung(Welt.daten, cid)
+	if e.is_empty():
+		return
+	var karte := Bausteine.karte_in(eltern, "Punkte und Tordifferenz")
+	var g := Stil.tabelle(["", "Punkte"])
+	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	karte.add_child(g)
+	g.add_child(Stil.text("Tatsächlich", Stil.S_KLEIN))
+	g.add_child(Stil.text(str(int(round(float(e["tatsaechlich"])))), Stil.S_KLEIN))
+	g.add_child(Stil.matt("Aus der Tordifferenz", Stil.S_KLEIN))
+	g.add_child(Stil.matt(str(int(round(float(e["erwartet"])))), Stil.S_KLEIN))
+	var diff: float = float(e["differenz"])
+	var farbe: Color = Stil.TEXT_MATT
+	if absf(diff) >= Saisonanalyse.GLUECK_SCHWELLE:
+		farbe = Stil.GRUEN if diff > 0.0 else Stil.ROT
+	g.add_child(Stil.text("Abstand", Stil.S_KLEIN))
+	g.add_child(Stil.text("%s%s" % ["+" if diff >= 0.0 else "", Stil.komma(diff, 1)], Stil.S_KLEIN, farbe))
+	var satz: String = Saisonanalyse.gluecksatz(Welt.daten, cid)
+	if satz != "":
+		karte.add_child(Bausteine.fliesstext(satz, Stil.S_MINI, null, 180.0))
 
 ## Wo über die Saison abgeschlossen wurde.
 func _wurfkarte(eltern: Node, cid: String) -> void:

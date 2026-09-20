@@ -196,6 +196,21 @@ static func _auf_und_abstieg(d: Dictionary) -> void:
 				Medien.saisonfazit(d, cid2, "Aufstieg geschafft!",
 					"%s spielt in der kommenden Saison in der %s. Der Verein feiert bis in die Nacht." % [d["vereine"][cid2]["name"], oben["name"]], "jubel")
 
+## In welcher Liga der Verein die abgelaufene Saison gespielt hat.
+##
+## Der Saisonabschluss verschiebt die Vereine zuerst zwischen den Ligen und
+## zieht danach Bilanz. Danach zeigt verein["liga"] schon auf die neue Liga,
+## und deren Abschlusstabelle kennt den Absteiger nicht. Wer von dort liest,
+## findet Platz 0 — und schweigt genau in der Saison, in der es am meisten zu
+## sagen gab. Darum wird die Liga über die Abschlusstabelle gesucht.
+static func _saisonliga(d: Dictionary, cid: String) -> Dictionary:
+	for lid in (d["ligen"] as Dictionary).keys():
+		var liga: Dictionary = d["ligen"][lid]
+		if (liga.get("abschlusstabelle", []) as Array).has(cid):
+			return liga
+	var jetzt: String = str((d["vereine"] as Dictionary).get(cid, {}).get("liga", ""))
+	return (d["ligen"] as Dictionary).get(jetzt, {})
+
 static func _trainerbilanz(d: Dictionary, mein: String) -> void:
 	var t: Dictionary = d.get("trainer", {})
 	if t.is_empty():
@@ -204,7 +219,7 @@ static func _trainerbilanz(d: Dictionary, mein: String) -> void:
 	if st.is_empty():
 		return
 	if mein != "" and d["vereine"].has(mein):
-		var liga: Dictionary = d["ligen"][d["vereine"][mein]["liga"]]
+		var liga: Dictionary = _saisonliga(d, mein)
 		var tabelle: Array = liga.get("abschlusstabelle", [])
 		var platz: int = tabelle.find(mein) + 1
 		var ziel: int = int(d["vereine"][mein]["vorstand"]["ziel_platz"])
@@ -230,10 +245,12 @@ static func _trainerbilanz(d: Dictionary, mein: String) -> void:
 const ZIEL_GEWICHT := 3.2
 const STAERKE_GEWICHT := 1.6
 const HOECHSTABZUG := 26.0
+## Wie viel Pech dem Vorstand vom Abzug hoechstens abhandelt.
+const PECH_MILDERUNG := 0.33
 
 static func _vorstandsbilanz(d: Dictionary, mein: String) -> void:
 	var v: Dictionary = d["vereine"][mein]
-	var liga: Dictionary = d["ligen"][v["liga"]]
+	var liga: Dictionary = _saisonliga(d, mein)
 	var tabelle: Array = liga.get("abschlusstabelle", [])
 	var platz: int = tabelle.find(mein) + 1
 	if platz <= 0:
@@ -244,6 +261,16 @@ static func _vorstandsbilanz(d: Dictionary, mein: String) -> void:
 	var ab_ziel: int = platz - ziel
 	var ab_kader: int = platz - erwartet
 	var wandel: float = -float(ab_ziel) * ZIEL_GEWICHT - float(ab_kader) * STAERKE_GEWICHT
+	# Ein Vorstand, der nur auf die Tabelle sieht, bestraft Pech wie Unfaehigkeit.
+	# Deshalb rechnet er nach, was die Tordifferenz an Punkten hergegeben haette
+	# — und nimmt vom Abzug hoechstens ein Drittel zurueck. Mehr nicht: die
+	# Tabelle bleibt das Urteil, die Rechnung ist nur ein Argument.
+	var erwartung: Dictionary = Saisonanalyse.punkteerwartung(d, mein, str(liga.get("id", "")))
+	var pech: float = 0.0
+	if not erwartung.is_empty():
+		pech = -float(erwartung["differenz"])
+	if wandel < 0.0 and pech >= Saisonanalyse.GLUECK_SCHWELLE:
+		wandel *= 1.0 - clampf(pech / 30.0, 0.0, PECH_MILDERUNG)
 	wandel = clampf(wandel, -HOECHSTABZUG, 20.0)
 	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + wandel, 0.0, 100.0)
 
@@ -262,6 +289,12 @@ static func _vorstandsbilanz(d: Dictionary, mein: String) -> void:
 			text += " Und das mit einem Kader, der für Platz %d gereicht hätte. Das wiegt schwer." % erwartet
 		else:
 			text += " Der Vorstand erwartet in der kommenden Saison eine deutliche Steigerung."
+	if pech >= Saisonanalyse.GLUECK_SCHWELLE:
+		text += " Eine Rechnung legt er dazu: Mit dieser Tordifferenz wären %d Punkte zu erwarten gewesen, es sind %d geworden. Die engen Spiele sind gegen Sie ausgegangen." % [
+			int(round(float(erwartung["erwartet"]))), int(round(float(erwartung["tatsaechlich"])))]
+	elif pech <= -Saisonanalyse.GLUECK_SCHWELLE:
+		text += " Eine Rechnung hält er allerdings fest: Die Tordifferenz hätte für %d Punkte gesprochen, es sind %d geworden. So knapp muss es nicht wieder aufgehen." % [
+			int(round(float(erwartung["erwartet"]))), int(round(float(erwartung["tatsaechlich"])))]
 	Welt.nachricht({"typ": "vorstand", "wichtig": true, "betreff": "Saisonbilanz des Vorstands", "text": text})
 	if float(v["vorstand"]["vertrauen"]) < 18.0:
 		Vorstand.entlassung(d, mein)
