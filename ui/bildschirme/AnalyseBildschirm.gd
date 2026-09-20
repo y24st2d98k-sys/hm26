@@ -71,6 +71,10 @@ func aktualisieren() -> void:
 	_kennzahlen(links, cid)
 	_wurfkarte(mitte, cid)
 	_torverlauf(rechts, cid)
+	# Die Glücksrechnung steht rechts und nicht unter den Kennzahlen: dort
+	# liegt sie neben dem Torverlauf, aus dem sie gerechnet ist, und die
+	# linke Spalte bleibt so hoch wie die anderen beiden.
+	_gluecksrechnung(rechts, cid)
 	_formtabelle(gruppe.feld("spieler"), cid)
 	_gespanne(gruppe.feld("gespanne"))
 
@@ -91,7 +95,6 @@ func _kennzahlen(eltern: Node, cid: String) -> void:
 		var gut: bool = delta < 0.0 if bool(w["niedriger_besser"]) else delta > 0.0
 		g.add_child(Stil.text("%s%s" % ["+" if delta >= 0.0 else "", Stil.komma(delta, 1)],
 			Stil.S_KLEIN, Stil.GRUEN if gut else (Stil.ROT if absf(delta) > 0.05 else Stil.TEXT_MATT)))
-	_gluecksrechnung(eltern, cid)
 
 ## Wie viele Punkte die Tordifferenz eigentlich hergibt.
 func _gluecksrechnung(eltern: Node, cid: String) -> void:
