@@ -120,7 +120,11 @@ func _ready() -> void:
 func _ligaspreizung(d: Dictionary, cid: String) -> void:
 	if not (d.get("vereine", {}) as Dictionary).has(cid):
 		return
+	# Immer die oberste Liga: Ist der eigene Verein abgestiegen, wäre die
+	# zweite Liga mit den Startwerten der ersten nicht vergleichbar.
 	var lid: String = str(d["vereine"][cid]["liga"])
+	var nid: String = str(d["ligen"][lid]["nation"])
+	lid = str((d["nationen"][nid]["ligen"] as Array)[0])
 	var tabelle: Array = Spielplan.tabelle_sortiert(d, lid)
 	if tabelle.is_empty():
 		return
