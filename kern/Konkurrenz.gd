@@ -18,11 +18,45 @@ const SCHWELLE := 0.42
 
 ## Die Vereine, die diesen Spieler wollen, mit ihrem Interesse (0 bis 1).
 ## [{verein, interesse, name}] — stärkstes Interesse zuerst.
+## Ein Tagesspeicher fuer die Interessentenliste.
+##
+## Gemessen hat der Transferbildschirm 10 152 ms gebraucht und einzelne
+## Tageswechsel bis 10 579 ms. Der Grund stand hier: die Abloesevorstellung
+## jedes Spielers fragt den Preisaufschlag, der Preisaufschlag die
+## Interessenten, und die Interessenten jeden der 156 Vereine der Welt —
+## jeden mit einem Durchlauf durch seinen Kader. Bei 3624 Spielern sind das
+## Millionen Schritte fuer eine Zahl, die sich an einem Tag nicht aendert.
+##
+## Also wird sie an einem Tag auch nur einmal gerechnet. Ein Transfer macht
+## den Speicher ungueltig, denn danach stimmt der Kader nicht mehr, aus dem
+## der Bedarf gelesen wurde.
+static var _speicher := {}
+static var _speicher_tag := -1
+
+static func speicher_leeren() -> void:
+	_speicher.clear()
+	_speicher_tag = -1
+
+## Wie weit ein Verein vom Niveau eines Spielers entfernt sein darf.
+##
+## Das ist nicht nur schneller, sondern richtiger: ein Verein, dessen Niveau
+## sechsundzwanzig Punkte neben dem Spieler liegt, ist kein Mitbewerber —
+## er kann ihn nicht bezahlen oder wuerde ihn nie aufstellen. Vorher konnte
+## ein solcher Verein ueber Bedarf und Plan trotzdem ueber die Schwelle
+## kommen.
+const NIVEAU_FENSTER := 26.0
+
 static func interessenten(d: Dictionary, sid: String) -> Array:
 	var aus: Array = []
 	var sp: Dictionary = (d.get("spieler", {}) as Dictionary).get(sid, {})
 	if sp.is_empty() or bool(sp.get("jugendspieler", false)):
 		return aus
+	var heute: int = Welt.tag()
+	if heute != _speicher_tag:
+		_speicher.clear()
+		_speicher_tag = heute
+	if _speicher.has(sid):
+		return (_speicher[sid] as Array).duplicate()
 	var verein: String = str(sp.get("verein", ""))
 	var staerke: float = Spielerfabrik.gesamt(sp)
 	var pos: String = str(sp["position"])
@@ -32,12 +66,19 @@ static func interessenten(d: Dictionary, sid: String) -> Array:
 		var v: Dictionary = d["vereine"][cid]
 		if bool(v.get("ist_nationalteam", false)) or bool(v.get("ist_mensch", false)):
 			continue
+		# Erst die billigen Ausschluesse, dann die teure Rechnung.
+		if (v.get("kader", []) as Array).size() >= 22:
+			continue
+		if absf(staerke - (float(v.get("ruf", 60.0)) * 0.9 + 6.0)) > NIVEAU_FENSTER:
+			continue
 		var wert: float = _interesse(d, cid, sp, staerke, pos)
 		if wert < SCHWELLE:
 			continue
 		aus.append({"verein": cid, "interesse": wert, "name": str(v["name"])})
 	aus.sort_custom(func(a, b): return float(a["interesse"]) > float(b["interesse"]))
-	return aus.slice(0, HOECHSTENS)
+	aus = aus.slice(0, HOECHSTENS)
+	_speicher[sid] = aus
+	return aus.duplicate()
 
 ## Wie sehr ein Verein diesen Spieler will.
 ##

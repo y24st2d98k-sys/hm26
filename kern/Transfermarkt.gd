@@ -93,13 +93,16 @@ static func suchen(d: Dictionary, filter: Dictionary, eigener_verein: String = "
 				continue
 		if filter.has("min_gesamt") and Spielerfabrik.gesamt(sp) < float(filter["min_gesamt"]):
 			continue
-		if filter.has("max_ablöse") and str(sp["verein"]) != "" and ablösevorstellung(d, sid) > float(filter["max_ablöse"]):
-			continue
 		if filter.has("max_gehalt") and Spielerfabrik.gehaltsvorstellung(sp, 60.0) > float(filter["max_gehalt"]):
 			continue
 		if filter.has("nation") and str(filter["nation"]) != "" and str(sp["nation"]) != str(filter["nation"]):
 			continue
 		if suchtext != "" and not Spielerfabrik.voller_name(sp).to_lower().contains(suchtext):
+			continue
+		# Zuletzt, weil es das Teuerste ist: die Abloesevorstellung fragt nach
+		# dem Preisaufschlag und der nach den Mitbewerbern. Vor den billigen
+		# Filtern gerechnet, kostete das den Transferbildschirm zehn Sekunden.
+		if filter.has("max_ablöse") and str(sp["verein"]) != "" and ablösevorstellung(d, sid) > float(filter["max_ablöse"]):
 			continue
 		treffer.append(sid)
 	treffer = Spielerfabrik.nach_staerke(d, treffer)
@@ -556,6 +559,9 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 	if von != "" and d["vereine"].has(von):
 		# Bevor der Kader ihn vergisst: wer geht, bleibt als Ehemaliger stehen.
 		Ehemalige.vermerken(d, von, sid, "transfer", nach, ablöse)
+		# Nach einem Wechsel stimmen die Kader nicht mehr, aus denen der
+		# Bedarf gelesen wurde.
+		Konkurrenz.speicher_leeren()
 		Projekte.aufgeben(d, von, sid)
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		Finanzen.buchen(d, von, ablöse, "Transfererlös %s" % Spielerfabrik.voller_name(sp), "transfer")
@@ -625,6 +631,7 @@ static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: 
 	sp["leihe"] = {"stammverein": von, "bis_saison": Welt.saison_index() + maxi(saisons, 1)}
 	if von != "" and d["vereine"].has(von):
 		Ehemalige.vermerken(d, von, sid, "leihe", nach, 0.0)
+		Konkurrenz.speicher_leeren()
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		aufstellung_saeubern(d, von, sid)
 	(d["vereine"][nach]["kader"] as Array).append(sid)
@@ -776,6 +783,7 @@ static func vertrag_aufloesen(d: Dictionary, sid: String) -> Dictionary:
 		return {"ok": false, "grund": "Die Abfindung von %s ist nicht finanzierbar." % Stil.geld(abfindung)}
 	Finanzen.buchen(d, cid, -abfindung, "Abfindung %s" % Spielerfabrik.voller_name(sp), "transfer")
 	Ehemalige.vermerken(d, cid, sid, "freistellung", "", 0.0)
+	Konkurrenz.speicher_leeren()
 	Projekte.aufgeben(d, cid, sid)
 	(d["vereine"][cid]["kader"] as Array).erase(sid)
 	aufstellung_saeubern(d, cid, sid)

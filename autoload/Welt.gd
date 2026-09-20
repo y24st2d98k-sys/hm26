@@ -32,6 +32,10 @@ func _ready() -> void:
 
 func neues_spiel(verein_id: String, trainer_daten: Dictionary, saat: int = 0, echte_welt: bool = true) -> void:
 	var s: int = saat if saat != 0 else int(Time.get_unix_time_from_system()) % 2147483647
+	# Der Tagesspeicher der Konkurrenz haengt an der Tageszahl. In einer neuen
+	# Welt faengt die wieder bei eins an — ohne Leeren antwortete er mit den
+	# Interessenten der vorigen Welt.
+	Konkurrenz.speicher_leeren()
 	daten = Weltgenerator.erzeuge(2026, s, echte_welt)
 	mein_verein_id = verein_id
 	var v: Dictionary = daten["vereine"][verein_id]
@@ -734,6 +738,7 @@ var ladefehler: String = ""
 
 func laden(slot: int) -> bool:
 	ladefehler = ""
+	Konkurrenz.speicher_leeren()
 	var pfad := slot_pfad(slot)
 	if not FileAccess.file_exists(pfad):
 		ladefehler = "Auf diesem Platz liegt kein Spielstand."
