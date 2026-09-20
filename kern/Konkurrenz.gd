@@ -33,7 +33,19 @@ const SCHWELLE := 0.42
 static var _speicher := {}
 static var _speicher_tag := -1
 
-static func speicher_leeren() -> void:
+## Ohne Argument alles, mit einem nur diesen Spieler.
+##
+## Der ganze Speicher darf nicht bei jedem Transfer fallen: die Wochenrunde
+## schliesst mehrere Geschaefte hintereinander, und jedes Leeren zwang die
+## naechsten Vereine, alles neu zu rechnen. Gemessen stieg der Tageswechsel
+## dadurch von 994 auf 1346 ms — schlechter als vor dem Speicher. Was ein
+## Transfer wirklich ungueltig macht, ist der Eintrag des gewechselten
+## Spielers; dass ein Kader anderswo um einen Mann groesser ist, verschiebt
+## das Interesse an allen anderen nicht messbar.
+static func speicher_leeren(sid: String = "") -> void:
+	if sid != "":
+		_speicher.erase(sid)
+		return
 	_speicher.clear()
 	_speicher_tag = -1
 

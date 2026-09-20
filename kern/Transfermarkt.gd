@@ -559,9 +559,8 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 	if von != "" and d["vereine"].has(von):
 		# Bevor der Kader ihn vergisst: wer geht, bleibt als Ehemaliger stehen.
 		Ehemalige.vermerken(d, von, sid, "transfer", nach, ablöse)
-		# Nach einem Wechsel stimmen die Kader nicht mehr, aus denen der
-		# Bedarf gelesen wurde.
-		Konkurrenz.speicher_leeren()
+		# Nach einem Wechsel steht dieser Spieler bei einem anderen Verein.
+		Konkurrenz.speicher_leeren(sid)
 		Projekte.aufgeben(d, von, sid)
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		Finanzen.buchen(d, von, ablöse, "Transfererlös %s" % Spielerfabrik.voller_name(sp), "transfer")
@@ -631,7 +630,7 @@ static func leihe_vollziehen(d: Dictionary, sid: String, nach: String, saisons: 
 	sp["leihe"] = {"stammverein": von, "bis_saison": Welt.saison_index() + maxi(saisons, 1)}
 	if von != "" and d["vereine"].has(von):
 		Ehemalige.vermerken(d, von, sid, "leihe", nach, 0.0)
-		Konkurrenz.speicher_leeren()
+		Konkurrenz.speicher_leeren(sid)
 		(d["vereine"][von]["kader"] as Array).erase(sid)
 		aufstellung_saeubern(d, von, sid)
 	(d["vereine"][nach]["kader"] as Array).append(sid)
@@ -783,7 +782,7 @@ static func vertrag_aufloesen(d: Dictionary, sid: String) -> Dictionary:
 		return {"ok": false, "grund": "Die Abfindung von %s ist nicht finanzierbar." % Stil.geld(abfindung)}
 	Finanzen.buchen(d, cid, -abfindung, "Abfindung %s" % Spielerfabrik.voller_name(sp), "transfer")
 	Ehemalige.vermerken(d, cid, sid, "freistellung", "", 0.0)
-	Konkurrenz.speicher_leeren()
+	Konkurrenz.speicher_leeren(sid)
 	Projekte.aufgeben(d, cid, sid)
 	(d["vereine"][cid]["kader"] as Array).erase(sid)
 	aufstellung_saeubern(d, cid, sid)
@@ -806,6 +805,7 @@ static func _ki_transferrunde(d: Dictionary, dringlich: bool = false) -> void:
 	# paar Vereine handeln noch, nicht alle noch einmal.
 	var deckel: int = 5 if dringlich else 14
 	var neigung: float = 0.14 if dringlich else 0.35
+	var kandidaten := _rundenkandidaten(d)
 	for cid in vereine:
 		if cid == Welt.mein_verein_id:
 			if not dringlich:
@@ -815,10 +815,38 @@ static func _ki_transferrunde(d: Dictionary, dringlich: bool = false) -> void:
 			break
 		if Namen.zufall() > neigung:
 			continue
-		if _ki_verstaerkung(d, cid):
+		if _ki_verstaerkung(d, cid, kandidaten):
 			geschaefte += 1
 
-static func _ki_verstaerkung(d: Dictionary, cid: String) -> bool:
+## Die Kandidatenliste der Wochenrunde — einmal statt fuenfzigmal.
+##
+## Gemessen hat Transfermarkt.tageswechsel 36 von 65 Sekunden im Tageswechsel
+## gekostet, und zwar hier: jeder der bis zu sechsundfuenfzig handelnden
+## Vereine rief suchen() auf und durchlief dafuer alle 3624 Spieler der Welt,
+## um sie danach nach Staerke zu sortieren. Gesucht wird aber jedes Mal
+## dasselbe — die besten verfuegbaren Spieler je Position. Also wird die
+## Liste einmal je Runde gebaut und herumgereicht.
+##
+## Achtzig je Position statt der sechzig von suchen(): in der
+## gemeinsamen Liste stehen auch die eigenen Spieler des fragenden Vereins,
+## und die soll er nicht von seinen Kandidaten abziehen muessen.
+const KANDIDATEN_JE_POSITION := 80
+
+static func _rundenkandidaten(d: Dictionary) -> Dictionary:
+	var nach_pos := {}
+	for sid in (d["spieler"] as Dictionary).keys():
+		var sp: Dictionary = d["spieler"][sid]
+		if bool(sp.get("jugendspieler", false)):
+			continue
+		var pos: String = str(sp["position"])
+		if not nach_pos.has(pos):
+			nach_pos[pos] = []
+		(nach_pos[pos] as Array).append(str(sid))
+	for pos2 in nach_pos.keys():
+		nach_pos[pos2] = Spielerfabrik.nach_staerke(d, nach_pos[pos2]).slice(0, KANDIDATEN_JE_POSITION)
+	return nach_pos
+
+static func _ki_verstaerkung(d: Dictionary, cid: String, kandidaten: Dictionary = {}) -> bool:
 	var v: Dictionary = d["vereine"][cid]
 	var budget: float = float(v["transferbudget"])
 	if budget < 25000.0:
@@ -835,9 +863,10 @@ static func _ki_verstaerkung(d: Dictionary, cid: String) -> bool:
 	var schwaeche := schwaechste_position(d, cid)
 	if schwaeche == "":
 		return false
-	var kandidaten := suchen(d, {"position": schwaeche, "limit": 60}, cid)
+	var liste: Array = kandidaten.get(schwaeche, []) if not kandidaten.is_empty() \
+		else suchen(d, {"position": schwaeche, "limit": 60}, cid)
 	var kaderstaerke := _kaderstaerke(d, cid)
-	for sid in kandidaten:
+	for sid in liste:
 		var sp: Dictionary = d["spieler"][sid]
 		if str(sp["verein"]) == cid:
 			continue
