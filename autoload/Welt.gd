@@ -501,6 +501,7 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 		spiel_ausgetragen.emit(mid)
 		return
 	Statistik.spiel_verbuchen(daten, m)
+	Gegnertrainer.spiel_verbuchen(daten, m)
 	# Die Vorbereitung auf diesen Gegner ist mit dem Schlusspfiff verbraucht.
 	Videostudium.verbrauchen(daten, str(m["heim"]))
 	Videostudium.verbrauchen(daten, str(m["gast"]))

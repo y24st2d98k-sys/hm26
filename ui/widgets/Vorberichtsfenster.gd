@@ -145,6 +145,8 @@ func _zeichne() -> void:
 			kopfz.add_child(k2)
 			z.add_child(Stil.matt("   " + str(e["hinweis"]), Stil.S_MINI))
 
+	_trainerkarte(gruppe.feld("taktik"))
+
 	if s >= 2 and not (b["taktik"] as Dictionary).is_empty():
 		var t: Dictionary = b["taktik"]
 		var taktikkarte := Bausteine.karte_in(gruppe.feld("taktik"), "Ausrichtung des Gegners")
@@ -236,3 +238,44 @@ func _gespann_zahl(beschriftung: String, wert: String, farbe: Color) -> Control:
 	v.add_child(Stil.etikett(beschriftung))
 	v.add_child(Stil.text(wert, Stil.S_GROSS, farbe))
 	return v
+
+
+## Wer auf der anderen Bank sitzt.
+##
+## Bis vor Kurzem saß dort niemand: die siebzehn anderen Vereine waren
+## Wartungsroutinen mit unterschiedlichem Etat, und deshalb spielten sie alle
+## gleich. Jetzt hat jeder einen Trainer mit einer Handschrift — und die steht
+## hier, damit man sie vor dem Spiel liest und nicht erst hinterher merkt.
+func _trainerkarte(eltern: Node) -> void:
+	var t: Dictionary = Gegnertrainer.fuer(Welt.daten, gegner)
+	if t.is_empty():
+		return
+	var karte := Bausteine.karte_in(eltern, "Auf der anderen Bank")
+	var kopf := Stil.hbox(10)
+	karte.add_child(kopf)
+	kopf.add_child(Stil.text(Gegnertrainer.voller_name(t), Stil.S_NORMAL, Stil.TEXT))
+	kopf.add_child(Stil.abzeichen(str(t.get("archetyp_name", "")).to_upper(), Stil.LILA))
+	kopf.add_child(Stil.dehner())
+	var spiele: int = int(t.get("spiele", 0))
+	if spiele > 0:
+		kopf.add_child(Stil.matt("%d Spiele, %d Siege" % [spiele, int(t.get("siege", 0))], Stil.S_MINI))
+	karte.add_child(Bausteine.fliesstext(Gegnertrainer.beschreibung(Welt.daten, gegner),
+		Stil.S_KLEIN, null, 260.0))
+	# Nur die beiden ausgeprägtesten Achsen: sechs Balken sind eine Tabelle,
+	# zwei Sätze sind eine Einschätzung.
+	var achsen: Dictionary = t.get("achsen", {})
+	var sortiert: Array = []
+	for a in achsen.keys():
+		sortiert.append({"achse": str(a), "abstand": absf(float(achsen[a]) - 50.0),
+			"wert": float(achsen[a])})
+	sortiert.sort_custom(func(x, y): return float(x["abstand"]) > float(y["abstand"]))
+	var zeile := Stil.hbox(8)
+	karte.add_child(zeile)
+	for e in sortiert.slice(0, 3):
+		var eintrag: Dictionary = e
+		var name: String = str(eintrag["achse"])
+		var info: Dictionary = Trainerkarriere.ACHSEN.get(name, {})
+		if info.is_empty():
+			continue
+		var seite: String = str(info["rechts"]) if float(eintrag["wert"]) >= 50.0 else str(info["links"])
+		zeile.add_child(Stil.abzeichen(seite, Stil.TUERKIS))

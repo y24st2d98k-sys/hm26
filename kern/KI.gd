@@ -114,15 +114,26 @@ static func taktik_anpassen(d: Dictionary, cid: String) -> void:
 		var gid: String = str(naechstes["gast"]) if str(naechstes["heim"]) == cid else str(naechstes["heim"])
 		gegnerruf = float(d["vereine"][gid]["ruf"])
 	var unterschied: float = float(v["ruf"]) - gegnerruf
+	# Die Handschrift des Trainers verschiebt, was die Lage nahelegt.
+	#
+	# Ohne sie stellte jeder Verein bei gleichem Rufunterschied dasselbe ein,
+	# und siebzehn Gegner spielten wie einer. Ein Tempomacher laeuft auch als
+	# Aussenseiter an, ein Abwehrfanatiker mauert auch als Favorit.
+	var hs_tempo: float = Gegnertrainer.achse(d, cid, "tempo")
+	var hs_bollwerk: float = Gegnertrainer.achse(d, cid, "bollwerk")
+	var hs_wagemut: float = Gegnertrainer.achse(d, cid, "wagemut")
+	var hs_strenge: float = Gegnertrainer.achse(d, cid, "strenge")
+	var hs_rotation: float = Gegnertrainer.achse(d, cid, "rotation")
+	var tempo_versatz: int = int(round((hs_tempo - 0.5) * 34.0))
 	if unterschied > 14.0:
-		t["mentalitaet"] = "offensiv"
-		t["tempo"] = Namen.wuerfel(55, 78)
+		t["mentalitaet"] = "offensiv" if hs_bollwerk < 0.72 else "ausgeglichen"
+		t["tempo"] = clampi(Namen.wuerfel(55, 78) + tempo_versatz, 20, 92)
 	elif unterschied < -14.0:
-		t["mentalitaet"] = "defensiv"
-		t["tempo"] = Namen.wuerfel(28, 48)
+		t["mentalitaet"] = "defensiv" if hs_wagemut < 0.7 else "ausgeglichen"
+		t["tempo"] = clampi(Namen.wuerfel(28, 48) + tempo_versatz, 20, 92)
 	else:
 		t["mentalitaet"] = "ausgeglichen"
-		t["tempo"] = Namen.wuerfel(42, 62)
+		t["tempo"] = clampi(Namen.wuerfel(42, 62) + tempo_versatz, 20, 92)
 	# Die Formation wird hier ausdruecklich nicht angefasst.
 	#
 	# Vor der Vertrautheit war es folgerichtig, die Deckung vor jedem Spiel neu
@@ -133,9 +144,14 @@ static func taktik_anpassen(d: Dictionary, cid: String) -> void:
 	# Handschrift eines Vereins; sie faellt in der Saisonvorbereitung
 	# (formation_festlegen) und gilt dann.
 	formation_sichern(d, cid)
-	t["haerte"] = clampi(int(t["haerte"]) + Namen.wuerfel(-6, 6), 20, 85)
-	t["risiko"] = clampi(int(t["risiko"]) + Namen.wuerfel(-8, 8), 15, 85)
-	t["wechselspiel"] = clampi(int(t.get("wechselspiel", 55)) + Namen.wuerfel(-6, 6), 20, 90)
+	# Haerte, Risiko und Rotation wandern zur Handschrift des Trainers hin,
+	# statt um den bisherigen Wert zu zittern.
+	t["haerte"] = clampi(int(round(float(t["haerte"]) * 0.7 + hs_strenge * 90.0 * 0.3))
+		+ Namen.wuerfel(-5, 5), 20, 88)
+	t["risiko"] = clampi(int(round(float(t["risiko"]) * 0.7 + hs_wagemut * 90.0 * 0.3))
+		+ Namen.wuerfel(-6, 6), 15, 88)
+	t["wechselspiel"] = clampi(int(round(float(t.get("wechselspiel", 55)) * 0.7 + hs_rotation * 90.0 * 0.3))
+		+ Namen.wuerfel(-5, 5), 20, 92)
 	# Der siebte Feldspieler ist in der Bundesliga kein Notnagel mehr, sondern
 	# Alltag: gut fuenfmal je Partie geht ein Torwart vom Feld. Am haeufigsten
 	# in Unterzahl, wo er aus dem 5-gegen-6 wieder ein 6-gegen-6 macht.
@@ -180,6 +196,10 @@ static func _bester_angriffsstil(d: Dictionary, cid: String) -> String:
 # --------------------------------------------------------------- Wochenlauf ---
 
 static func wochenlogik(d: Dictionary) -> void:
+	# Auf jeder fremden Bank sitzt jemand. Das steht hier und nicht in der
+	# Welterzeugung, damit auch alte Spielstaende ihre Trainer bekommen.
+	Gegnertrainer.sicherstellen(d)
+	Gegnertrainer.entlassungen_pruefen(d)
 	for cid in Weltgenerator.clubs(d):
 		# Guenstig und sichert die Zusage, dass jede Nummer im Kader
 		# eindeutig ist — unabhaengig davon, wie ein Spieler hereinkam.
@@ -294,7 +314,10 @@ static func _talente_foerdern(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	var jugendarbeit: float = clampf(float((v.get("infrastruktur", {}) as Dictionary).get("jugendarbeit", 3.0)) / 9.0, 0.0, 1.0)
 	var guete: float = Training.trainerqualitaet(d, cid) / 100.0
-	var treffsicherheit: float = clampf(0.35 + 0.35 * jugendarbeit + 0.45 * guete, 0.3, 0.95)
+	# Und danach, ob dieser Trainer ueberhaupt etwas von Jugend haelt.
+	var neigung: float = Gegnertrainer.achse(d, cid, "jugend")
+	var treffsicherheit: float = clampf(0.20 + 0.25 * jugendarbeit + 0.30 * guete + 0.35 * neigung,
+		0.15, 0.95)
 	for sid in (v.get("kader", []) as Array):
 		var sp: Dictionary = (d["spieler"] as Dictionary).get(str(sid), {})
 		if sp.is_empty() or int(sp["alter"]) > 23:
