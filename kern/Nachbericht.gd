@@ -134,6 +134,23 @@ static func _saetze(d: Dictionary, m: Dictionary, eigene: Dictionary, fremde: Di
 	var strafen: int = int(e_st.get("zeitstrafen", 0))
 	if strafen >= 6:
 		aus.append("%d Zeitstrafen bedeuten zwölf Minuten Unterzahl. Das ist kein Zufall, das ist die eingestellte Härte." % strafen)
+	# Und wer auf der anderen Bank sass. Nur wenn seine Handschrift zur Partie
+	# passt — ein Satz ueber einen Trainer, der nichts erklaert, ist Fuellstoff.
+	var gid: String = str(m["gast"]) if heim else str(m["heim"])
+	var gegner_trainer: Dictionary = Gegnertrainer.fuer(d, gid)
+	if not gegner_trainer.is_empty():
+		var art: String = str(gegner_trainer.get("archetyp", ""))
+		var name: String = Gegnertrainer.voller_name(gegner_trainer)
+		if art == "betonmischer" and quote > 0.0 and quote <= 58.0:
+			aus.append("Gegen die Abwehr von %s sind 58 Prozent Wurfquote kein Ausrutscher. Er baut seine Mannschaft von hinten auf." % name)
+		elif art == "tempomacher" and int(f_st.get("gegenstoss_tore", 0)) >= 7:
+			aus.append("%s lässt laufen: %d Tore aus dem Tempogegenstoß. Wer gegen ihn den Ball verliert, sieht ihn wieder im eigenen Tor." % [
+				name, int(f_st.get("gegenstoss_tore", 0))])
+		elif art == "zuchtmeister" and int(f_st.get("zeitstrafen", 0)) >= 5:
+			aus.append("%d Zeitstrafen für den Gegner — %s lässt so verteidigen, und er nimmt es in Kauf." % [
+				int(f_st.get("zeitstrafen", 0)), name])
+		elif art == "jugendtrainer":
+			aus.append("%s stellt seine Jungen auf. Wer gegen ihn gewinnt, gewinnt gegen eine Mannschaft, die es erst noch wird." % name)
 	return aus
 
 ## Der Vorschlag des Co-Trainers: wen man ansprechen sollte und warum.

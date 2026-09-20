@@ -84,6 +84,11 @@ func _ready() -> void:
 			Welt.wochenrhythmus(Welt.tag())
 			Welt.saison_pruefen(Welt.tag())
 		if Welt.mein_verein_id == "":
+			# Erst die letzte Spielzeit drucken, dann abbrechen: die
+			# Entlassung faellt am Saisonende, und ohne diese Reihenfolge
+			# stand von der Saison, die dazu gefuehrt hat, keine Zeile da.
+			if not letzter_stand.is_empty():
+				_drucken(saison, letzter_stand)
 			_log("   Verein nach %d Tagen verloren — entlassen." % tage)
 			break
 		var stand := _abzug(d, cid)

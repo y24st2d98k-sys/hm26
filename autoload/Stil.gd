@@ -855,6 +855,12 @@ func schalter(beschriftung: String, an: bool = false) -> Button:
 	b.add_theme_stylebox_override("hover", h)
 	b.add_theme_stylebox_override("pressed", h)
 	b.add_theme_stylebox_override("hover_pressed", h)
+	# Ein Schalter ohne Beschriftung ist so hoch wie sein Text — und der ist
+	# leer. In der dichten Tabelle der Regeneration waren das elf Pixel
+	# Klickflaeche je Zeile; die Layoutpruefung hat sechs davon gemeldet, und
+	# getroffen hat man sie nur mit Glueck. Das Kaestchen selbst ist rund
+	# vierzehn Pixel breit, also darf die Zeile nicht darunter liegen.
+	b.custom_minimum_size = Vector2(b.custom_minimum_size.x, maxf(b.custom_minimum_size.y, 24.0))
 	b.toggled.connect(func(_an): b.queue_redraw())
 	return b
 

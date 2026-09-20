@@ -36,6 +36,8 @@ static func offene(d: Dictionary, cid: String) -> Array:
 	_kasse(v, aus)
 	_lizenz(d, cid, aus)
 	_trainervertrag(d, aus)
+	_mitbewerber(d, cid, aus)
+	_projekt(d, cid, v, aus)
 	aus.sort_custom(func(a, b): return int(a["stufe"]) > int(b["stufe"]))
 	return aus
 
@@ -201,6 +203,70 @@ static func _trainervertrag(d: Dictionary, aus: Array) -> void:
 		"ziel": "karriere", "knopf": "Zur Laufbahn",
 	})
 
+
+## Jemand anderes ist an einem Spieler dran, den Sie beobachten.
+##
+## Das ist die einzige Frist im Spiel, die niemand ankündigt: der Spieler ist
+## eines Montags weg. Deshalb steht sie hier, und deshalb ist sie eilig, wenn
+## das Interesse groß ist.
+static func _mitbewerber(d: Dictionary, cid: String, aus: Array) -> void:
+	if not Transfermarkt.fenster_offen(d):
+		return
+	var bedroht: Array = []
+	var stark := false
+	for sid in (d.get("scouting", {}).get("beobachtung", []) as Array):
+		var sp: Dictionary = (d["spieler"] as Dictionary).get(str(sid), {})
+		if sp.is_empty() or str(sp.get("verein", "")) == cid:
+			continue
+		var liste: Array = Konkurrenz.interessenten(d, str(sid))
+		if liste.is_empty():
+			continue
+		bedroht.append(Spielerfabrik.kurz_name(sp))
+		if liste.size() >= 3 or float((liste[0] as Dictionary)["interesse"]) > 0.7:
+			stark = true
+	if bedroht.is_empty():
+		return
+	aus.append({
+		"stufe": EILIG if stark else OFFEN,
+		"titel": "%d beobachtete Spieler haben Mitbewerber" % bedroht.size() if bedroht.size() > 1
+			else "Jemand anderes ist an %s dran" % str(bedroht[0]),
+		"text": "%s. Wer beobachtet und nicht handelt, überlässt ihn jemandem, der handelt." % ", ".join(
+			PackedStringArray(bedroht.slice(0, 3))),
+		"ziel": "transfer", "knopf": "Zum Transfermarkt",
+	})
+
+## Sie haben noch kein Projekt — oder eines, das stehengeblieben ist.
+static func _projekt(d: Dictionary, cid: String, v: Dictionary, aus: Array) -> void:
+	var stand: Array = Projekte.stand(d, cid)
+	if stand.is_empty():
+		var junge := 0
+		for sid in (v.get("kader", []) as Array):
+			var sp: Dictionary = (d["spieler"] as Dictionary).get(str(sid), {})
+			if not sp.is_empty() and int(sp["alter"]) <= Projekte.HOECHSTALTER:
+				junge += 1
+		if junge < 2:
+			return
+		aus.append({
+			"stufe": HINWEIS,
+			"titel": "%d junge Spieler warten auf einen Fürsprecher" % junge,
+			"text": "Wer sich um einen Einzelnen kümmert, sieht am Ende der Saison, was daraus geworden ist. Höchstens drei gleichzeitig.",
+			"ziel": "kader", "knopf": "Zum Kader",
+		})
+		return
+	var stockend: Array = []
+	for e in stand:
+		var eintrag: Dictionary = e
+		if int(eintrag["spiele"]) >= 8 and float(eintrag["staerke"]) < 0.5:
+			stockend.append(Spielerfabrik.kurz_name(Welt.spieler(str(eintrag["spieler"]))))
+	if stockend.is_empty():
+		return
+	aus.append({
+		"stufe": HINWEIS,
+		"titel": "%s kommt nicht voran" % str(stockend[0]) if stockend.size() == 1
+			else "%d Ihrer Projekte kommen nicht voran" % stockend.size(),
+		"text": "Mehr Einsatzzeit, ein anderes Sonderprogramm — oder war es der falsche Junge?",
+		"ziel": "training", "knopf": "Zum Training",
+	})
 
 # ------------------------------------------------------- Die ersten Tage ---
 

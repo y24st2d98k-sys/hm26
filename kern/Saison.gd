@@ -213,22 +213,85 @@ static func _trainerbilanz(d: Dictionary, mein: String) -> void:
 		elif platz > 0:
 			t["ruf"] = clampf(float(t["ruf"]) - 2.0, 1.0, 100.0)
 
+## Das Urteil des Vorstands am Saisonende.
+##
+## Es war binär: Ziel erreicht hiess plus vierzehn, Ziel verfehlt minus
+## sechzehn — egal ob um einen Platz oder um zehn, und egal, was der Kader
+## hergab. Wer mit dem zwölftbesten Kader Zehnter wurde und Platz acht als
+## Ziel hatte, verlor genauso viel Vertrauen wie einer, der mit dem besten
+## Kader abstieg. Das ist keine Strenge, das ist Blindheit, und sie hat in
+## der Langzeitsonde reihenweise Trainer nach einer durchschnittlichen
+## Spielzeit gekostet.
+##
+## Jetzt wird zweimal gemessen: am Ziel, das im Juli ausgegeben wurde, und an
+## dem, was die Mannschaft hergab. Das Ziel wiegt doppelt — es bleibt das
+## Versprechen —, aber ein Vorstand, der sieht, dass mit diesem Kader nicht
+## mehr drin war, zieht das in Betracht.
+const ZIEL_GEWICHT := 3.2
+const STAERKE_GEWICHT := 1.6
+const HOECHSTABZUG := 26.0
+
 static func _vorstandsbilanz(d: Dictionary, mein: String) -> void:
 	var v: Dictionary = d["vereine"][mein]
 	var liga: Dictionary = d["ligen"][v["liga"]]
 	var tabelle: Array = liga.get("abschlusstabelle", [])
 	var platz: int = tabelle.find(mein) + 1
+	if platz <= 0:
+		return
 	var ziel: int = int(v["vorstand"]["ziel_platz"])
+	var erwartet: int = _staerkeplatz(d, mein, tabelle)
+	# Negativ heisst besser als erwartet.
+	var ab_ziel: int = platz - ziel
+	var ab_kader: int = platz - erwartet
+	var wandel: float = -float(ab_ziel) * ZIEL_GEWICHT - float(ab_kader) * STAERKE_GEWICHT
+	wandel = clampf(wandel, -HOECHSTABZUG, 20.0)
+	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + wandel, 0.0, 100.0)
+
 	var text := ""
-	if platz > 0 and platz <= ziel:
-		text = "Das Saisonziel (%s) wurde erreicht: Platz %d. Der Vorstand bedankt sich ausdrücklich." % [v["vorstand"]["saisonziel"], platz]
-		v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + 14.0, 0.0, 100.0)
+	if ab_ziel <= 0:
+		text = "Das Saisonziel (%s) wurde erreicht: Platz %d." % [v["vorstand"]["saisonziel"], platz]
+		if ab_kader < -1:
+			text += " Mit diesem Kader war das nicht selbstverständlich — der Vorstand weiß das."
+		else:
+			text += " Der Vorstand bedankt sich ausdrücklich."
 	else:
-		text = "Mit Platz %d wurde das Saisonziel (%s) verfehlt. Der Vorstand erwartet in der kommenden Saison eine deutliche Steigerung." % [platz, v["vorstand"]["saisonziel"]]
-		v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) - 16.0, 0.0, 100.0)
+		text = "Mit Platz %d wurde das Saisonziel (%s) verfehlt." % [platz, v["vorstand"]["saisonziel"]]
+		if ab_kader <= -2:
+			text += " Der Vorstand sieht allerdings, dass die Mannschaft nach ihrer Stärke auf Platz %d gehört hätte. Das rechnet er Ihnen an." % erwartet
+		elif ab_kader >= 3:
+			text += " Und das mit einem Kader, der für Platz %d gereicht hätte. Das wiegt schwer." % erwartet
+		else:
+			text += " Der Vorstand erwartet in der kommenden Saison eine deutliche Steigerung."
 	Welt.nachricht({"typ": "vorstand", "wichtig": true, "betreff": "Saisonbilanz des Vorstands", "text": text})
 	if float(v["vorstand"]["vertrauen"]) < 18.0:
 		Vorstand.entlassung(d, mein)
+
+## Auf welchem Platz die Mannschaft nach ihrer Kaderstärke stünde.
+static func _staerkeplatz(d: Dictionary, cid: String, tabelle: Array) -> int:
+	var rang: Array = []
+	for c in tabelle:
+		rang.append({"verein": str(c), "wert": _kaderwert(d, str(c))})
+	rang.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	for i in rang.size():
+		if str((rang[i] as Dictionary)["verein"]) == cid:
+			return i + 1
+	return tabelle.size()
+
+## Die acht Staerksten — sie beschreiben eine Mannschaft besser als der
+## Kaderschnitt, in dem der dritte Torwart mitzaehlt.
+static func _kaderwert(d: Dictionary, cid: String) -> float:
+	var beste: Array = []
+	for sid in (d["vereine"][cid].get("kader", []) as Array):
+		var sp: Dictionary = (d["spieler"] as Dictionary).get(str(sid), {})
+		if not sp.is_empty():
+			beste.append(Spielerfabrik.gesamt(sp))
+	beste.sort()
+	beste.reverse()
+	var summe := 0.0
+	var k: int = mini(8, beste.size())
+	for i in k:
+		summe += float(beste[i])
+	return summe / maxf(float(k), 1.0)
 
 # ------------------------------------------------------------ Pokal/Europa ---
 
