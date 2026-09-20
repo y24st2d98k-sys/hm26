@@ -624,7 +624,21 @@ const SCHONGANG_ABSCHLUSS := -0.300
 ## dem Zielband. Eine laengere Angriffszeit kostet dagegen kaum Siege: sie
 ## nimmt beiden Mannschaften Angriffe, und wer mit acht Toren vorn liegt,
 ## gewinnt auch mit sechs.
-const SCHONGANG_DAUER := 1.45
+##
+## Gemessen ueber zwoelf Spielzeiten, 3672 Partien, gleiche Saaten:
+##
+##             0,90    1,45    2,10   Ziel
+##   >=10 Tore 19,0 %  17,9 %  17,4 %  15 %
+##   Streuung   7,21    7,04    7,03   6,8
+##   Abstand    5,50    5,39    5,38   5,4
+##   <=2 Tore  35,5 %  35,7 %  35,9 %  36 %
+##   Meister   55,50   55,50   56,25   56 bis 66
+##   Spanne    45,08   43,83   46,33   44 bis 56
+##
+## Die engen Partien bleiben unberuehrt, und der Meister verliert keinen
+## Punkt — bei 2,10 steht er erstmals im Zielband, weil der Letzte in
+## entschiedenen Partien weniger Kosmetiktore bekommt.
+const SCHONGANG_DAUER := 2.10
 const SCHONGANG_VOLL := 12.0
 
 ## Wie eine Mannschaft auf den Spielstand reagiert.
