@@ -11,6 +11,11 @@ static func abschluss(d: Dictionary, mein: String) -> void:
 		var liga: Dictionary = d["ligen"][lid]
 		var tabelle := Spielplan.tabelle_sortiert(d, lid)
 		liga["abschlusstabelle"] = tabelle
+		# Die Abschlusstabelle bleibt über den Saisonwechsel hinaus stehen —
+		# das internationale Startfeld der neuen Saison wird daraus gebildet.
+		# Wer sie als "aktuelle Tabelle" liest, urteilt im ganzen neuen Jahr
+		# nach der Platzierung des Vorjahres. Der Stempel sagt, wann sie galt.
+		liga["abschluss_saison"] = Welt.saison_index()
 		if tabelle.is_empty():
 			continue
 		var meister: String = str(tabelle[0])
@@ -760,8 +765,11 @@ static func jobangebote_erzeugen(d: Dictionary, mein: String) -> void:
 		# Vereine, die ihr Ziel verfehlt haben, suchen einen neuen Trainer.
 		# Waehrend der Saison zaehlt der aktuelle Stand, danach die Abschlusstabelle.
 		var liga: Dictionary = d["ligen"][v["liga"]]
-		var tabelle: Array = liga.get("abschlusstabelle", [])
-		if tabelle.is_empty() or vereinslos:
+		var tabelle: Array = []
+		if not vereinslos and int(liga.get("abschluss_saison", -1)) == Welt.saison_index():
+			liga = _saisonliga(d, cid)
+			tabelle = liga.get("abschlusstabelle", [])
+		if tabelle.is_empty():
 			tabelle = Spielplan.tabelle_sortiert(d, str(liga["id"]))
 		var platz: int = tabelle.find(cid) + 1
 		if platz <= 0:

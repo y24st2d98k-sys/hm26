@@ -56,10 +56,17 @@ func _log(t: String) -> void:
 ## Randwerte — Unentschieden, klare Ergebnisse — zu klein: dort schwankt eine
 ## Saison um mehrere Prozentpunkte, und dann misst man das Rauschen statt der
 ## Aenderung.
+## Mehr Spielzeiten per Aufruf: godot res://werkzeuge/Realismussonde.tscn -- 12
+## Vier Runden reichen fuer die Partiewerte; die Endtabelle mittelt nur vier
+## Zahlen, und ein Meisterwert schwankt um mehrere Punkte. Wer an der Tabelle
+## etwas entscheiden will, misst mit mehr Runden.
 const SPIELZEITEN := 4
 
 func _ready() -> void:
-	for i in SPIELZEITEN:
+	var args := OS.get_cmdline_user_args()
+	var runden: int = maxi(1, int(str(args[0])) if args.size() > 0 else SPIELZEITEN)
+	_log("Messe %d Spielzeiten." % runden)
+	for i in runden:
 		_lauf(4711 + i * 101)
 	_bericht()
 	_streuungstest()

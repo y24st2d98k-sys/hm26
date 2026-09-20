@@ -68,6 +68,9 @@ func _ready() -> void:
 	var nachher_vertrauen: float = float(d["vereine"][cid]["vorstand"]["vertrauen"])
 	_pruefe("Vertrauen sinkt nach dem Abstieg", nachher_vertrauen < vorher_vertrauen,
 		"vorher %.1f, nachher %.1f" % [vorher_vertrauen, nachher_vertrauen])
+	_pruefe("Abschlusstabelle trägt ihren Saisonstempel",
+		int(d["ligen"][lid].get("abschluss_saison", -1)) == Welt.saison_index(),
+		"Stempel %d, Saison %d" % [int(d["ligen"][lid].get("abschluss_saison", -1)), Welt.saison_index()])
 	var nachher_ruf: float = float(d.get("trainer", {}).get("ruf", 0.0))
 	_pruefe("Trainerruf sinkt nach dem Abstieg", nachher_ruf < vorher_ruf,
 		"vorher %.1f, nachher %.1f" % [vorher_ruf, nachher_ruf])
