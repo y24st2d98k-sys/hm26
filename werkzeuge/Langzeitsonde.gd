@@ -32,11 +32,15 @@ func _ready() -> void:
 	var spielzeiten: int = int(args[0]) if args.size() > 0 else 8
 	art = str(args[1]) if args.size() > 1 else "gut"
 	var vorschau := Weltgenerator.erzeuge(2026, SAAT)
-	# Bewusst kein Spitzenverein: bei Magdeburg wäre jeder Titel auch ohne
-	# gute Arbeit zu erwarten. Der Test fragt, ob Arbeit die Rangordnung
-	# umwirft, nicht ob sie sie bestätigt.
+	# Ein Verein aus der Mitte.
+	#
+	# Bewusst kein Spitzenverein: bei Magdeburg wäre jeder Titel auch ohne gute
+	# Arbeit zu erwarten. Aber auch keiner aus dem hinteren Drittel — gemessen
+	# hat der Fünfzehnte mit und ohne Führung 29 beziehungsweise 30 Punkte und
+	# flog danach. Das beantwortet die Frage nach der Liga nicht, es beendet
+	# nur die Messung.
 	var liste: Array = vorschau["ligen"]["l_de1"]["vereine"]
-	var cid: String = str(liste[liste.size() - 4])
+	var cid: String = str(liste[int(liste.size() / 2)])
 	seed(SAAT)
 	Welt.neues_spiel(cid, {"vorname": "Lang", "nachname": "Zeit"}, SAAT)
 	var d: Dictionary = Welt.daten

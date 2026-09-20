@@ -341,12 +341,18 @@ static func _vertraege_pflegen(d: Dictionary, cid: String) -> void:
 		var staerke: float = Spielerfabrik.gesamt(sp)
 		var wunsch: float = Finanzen.gehaltswunsch(d, cid, sp)
 		var auslastung := Finanzen.gehaltsauslastung(d, cid)
+		# Der Plan entscheidet mit, wie sehr ein Verein an seinen Leuten
+		# haengt: im Sparjahr laesst er gehen, in der Titeljagd haelt er.
+		var halten: float = Vereinsplan.haltefaktor(d, cid)
+		var schwelle: float = 6.0 * halten
 		# Zu teuer und zu schwach: der Verein laesst ihn ziehen.
-		if auslastung > 112.0 and staerke < kaderstaerke - 6.0:
+		if auslastung > 112.0 and staerke < kaderstaerke - schwelle:
 			continue
-		if int(sp["alter"]) >= 35 and staerke < kaderstaerke - 4.0:
+		# Im Umbruch trennt man sich auch von Aelteren, die noch gut sind.
+		var altersgrenze: int = 35 if halten >= 1.0 else 32
+		if int(sp["alter"]) >= altersgrenze and staerke < kaderstaerke - 4.0 * halten:
 			continue
-		if (v["kader"] as Array).size() > 24 and staerke < kaderstaerke - 10.0:
+		if (v["kader"] as Array).size() > 24 and staerke < kaderstaerke - 10.0 * halten:
 			continue
 		sp["vertrag"]["gehalt"] = wunsch * Namen.bereich(1.0, 1.12)
 		sp["vertrag"]["bis_saison"] = saison + Namen.wuerfel(2, 4)
@@ -470,15 +476,22 @@ static func schwaechste_position(d: Dictionary, cid: String) -> String:
 
 ## Bester vereinsloser Spieler auf einer Position, den der Verein bezahlen kann.
 ## Bei Notlage (zu kleiner Kader) wird die Gehaltsgrenze deutlich gelockert.
+## Wen ein Verein sucht, haengt an seinem Plan: ein Verein im Umbruch schaut
+## auf Zwanzigjaehrige, einer im Abstiegskampf auf Dreissigjaehrige, die
+## sofort spielen koennen.
 static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: bool = false) -> String:
 	var v: Dictionary = d["vereine"][cid]
 	var spielraum: float = float(v["gehaltsbudget"]) * 1.1 - Finanzen.spielergehaelter(d, cid) - Finanzen.personalgehaelter(d, cid)
 	var grenze: float = float(v["gehaltsbudget"]) * (0.16 if notlage else 0.06)
-	grenze = maxf(grenze, spielraum)
+	grenze = maxf(grenze, spielraum) * Vereinsplan.etatfaktor(d, cid)
 	# Ruf und Lohnniveau einmal holen: die Schleife laeuft ueber alle Spieler
 	# der Welt und wird oefter durchlaufen, als es auf den ersten Blick aussieht.
 	var ruf: float = float(v["ruf"])
 	var niveau: float = Finanzen.lohnniveau(d, cid)
+	# Die Planwerte einmal holen und nicht je Spieler: die Schleife laeuft
+	# ueber jeden Spieler der Welt.
+	var plan_ziel: float = Vereinsplan.eigenschaft(d, cid, "alter_ziel")
+	var plan_jugend: float = clampf(Vereinsplan.eigenschaft(d, cid, "jugend"), 0.4, 1.8)
 	var best := ""
 	var bw := -1.0
 	for sid in d["spieler"].keys():
@@ -489,7 +502,13 @@ static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: boo
 		# gehoert in eine Akademie und nicht in einen Profikader.
 		if bool(sp.get("jugendspieler", false)):
 			continue
-		var w: float = Spielerfabrik.gesamt(sp)
+		# Der Plan des Vereins gewichtet mit: derselbe Spieler ist fuer einen
+		# Verein im Umbruch mehr wert als fuer einen im Abstiegskampf.
+		var abstand: float = absf(float(sp["alter"]) - plan_ziel)
+		var gewicht: float = clampf(1.25 - abstand * 0.07, 0.35, 1.25)
+		if int(sp["alter"]) <= 22:
+			gewicht *= plan_jugend
+		var w: float = Spielerfabrik.gesamt(sp) * gewicht
 		if w <= bw:
 			continue
 		if Spielerfabrik.gehaltsvorstellung(sp, ruf, niveau) > grenze:

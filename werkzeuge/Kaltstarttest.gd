@@ -11,6 +11,19 @@ func _ready() -> void:
 	var app: Node = load("res://ui/App.tscn").instantiate()
 	add_child(app)
 	await get_tree().process_frame
+	# Zuerst: ist die App ueberhaupt da?
+	#
+	# Ein Parse-Fehler in irgendeiner Klasse laesst App.gd nicht laden. Die
+	# Szene haengt dann als nacktes Control im Baum, jeder Zugriff auf ein
+	# Feld schlaegt fehl, und der Test lief in eine Warteschleife, aus der er
+	# nicht mehr herauskam — sieben Minuten, in denen die eigentliche
+	# Meldung ("There is already a variable named kopf") schon dastand und
+	# niemand sie las. Deshalb hier ein Abbruch mit klarer Ansage.
+	if not ("startbildschirm" in app):
+		_log("   FEHLER: App.gd liess sich nicht laden. Weiter oben steht, warum —")
+		_log("   meist ein Parse-Fehler in einer Klasse, die App.gd benutzt.")
+		get_tree().quit()
+		return
 	_log("   App aufgebaut, Startbildschirm sichtbar: %s" % str(app.startbildschirm.visible))
 
 	_log("— Alle Bildschirme ohne Spielstand anzeigen —")

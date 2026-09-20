@@ -149,9 +149,26 @@ static func spiel_verbuchen(d: Dictionary, m: Dictionary) -> void:
 const ENTLASSUNGSSCHWELLE := 6.0
 const FRUEHESTENS := 10
 
+## Nur alle vier Wochen und nur in der eigenen Liga.
+##
+## Die erste Fassung lief jede Woche ueber alle Ligen und sortierte jede davon
+## zweimal. Das hat den Kaltstarttest von zwei Minuten auf ueber sieben
+## getrieben — eine Trainerentlassung ist kein Vorgang, der woechentliche
+## Rechenzeit rechtfertigt. Ausserhalb der eigenen Liga sieht sie ohnehin
+## niemand.
+const PRUEFABSTAND := 28
+
 static func entlassungen_pruefen(d: Dictionary) -> void:
-	for lid in (d.get("ligen", {}) as Dictionary).keys():
-		var liga: Dictionary = d["ligen"][lid]
+	if int(d.get("tag", 0)) % PRUEFABSTAND != 0:
+		return
+	var eigen: Dictionary = (d.get("vereine", {}) as Dictionary).get(Welt.mein_verein_id, {})
+	var eigene_liga: String = str(eigen.get("liga", ""))
+	if eigene_liga == "":
+		return
+	for lid in [eigene_liga]:
+		var liga: Dictionary = (d.get("ligen", {}) as Dictionary).get(lid, {})
+		if liga.is_empty():
+			continue
 		var tabelle: Array = Spielplan.tabelle_sortiert(d, str(lid))
 		if tabelle.size() < 6:
 			continue

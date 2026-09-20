@@ -279,10 +279,17 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 	Zweite.zuruecksetzen(d)
 	Zweite.saison_zuruecksetzen(d)
 	Finanzen.saison_budgets(d)
+	# Erst das Budget, dann der Plan: ein Verein entscheidet im Sommer im
+	# Wissen, was er ausgeben kann.
+	Gegnertrainer.sicherstellen(d)
+	Vereinsplan.neu_fassen(d)
 	Sponsoren.jahreswechsel(d, mein)
 	_dauerkarten(d, mein)
 	for cid in Weltgenerator.clubs(d):
 		Vorstand.saisonziel_festlegen(d, cid)
+		# Was die Liga vorhat, liest man am besten vor dem ersten Spieltag.
+		if cid != mein and Namen.zufall() < 0.55:
+			Vereinsplan.melden(d, cid)
 		d["vereine"][cid]["vorstand"]["warnstufe"] = 0
 	KI.saisonvorbereitung(d)
 	# Acht Wochen Vorbereitung: was jetzt eingestellt ist, sitzt zum Auftakt

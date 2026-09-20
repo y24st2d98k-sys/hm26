@@ -103,6 +103,27 @@ func _zeichne() -> void:
 	if int(s["heimspiele"]) > 0:
 		lage.add_child(Stil.info_zeile("Zuschauerschnitt", Stil.zahl(int(float(s["zuschauer_summe"]) / float(s["heimspiele"])))))
 
+	# Wer dort auf der Bank sitzt und was der Verein in dieser Spielzeit
+	# vorhat. Beides gehoert hierher und nicht in eine Statistik: man liest es,
+	# bevor man mit diesem Verein verhandelt.
+	var t_ki: Dictionary = Gegnertrainer.fuer(Welt.daten, cid)
+	if not t_ki.is_empty():
+		var bank := Bausteine.karte_in(oben, "Trainer & Plan")
+		Stil.karte_wurzel(bank).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var bankzeile := Stil.hbox(8)
+		bank.add_child(bankzeile)
+		bankzeile.add_child(Stil.text(Gegnertrainer.voller_name(t_ki), Stil.S_NORMAL))
+		bankzeile.add_child(Stil.abzeichen(str(t_ki.get("archetyp_name", "")).to_upper(), Stil.LILA))
+		bank.add_child(Bausteine.fliesstext(str(t_ki.get("satz", "")), Stil.S_MINI, null, 200.0))
+		var spiele: int = int(t_ki.get("spiele", 0))
+		if spiele > 0:
+			bank.add_child(Stil.info_zeile("Bilanz", "%d S / %d U / %d N aus %d" % [
+				int(t_ki.get("siege", 0)), int(t_ki.get("unentschieden", 0)),
+				int(t_ki.get("niederlagen", 0)), spiele]))
+		bank.add_child(Stil.trenner())
+		bank.add_child(Stil.text(Vereinsplan.name(Welt.daten, cid), Stil.S_KLEIN, Stil.TUERKIS))
+		bank.add_child(Bausteine.fliesstext(Vereinsplan.satz(Welt.daten, cid), Stil.S_MINI, null, 200.0))
+
 	var titel := Bausteine.karte_in(oben, "Titel & Chronik")
 	Stil.karte_wurzel(titel).size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var titel_liste: Array = v["chronik"]["titel"]
