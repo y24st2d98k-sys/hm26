@@ -572,3 +572,60 @@ static func saisonvorbereitung(d: Dictionary) -> void:
 			# wird — mit dem ganzen Sommer Zeit, sie einzuschleifen.
 			formation_festlegen(d, cid)
 			taktik_anpassen(d, cid)
+			_nachwuchsminuten(d, cid)
+
+## Wie viele Minuten die KI ihren Talenten fest zusagt.
+##
+## Gemessen ueber acht Spielzeiten, alle achtzehn Vereine von der KI gefuehrt:
+##
+##   Saison      0     2     4     6     8
+##   u23 Ø    64,5  57,4  55,6  55,0  51,1
+##   Talente    17    15     9    12     3     (u23 mit Gesamtwert ueber 70)
+##
+## Der Nachwuchs der Liga verdorrte, waehrend der Kaderschnitt bei 78 stehen
+## blieb und das Durchschnittsalter von 26,6 auf 27,9 stieg. Die Ursache lag
+## nicht am Sonderprogramm — das bekamen die Talente laengst — sondern an der
+## Spielzeit: die Aufstellung nimmt immer die beste Sieben, gewechselt wird
+## nur bei Kraftmangel, und dabei kommt wieder der Beste von der Bank. Ein
+## Neunzehnjaehriger hinter einem Stammspieler kam damit nie aufs Feld, und
+## in Training.zuwachs steht die Spielzeit mit dem Faktor 0,30 bis 1,35 — wer
+## nicht spielt, entwickelt sich viereinhalbmal langsamer.
+##
+## Also planen die Computervereine ihre Minuten so, wie ein Mensch es kann:
+## ueber Zielminuten. Wie viele und fuer wie viele haengt daran, wie viel
+## dieser Verein von Jugend haelt — Jugendarbeit, Guete des Stabs, die
+## Handschrift des Trainers und der Vereinsplan. Ein Umbruchverein zieht drei
+## Talente hoch, ein Titeljaeger hoechstens eins.
+const NACHWUCHS_MINUTEN_WENIG := 7.0
+const NACHWUCHS_MINUTEN_VIEL := 22.0
+
+static func _nachwuchsminuten(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	# Die Ziele der Vorsaison gelten nicht weiter: der Kader ist ein anderer.
+	Einsatzzeit.loeschen(d, cid)
+	var jugendarbeit: float = clampf(float((v.get("infrastruktur", {}) as Dictionary).get("jugendarbeit", 3.0)) / 9.0, 0.0, 1.0)
+	var guete: float = Training.trainerqualitaet(d, cid) / 100.0
+	var neigung: float = Gegnertrainer.achse(d, cid, "jugend")
+	var planschub: float = clampf(Vereinsplan.eigenschaft(d, cid, "jugend") / 1.8, 0.0, 1.0)
+	var mut: float = clampf(0.18 * jugendarbeit + 0.22 * guete + 0.32 * neigung + 0.28 * planschub,
+		0.0, 1.0)
+	# Wer schon zur besten Sieben gehoert, braucht keine Zusage.
+	var stamm := {}
+	var angriff: Dictionary = (v.get("aufstellung", {}) as Dictionary).get("angriff", {})
+	for pos in angriff.keys():
+		stamm[str(angriff[pos])] = true
+	var jung: Array = []
+	for sid in (v.get("kader", []) as Array):
+		var sp: Dictionary = (d["spieler"] as Dictionary).get(str(sid), {})
+		if sp.is_empty() or bool(sp["ist_torwart"]) or int(sp["alter"]) > 22:
+			continue
+		if stamm.has(str(sid)):
+			continue
+		jung.append({"sid": str(sid), "wert": float(sp.get("potenzial", 0.0))})
+	if jung.is_empty():
+		return
+	jung.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	var wie_viele: int = mini(1 + int(round(2.0 * mut)), jung.size())
+	var minuten: float = roundf(lerpf(NACHWUCHS_MINUTEN_WENIG, NACHWUCHS_MINUTEN_VIEL, mut) / 2.0) * 2.0
+	for i in wie_viele:
+		Einsatzzeit.setzen(d, cid, str((jung[i] as Dictionary)["sid"]), minuten)
