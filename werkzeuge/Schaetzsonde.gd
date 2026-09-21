@@ -83,13 +83,37 @@ func _ready() -> void:
 		_pruefe("Zwei Spieler werden verschieden falsch eingeschätzt",
 			absf(a - b) > 0.01, "beide %.2f" % a)
 
-	# Und mit wachsender Kenntnis muss die Schätzung an die Wahrheit rücken.
+	# Nebenbei wachsende Kenntnis — das Mentoring hebt sie um Bruchteile je
+	# Woche — darf die Einschätzung nicht verschieben. Nur ein Bericht darf
+	# das, und der sagt es auch.
+	var stand: String = Scouting.potenzial_text(d, sid)
+	var spanne_vorher: String = Scouting.attributtext(d, sid, "wurfkraft")
+	for _w in range(12):
+		sp["kenntnis"] = clampf(float(sp["kenntnis"]) + 0.6, 0.0, 96.0)
+	_pruefe("Einschätzung steht, während die Kenntnis nebenbei wächst",
+		Scouting.potenzial_text(d, sid) == stand,
+		"aus „%s“ wurde „%s“ bei Kenntnis %.1f" % [stand,
+			Scouting.potenzial_text(d, sid), float(sp["kenntnis"])])
+	_pruefe("Auch die Attributspanne steht",
+		Scouting.attributtext(d, sid, "wurfkraft") == spanne_vorher,
+		"aus %s wurde %s" % [spanne_vorher, Scouting.attributtext(d, sid, "wurfkraft")])
+
+	# Ein Bericht ist der Grund, aus dem sie sich bewegen darf — und dann
+	# muss sie näher an der Wahrheit liegen.
 	var echt: float = float(sp["potenzial"])
 	var vorher: float = absf(Scouting.potenzialschaetzung(d, sid) - echt)
 	sp["kenntnis"] = 90.0
+	Scouting.urteil_bilden(d, sid)
 	var nachher: float = absf(Scouting.potenzialschaetzung(d, sid) - echt)
-	_pruefe("Mehr Kenntnis heißt näher an der Wahrheit", nachher <= vorher + 0.001,
-		"bei Kenntnis 55 daneben um %.2f, bei 90 um %.2f" % [vorher, nachher])
+	_pruefe("Nach einem Bericht liegt sie näher an der Wahrheit",
+		nachher <= vorher + 0.001,
+		"vorher daneben um %.2f, nachher um %.2f" % [vorher, nachher])
+
+	# Und wer vollständig bekannt ist, wird nicht mehr geschätzt.
+	sp["kenntnis"] = 100.0
+	_pruefe("Vollständig bekannt heißt: die Wahrheit",
+		absf(Scouting.potenzialschaetzung(d, sid) - echt) < 0.001,
+		"gezeigt %.2f, echt %.2f" % [Scouting.potenzialschaetzung(d, sid), echt])
 
 	_log("")
 	if fehler == 0:

@@ -121,6 +121,9 @@ static func _bericht_erstellen(d: Dictionary, a: Dictionary) -> void:
 		if art == "spieler":
 			zuwachs = 32.0 + qualitaet * 0.6
 		sp["kenntnis"] = clampf(float(sp["kenntnis"]) + zuwachs, 0.0, 100.0)
+		# Erst jetzt darf sich die Einschaetzung bewegen: ein Bericht ist der
+		# Grund, aus dem ein Beobachter seine Meinung aendert.
+		urteil_bilden(d, str(sid))
 	s["berichte"] = int(s.get("berichte", 0)) + 1
 	var eintrag := {
 		"id": str(a["id"]),
@@ -321,14 +324,65 @@ static func _schaetzfehler(sp: Dictionary, feld: String) -> float:
 	var roh: int = absi(hash("%s|%s" % [str(sp.get("id", "")), feld]))
 	return float(roh % 2001 - 1000) / 1000.0
 
+## Ab wann nicht mehr geschaetzt, sondern gewusst wird.
+const URTEIL_SICHER := 97.0
+
+## Die festgehaltene Einschaetzung eines Spielers.
+##
+## Der feste Schaetzfehler allein reichte nicht: die Unschaerfe haengt an der
+## Kenntnis, und die waechst auch nebenbei — das Mentoring hebt sie um
+## Bruchteile je Woche. Damit wanderte die Perspektive weiter, nur langsamer,
+## und fuer den Betrachter blieb es dasselbe: eine Zahl, die sich ohne
+## erkennbaren Anlass aendert.
+##
+## Also steht die Einschaetzung fest, sobald sie einmal gebildet ist. Neu
+## gebildet wird sie nur, wenn ein Grund dazukommt — ein Scoutbericht ueber
+## diesen Spieler. Ist er vollstaendig bekannt, wird gar nicht mehr
+## geschaetzt, sondern die Wahrheit gezeigt.
+##
+## Sie wird beim ersten Hinsehen angelegt und mit dem Spielstand gesichert.
+## Auch fuer aeltere Spielstaende gilt sie damit ab dem ersten Blick.
+static func urteil(d: Dictionary, sid: String) -> Dictionary:
+	var sp: Dictionary = d["spieler"][sid]
+	if float(sp["kenntnis"]) >= URTEIL_SICHER:
+		return {"kenntnis": float(sp["kenntnis"]), "sicher": true}
+	var gespeichert: Dictionary = sp.get("einschaetzung", {})
+	if not gespeichert.is_empty():
+		return gespeichert
+	return urteil_bilden(d, sid)
+
+## Bildet die Einschaetzung neu und haelt sie fest. Der Scoutbericht ruft das
+## auf — er ist der Grund, aus dem sich ein Urteil aendern darf.
+static func urteil_bilden(d: Dictionary, sid: String) -> Dictionary:
+	var sp: Dictionary = (d["spieler"] as Dictionary).get(sid, {})
+	if sp.is_empty():
+		return {"kenntnis": 0.0, "sicher": false}
+	var kenntnis: float = float(sp["kenntnis"])
+	if kenntnis >= URTEIL_SICHER:
+		sp.erase("einschaetzung")
+		return {"kenntnis": kenntnis, "sicher": true}
+	var offen: float = (100.0 - kenntnis) / 100.0
+	var u := {
+		"kenntnis": kenntnis,
+		"sicher": false,
+		"potenzial": float(sp["potenzial"]) + _schaetzfehler(sp, "potenzial") * offen * 18.0,
+		"lernkurve": float(sp.get("lernkurve", 1.0)) + _schaetzfehler(sp, "lernkurve") * offen * 0.30,
+	}
+	sp["einschaetzung"] = u
+	return u
+
 ## Unschaerfe eines Attributs: liefert {min, max, sicher}
+##
+## Die Spanne haengt an der Kenntnis, die im Urteil steht, nicht an der von
+## heute — sonst zoege sie sich zwischen zwei Scoutberichten unbemerkt
+## zusammen.
 static func schaetzung(d: Dictionary, sid: String, attribut: String) -> Dictionary:
 	var sp: Dictionary = d["spieler"][sid]
 	var wert: float = float((sp["attr"] as Dictionary).get(attribut, 1.0))
-	var kenntnis: float = float(sp["kenntnis"])
-	if kenntnis >= 97.0:
+	var u := urteil(d, sid)
+	if bool(u["sicher"]):
 		return {"min": wert, "max": wert, "sicher": true}
-	var spanne: float = (100.0 - kenntnis) / 100.0 * 7.0
+	var spanne: float = (100.0 - float(u["kenntnis"])) / 100.0 * 7.0
 	var versatz: float = _schaetzfehler(sp, "attr:" + attribut) * spanne * 0.3
 	return {
 		"min": clampf(wert - spanne + versatz, 1.0, 20.0),
@@ -345,23 +399,23 @@ static func attributtext(d: Dictionary, sid: String, attribut: String) -> String
 
 static func gesamt_text(d: Dictionary, sid: String) -> String:
 	var sp: Dictionary = d["spieler"][sid]
-	var kenntnis: float = float(sp["kenntnis"])
 	var g: float = Spielerfabrik.gesamt(sp)
-	if kenntnis >= 97.0:
+	var u := urteil(d, sid)
+	if bool(u["sicher"]):
 		return "%d" % int(round(g))
-	var spanne: float = (100.0 - kenntnis) / 100.0 * 14.0
+	var spanne: float = (100.0 - float(u["kenntnis"])) / 100.0 * 14.0
 	return "%d–%d" % [int(round(maxf(g - spanne, 1.0))), int(round(minf(g + spanne, 99.0)))]
 
 ## Was der Beobachter dem Spieler zutraut — die Zahl hinter dem Satz.
 static func potenzialschaetzung(d: Dictionary, sid: String) -> float:
-	var sp: Dictionary = d["spieler"][sid]
-	var unschaerfe: float = (100.0 - float(sp["kenntnis"])) / 100.0 * 18.0
-	return float(sp["potenzial"]) + _schaetzfehler(sp, "potenzial") * unschaerfe
+	var u := urteil(d, sid)
+	if bool(u["sicher"]):
+		return float(d["spieler"][sid]["potenzial"])
+	return float(u["potenzial"])
 
 ## Potenzialbeschreibung statt nackter Zahl.
 static func potenzial_text(d: Dictionary, sid: String) -> String:
-	var sp: Dictionary = d["spieler"][sid]
-	if float(sp["kenntnis"]) < 35.0:
+	if float(d["spieler"][sid]["kenntnis"]) < 35.0:
 		return "kaum einzuschätzen"
 	var geschaetzt: float = potenzialschaetzung(d, sid)
 	if geschaetzt >= 88.0:
@@ -383,9 +437,10 @@ static func tempo_text(d: Dictionary, sid: String) -> String:
 	var kenntnis: float = float(sp["kenntnis"])
 	if kenntnis < 45.0:
 		return "Entwicklungstempo unklar"
-	var wert: float = float(sp.get("lernkurve", 1.0))
-	var unschaerfe: float = (100.0 - kenntnis) / 100.0 * 0.30
-	return Spielerfabrik.lernkurve_text(wert + _schaetzfehler(sp, "lernkurve") * unschaerfe)
+	var u := urteil(d, sid)
+	if bool(u["sicher"]):
+		return Spielerfabrik.lernkurve_text(float(sp.get("lernkurve", 1.0)))
+	return Spielerfabrik.lernkurve_text(float(u["lernkurve"]))
 
 ## Wie weit ein Spieler von seiner Decke entfernt ist (0..1).
 static func ausschoepfung(sp: Dictionary) -> float:
