@@ -638,14 +638,19 @@ const SCHONGANG_ABSCHLUSS := -0.300
 ## Die engen Partien bleiben unberuehrt, und der Meister verliert keinen
 ## Punkt — bei 2,10 steht er erstmals im Zielband, weil der Letzte in
 ## entschiedenen Partien weniger Kosmetiktore bekommt.
-## Nachgezogen, nachdem Haerte und Risiko wirklich wirken: die Klatschen
-## stiegen dadurch von 17,4 auf 19,6 Prozent, weil zwei Mannschaften sich in
-## einer Partie staerker unterscheiden als vorher. Das ist die richtige
-## Kehrseite echter Entscheidungen — wer falsch stellt, soll hoeher verlieren
-## — aber die Verteilung der Ergebnisse muss trotzdem stimmen. Also laeuft
-## eine entschiedene Partie noch langsamer aus. Das kostet keine
-## Entscheidung, weil es nur greift, wenn die Partie schon gelaufen ist.
-const SCHONGANG_DAUER := 3.00
+## Weiter anzuheben bringt nichts mehr — gemessen.
+##
+## Nachdem Haerte und Risiko wirklich wirken, stiegen die Klatschen von 17,4
+## auf 19,6 Prozent. Der Versuch, das mit einem langsameren Auslaufen
+## aufzufangen, ist gescheitert: von 2,10 auf 3,00 blieben die Klatschen bei
+## 19,7 Prozent, waehrend die engen Partien von 34,4 auf 33,2 Prozent fielen
+## und die Wurfquote der Liga auf die untere Grenze von 0,60 rutschte. Der
+## Hebel greift erst ab sechs Toren Vorsprung nach der dreissigsten Minute —
+## die zusaetzlichen Klatschen entstehen frueher.
+##
+## Also bleibt es bei 2,10, und die 19,6 Prozent bleiben der Preis dafuer,
+## dass Haerte und Risiko keine Fallen mehr sind.
+const SCHONGANG_DAUER := 2.10
 const SCHONGANG_VOLL := 12.0
 
 ## Wie eine Mannschaft auf den Spielstand reagiert.
