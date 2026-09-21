@@ -327,12 +327,32 @@ static func _talente_foerdern(d: Dictionary, cid: String) -> void:
 			continue
 		sp["trainingsfokus"] = str(FOERDERUNG_JE_POSITION.get(str(sp["position"]), "athletik"))
 
+## Ab welchem Abstand zur eigenen Stammsieben ein Spieler nicht mehr
+## verlaengert wird.
+##
+## Fuenfzehn Punkte sind der Abstand vom Leistungstraeger zum
+## Ergaenzungsspieler. Wer weiter zurueckliegt, spielt nicht mehr mit — und in
+## einem echten Profikader steht er dann auch nicht.
+const MITLAEUFER_ABSTAND := 15.0
+
 ## Verlaengert auslaufende Vertraege. Ein Verein laesst nur gehen, wen er wirklich
 ## nicht braucht — sonst wuerde die Liga binnen weniger Saisons ausbluten.
+##
+## Gemessen mit werkzeuge/Kadersonde.gd fuellten sich die Kader trotzdem mit
+## Mitlaeufern: 2,3 je Verein in der erzeugten Welt, nach vier Spielzeiten
+## 5,4 — ein Anteil von 12,5 auf 27,0 Prozent, bei wachsender Kadergroesse
+## (18,2 auf 19,9) und stabiler Stammsieben (80,1 auf 79,5).
+##
+## Der Grund stand hier: gemessen wurde gegen den Kaderschnitt, und der sinkt
+## mit jedem Mitlaeufer. Je mehr Ballast ein Verein mitschleppte, desto
+## niedriger die Latte fuer den naechsten. Jetzt zaehlt die Stammsieben —
+## also das Niveau, auf dem der Verein wirklich spielt. Das ist auch die
+## Frage, die ein Sportlicher Leiter stellt: reicht er fuer unsere
+## Mannschaft? Und nicht: ist er besser als unser dritter Torwart?
 static func _vertraege_pflegen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	var saison: int = Welt.saison_index()
-	var kaderstaerke := _kaderschnitt(d, cid)
+	var stamm := _stammniveau(d, cid)
 	for sid in (v["kader"] as Array).duplicate():
 		var sp: Dictionary = d["spieler"][sid]
 		var rest: int = int(sp["vertrag"].get("bis_saison", 9)) - saison
@@ -345,17 +365,36 @@ static func _vertraege_pflegen(d: Dictionary, cid: String) -> void:
 		# haengt: im Sparjahr laesst er gehen, in der Titeljagd haelt er.
 		var halten: float = Vereinsplan.haltefaktor(d, cid)
 		var schwelle: float = 6.0 * halten
+		# Ein junger Spieler, dessen Decke ueber dem Niveau der Mannschaft
+		# liegt, wird an seiner Zukunft gemessen und nicht an seinem heutigen
+		# Stand. Alle anderen an dem, was sie heute koennen.
+		var zukunft: bool = int(sp["alter"]) <= 23 and float(sp.get("potenzial", 0.0)) > stamm - 4.0
+		if not zukunft and staerke < stamm - MITLAEUFER_ABSTAND * halten:
+			continue
 		# Zu teuer und zu schwach: der Verein laesst ihn ziehen.
-		if auslastung > 112.0 and staerke < kaderstaerke - schwelle:
+		if auslastung > 112.0 and staerke < stamm - schwelle:
 			continue
 		# Im Umbruch trennt man sich auch von Aelteren, die noch gut sind.
 		var altersgrenze: int = 35 if halten >= 1.0 else 32
-		if int(sp["alter"]) >= altersgrenze and staerke < kaderstaerke - 4.0 * halten:
+		if int(sp["alter"]) >= altersgrenze and staerke < stamm - 4.0 * halten:
 			continue
-		if (v["kader"] as Array).size() > 24 and staerke < kaderstaerke - 10.0 * halten:
+		if (v["kader"] as Array).size() > 22 and staerke < stamm - 10.0 * halten:
 			continue
 		sp["vertrag"]["gehalt"] = wunsch * Namen.bereich(1.0, 1.12)
 		sp["vertrag"]["bis_saison"] = saison + Namen.wuerfel(2, 4)
+
+## Das Niveau, auf dem ein Verein wirklich spielt: seine besten sieben.
+static func _stammniveau(d: Dictionary, cid: String) -> float:
+	var werte: Array = []
+	for sid in (d["vereine"][cid].get("kader", []) as Array):
+		werte.append(Spielerfabrik.gesamt(d["spieler"][str(sid)]))
+	werte.sort()
+	werte.reverse()
+	var summe := 0.0
+	var k: int = mini(7, werte.size())
+	for i in k:
+		summe += float(werte[i])
+	return summe / maxf(float(k), 1.0)
 
 static func _kaderschnitt(d: Dictionary, cid: String) -> float:
 	var summe := 0.0
