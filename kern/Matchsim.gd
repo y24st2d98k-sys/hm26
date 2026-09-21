@@ -753,6 +753,14 @@ static func fehlerquote_bei_risiko(risiko: float, mentalitaet: String = "ausgegl
 ## Wie oft eine Abwehraktion ueberhaupt geahndet wird — Verwarnung oder
 ## Zeitstrafe. Dass die ersten drei Vergehen einer Mannschaft meist mit Gelb
 ## abgehen, steckt in _ahnden().
+## Was eine harte Abwehr einbringt — und was mehr Risiko im Angriff.
+##
+## Der Druck wirkt auf den Staerkevergleich am Wurf (Skala wie STAERKE_GRENZE,
+## also Punkte), der Ballgewinn auf die Fehlerquote des Gegners.
+const HAERTE_DRUCK := 0.075
+const HAERTE_BALLGEWINN := 0.0026
+const RISIKO_CHANCE := 0.085
+
 static func ahndungsquote_bei_haerte(haerte: float) -> float:
 	return clampf(0.093 + haerte * 0.00105, 0.04, 0.22)
 
@@ -797,10 +805,27 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 		if bool(a["bonus_tempodiktat"]):
 			diff += 6.0
 
+	# Risiko und Haerte sind Wetten, keine Fallen.
+	#
+	# Gemessen mit werkzeuge/Hebelsonde.gd hatten beide nur Kosten: das Risiko
+	# erhoehte allein die Fehlerquote, die Haerte allein die Zeitstrafen und
+	# Siebenmeter. Damit war die beste Wahl immer der niedrigste Wert — bei
+	# der Haerte kostete 90 gegenueber 20 ganze 4,9 Tore, beim Risiko 2,0.
+	# Ein Regler, dessen Optimum am Anschlag liegt, ist keine Entscheidung,
+	# sondern eine Falle fuer den, der ihn anfasst.
+	#
+	# Im Handball hat beides seine andere Seite. Wer mehr wagt, spielt
+	# direkter und kommt zu besseren Abschluessen; wer zupackt, stoert den
+	# Aufbau und gewinnt Baelle. Genau das fehlte.
+	var haerte: float = clampf(float(v["taktik"]["haerte"]), 0.0, 100.0)
+	diff -= (haerte - 45.0) * HAERTE_DRUCK
+
 	# Technischer Fehler / Ballgewinn der Abwehr
 	var risiko: float = clampf(float(a["taktik"]["risiko"]) + float(MENTALITAET[str(a["taktik"]["mentalitaet"])]["risiko"])
 		+ float(_spielstandsdruck(a)["risiko"]), 0.0, 100.0)
+	diff += (risiko - 50.0) * RISIKO_CHANCE
 	var p_fehler: float = clampf(0.205 - diff * 0.0008 + (risiko - 50.0) * 0.0009, 0.10, 0.28) * float(td["ballgewinn"])
+	p_fehler *= clampf(1.0 + (haerte - 45.0) * HAERTE_BALLGEWINN, 0.8, 1.25)
 	p_fehler *= _anweisungsmittel(a, "angriff_auf", "angriff", "fehler")
 	p_fehler *= clampf(1.0 - float(ueberzahl) * UEBERZAHL_FEHLER, 0.5, 1.6)
 	if a["sieben_gegen_sechs"]:
@@ -823,7 +848,6 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	# Gespann sagt, was das kostet. Dasselbe 70er-Deckungsverhalten bringt
 	# gegen ein kleinliches Duo die halbe Abwehr auf die Strafbank und gegen
 	# ein großzügiges kaum eine Verwarnung.
-	var haerte: float = clampf(float(v["taktik"]["haerte"]), 0.0, 100.0)
 	var pfiff: float = Schiedsrichter.strenge_faktor(gespann, gespann_tagesform)
 	# Die Halle wirkt nur gegen die Gäste — deshalb der Faktor allein, wenn die
 	# verteidigende Mannschaft auswärts ist.
