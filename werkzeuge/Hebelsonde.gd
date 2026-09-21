@@ -177,7 +177,45 @@ func _stilprobe(n: int) -> void:
 		_log("   %-28s %14s %10.2f" % [str(d["vereine"][cid]["name"]).substr(0, 26),
 			str(stile[beste]), float(mittel[beste]) - float(mittel[schlecht])])
 	_log("")
-	if gewinner.size() <= 1 and geprueft > 1:
-		_log("   Überall derselbe Stil — das ist keine Passung, sondern ein bester Knopf.")
+	_log("   Das misst vor allem die Vertrautheit: jeder Verein startet in seiner")
+	_log("   Stammformation eingespielt und in allen anderen fremd, und das sind")
+	_log("   bis zu zehn Prozent auf die Angriffsbasis. Ein Wechsel kostet also")
+	_log("   erst einmal — wie er soll.")
+	_log("")
+	_log("— Und bei gleicher Vertrautheit? —")
+	_log("   %-28s %14s %10s" % ["Verein", "bester Stil", "Spanne"])
+	var gewinner2 := {}
+	var geprueft2 := 0
+	for i2 in range(mini(5, vereine.size())):
+		var cid2: String = str(vereine[i2])
+		if cid2 == gast:
+			continue
+		heim = cid2
+		var m1: Dictionary = d["spiele"][paarung]
+		m1["heim"] = cid2
+		d["vereine"][cid2]["taktik"] = Weltgenerator.standard_taktik()
+		# Alle Stile gleich eingespielt: was jetzt übrig bleibt, ist der Stil
+		# selbst — passt er zum Kader oder nicht.
+		var k: Dictionary = Vertrautheit.konto(d, cid2)
+		for f in (k["angriff"] as Dictionary).keys():
+			k["angriff"][f] = 100.0
+		var mittel2: Array = []
+		for st2 in stile:
+			mittel2.append(_messe(n, func(): d["vereine"][cid2]["taktik"]["angriff"] = st2))
+		var beste2 := 0
+		var schlecht2 := 0
+		for j2 in range(mittel2.size()):
+			if float(mittel2[j2]) > float(mittel2[beste2]):
+				beste2 = j2
+			if float(mittel2[j2]) < float(mittel2[schlecht2]):
+				schlecht2 = j2
+		gewinner2[str(stile[beste2])] = int(gewinner2.get(str(stile[beste2]), 0)) + 1
+		geprueft2 += 1
+		_log("   %-28s %14s %10.2f" % [str(d["vereine"][cid2]["name"]).substr(0, 26),
+			str(stile[beste2]), float(mittel2[beste2]) - float(mittel2[schlecht2])])
+	_log("")
+	if gewinner2.size() <= 1 and geprueft2 > 1:
+		_log("   Überall derselbe Stil — dann ist der Stil selbst ein bester Knopf,")
+		_log("   und nur die Vertrautheit hält davon ab, ihn immer zu wählen.")
 	else:
 		_log("   Verschiedene Vereine, verschiedene Stile — der Kader entscheidet.")
