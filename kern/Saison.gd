@@ -580,10 +580,25 @@ static func _nachwuchs(d: Dictionary) -> void:
 ## letzten Sommer stand nirgends — man sah eine Zahl und wusste nicht, ob sie
 ## gestiegen oder gefallen ist. Mit dem Abzug wird aus "Wurfkraft 14" ein
 ## "Wurfkraft 14, plus zwei seit Juli".
+## Gehalten wird der Abzug nur fuer die eigenen Spieler.
+##
+## Er lag fuer alle 3624 Spieler der Welt im Spielstand und kostete dort 943
+## Byte je Spieler — 3,4 MB von 32, gemessen mit werkzeuge/Spielstandsonde.gd.
+## Gebraucht wird er an genau zwei Stellen im Spielerfenster.
+##
+## Fuer fremde Spieler gehoert er ohnehin nicht dorthin: "plus zwei Wurfkraft
+## seit Juli" ist eine Aussage, die man ueber einen Spieler, den man nicht
+## jeden Tag im Training sieht, gar nicht treffen koennte. Das Spiel schaetzt
+## bei fremden Spielern sogar den Gesamtwert nur in einer Spanne — und nennt
+## daneben die Entwicklung auf das Zehntel genau. Beides zusammen geht nicht.
 static func attributstand_festhalten(d: Dictionary) -> void:
+	var mein: String = Welt.mein_verein_id
 	for sid in d.get("spieler", {}).keys():
 		var sp: Dictionary = d["spieler"][sid]
-		sp["attr_saisonstart"] = (sp["attr"] as Dictionary).duplicate()
+		if mein != "" and str(sp.get("verein", "")) == mein:
+			sp["attr_saisonstart"] = (sp["attr"] as Dictionary).duplicate()
+		else:
+			sp.erase("attr_saisonstart")
 
 ## Was sich seit Saisonbeginn getan hat: Attributname -> Veraenderung.
 ## Nur Werte, die sich sichtbar bewegt haben — ein Zehntel ist kein Fortschritt,

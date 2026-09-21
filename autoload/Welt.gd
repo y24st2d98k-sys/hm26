@@ -866,8 +866,15 @@ func _daten_auffrischen() -> void:
 		# Ohne Abzug vom Saisonbeginn gaebe es nichts zu vergleichen. Der
 		# heutige Stand als Ausgangspunkt ist die ehrlichste Naeherung: das
 		# Spiel behauptet dann keine Entwicklung, die es nicht belegen kann.
-		if not sp.has("attr_saisonstart"):
-			sp["attr_saisonstart"] = (sp["attr"] as Dictionary).duplicate()
+		#
+		# Nur fuer die eigenen Spieler: fuer alle anderen lag hier eine
+		# vollstaendige Attributkopie im Spielstand, 3,4 von 32 MB, fuer eine
+		# Anzeige, die es bei fremden Spielern gar nicht geben sollte.
+		if str(sp.get("verein", "")) == mein_verein_id and mein_verein_id != "":
+			if not sp.has("attr_saisonstart"):
+				sp["attr_saisonstart"] = (sp["attr"] as Dictionary).duplicate()
+		else:
+			sp.erase("attr_saisonstart")
 		# Der gemerkte Gesamtwert wird beim ersten Zugriff neu gerechnet.
 		if not sp.has("staerke"):
 			sp["staerke"] = -1.0
