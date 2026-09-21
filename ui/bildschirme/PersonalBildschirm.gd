@@ -77,9 +77,13 @@ func aktualisieren() -> void:
 	var suchen := Stil.knopf_primaer("Bewerber sichten")
 	suchen.pressed.connect(func():
 		bewerber_rolle = str(wahl.get_item_metadata(wahl.selected))
-		bewerber = _erzeuge_bewerber(bewerber_rolle)
+		bewerber = _bewerberliste(bewerber_rolle)
 		aktualisieren())
 	zeile.add_child(suchen)
+	if bewerber_rolle != "":
+		var rest: int = Personalmarkt.rest_tage(Welt.daten, bewerber_rolle)
+		suche.add_child(Stil.matt("Diese Bewerbungen liegen noch %d Tage vor. Wer heute niemanden findet, wartet auf die nächsten." % rest,
+			Stil.S_MINI))
 	if not bewerber.is_empty():
 		var g2 := Stil.tabelle(["Name", "Alter", "Kernwerte", "Gehaltsforderung", ""])
 		g2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -96,13 +100,19 @@ func aktualisieren() -> void:
 			holen.pressed.connect(func(): _verpflichte(b))
 			g2.add_child(holen)
 
-func _erzeuge_bewerber(rolle: String) -> Array:
+## Die Bewerber, die gerade vorliegen.
+##
+## Vorher erzeugte jeder Druck vier neue Leute und schrieb sie dauerhaft in
+## die Welt: zwanzigmal gesichtet hiess achtzig Einträge im Spielstand,
+## gemessen mit werkzeuge/Personalsonde.gd. Schwerer wog, dass man so lange
+## sichten konnte, bis der Beste dabei war — ohne Zeit, ohne Kosten, ohne
+## Risiko. Jetzt hält Personalmarkt die Liste, und sie gilt zwei Wochen.
+func _bewerberliste(rolle: String) -> Array:
 	var liste: Array = []
-	var v: Dictionary = Welt.mein_verein()
-	for i in range(4):
-		var pid := Weltgenerator.erzeuge_mitarbeiter(Welt.daten, rolle,
-			clampf(float(v["ruf"]) + Namen.bereich(-18.0, 14.0), 10.0, 99.0), str(v["nation"]))
-		liste.append(Welt.mitarbeiter(pid))
+	for pid in Personalmarkt.bewerber(Welt.daten, Welt.mein_verein_id, rolle):
+		var p := Welt.mitarbeiter(str(pid))
+		if not p.is_empty():
+			liste.append(p)
 	return liste
 
 func _verpflichte(b: Dictionary) -> void:
@@ -114,7 +124,7 @@ func _verpflichte(b: Dictionary) -> void:
 		return
 	b["verein"] = cid
 	(v["personal"] as Array).append(str(b["id"]))
-	bewerber = []
+	bewerber = _bewerberliste(bewerber_rolle) if bewerber_rolle != "" else []
 	_melde("%s %s wurde verpflichtet." % [b["vorname"], b["nachname"]])
 	aktualisieren()
 
