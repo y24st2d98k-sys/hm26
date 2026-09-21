@@ -157,6 +157,11 @@ func _stilprobe(n: int) -> void:
 		heim = cid
 		var m0: Dictionary = d["spiele"][paarung]
 		m0["heim"] = cid
+		# Die Regler aus den Läufen davor stehen noch auf den Extremwerten,
+		# mit denen sie zuletzt gemessen wurden. Ohne Zurücksetzen misst diese
+		# Probe für den ersten Verein etwas anderes als für die übrigen — im
+		# ersten Lauf stand Kiel dadurch allein da.
+		d["vereine"][cid]["taktik"] = Weltgenerator.standard_taktik()
 		var mittel: Array = []
 		for st in stile:
 			mittel.append(_messe(n, func(): d["vereine"][cid]["taktik"]["angriff"] = st))
