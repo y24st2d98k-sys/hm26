@@ -206,11 +206,22 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 	var arbeitseinsatz: float = float(sp["attr"]["arbeitseinsatz"]) / 20.0
 	var ehrgeiz: float = float(charakter.get("ehrgeiz", 12.0)) / 20.0
 
+	# Die Alterskurve der erzeugten Welt ist die Ansage des Spiels darüber, wie
+	# eine Handballkarriere verläuft. Die Simulation muss sie hervorbringen,
+	# sonst driftet die Welt in jeder Spielzeit weiter von ihrem Entwurf weg —
+	# gemessen mit werkzeuge/Alterssonde.gd als mittlere Abweichung über die
+	# Jahrgänge 19 bis 28.
+	#
+	# Sie lag bei -8,11 Punkten. Die Hälfte davon kam daher, dass die KI
+	# Talente ohne Mindestkönnen in den Profikader beförderte; das ist
+	# behoben und brachte -6,78. Der Rest ist die Geschwindigkeit hier, und
+	# der Fehlbetrag ist am jungen Ende am größten: -11,7 bei den
+	# Neunzehnjährigen gegen -4,5 bei den Achtundzwanzigjährigen.
 	var alters_tempo: float = 1.0
 	if alter_jahre <= 19:
-		alters_tempo = 2.6
+		alters_tempo = 3.6
 	elif alter_jahre <= 22:
-		alters_tempo = 2.0
+		alters_tempo = 2.7
 	elif alter_jahre <= 25:
 		alters_tempo = 1.0
 	elif alter_jahre <= 28:
