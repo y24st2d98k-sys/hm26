@@ -59,6 +59,7 @@ func _ready() -> void:
 	_zahl("Risiko", n, "risiko", [20, 45, 70, 90])
 	_zahl("Härte", n, "haerte", [20, 45, 70, 90])
 	_videovergleich(n)
+	_tempoprobe(n)
 	_stilprobe(n)
 
 	_log("")
@@ -219,3 +220,69 @@ func _stilprobe(n: int) -> void:
 		_log("   und nur die Vertrautheit hält davon ab, ihn immer zu wählen.")
 	else:
 		_log("   Verschiedene Vereine, verschiedene Stile — der Kader entscheidet.")
+
+
+## Hängt das richtige Tempo davon ab, ob man Favorit ist?
+##
+## Das Tempo tauscht Angriffe gegen Kraft: kürzere Angriffe heißen mehr
+## Ballbesitze für beide Mannschaften und mehr Verbrauch. Mehr Ballbesitze
+## nützen dem Stärkeren — über viele Angriffe setzt sich Klasse durch, über
+## wenige entscheidet der Zufall. Für den Außenseiter müsste also das
+## Gegenteil gelten. Gemessen an einer einzigen Paarung ist das nicht zu
+## sehen; deshalb einmal als Favorit und einmal als Außenseiter.
+func _tempoprobe(n: int) -> void:
+	var vereine: Array = (d["ligen"]["l_de1"]["vereine"] as Array)
+	var stark: String = ""
+	var schwach: String = ""
+	var bester := -1.0
+	var schlechtester := 999.0
+	for c in vereine:
+		var w: float = _kaderwert(str(c))
+		if w > bester:
+			bester = w
+			stark = str(c)
+		if w < schlechtester:
+			schlechtester = w
+			schwach = str(c)
+	if stark == "" or schwach == "" or stark == schwach:
+		return
+	_log("")
+	_log("— Hängt das richtige Tempo an der Rolle? —")
+	_log("   %-34s %10s %10s" % ["Lage", "bestes Tempo", "Spanne"])
+	for lage in [{"heim": stark, "gast": schwach, "name": "Favorit zu Hause"},
+			{"heim": schwach, "gast": stark, "name": "Außenseiter zu Hause"}]:
+		heim = str(lage["heim"])
+		gast = str(lage["gast"])
+		var m0: Dictionary = d["spiele"][paarung]
+		m0["heim"] = heim
+		m0["gast"] = gast
+		d["vereine"][heim]["taktik"] = Weltgenerator.standard_taktik()
+		var werte: Array = [25, 50, 75, 90]
+		var mittel: Array = []
+		for w2 in werte:
+			mittel.append(_messe(n, func(): d["vereine"][heim]["taktik"]["tempo"] = int(w2)))
+		var b := 0
+		var sc := 0
+		for j in range(mittel.size()):
+			if float(mittel[j]) > float(mittel[b]):
+				b = j
+			if float(mittel[j]) < float(mittel[sc]):
+				sc = j
+		_log("   %-34s %10s %10.2f" % ["%s (%s)" % [str(lage["name"]),
+			str(d["vereine"][heim]["name"]).substr(0, 14)], str(werte[b]),
+			float(mittel[b]) - float(mittel[sc])])
+	_log("")
+	_log("   Verschiebt sich das beste Tempo zwischen den beiden Lagen, ist der")
+	_log("   Regler eine Lagefrage und keine feste Zahl.")
+
+func _kaderwert(cid: String) -> float:
+	var beste: Array = []
+	for sid in (d["vereine"][cid].get("kader", []) as Array):
+		beste.append(Spielerfabrik.gesamt(d["spieler"][str(sid)]))
+	beste.sort()
+	beste.reverse()
+	var summe := 0.0
+	var k: int = mini(8, beste.size())
+	for i in k:
+		summe += float(beste[i])
+	return summe / maxf(float(k), 1.0)
