@@ -1751,7 +1751,27 @@ func _wechsel_pruefen(t: Dictionary) -> void:
 			continue
 		if float(t["zustand"][ersatz]["kraft"]) < float(z["kraft"]) + 18.0:
 			continue
+		# Ein Minutenziel gilt in beide Richtungen.
+		#
+		# Die Kraftrotation holte den besten Mann von der Bank, ohne sein
+		# Pensum anzusehen — und der beste Mann auf der Bank ist oft genau
+		# der, dem man zwanzig Minuten zugesagt hat. Der Minutenplan nahm ihn
+		# pflichtgemaess wieder herunter, die Kraftrotation holte ihn sofort
+		# zurueck, und am Ende standen achtundvierzig Minuten auf dem Zettel
+		# statt zwanzig. Gemessen mit werkzeuge/Minutensonde.gd.
+		if _ueber_pensum(t, ersatz):
+			continue
 		wechsel(t, sid, ersatz, pos)
+
+## Hat dieser Spieler sein anteiliges Pensum schon voll?
+func _ueber_pensum(t: Dictionary, sid: String) -> bool:
+	var ziele: Dictionary = t["minutenziele"]
+	if not ziele.has(sid):
+		return false
+	var anteil: float = clampf(zeit / (Einsatzzeit.SPIELDAUER * 60.0), 0.0, 1.0)
+	if anteil < 0.12:
+		return false
+	return float(t["zustand"][sid]["sekunden"]) / 60.0 >= float(ziele[sid]) * anteil
 
 ## Zielminuten umsetzen. Der Vergleich laeuft anteilig — nach zwanzig Minuten
 ## zaehlt ein Drittel des Ziels, sonst sperrte man einen Leistungstraeger nach

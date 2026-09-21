@@ -93,20 +93,26 @@ func _ready() -> void:
 		_log("— Minutensonde: %d FEHLER bei %d Prüfungen —" % [fehler, geprueft])
 	get_tree().quit(1 if fehler > 0 else 0)
 
-## Der schwächste Feldspieler auf der Bank.
+## Der achtbeste Feldspieler des Kaders.
 ##
-## Nicht irgendein Spieler ausserhalb der Sieben: die Bank umfasst nur die
-## besten vierzehn des Kaders, und wer nicht daraufsteht, kann auch mit dem
-## schönsten Minutenziel nicht eingewechselt werden. Genau daran ist der
-## erste Anlauf dieser Sonde gescheitert — sie mass ihren eigenen Fehler.
+## Er steht sicher im Spieltagsaufgebot von vierzehn und ebenso sicher nicht
+## in der Stammsieben — also genau der Fall, für den es Zielminuten gibt.
+##
+## Nicht der schwächste auf der Bank: die Bank wird vor jeder Partie neu
+## besetzt, und wer darauf ganz hinten steht, hängt an der Tagesform. Zwei
+## Läufe derselben Sonde nannten dadurch verschiedene Spieler und maßen
+## 6,5 beziehungsweise 27,4 Minuten — bei unverändertem Code. Eine Messung,
+## die das tut, taugt als Wächter nichts.
 func _bankspieler(d: Dictionary, cid: String) -> String:
-	var auf: Dictionary = d["vereine"][cid]["aufstellung"]
-	var bank: Array = auf.get("bank", [])
-	for i in range(bank.size() - 1, -1, -1):
-		var sp: Dictionary = d["spieler"][str(bank[i])]
+	var feld: Array = []
+	for s in (d["vereine"][cid]["kader"] as Array):
+		var sp: Dictionary = d["spieler"][str(s)]
 		if bool(sp["ist_torwart"]):
 			continue
 		if not (sp["verletzung"] as Dictionary).is_empty() or int(sp["sperre"]) > 0:
 			continue
-		return str(bank[i])
-	return ""
+		feld.append({"sid": str(s), "wert": Spielerfabrik.gesamt(sp)})
+	if feld.size() < 8:
+		return ""
+	feld.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	return str((feld[7] as Dictionary)["sid"])
