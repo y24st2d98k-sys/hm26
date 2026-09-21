@@ -214,14 +214,25 @@ static func _entwickeln(d: Dictionary, sp: Dictionary, cid: String, intensitaet:
 	#
 	# Sie lag bei -8,11 Punkten. Die Hälfte davon kam daher, dass die KI
 	# Talente ohne Mindestkönnen in den Profikader beförderte; das ist
-	# behoben und brachte -6,78. Der Rest ist die Geschwindigkeit hier, und
-	# der Fehlbetrag ist am jungen Ende am größten: -11,7 bei den
-	# Neunzehnjährigen gegen -4,5 bei den Achtundzwanzigjährigen.
+	# behoben und brachte -6,78.
+	#
+	# Den Rest habe ich hier gesucht und nicht gefunden. Ein Alterstempo von
+	# 3,6 und 2,7 statt 2,6 und 2,0 brachte -6,31 — bei einer Messstreuung von
+	# mehreren Punkten je Jahrgang ist das nichts. Die Zahlen daneben sagen
+	# auch, warum: die besten Zwanzigjährigen der Simulation stehen bei 75,5
+	# gegen 64,0 in der erzeugten Welt, die besten Zweiundzwanzigjährigen bei
+	# 87,2 gegen 81,0. Wer oben ankommt, kommt schnell genug an.
+	#
+	# Der Fehlbetrag steckt im Mittelwert, nicht in der Geschwindigkeit: die
+	# erzeugte Welt stellt in jeden Kader nur Spieler, die dort hingehören,
+	# die Simulation schleppt die schwachen mit. Das ist eine Frage der
+	# Kaderpflege und nicht des Trainings — deshalb stehen die alten Werte
+	# wieder hier.
 	var alters_tempo: float = 1.0
 	if alter_jahre <= 19:
-		alters_tempo = 3.6
+		alters_tempo = 2.6
 	elif alter_jahre <= 22:
-		alters_tempo = 2.7
+		alters_tempo = 2.0
 	elif alter_jahre <= 25:
 		alters_tempo = 1.0
 	elif alter_jahre <= 28:
