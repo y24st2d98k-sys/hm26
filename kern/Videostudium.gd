@@ -31,7 +31,17 @@ const ERTRAG := [0.0, 1.0, 1.7, 2.1]
 ## Der größte Vorsprung, den ein Unterschied im Studium im Spiel ausmacht.
 ## Zweieinhalb Prozent auf Angriff und Abwehr sind ein Tor über sechzig
 ## Minuten — spürbar in einer engen Partie, bedeutungslos in einer klaren.
-const WIRKUNG_MAX := 0.025
+## Gemessen war das Videostudium nicht spürbar: über 200 Paarungen bewegte
+## voller Einsatz gegen keinen 0,1 bis 0,8 Tore — das liegt so tief unter dem
+## Rauschen einer Partie, dass selbst zweihundert Wiederholungen es nicht
+## auflösen. Ein Knopf, den man drückt und nie etwas davon merkt, ist keine
+## Entscheidung.
+##
+## Sechs Prozent auf die Angriffsbasis sind rund anderthalb Tore, wenn der
+## Gegner nicht mitzieht. Das ist spürbar und bleibt fair, weil die
+## Computervereine dieselbe Arbeit leisten — wer nichts tut, verliert dann
+## eben anderthalb Tore gegen einen, der hinsieht.
+const WIRKUNG_MAX := 0.06
 ## Ab welchem Vorsprung die volle Wirkung erreicht ist.
 const VORSPRUNG_VOLL := 4.0
 

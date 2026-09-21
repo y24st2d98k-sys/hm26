@@ -767,8 +767,16 @@ static func fehlerquote_bei_risiko(risiko: float, mentalitaet: String = "ausgegl
 ## noch einmal knapp zwei. Zusammen zwei Tore gegen sechs Tore Kosten. Damit
 ## die Wette eine ist, muss der Nutzen die Kosten ungefaehr aufwiegen, und
 ## dafuer braucht es das Dreifache.
-const HAERTE_DRUCK := 0.22
-const HAERTE_BALLGEWINN := 0.0075
+## Zwei Messungen, zwei Anschläge: bei 0,075 blieb 20 die beste Härte
+## (Spanne 4,27 Tore nach unten), bei 0,22 war es 90 (Spanne 2,55 nach oben).
+## Der Nulldurchgang liegt dazwischen, linear interpoliert bei rund 0,16 —
+## und dort ist die Härte das, was sie sein soll: eine Wette, deren richtige
+## Antwort von Gespann, Gegner und Spielstand abhängt statt vom Regler.
+##
+## Das Risiko sitzt mit 0,25 bereits richtig: gemessen liegt sein Optimum bei
+## 45 und nicht am Rand, die Spanne beträgt 1,1 Tore.
+const HAERTE_DRUCK := 0.155
+const HAERTE_BALLGEWINN := 0.0053
 const RISIKO_CHANCE := 0.25
 
 static func ahndungsquote_bei_haerte(haerte: float) -> float:
