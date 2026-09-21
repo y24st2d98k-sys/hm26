@@ -28,6 +28,11 @@ var gast: String = ""
 func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	var n: int = int(args[0]) if args.size() > 0 else 240
+	# Ein einzelner Vergleich lässt sich mit viel mehr Wiederholungen rechnen
+	# als alle zusammen. Nötig wurde das beim Tempo: dort lagen die Spannen
+	# mit 1,0 und 1,5 Toren an der Schwelle, ab der eine Zahl überhaupt etwas
+	# bedeutet.
+	var nur: String = str(args[1]) if args.size() > 1 else ""
 	Welt.daten = Weltgenerator.erzeuge(2026, SAAT)
 	Welt.mein_verein_id = ""
 	d = Welt.daten
@@ -51,6 +56,10 @@ func _ready() -> void:
 	_log("%s gegen %s, gepaart gemessen: dieselbe Saat, einmal so und einmal anders." % [
 		str(d["vereine"][heim]["name"]), str(d["vereine"][gast]["name"])])
 	_log("")
+	if nur == "tempo":
+		_tempoprobe(n)
+		get_tree().quit()
+		return
 	_log("%-26s %10s %10s %10s %10s" % ["Hebel", "schlechtest", "beste", "Spanne", "Urteil"])
 
 	_wahl("Deckung", n, "abwehr", ["6-0", "5-1", "3-2-1", "4-2"])
