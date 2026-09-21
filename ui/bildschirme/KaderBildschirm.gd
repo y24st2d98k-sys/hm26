@@ -2,24 +2,31 @@ class_name KaderBildschirm
 extends Bildschirm
 ## Kaderübersicht mit sortierbaren Spalten, Filtern und Kadertiefe je Position.
 
+## Zahlen stehen rechtsbuendig, Text linksbuendig.
+##
+## Eine Spalte Zahlen liest man an der Einerstelle. Stehen sie links, muss das
+## Auge bei jeder Zeile neu suchen, wo die Zahl aufhoert — bei "6,8 Tsd. €"
+## neben "1,01 Mio. €" ist das jede Zeile eine kleine Rechenaufgabe.
+const RECHTS := ["alter", "gesamt", "spiele", "tore", "note", "gehalt", "vertrag", "wert"]
+
 const SPALTEN := [
-	{"id": "nummer", "name": "#", "breite": 30},
+	{"id": "nummer", "name": "#", "breite": 32},
 	{"id": "position", "name": "Pos", "breite": 44},
 	# 226 Pixel reichten fuer die meisten Namen, aber nicht fuer die langen:
 	# "Oskar Vind Rasmussen" und "Antonio Serradilla Cuenca" standen
 	# abgeschnitten da. Die Layoutpruefung hat beide gemeldet.
 	{"id": "name", "name": "Name", "breite": 252},
-	{"id": "alter", "name": "Alter", "breite": 48},
-	{"id": "gesamt", "name": "Stärke", "breite": 62},
+	{"id": "alter", "name": "Alter", "breite": 52},
+	{"id": "gesamt", "name": "Stärke", "breite": 60},
 	{"id": "form", "name": "Form", "breite": 74},
 	{"id": "fitness", "name": "Fitness", "breite": 74},
 	{"id": "last", "name": "Last", "breite": 74},
 	{"id": "moral", "name": "Moral", "breite": 74},
-	{"id": "spiele", "name": "Sp", "breite": 40},
-	{"id": "tore", "name": "Tore", "breite": 46},
-	{"id": "note", "name": "Note", "breite": 48},
+	{"id": "spiele", "name": "Sp", "breite": 38},
+	{"id": "tore", "name": "Tore", "breite": 44},
+	{"id": "note", "name": "Note", "breite": 46},
 	{"id": "gehalt", "name": "Gehalt", "breite": 82},
-	{"id": "vertrag", "name": "Vertrag", "breite": 62},
+	{"id": "vertrag", "name": "Vertrag", "breite": 64},
 	{"id": "wert", "name": "Wert", "breite": 86},
 ]
 
@@ -60,25 +67,22 @@ func aufbauen() -> void:
 	zusammenfassung = Stil.hbox(18)
 	v.add_child(zusammenfassung)
 
+	# Der Kopf sitzt in denselben Spaltenfassungen wie die Zeilen.
+	#
+	# Vorher standen hier nackte Buttons mit custom_minimum_size. Ein Button
+	# wird aber nie schmaler als sein Text plus Rand: bei "#" (30 px), "Sp"
+	# (40) und "Tore" (46) war er breiter als seine Spalte, und der Fehler
+	# summierte sich nach rechts auf. Dazu sind die Datenzeilen um sechs
+	# Pixel eingerueckt und der Kopf war es nicht. Auf dem Bildschirm stand
+	# "Note" ueber den Toren und "Tore" ueber den Spielen.
+	var kopfrahmen := Stil.hbox(0)
+	v.add_child(kopfrahmen)
+	kopfrahmen.add_child(_abstand(6.0))
 	kopfzeile = Stil.hbox(6)
-	v.add_child(kopfzeile)
+	kopfzeile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	kopfrahmen.add_child(kopfzeile)
 	for s in SPALTEN:
-		var k := Button.new()
-		k.text = str(s["name"])
-		k.flat = true
-		k.custom_minimum_size = Vector2(float(s["breite"]), 0)
-		k.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		k.add_theme_font_size_override("font_size", Stil.S_MINI)
-		k.add_theme_color_override("font_color", Stil.TEXT_SCHWACH)
-		var id: String = str(s["id"])
-		k.pressed.connect(func():
-			if sortierung == id:
-				absteigend = not absteigend
-			else:
-				sortierung = id
-				absteigend = true
-			aktualisieren())
-		kopfzeile.add_child(k)
+		kopfzeile.add_child(_kopfzelle(str(s["id"]), str(s["name"]), float(s["breite"])))
 	v.add_child(Stil.trenner())
 
 	var scroll := ScrollContainer.new()
@@ -266,6 +270,8 @@ func _zeile(sid: String, index: int) -> Control:
 			_:
 				zelle = Stil.text(str(e["wert"]), Stil.S_KLEIN)
 		zelle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if zelle is Label and str(SPALTEN[i]["id"]) in RECHTS:
+			(zelle as Label).horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		h.add_child(_gefasst(zelle, breite))
 	return knopf
 
@@ -280,6 +286,50 @@ func _zeile(sid: String, index: int) -> Control:
 ## Ein blosses Control uebernimmt die Mindestgroesse seiner Kinder nicht. Es
 ## haelt die Breite also fest, egal was darin liegt, und schneidet ab, was
 ## nicht hineinpasst.
+## Eine Spaltenueberschrift: Beschriftung, Sortierpfeil, Klickflaeche.
+##
+## Die Beschriftung ist ein Label und kein Knopftext. Ein Button haelt einen
+## Rand um seinen Text, und bei einer Spalte von achtunddreissig Pixeln bleibt
+## davon nichts uebrig — mit clip_text stand "No" statt "Note" und "S" statt
+## "Sp" da. Der Knopf liegt jetzt unsichtbar dahinter und traegt nur den
+## Klick.
+func _kopfzelle(id: String, name: String, breite: float) -> Control:
+	var fassung := Control.new()
+	fassung.custom_minimum_size = Vector2(breite, 20.0)
+	fassung.clip_contents = true
+	var knopf := Button.new()
+	knopf.flat = true
+	knopf.set_anchors_preset(Control.PRESET_FULL_RECT)
+	knopf.add_theme_stylebox_override("normal", Stil.box_leer())
+	knopf.add_theme_stylebox_override("focus", Stil.box_leer())
+	knopf.tooltip_text = "Nach %s sortieren" % name
+	knopf.pressed.connect(func():
+		if sortierung == id:
+			absteigend = not absteigend
+		else:
+			sortierung = id
+			absteigend = true
+		aktualisieren())
+	fassung.add_child(knopf)
+	var l := Label.new()
+	l.text = name + ("  ▾" if sortierung == id and absteigend else ("  ▴" if sortierung == id else ""))
+	l.add_theme_font_size_override("font_size", Stil.S_MINI)
+	l.add_theme_color_override("font_color",
+		Stil.TEXT if sortierung == id else Stil.TEXT_SCHWACH)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT if id in RECHTS else HORIZONTAL_ALIGNMENT_LEFT
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	l.set_anchors_preset(Control.PRESET_FULL_RECT)
+	fassung.add_child(l)
+	return fassung
+
+## Ein leerer Platzhalter fester Breite.
+func _abstand(breite: float) -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(breite, 0)
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return c
+
 func _gefasst(zelle: Control, breite: float) -> Control:
 	var fassung := Control.new()
 	fassung.custom_minimum_size = Vector2(breite, zelle.get_combined_minimum_size().y)
