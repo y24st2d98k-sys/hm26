@@ -757,9 +757,19 @@ static func fehlerquote_bei_risiko(risiko: float, mentalitaet: String = "ausgegl
 ##
 ## Der Druck wirkt auf den Staerkevergleich am Wurf (Skala wie STAERKE_GRENZE,
 ## also Punkte), der Ballgewinn auf die Fehlerquote des Gegners.
-const HAERTE_DRUCK := 0.075
-const HAERTE_BALLGEWINN := 0.0026
-const RISIKO_CHANCE := 0.085
+## Die erste Fassung war zu zaghaft: gemessen sank die Spanne der Haerte nur
+## von 4,93 auf 4,27 Tore, und die beste Wahl blieb der untere Anschlag.
+##
+## Nachgerechnet: ueber die Spanne von 20 bis 90 bringt HAERTE_DRUCK 0,075
+## rund 5,3 Punkte im Staerkevergleich, mit STAERKE_AM_WURF also knapp zwei
+## Prozent Trefferwahrscheinlichkeit auf rund fuenfzig Wuerfe — etwa ein Tor.
+## Der Ballgewinn bringt bei achtzehn Prozent Unterschied auf zehn Fehler
+## noch einmal knapp zwei. Zusammen zwei Tore gegen sechs Tore Kosten. Damit
+## die Wette eine ist, muss der Nutzen die Kosten ungefaehr aufwiegen, und
+## dafuer braucht es das Dreifache.
+const HAERTE_DRUCK := 0.22
+const HAERTE_BALLGEWINN := 0.0075
+const RISIKO_CHANCE := 0.25
 
 static func ahndungsquote_bei_haerte(haerte: float) -> float:
 	return clampf(0.093 + haerte * 0.00105, 0.04, 0.22)
@@ -825,7 +835,7 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 		+ float(_spielstandsdruck(a)["risiko"]), 0.0, 100.0)
 	diff += (risiko - 50.0) * RISIKO_CHANCE
 	var p_fehler: float = clampf(0.205 - diff * 0.0008 + (risiko - 50.0) * 0.0009, 0.10, 0.28) * float(td["ballgewinn"])
-	p_fehler *= clampf(1.0 + (haerte - 45.0) * HAERTE_BALLGEWINN, 0.8, 1.25)
+	p_fehler *= clampf(1.0 + (haerte - 45.0) * HAERTE_BALLGEWINN, 0.75, 1.45)
 	p_fehler *= _anweisungsmittel(a, "angriff_auf", "angriff", "fehler")
 	p_fehler *= clampf(1.0 - float(ueberzahl) * UEBERZAHL_FEHLER, 0.5, 1.6)
 	if a["sieben_gegen_sechs"]:
