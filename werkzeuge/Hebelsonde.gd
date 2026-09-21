@@ -59,6 +59,7 @@ func _ready() -> void:
 	_zahl("Risiko", n, "risiko", [20, 45, 70, 90])
 	_zahl("Härte", n, "haerte", [20, 45, 70, 90])
 	_videovergleich(n)
+	_stilprobe(n)
 
 	_log("")
 	_log("Alle Werte in Toren aus Sicht der Heimmannschaft, gemittelt über dieselben Saaten.")
@@ -131,3 +132,47 @@ func _partie(saat: int) -> float:
 	sim.vorbereiten()
 	sim.schnell_simulieren()
 	return float(int(m2["tore_heim"]) - int(m2["tore_gast"]))
+
+
+## Hängt der beste Angriffsstil am Kader?
+##
+## Ein Stil verteilt die Würfe um — Kreis, Außen, Rückraum. Gemessen an einer
+## Paarung bewegt er kaum etwas, und das sagt für sich genommen wenig: es
+## könnte sein, dass die Auswahl Zierde ist, oder dass dieser eine Kader eben
+## keinen Stil bevorzugt. Der Unterschied ist zu sehen, wenn mehrere Vereine
+## dieselbe Frage beantworten. Gewinnt überall derselbe Stil, ist es keine
+## Passung, sondern ein bester Knopf.
+func _stilprobe(n: int) -> void:
+	var stile: Array = ["positionsangriff", "tempospiel", "kreisfokus"]
+	var vereine: Array = (d["ligen"]["l_de1"]["vereine"] as Array)
+	_log("")
+	_log("— Hängt der beste Angriffsstil am Kader? —")
+	_log("   %-28s %14s %10s" % ["Verein", "bester Stil", "Spanne"])
+	var gewinner := {}
+	var geprueft := 0
+	for i in range(mini(5, vereine.size())):
+		var cid: String = str(vereine[i])
+		if cid == gast:
+			continue
+		heim = cid
+		var m0: Dictionary = d["spiele"][paarung]
+		m0["heim"] = cid
+		var mittel: Array = []
+		for st in stile:
+			mittel.append(_messe(n, func(): d["vereine"][cid]["taktik"]["angriff"] = st))
+		var beste := 0
+		var schlecht := 0
+		for j in range(mittel.size()):
+			if float(mittel[j]) > float(mittel[beste]):
+				beste = j
+			if float(mittel[j]) < float(mittel[schlecht]):
+				schlecht = j
+		gewinner[str(stile[beste])] = int(gewinner.get(str(stile[beste]), 0)) + 1
+		geprueft += 1
+		_log("   %-28s %14s %10.2f" % [str(d["vereine"][cid]["name"]).substr(0, 26),
+			str(stile[beste]), float(mittel[beste]) - float(mittel[schlecht])])
+	_log("")
+	if gewinner.size() <= 1 and geprueft > 1:
+		_log("   Überall derselbe Stil — das ist keine Passung, sondern ein bester Knopf.")
+	else:
+		_log("   Verschiedene Vereine, verschiedene Stile — der Kader entscheidet.")
