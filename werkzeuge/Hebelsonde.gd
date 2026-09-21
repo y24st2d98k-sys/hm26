@@ -51,30 +51,19 @@ func _ready() -> void:
 	_log("%s gegen %s, gepaart gemessen: dieselbe Saat, einmal so und einmal anders." % [
 		str(d["vereine"][heim]["name"]), str(d["vereine"][gast]["name"])])
 	_log("")
-	_log("%-28s %12s %12s %10s" % ["Hebel", "Tordiff A", "Tordiff B", "Wirkung"])
+	_log("%-26s %10s %10s %10s %10s" % ["Hebel", "schlechtest", "beste", "Spanne", "Urteil"])
 
-	_vergleich("Deckung 6-0 → 3-2-1", n,
-		func(): d["vereine"][heim]["taktik"]["abwehr"] = "6-0",
-		func(): d["vereine"][heim]["taktik"]["abwehr"] = "3-2-1")
-	_vergleich("Angriff Position → Tempo", n,
-		func(): d["vereine"][heim]["taktik"]["angriff"] = "positionsangriff",
-		func(): d["vereine"][heim]["taktik"]["angriff"] = "tempospiel")
-	_vergleich("Tempo 50 → 85", n,
-		func(): d["vereine"][heim]["taktik"]["tempo"] = 50,
-		func(): d["vereine"][heim]["taktik"]["tempo"] = 85)
-	_vergleich("Risiko 45 → 85", n,
-		func(): d["vereine"][heim]["taktik"]["risiko"] = 45,
-		func(): d["vereine"][heim]["taktik"]["risiko"] = 85)
-	_vergleich("Härte 45 → 85", n,
-		func(): d["vereine"][heim]["taktik"]["haerte"] = 45,
-		func(): d["vereine"][heim]["taktik"]["haerte"] = 85)
-	_vergleich("Videostudium ohne → voll", n,
-		func(): _video(0.0),
-		func(): _video(100.0))
+	_wahl("Deckung", n, "abwehr", ["6-0", "5-1", "3-2-1", "4-2"])
+	_wahl("Angriffsstil", n, "angriff", ["positionsangriff", "tempospiel", "kreisfokus"])
+	_zahl("Tempo", n, "tempo", [25, 50, 75, 90])
+	_zahl("Risiko", n, "risiko", [20, 45, 70, 90])
+	_zahl("Härte", n, "haerte", [20, 45, 70, 90])
+	_videovergleich(n)
 
 	_log("")
-	_log("Wirkung ist die mittlere Differenz je Saat, in Toren aus Sicht der Heimmannschaft.")
-	_log("Ein Hebel nahe null bewegt nichts — dann ist er ein Knopf ohne Funktion.")
+	_log("Alle Werte in Toren aus Sicht der Heimmannschaft, gemittelt über dieselben Saaten.")
+	_log("Die Spanne ist der Abstand zwischen der besten und der schlechtesten Wahl —")
+	_log("also das, was eine richtige Entscheidung überhaupt wert sein kann.")
 	get_tree().quit()
 
 func _video(arbeit: float) -> void:
@@ -82,32 +71,57 @@ func _video(arbeit: float) -> void:
 	s["arbeit"] = arbeit
 	s["gegner"] = gast if arbeit > 0.0 else ""
 
-## Zwei Einstellungen gegeneinander, Saat für Saat.
-func _vergleich(name: String, n: int, a: Callable, b: Callable) -> void:
-	var summe_a := 0.0
-	var summe_b := 0.0
-	var summe_diff := 0.0
-	var quadrate_diff := 0.0
+## Alle Möglichkeiten eines Hebels gegeneinander, Saat für Saat.
+##
+## Nicht "bewegt diese Einstellung Tore" ist die Frage — ein Angriffsstil
+## verteilt die Würfe um und bringt für sich genommen keine dazu. Die Frage
+## ist, ob die zum Kader passende Wahl die unpassende schlägt. Ist die Spanne
+## null, sind alle Möglichkeiten dasselbe, und die Auswahl ist Zierde.
+func _wahl(name: String, n: int, feld: String, werte: Array) -> void:
+	var mittel: Array = []
+	for w in werte:
+		mittel.append(_messe(n, func(): d["vereine"][heim]["taktik"][feld] = w))
+	_ausgabe(name, werte, mittel, n)
+
+func _zahl(name: String, n: int, feld: String, werte: Array) -> void:
+	var mittel: Array = []
+	for w in werte:
+		mittel.append(_messe(n, func(): d["vereine"][heim]["taktik"][feld] = int(w)))
+	_ausgabe(name, werte, mittel, n)
+
+func _videovergleich(n: int) -> void:
+	var mittel: Array = []
+	for a in [0.0, 100.0]:
+		mittel.append(_messe(n, func(): _video(a)))
+	_ausgabe("Videostudium", ["ohne", "voll"], mittel, n)
+
+func _messe(n: int, setzen: Callable) -> float:
+	var summe := 0.0
 	for i in range(n):
-		var saat: int = 810001 + i * 17
-		a.call()
-		var ab_a: float = _partie(saat)
-		b.call()
-		var ab_b: float = _partie(saat)
-		summe_a += ab_a
-		summe_b += ab_b
-		var diff: float = ab_b - ab_a
-		summe_diff += diff
-		quadrate_diff += diff * diff
-	var mittel: float = summe_diff / float(n)
-	var streuung: float = sqrt(maxf(quadrate_diff / float(n) - mittel * mittel, 0.0))
-	# Der Standardfehler sagt, ob die gemessene Wirkung mehr ist als Rauschen.
-	var fehler: float = streuung / sqrt(float(n))
-	var urteil := "im Rauschen"
-	if absf(mittel) > fehler * 2.0:
-		urteil = "wirkt"
-	_log("%-28s %12.2f %12.2f %+10.2f   (± %.2f, %s)" % [name, summe_a / float(n),
-		summe_b / float(n), mittel, fehler * 2.0, urteil])
+		setzen.call()
+		summe += _partie(810001 + i * 17)
+	return summe / float(n)
+
+## Der Standardfehler einer einzelnen Partie liegt bei rund sieben Toren
+## Streuung; über n Saaten schrumpft er auf 7/sqrt(n). Zwei Mittelwerte
+## unterscheiden sich erst dann verlässlich, wenn die Spanne das Doppelte
+## davon übersteigt — weil dieselben Saaten verwendet werden, ist der Test
+## strenger als nötig, also vorsichtig.
+func _ausgabe(name: String, werte: Array, mittel: Array, n: int) -> void:
+	var beste := 0
+	var schlechteste := 0
+	for i in range(mittel.size()):
+		if float(mittel[i]) > float(mittel[beste]):
+			beste = i
+		if float(mittel[i]) < float(mittel[schlechteste]):
+			schlechteste = i
+	var spanne: float = float(mittel[beste]) - float(mittel[schlechteste])
+	var schwelle: float = 2.0 * 7.0 / sqrt(float(n)) * 1.41
+	var urteil := "Zierde" if spanne < schwelle else "wirkt"
+	_log("%-26s %10s %10s %10.2f %10s" % [name,
+		"%s %.1f" % [str(werte[schlechteste]), float(mittel[schlechteste])],
+		"%s %.1f" % [str(werte[beste]), float(mittel[beste])],
+		spanne, urteil])
 
 func _partie(saat: int) -> float:
 	for sid in d["spieler"].keys():
