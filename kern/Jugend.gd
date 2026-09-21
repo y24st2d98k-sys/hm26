@@ -217,7 +217,24 @@ static func ki_pflege(d: Dictionary, cid: String) -> void:
 	for sid2 in (v["jugend"] as Array).duplicate():
 		var sp: Dictionary = d["spieler"][sid2]
 		var reif: bool = Spielerfabrik.gesamt(sp) > schnitt - 14.0 and int(sp["alter"]) >= 18
-		var draengt: bool = int(sp["alter"]) >= HOECHSTALTER - 1 and float(sp["potenzial"]) > schnitt
+		# Wer aus der Jugend herauswaechst, bekommt eine zweite Chance — aber
+		# keinen Freifahrtschein.
+		#
+		# Bis hierher genuegte dafuer das Potenzial. Ein Neunzehnjaehriger mit
+		# einer Decke von 74 rueckte damit auf, auch wenn er erst bei 41 stand,
+		# und blieb dann im Profikader stehen, weil er dort keine Minuten
+		# bekommt. Gemessen an der Alterskurve, die der Weltgenerator anlegt,
+		# fehlten den Neunzehnjaehrigen der Liga dadurch 15,8 Punkte und den
+		# Zwanzigjaehrigen 11,8 — im Mittel 8,11 ueber die Jahrgaenge 19 bis 28.
+		#
+		# In der Wirklichkeit steht im Profikader eines Bundesligisten kein
+		# Neunzehnjaehriger, der noch nicht so weit ist. Wer es nicht schafft,
+		# geht eine Liga tiefer — und genau das passiert jetzt:
+		# Jugend.jahreswechsel gibt ihn mit zwanzig frei, und dort holt ihn
+		# ein Verein, zu dem er passt.
+		var draengt: bool = int(sp["alter"]) >= HOECHSTALTER - 1 \
+			and float(sp["potenzial"]) > schnitt \
+			and Spielerfabrik.gesamt(sp) > schnitt - 22.0
 		if (reif or draengt) and (v["kader"] as Array).size() < 24:
 			befoerdern(d, sid2)
 
