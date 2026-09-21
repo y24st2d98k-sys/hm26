@@ -6,6 +6,10 @@ extends Node
 ## am ersten Tag fest, wie weit einer kommt.
 
 const JAHRE := 5
+## Die Jahrgänge, an denen sich entscheidet, ob die Liga sich selbst erhält.
+## Darunter ist zu wenig Datenbestand, darüber entscheidet der Abbau.
+const VERGLEICH_VON := 19
+const VERGLEICH_BIS := 28
 
 func _log(t: String) -> void:
 	printerr(t)
@@ -22,7 +26,7 @@ func _ready() -> void:
 			vorher[sid] = {"potenzial": float(sp["potenzial"]), "staerke": Spielerfabrik.gesamt(sp),
 				"alter": int(sp["alter"])}
 
-	_bericht(d, "Ausgangslage")
+	var anfang := _bericht(d, "Ausgangslage")
 
 	var tage := 0
 	while tage < JAHRE * 365:
@@ -34,7 +38,8 @@ func _ready() -> void:
 			Welt.saison_pruefen(Welt.tag())
 		tage += 1
 	_log("")
-	_bericht(d, "Nach %d Jahren (%s)" % [JAHRE, Welt.datum_text()])
+	var ende := _bericht(d, "Nach %d Jahren (%s)" % [JAHRE, Welt.datum_text()])
+	_altersvergleich(anfang, ende)
 
 	_log("")
 	_log("— Bewegt sich das Potenzial? —")
@@ -57,7 +62,38 @@ func _ready() -> void:
 	_log("   %d von %d damals hoechstens 21-Jaehrigen sind noch da." % [noch_da, vorher.size()])
 	_log("   Potenzial gestiegen: %d, gefallen: %d, unveraendert: %d" % [hoch, runter, gleich])
 
-func _bericht(d: Dictionary, titel: String) -> void:
+## Hält die erzeugte Welt, was sie verspricht?
+##
+## Der Weltgenerator legt eine Alterskurve an: ein Achtzehnjähriger kann 54,
+## ein Sechsundzwanzigjähriger 77. Das ist die Ansage des Spiels darüber, wie
+## eine Handballkarriere verläuft. Die Simulation muss dieselbe Kurve
+## hervorbringen — sonst driftet die Welt von ihrem eigenen Entwurf weg, und
+## zwar in jeder Spielzeit ein Stück weiter.
+##
+## Die mittlere Abweichung über die Jahrgänge 19 bis 28 ist dafür die eine
+## Zahl. Sie soll nahe null liegen; ein negativer Wert heißt, die Simulation
+## entwickelt langsamer, als die erzeugte Welt behauptet.
+func _altersvergleich(anfang: Dictionary, ende: Dictionary) -> void:
+	_log("")
+	_log("— Hält die Simulation die Alterskurve der erzeugten Welt? —")
+	_log("   %5s %10s %10s %10s" % ["Alter", "erzeugt", "simuliert", "Abstand"])
+	var summe := 0.0
+	var anzahl := 0
+	for a in range(VERGLEICH_VON, VERGLEICH_BIS + 1):
+		if not anfang.has(a) or not ende.has(a):
+			continue
+		var soll: float = float(anfang[a])
+		var ist: float = float(ende[a])
+		summe += ist - soll
+		anzahl += 1
+		_log("   %5d %10.1f %10.1f %+10.1f" % [a, soll, ist, ist - soll])
+	if anzahl == 0:
+		return
+	_log("")
+	_log("   Mittlere Abweichung %+.2f Punkte über %d Jahrgänge." % [summe / float(anzahl), anzahl])
+	_log("   (Null heißt: die Simulation bringt die Kurve hervor, die der Generator anlegt.)")
+
+func _bericht(d: Dictionary, titel: String) -> Dictionary:
 	_log("— %s —" % titel)
 	var nach_alter := {}
 	var im_kader := {}
@@ -75,6 +111,7 @@ func _bericht(d: Dictionary, titel: String) -> void:
 			im_kader[eimer] = int(im_kader.get(eimer, 0)) + 1
 	var alter_liste: Array = nach_alter.keys()
 	alter_liste.sort()
+	var schnitte := {}
 	_log("   %5s %8s %8s %8s" % ["Alter", "Spieler", "Schnitt", "Bester"])
 	for a in alter_liste:
 		var werte: Array = nach_alter[a]
@@ -82,8 +119,11 @@ func _bericht(d: Dictionary, titel: String) -> void:
 		var summe := 0.0
 		for w in werte:
 			summe += float(w)
-		_log("   %5d %8d %8.1f %8.1f" % [int(a), werte.size(), summe / float(werte.size()),
+		var schnitt: float = summe / float(werte.size())
+		schnitte[int(a)] = schnitt
+		_log("   %5d %8d %8.1f %8.1f" % [int(a), werte.size(), schnitt,
 			float(werte[werte.size() - 1])])
+	return schnitte
 
 func _erster_verein() -> String:
 	var d := Weltgenerator.erzeuge(2026, 4711)
