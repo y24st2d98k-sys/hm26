@@ -638,7 +638,14 @@ const SCHONGANG_ABSCHLUSS := -0.300
 ## Die engen Partien bleiben unberuehrt, und der Meister verliert keinen
 ## Punkt — bei 2,10 steht er erstmals im Zielband, weil der Letzte in
 ## entschiedenen Partien weniger Kosmetiktore bekommt.
-const SCHONGANG_DAUER := 2.10
+## Nachgezogen, nachdem Haerte und Risiko wirklich wirken: die Klatschen
+## stiegen dadurch von 17,4 auf 19,6 Prozent, weil zwei Mannschaften sich in
+## einer Partie staerker unterscheiden als vorher. Das ist die richtige
+## Kehrseite echter Entscheidungen — wer falsch stellt, soll hoeher verlieren
+## — aber die Verteilung der Ergebnisse muss trotzdem stimmen. Also laeuft
+## eine entschiedene Partie noch langsamer aus. Das kostet keine
+## Entscheidung, weil es nur greift, wenn die Partie schon gelaufen ist.
+const SCHONGANG_DAUER := 3.00
 const SCHONGANG_VOLL := 12.0
 
 ## Wie eine Mannschaft auf den Spielstand reagiert.

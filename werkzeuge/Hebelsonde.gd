@@ -60,6 +60,10 @@ func _ready() -> void:
 		_tempoprobe(n)
 		get_tree().quit()
 		return
+	if nur == "goldregel":
+		_goldregel(n)
+		get_tree().quit()
+		return
 	_log("%-26s %10s %10s %10s %10s" % ["Hebel", "schlechtest", "beste", "Spanne", "Urteil"])
 
 	_wahl("Deckung", n, "abwehr", ["6-0", "5-1", "3-2-1", "4-2"])
@@ -295,3 +299,81 @@ func _kaderwert(cid: String) -> float:
 	for i in k:
 		summe += float(beste[i])
 	return summe / maxf(float(k), 1.0)
+
+
+## Gibt es eine Einstellung, die in jeder Lage gewinnt?
+##
+## Das ist die eigentliche Frage an ein Managerspiel, und sie ist schärfer als
+## "wirkt der Hebel". Ein Hebel darf ruhig stark wirken — er darf nur keine
+## Antwort haben, die immer stimmt. Sonst stellt man sie einmal ein, fasst sie
+## nie wieder an, und jeder Spielstand läuft gleich.
+##
+## Deshalb wird jeder Hebel in drei Lagen gemessen: gegen einen deutlich
+## stärkeren Gegner, gegen einen gleich starken und gegen einen deutlich
+## schwächeren. Gewinnt überall derselbe Wert, steht hier eine goldene Regel
+## — und die gehört repariert.
+func _goldregel(n: int) -> void:
+	var vereine: Array = (d["ligen"]["l_de1"]["vereine"] as Array)
+	var sortiert: Array = []
+	for c in vereine:
+		sortiert.append({"cid": str(c), "wert": _kaderwert(str(c))})
+	sortiert.sort_custom(func(a, b): return float(a["wert"]) > float(b["wert"]))
+	if sortiert.size() < 6:
+		return
+	# Der Verein aus der Mitte tritt gegen oben, Mitte und unten an.
+	var mitte: int = int(sortiert.size() / 2)
+	heim = str((sortiert[mitte] as Dictionary)["cid"])
+	var lagen: Array = [
+		{"name": "gegen den Stärksten", "gast": str((sortiert[0] as Dictionary)["cid"])},
+		{"name": "gegen Augenhöhe", "gast": str((sortiert[mitte + 1] as Dictionary)["cid"])},
+		{"name": "gegen den Schwächsten", "gast": str((sortiert[sortiert.size() - 1] as Dictionary)["cid"])},
+	]
+	var hebel: Array = [
+		{"name": "Deckung", "feld": "abwehr", "werte": ["6-0", "5-1", "3-2-1", "4-2"]},
+		{"name": "Angriffsstil", "feld": "angriff", "werte": ["positionsangriff", "tempospiel", "kreisfokus"]},
+		{"name": "Tempo", "feld": "tempo", "werte": [25, 50, 75, 90]},
+		{"name": "Risiko", "feld": "risiko", "werte": [20, 45, 70, 90]},
+		{"name": "Härte", "feld": "haerte", "werte": [20, 45, 70, 90]},
+	]
+	_log("")
+	_log("=== Gibt es eine Einstellung, die in jeder Lage gewinnt? ===")
+	_log("")
+	_log("%s zu Hause, %d Partien je Feld." % [str(d["vereine"][heim]["name"]), n])
+	_log("")
+	_log("%-16s %-22s %-22s %-22s %s" % ["Hebel", str(lagen[0]["name"]),
+		str(lagen[1]["name"]), str(lagen[2]["name"]), "Urteil"])
+	var goldene := 0
+	for h in hebel:
+		var beste_je_lage: Array = []
+		for lage in lagen:
+			gast = str(lage["gast"])
+			var m0: Dictionary = d["spiele"][paarung]
+			m0["heim"] = heim
+			m0["gast"] = gast
+			d["vereine"][heim]["taktik"] = Weltgenerator.standard_taktik()
+			var mittel: Array = []
+			for w in (h["werte"] as Array):
+				mittel.append(_messe(n, func(): d["vereine"][heim]["taktik"][str(h["feld"])] = w))
+			var b := 0
+			for j in range(mittel.size()):
+				if float(mittel[j]) > float(mittel[b]):
+					b = j
+			beste_je_lage.append({"wert": str((h["werte"] as Array)[b]),
+				"diff": float(mittel[b])})
+		var verschieden := {}
+		for e in beste_je_lage:
+			verschieden[str(e["wert"])] = true
+		var urteil := "goldene Regel" if verschieden.size() == 1 else "lageabhängig"
+		if verschieden.size() == 1:
+			goldene += 1
+		_log("%-16s %-22s %-22s %-22s %s" % [str(h["name"]),
+			"%s (%+.1f)" % [str(beste_je_lage[0]["wert"]), float(beste_je_lage[0]["diff"])],
+			"%s (%+.1f)" % [str(beste_je_lage[1]["wert"]), float(beste_je_lage[1]["diff"])],
+			"%s (%+.1f)" % [str(beste_je_lage[2]["wert"]), float(beste_je_lage[2]["diff"])],
+			urteil])
+	_log("")
+	if goldene == 0:
+		_log("Keine goldene Regel: jeder Hebel will je nach Gegner etwas anderes.")
+	else:
+		_log("%d von %d Hebeln haben eine Antwort, die immer stimmt. Die gehören repariert." % [
+			goldene, hebel.size()])
