@@ -1711,11 +1711,34 @@ func _wechsel_pruefen(t: Dictionary) -> void:
 			continue
 		wechsel(t, sid, ersatz, pos)
 
-## Zielminuten umsetzen: wer sein Pensum fuer den bisherigen Spielverlauf
-## erfuellt hat, macht Platz fuer den, der am weitesten hinterherhaengt. Der
-## Vergleich laeuft anteilig — nach zwanzig Minuten zaehlt ein Drittel des
-## Ziels, sonst sperrte man einen Leistungstraeger nach der ersten Viertel-
-## stunde aus.
+## Zielminuten umsetzen. Der Vergleich laeuft anteilig — nach zwanzig Minuten
+## zaehlt ein Drittel des Ziels, sonst sperrte man einen Leistungstraeger nach
+## der ersten Viertelstunde aus.
+##
+## Die Ansage hat zwei Haelften, und umgesetzt war nur eine davon:
+##
+##   1. Wer sein Pensum erfuellt hat, macht Platz.
+##   2. Wer weit hinter seinem Pensum liegt, muss aufs Feld — und dafuer muss
+##      jemand weichen, der gar kein Pensum hat.
+##
+## Ohne die zweite lief die Minutenzuweisung genau dann ins Leere, wenn man
+## sie so benutzt, wie sie gedacht ist: ein Ziel fuer den Jungen, keines fuer
+## die Stammkraefte. Ausgewechselt wurde ja nur, wer selbst ein Ziel hatte und
+## es uebererfuellte — also niemand. Gemessen mit werkzeuge/Minutensonde.gd:
+## null Minuten in sechs Partien fuer einen Spieler mit zwanzig Zielminuten.
+##
+## Das traf auch die Talentfoerderung der Computervereine, die seit kurzem
+## ueber dieselben Zielminuten laeuft.
+
+## Wie weit ueber dem anteiligen Soll jemand liegen muss, um Platz zu machen.
+const PENSUM_UEBER := 2.0
+## Wie weit darunter, um beruecksichtigt zu werden.
+const PENSUM_RUECKSTAND := 1.5
+## Und wie weit darunter, um jemanden ohne Pensum zu verdraengen. Hoeher als
+## die Schwelle davor: einen Stammspieler holt man nicht wegen einer halben
+## Minute vom Feld.
+const PENSUM_VERDRAENGT := 2.5
+
 func _minutenplan_pruefen(t: Dictionary) -> void:
 	var ziele: Dictionary = t["minutenziele"]
 	if ziele.is_empty():
@@ -1728,14 +1751,14 @@ func _minutenplan_pruefen(t: Dictionary) -> void:
 		if pos == "TW":
 			continue
 		var sid: String = str(t["angriff_auf"][pos])
-		if sid == "" or not ziele.has(sid):
+		if sid == "":
 			continue
-		var soll: float = float(ziele[sid]) * anteil
-		var ist: float = float(t["zustand"][sid]["sekunden"]) / 60.0
-		if ist < soll + 2.0:
-			continue
+		var hat_ziel: bool = ziele.has(sid)
+		var ueber: bool = hat_ziel and float(t["zustand"][sid]["sekunden"]) / 60.0 \
+			>= float(ziele[sid]) * anteil + PENSUM_UEBER
+		# Wer auf der Bank am weitesten hinter seinem Pensum liegt.
 		var kandidat := ""
-		var groesster := 1.5
+		var groesster: float = PENSUM_RUECKSTAND
 		for ersatz in t["bank"]:
 			var z_e: Dictionary = t["zustand"][ersatz]
 			if bool(z_e["rot"]):
@@ -1751,7 +1774,16 @@ func _minutenplan_pruefen(t: Dictionary) -> void:
 			if rueckstand > groesster:
 				groesster = rueckstand
 				kandidat = ersatz
-		if kandidat != "":
+		if ueber:
+			# Wartet niemand mit Pensum, kommt der Beste zurueck — sonst
+			# bliebe der Junge bis zur Sirene drauf, obwohl er sein Pensum
+			# laengst hat.
+			if kandidat == "":
+				kandidat = _bester_von_bank(t, pos)
+			if kandidat != "" and kandidat != sid:
+				wechsel(t, sid, kandidat, pos)
+			continue
+		if not hat_ziel and kandidat != "" and groesster >= PENSUM_VERDRAENGT:
 			wechsel(t, sid, kandidat, pos)
 
 ## Fuehrt einen Wechsel durch. Gibt false zurueck, wenn er nicht moeglich ist.
