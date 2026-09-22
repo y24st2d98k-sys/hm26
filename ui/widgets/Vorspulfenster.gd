@@ -175,7 +175,7 @@ func _mit_ladeschirm(zieltag: int, simulieren: bool) -> Dictionary:
 		erg = Welt.vorspulen_schritt(zieltag, simulieren, SCHEIBE)
 		summe += int(erg["tage"])
 		schirm.fortschritt(float(summe) / float(strecke),
-			"%s · noch %d Tag(e)" % [Welt.datum_text(true), maxi(zieltag - Welt.tag(), 0)])
+			"%s · noch %s" % [Welt.datum_text(true), Stil.anzahl_mit(maxi(zieltag - Welt.tag(), 0), "Tag", "Tage")])
 		await schirm.atmen()
 		if not bool(erg.get("weiter", false)):
 			break

@@ -1402,5 +1402,17 @@ func zahl(wert: int) -> String:
 			aus = "." + aus
 	return ("-" if wert < 0 else "") + aus
 
+## Ein- oder Mehrzahl, je nach Anzahl.
+##
+## "1 Talent(e) sind zu alt" hat noch nie jemand gesagt. Die Klammerform ist
+## die Notlösung eines Programmierers, der sich vor einer Fallunterscheidung
+## drückt, und sie steht im Spiel an jeder Stelle, an der gezählt wird.
+func mehrzahl(anzahl: int, einzahl: String, viele: String) -> String:
+	return einzahl if anzahl == 1 else viele
+
+## Dasselbe mit der Zahl davor: "1 Talent", "3 Talente".
+func anzahl_mit(anzahl: int, einzahl: String, viele: String) -> String:
+	return "%d %s" % [anzahl, mehrzahl(anzahl, einzahl, viele)]
+
 func komma(wert: float, stellen: int = 1) -> String:
 	return String.num(wert, stellen).replace(".", ",")

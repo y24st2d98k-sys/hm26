@@ -307,7 +307,7 @@ func _kopf_auffrischen() -> void:
 	navi.setze_post(offen)
 	navi.setze_zaehler("nachrichten", offen)
 	navi.setze_hinweis("nachrichten",
-		("%d ungelesene Nachricht(en)" % offen) if offen > 0 else "Posteingang")
+		("%s ungelesen" % Stil.anzahl_mit(offen, "Nachricht", "Nachrichten")) if offen > 0 else "Posteingang")
 	# Eine Zahl ohne Erklaerung ist eine Aufgabe ohne Anleitung.
 	var gespraeche: int = Anliegen.anzahl(Welt.daten)
 	navi.setze_zaehler("kabine", gespraeche)

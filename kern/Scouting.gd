@@ -227,7 +227,8 @@ static func einschaetzung(d: Dictionary, sid: String) -> String:
 	teile.append("Typ: %s" % charakter)
 	if str(sp["verein"]) != "" and d["vereine"].has(str(sp["verein"])):
 		var rest: int = int(sp["vertrag"].get("bis_saison", 0)) - Welt.saison_index()
-		teile.append("Vertrag bei %s noch %d Jahr(e)" % [d["vereine"][str(sp["verein"])]["name"], maxi(rest, 0)])
+		teile.append("Vertrag bei %s noch %s" % [d["vereine"][str(sp["verein"])]["name"],
+			Stil.anzahl_mit(maxi(rest, 0), "Jahr", "Jahre")])
 	else:
 		teile.append("derzeit vereinslos")
 	return ", ".join(teile)

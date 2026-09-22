@@ -381,7 +381,7 @@ func setze_verlauf(kann_zurueck: bool, kann_vor: bool) -> void:
 func setze_post(offen: int) -> void:
 	_sinnbildfarbe(_glocke, Stil.AKZENT if offen > 0 else Stil.TEXT_MATT)
 	if _glocke != null:
-		_glocke.tooltip_text = "%d ungelesene Nachricht(en)" % offen if offen > 0 else "Nachrichten"
+		_glocke.tooltip_text = "%s ungelesen" % Stil.anzahl_mit(offen, "Nachricht", "Nachrichten") if offen > 0 else "Nachrichten"
 
 func setze_verein(name: String, liga: String, wappen: Control) -> void:
 	_vereinsname.text = name

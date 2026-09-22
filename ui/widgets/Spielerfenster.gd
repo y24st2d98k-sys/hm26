@@ -805,11 +805,13 @@ func _gespraechskarte(eltern: Node, sp: Dictionary) -> void:
 		"%d — %s" % [int(wert), Gespraech.beziehung_text(wert)], Stil.prozent_farbe(wert)))
 	for e in Gespraech.offene(Welt.daten, sid):
 		var rest: int = int(e["faellig"]) - Welt.tag()
-		karte.add_child(Stil.banner("%s — Prüfung in %d Tag(en)" % [
-			Gespraech.versprechen_text(e), maxi(rest, 0)], "warnung"))
+		karte.add_child(Stil.banner("%s — Prüfung in %s" % [
+			Gespraech.versprechen_text(e),
+			Stil.anzahl_mit(maxi(rest, 0), "Tag", "Tagen")], "warnung"))
 	var sperre: int = Gespraech.sperre_rest(Welt.daten, sp)
 	if sperre > 0:
-		karte.add_child(Stil.matt("Zuletzt vor Kurzem gesprochen — %d Tag(e) Ruhe." % sperre, Stil.S_MINI))
+		karte.add_child(Stil.matt("Zuletzt vor Kurzem gesprochen — %s Ruhe." % Stil.anzahl_mit(
+			sperre, "Tag", "Tage"), Stil.S_MINI))
 		return
 
 	var themen := Gespraech.themen(Welt.daten, sid)
