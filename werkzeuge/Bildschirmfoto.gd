@@ -13,6 +13,13 @@ func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	var ordner: String = str(args[0]) if args.size() > 0 else "/tmp/hallenherz"
 	var welche: Array = args.slice(1) if args.size() > 1 else STANDARD
+	# "hell" vorneweg schaltet auf die helle Handschrift um. So lassen sich
+	# beide Entwuerfe nebeneinander ansehen, statt uebereinander zu reden.
+	if welche.has("hell"):
+		welche.erase("hell")
+		Stil.thema_setzen(Stil.HALLENLICHT)
+		if welche.is_empty():
+			welche = STANDARD.duplicate()
 	DirAccess.make_dir_recursive_absolute(ordner)
 	get_window().size = Vector2i(1680, 945)
 	await get_tree().process_frame

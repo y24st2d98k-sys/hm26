@@ -43,6 +43,81 @@ var LILA := Color("#c084fc")
 var TUERKIS := Color("#2dd4bf")
 var SCHATTEN := Color(0, 0, 0, 0.55)
 
+# ------------------------------------------------------------- Themenwahl ---
+## Zwei Handschriften, eine Datei.
+##
+## "Nachtblau" ist das, was oben steht: dunkler Grund, gerundete Karten mit
+## Hoehenstaffelung, Violett als Handlungsfarbe, Magenta als Stimme.
+##
+## "Hallenlicht" ist der Gegenentwurf und keine Aufhellung desselben Bildes.
+## Der Unterschied liegt nicht in den Farben, sondern darin, was die Flaeche
+## traegt: Nachtblau trennt ueber Hoehe — jede Karte ist ein Koerper mit
+## Schatten und Lichtkante. Hallenlicht trennt ueber Weissraum und Haarlinien;
+## es gibt keine Koerper, nur eine Seite. Damit kann Hierarchie wieder ueber
+## Typografie und Abstand entstehen statt ueber Panels, die alle gleich
+## aussehen.
+##
+## Dahinter steht der Zweck: das Spiel ist ein Lese- und Vergleichswerkzeug
+## fuer lange Sitzungen. Dichte Zahlenspalten liest man auf hellem, ruhigem
+## Grund besser, und je weniger gleichzeitig um Aufmerksamkeit ruft, desto
+## eher faellt das auf, was wirklich eine Entscheidung verlangt.
+enum { NACHTBLAU, HALLENLICHT }
+var thema: int = NACHTBLAU
+## Traegt die Flaeche Koerper (Schatten, Rundung) oder nur Linien?
+var flaechen_koerper: bool = true
+
+func thema_setzen(welches: int) -> void:
+	thema = welches
+	if welches == HALLENLICHT:
+		GRUND = Color("#f4f2ee")
+		FLAECHE_TIEF = Color("#eceae5")
+		FLAECHE = Color("#faf9f7")
+		FLAECHE_HOCH = Color("#ffffff")
+		FLAECHE_GLAS = Color("#e7e4dd")
+		RAND = Color("#d9d5cc")
+		RAND_HELL = Color("#c2bdb1")
+		TEXT = Color("#16181d")
+		TEXT_MATT = Color("#585c66")
+		TEXT_SCHWACH = Color("#8a8e99")
+		# Eine einzige Handlungsfarbe. Sie sagt "hier kann man etwas tun" und
+		# sonst nichts.
+		AKZENT = Color("#1d4ed8")
+		AKZENT_TIEF = Color("#1e40af")
+		AKZENT_DUNKEL = Color("#dfe6fb")
+		# Und eine einzige Alarmfarbe, die nirgends als Zierde vorkommt.
+		SIGNAL = Color("#b91c1c")
+		BLAU = Color("#0369a1")
+		GRUEN = Color("#15803d")
+		GELB = Color("#a16207")
+		ROT = Color("#b91c1c")
+		LILA = Color("#6d28d9")
+		TUERKIS = Color("#0f766e")
+		SCHATTEN = Color(0, 0, 0, 0.10)
+		flaechen_koerper = false
+	else:
+		GRUND = Color("#070a14")
+		FLAECHE_TIEF = Color("#04060d")
+		FLAECHE = Color("#0f1522")
+		FLAECHE_HOCH = Color("#151d2e")
+		FLAECHE_GLAS = Color("#1e283c")
+		RAND = Color("#1a2234")
+		RAND_HELL = Color("#2b3750")
+		TEXT = Color("#f2f5fb")
+		TEXT_MATT = Color("#98a4bb")
+		TEXT_SCHWACH = Color("#5f6b83")
+		AKZENT = Color("#8b5cf6")
+		AKZENT_TIEF = Color("#6d3fe0")
+		AKZENT_DUNKEL = Color("#1d1735")
+		SIGNAL = Color("#ff3d8a")
+		BLAU = Color("#38bdf8")
+		GRUEN = Color("#34d399")
+		GELB = Color("#fbbf24")
+		ROT = Color("#f87171")
+		LILA = Color("#c084fc")
+		TUERKIS = Color("#2dd4bf")
+		SCHATTEN = Color(0, 0, 0, 0.55)
+		flaechen_koerper = true
+
 # ------------------------------------------------------------ Typografie ---
 const S_ETIKETT := 10
 const S_MINI := 11
@@ -221,6 +296,14 @@ func box(fuellung: Color, radius: int = R_NORMAL, randfarbe: Variant = null, ran
 
 ## Karte mit weichem Schlagschatten — fuer erhabene Flaechen und Fenster.
 func box_erhaben(fuellung: Color, radius: int = R_NORMAL, randfarbe: Variant = null) -> StyleBoxFlat:
+	if not flaechen_koerper:
+		# Hallenlicht kennt keine Koerper. Eine Karte ist hier ein Abschnitt
+		# der Seite: gleiche Flaeche wie der Grund, eine Haarlinie ringsum,
+		# kaum Rundung, kein Schatten. Was sie zusammenhaelt, ist der Abstand
+		# zum Nachbarn — nicht ein aufgemalter Kasten.
+		var flach := box(fuellung, 3, RAND)
+		flach.shadow_size = 0
+		return flach
 	var sb := box(fuellung, radius, randfarbe)
 	sb.shadow_color = SCHATTEN
 	sb.shadow_size = 10
@@ -231,6 +314,8 @@ func box_erhaben(fuellung: Color, radius: int = R_NORMAL, randfarbe: Variant = n
 ## Eine hellere Oberkante. Licht kommt von oben — ohne diesen einen Pixel
 ## sieht jede Fläche aus wie ein aufgemalter Kasten statt wie ein Körper.
 func lichtkante(sb: StyleBoxFlat, staerke: float = 0.055) -> StyleBoxFlat:
+	if not flaechen_koerper:
+		return sb
 	sb.border_width_top = maxi(sb.border_width_top, 1)
 	# Godot kennt nur eine Randfarbe je Box. Die Oberkante wird deshalb über
 	# eine leicht aufgehellte Randfarbe angedeutet, die zum Rest noch passt.
