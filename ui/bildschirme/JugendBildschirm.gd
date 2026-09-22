@@ -17,7 +17,6 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
-	kopf.add_child(Stil.titel("Nachwuchszentrum", 0))
 	reiterleiste = Stil.hbox(0)
 	kopf.add_child(reiterleiste)
 	_baue_reiter()

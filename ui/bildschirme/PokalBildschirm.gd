@@ -10,7 +10,6 @@ func aufbauen() -> void:
 	var v := Stil.vbox(10)
 	v.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(v)
-	v.add_child(Stil.titel("Pokale & Europa", 0))
 	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
 	# eigenen mit.
 	inhalt = Stil.vbox(12)

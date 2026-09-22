@@ -8,7 +8,6 @@ func aufbauen() -> void:
 	var v := Stil.vbox(10)
 	v.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(v)
-	v.add_child(Stil.titel("Chronik", 0))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

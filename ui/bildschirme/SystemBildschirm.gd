@@ -9,7 +9,6 @@ func aufbauen() -> void:
 	var v := Stil.vbox(10)
 	v.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(v)
-	v.add_child(Stil.titel("Spielstand", 0))
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	v.add_child(meldung)
 	# Als gewoehnliches Etikett meldete dieser Satz 1199 Pixel Mindestbreite an

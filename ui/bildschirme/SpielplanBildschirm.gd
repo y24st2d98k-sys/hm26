@@ -20,8 +20,6 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
-	kopf.add_child(Stil.titel("Spielplan", 0))
-	kopf.add_child(Stil.dehner())
 	var umschalter := Stil.knopf("Alle Partien der Liga anzeigen")
 	umschalter.pressed.connect(func():
 		nur_eigene = not nur_eigene

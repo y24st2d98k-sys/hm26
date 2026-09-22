@@ -12,8 +12,6 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
-	kopf.add_child(Stil.titel("Tabellen", 0))
-	kopf.add_child(Stil.dehner())
 	liga_wahl = OptionButton.new()
 	liga_wahl.custom_minimum_size = Vector2(250, 0)
 	liga_wahl.item_selected.connect(func(i):

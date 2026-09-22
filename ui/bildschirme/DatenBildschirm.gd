@@ -35,8 +35,9 @@ func aufbauen() -> void:
 
 	var kopf := Stil.hbox(12)
 	v.add_child(kopf)
-	kopf.add_child(Stil.kopfzeile("Kaderdaten",
-		"Echte Spieler eintragen. Laufende Karrieren ziehen beim nächsten Laden nach."))
+	kopf.add_child(Stil.matt(
+		"Echte Spieler eintragen. Laufende Karrieren ziehen beim nächsten Laden nach.",
+		Stil.S_KLEIN))
 	kopf.add_child(Stil.dehner())
 	var projekt := Stil.knopf_geist("Ins Projekt schreiben", Stil.TUERKIS)
 	projekt.tooltip_text = "Übernimmt Ihre Pflege in den Projektdatensatz. Nur möglich, wenn das Spiel aus dem Projektordner läuft."

@@ -1,5 +1,5 @@
 extends Control
-## Das Hauptfenster von Hallenherz: Seitenleiste, Kopfzeile und Bildschirmbereich.
+## Das Hauptfenster von Hallenherz: Kopf, Inhalt, Kommandoleiste.
 ##
 ## Alle Bildschirme werden einmalig erzeugt und bleiben im Baum haengen; gewechselt
 ## wird ausschliesslich ueber "visible". Dadurch ist jeder Bildschirm von Anfang an
@@ -33,28 +33,38 @@ const BEREICHE := [
 	{"id": "daten", "name": "Kaderdaten", "gruppe": "Umfeld"},
 ]
 
-## Wie die Bereiche im Menüband zusammenstehen.
+## Wie die Bildschirme zu Ressorts zusammenstehen.
 ##
-## Vierundzwanzig Einträge sind kein Menü, sondern ein Inhaltsverzeichnis. Wer
-## das Spiel kennt, findet darin alles; wer es zum ersten Mal sieht, sieht
-## vierundzwanzig Einträge und weiß nicht, wo er anfangen soll. Sechs Knöpfe
-## mit je einer Handvoll dahinter beantworten dieselbe Frage — und zwar in der
-## Reihenfolge, in der man sie stellt: erst die Mannschaft, dann der
-## Wettbewerb, dann der Markt, dann das Haus, dann das Umfeld.
-const MENUE := [
-	{"name": "Büro", "eintraege": ["buero"]},
-	{"name": "Mannschaft", "eintraege": ["kader", "taktik", "training", "kabine", "jugend"]},
-	{"name": "Wettbewerb", "eintraege": ["spielplan", "tabellen", "pokale", "national", "statistik", "analyse"]},
-	{"name": "Transfers", "eintraege": ["transfer", "scouting"]},
-	{"name": "Verein", "eintraege": ["finanzen", "halle", "infrastruktur", "personal", "vorstand"]},
-	{"name": "Umfeld", "eintraege": ["nachrichten", "medien", "chronik", "karriere"]},
-	{"name": "Spiel", "eintraege": ["system", "daten"]},
+## Fünf Ressorts, und in jedem stehen seine Blätter offen nebeneinander. Das
+## Menüband davor hatte sieben Knöpfe, hinter denen sich vierundzwanzig
+## Einträge versteckten: wer im Kader stand, sah nicht, dass Training und
+## Kabine einen Klick entfernt liegen — er musste es wissen. Ein Menü, das
+## aufklappen muss, verbirgt genau die Nachbarschaft, die es ordnen soll, und
+## kostet für jeden Wechsel zwei Klicks statt einem.
+##
+## Die Reihenfolge ist die des Arbeitstags: erst der Schreibtisch mit dem, was
+## hereinkommt, dann die Mannschaft, dann der Wettbewerb, dann der Markt, dann
+## das Haus. Der Spielstand steht in keinem Ressort — er gehört nicht zum
+## Verein, sondern zum Spiel, und sitzt als Zahnrad im Kopf.
+const RESSORTS := [
+	{"id": "schreibtisch", "name": "Schreibtisch",
+		"blaetter": ["buero", "nachrichten", "medien", "chronik", "karriere"]},
+	{"id": "mannschaft", "name": "Mannschaft",
+		"blaetter": ["kader", "taktik", "training", "kabine", "jugend"]},
+	{"id": "wettbewerb", "name": "Wettbewerb",
+		"blaetter": ["spielplan", "tabellen", "pokale", "national", "statistik", "analyse"]},
+	{"id": "markt", "name": "Markt",
+		"blaetter": ["transfer", "scouting", "daten"]},
+	{"id": "verein", "name": "Verein",
+		"blaetter": ["finanzen", "halle", "infrastruktur", "personal", "vorstand"]},
+	{"id": "spielstand", "name": "Spielstand", "versteckt": true, "blaetter": ["system"]},
 ]
 
 var bildschirme: Dictionary = {}
 var aktueller: String = ""
 var inhalt: MarginContainer
-var menueband: Menueband
+var navi: Navigationskopf
+var kommando: Kommandoleiste
 ## Der Weg durch die Bildschirme, wie im Browser: eine Liste und ein Zeiger
 ## darauf. Wer zurueckgeht und dann woandershin abbiegt, verwirft den Rest —
 ## genau wie ein Browser es tut.
@@ -63,22 +73,6 @@ var _verlaufsstelle: int = -1
 ## Die Partie, die auf den Anpfiff wartet, weil der Trainer erst aufstellen
 ## wollte. Solange sie gesetzt ist, heisst der Weiter-Knopf "Anpfiff".
 var _anpfiff_wartet: String = ""
-var kopf: Control
-var kopf_wappen: Control
-var kopf_wappen_halter: Control
-var kopf_verein: Label
-var kopf_liga: Label
-var kopf_kasse: Label
-var kopf_datum: Label
-var kopf_saison: Label
-var kopf_spiel: Dictionary = {}
-var kopf_draengt: Dictionary = {}
-var kopf_glocke: Button
-var seitenfuss: Label
-var trainerbild: Control
-var seitenfuss_ruf: Label
-var weiter_knopf: Button
-
 var startbildschirm: Control
 var rahmen: Control
 var live: Control
@@ -89,7 +83,7 @@ var _tag_laeuft: bool = false
 const SPIELTAG_SCHEIBE := 4
 const WECHSEL_DAUER := 0.14
 const WECHSEL_HUB := 10
-const INHALT_RAND_OBEN := 22
+const INHALT_RAND_OBEN := 14
 var _wechsel: Tween = null
 var _hilfe_schleier: Control
 var _spieltag_schleier: Control
@@ -129,17 +123,15 @@ func _ready() -> void:
 # ------------------------------------------------------------------ Rahmen ---
 
 func _baue_rahmen() -> void:
-	# Alles untereinander: Kopfzeile, Menüband, Inhalt. Die Navigation stand
-	# früher links und nahm dem Inhalt 238 Pixel Breite ab, ohne dass jemals
-	# mehr als einer ihrer vierundzwanzig Einträge gebraucht wurde.
+	# Kopf, Inhalt, Fuß. Der Kopf sagt, wo man ist. Der Fuß sagt, was die Welt
+	# macht und wie man sie weiterdreht. Dazwischen steht nichts als der
+	# Bildschirm — vorher lagen über ihm zwei Leisten, die beide alles wollten.
 	rahmen = VBoxContainer.new()
 	rahmen.set_anchors_preset(Control.PRESET_FULL_RECT)
 	rahmen.add_theme_constant_override("separation", 0)
 	add_child(rahmen)
 
-	var rechts := rahmen
-	_baue_kopfzeile(rechts)
-	_baue_menueband(rechts)
+	_baue_navigation(rahmen)
 
 	inhalt = MarginContainer.new()
 	inhalt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -147,210 +139,41 @@ func _baue_rahmen() -> void:
 	inhalt.add_theme_constant_override("margin_left", 26)
 	inhalt.add_theme_constant_override("margin_right", 24)
 	inhalt.add_theme_constant_override("margin_top", INHALT_RAND_OBEN)
-	inhalt.add_theme_constant_override("margin_bottom", 20)
-	rechts.add_child(inhalt)
+	inhalt.add_theme_constant_override("margin_bottom", 14)
+	rahmen.add_child(inhalt)
 	_baue_bildschirme()
 
-## Das Menüband unter der Kopfzeile: sechs Knöpfe, rechts die Trainerzeile.
-func _baue_menueband(eltern: Node) -> void:
+	_baue_kommandoleiste(rahmen)
+
+## Der Kopf: Ressorts oben, die Blätter des offenen Ressorts darunter.
+func _baue_navigation(eltern: Node) -> void:
 	var namen := {}
 	for b in BEREICHE:
 		namen[str(b["id"])] = str(b["name"])
-	var gruppen: Array = []
-	for g in MENUE:
-		var eintraege: Array = []
-		for id in (g["eintraege"] as Array):
-			eintraege.append({"id": str(id), "name": str(namen.get(str(id), str(id)))})
-		gruppen.append({"name": str(g["name"]), "eintraege": eintraege})
-	menueband = Menueband.new()
-	eltern.add_child(menueband)
-	var rechts := menueband.aufbauen(gruppen)
-	menueband.gewaehlt.connect(func(id): zeige(str(id)))
-	menueband.merken_umgeschaltet.connect(func(id): _lesezeichen_umschalten(str(id)))
-	menueband.zurueck_gewaehlt.connect(_verlauf_zurueck)
-	menueband.vor_gewaehlt.connect(_verlauf_vor)
+	var ressorts: Array = []
+	for r in RESSORTS:
+		var blaetter: Array = []
+		for id in (r["blaetter"] as Array):
+			blaetter.append({"id": str(id), "name": str(namen.get(str(id), str(id)))})
+		ressorts.append({"id": str(r["id"]), "name": str(r["name"]),
+			"versteckt": bool(r.get("versteckt", false)), "blaetter": blaetter})
+	navi = Navigationskopf.new()
+	eltern.add_child(navi)
+	navi.aufbauen(ressorts)
+	navi.gewaehlt.connect(func(id): zeige(str(id)))
+	navi.merken_umgeschaltet.connect(func(id): _lesezeichen_umschalten(str(id)))
+	navi.zurueck_gewaehlt.connect(_verlauf_zurueck)
+	navi.vor_gewaehlt.connect(_verlauf_vor)
+	navi.hilfe_gewuenscht.connect(_hilfe_umschalten)
+	navi.vorspulen_gewuenscht.connect(func(): Vorspulfenster.oeffnen(self))
 
-	# Wer hier eigentlich arbeitet — früher der Fuß der Seitenleiste.
-	trainerbild = Stil.hbox(0)
-	trainerbild.custom_minimum_size = Vector2(26, 26)
-	trainerbild.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	rechts.add_child(trainerbild)
-	seitenfuss = Stil.text("", Stil.S_KLEIN, Stil.TEXT)
-	seitenfuss.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	rechts.add_child(seitenfuss)
-	seitenfuss_ruf = Stil.matt("", Stil.S_MINI)
-	seitenfuss_ruf.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	rechts.add_child(seitenfuss_ruf)
-
-## Obere Leiste: Vereinsidentitaet links, Lage und Aktionen rechts.
-func _baue_kopfzeile(eltern: Node) -> void:
-	var kopfpanel := PanelContainer.new()
-	var kopfbox := Stil.box(Stil.FLAECHE, 0)
-	# Der Kopf soll über dem Inhalt liegen, nicht neben ihm. Ein Schatten nach
-	# unten trennt die Zone deutlicher als jede Linie und kostet nichts.
-	kopfbox.shadow_color = Color(0, 0, 0, 0.45)
-	kopfbox.shadow_size = 12
-	kopfbox.shadow_offset = Vector2(0, 4)
-	kopfbox.content_margin_left = 24
-	kopfbox.content_margin_right = 22
-	kopfbox.content_margin_top = 14
-	kopfbox.content_margin_bottom = 14
-	kopfpanel.add_theme_stylebox_override("panel", kopfbox)
-	eltern.add_child(kopfpanel)
-	kopf = kopfpanel
-
-	var zeile := Stil.hbox(16)
-	kopfpanel.add_child(zeile)
-
-	# Die Wortmarke stand im Kopf der Seitenleiste. Die gibt es nicht mehr,
-	# also steht sie hier — links, vor dem Verein, den sie verwaltet.
-	var marke := Stil.hbox(10)
-	marke.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	zeile.add_child(marke)
-	var puls := Stil.wortzeichen(26.0)
-	puls.custom_minimum_size = Vector2(26, 26)
-	puls.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	marke.add_child(puls)
-	var wort := Stil.text("HALLENHERZ", Stil.S_NORMAL, Stil.TEXT)
-	wort.add_theme_font_override("font", Stil.schnitt_fett())
-	wort.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	marke.add_child(wort)
-	zeile.add_child(Stil.marke_strich(Stil.RAND_HELL, 1, 26))
-
-	kopf_wappen_halter = Stil.hbox(0)
-	kopf_wappen_halter.custom_minimum_size = Vector2(42, 42)
-	zeile.add_child(kopf_wappen_halter)
-
-	var namen := Stil.vbox(0)
-	namen.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	zeile.add_child(namen)
-	kopf_verein = Stil.text("", Stil.S_GROSS, Stil.TEXT)
-	kopf_verein.add_theme_font_override("font", Stil.schnitt_halbfett())
-	namen.add_child(kopf_verein)
-	kopf_liga = Stil.matt("", Stil.S_MINI)
-	namen.add_child(kopf_liga)
-
-	zeile.add_child(Stil.dehner())
-
-	kopf_kasse = _kopf_wert(zeile, "Kasse")
-	kopf_datum = _kopf_wert(zeile, "Spieltag")
-	kopf_saison = _kopf_wert(zeile, "Saison")
-	# Worauf man zuspielt und was drängt — auf jedem Bildschirm, nicht nur im
-	# Büro. Ein Manager-Spiel hält einen dadurch, dass immer etwas ansteht;
-	# das nützt nur, wenn man es sieht, ohne danach zu suchen.
-	kopf_spiel = _kopf_kachel(zeile, "Nächstes Spiel", "spielplan")
-	kopf_draengt = _kopf_kachel(zeile, "Was drängt", "buero")
-	zeile.add_child(Stil.abstand(6))
-
-	kopf_glocke = Button.new()
-	kopf_glocke.flat = true
-	kopf_glocke.custom_minimum_size = Vector2(38, 34)
-	kopf_glocke.focus_mode = Control.FOCUS_NONE
-	kopf_glocke.tooltip_text = "Nachrichten"
-	kopf_glocke.add_theme_stylebox_override("normal", Stil.box_leer())
-	kopf_glocke.add_theme_stylebox_override("hover", Stil.box(Stil.lasur(Stil.TEXT, 0.07), Stil.R_KLEIN))
-	kopf_glocke.add_theme_stylebox_override("pressed", Stil.box(Stil.lasur(Stil.AKZENT, 0.14), Stil.R_KLEIN))
-	kopf_glocke.pressed.connect(func(): zeige("nachrichten"))
-	var g := Symbol.neu("glocke", 19.0, Stil.TEXT_MATT)
-	g.set_anchors_preset(Control.PRESET_FULL_RECT)
-	kopf_glocke.add_child(g)
-	kopf_glocke.set_meta("symbol", g)
-	zeile.add_child(kopf_glocke)
-
-	var spulen := Button.new()
-	spulen.flat = true
-	spulen.custom_minimum_size = Vector2(38, 34)
-	spulen.focus_mode = Control.FOCUS_NONE
-	spulen.tooltip_text = "Zu einem Datum vorspulen"
-	spulen.add_theme_stylebox_override("normal", Stil.box_leer())
-	spulen.add_theme_stylebox_override("hover", Stil.box(Stil.lasur(Stil.TEXT, 0.07), Stil.R_KLEIN))
-	spulen.add_theme_stylebox_override("pressed", Stil.box(Stil.lasur(Stil.AKZENT, 0.14), Stil.R_KLEIN))
-	spulen.pressed.connect(func(): Vorspulfenster.oeffnen(self))
-	var ssym := Symbol.neu("doppelpfeil", 19.0, Stil.TEXT_MATT)
-	ssym.set_anchors_preset(Control.PRESET_FULL_RECT)
-	spulen.add_child(ssym)
-	zeile.add_child(spulen)
-
-	# Hilfe muss sichtbar sein, sonst findet F1 niemand.
-	var hilfe := Button.new()
-	hilfe.flat = true
-	hilfe.text = "?"
-	hilfe.custom_minimum_size = Vector2(34, 34)
-	hilfe.focus_mode = Control.FOCUS_NONE
-	hilfe.tooltip_text = "Kurzanleitung und Tastenkürzel (F1)"
-	hilfe.add_theme_stylebox_override("normal", Stil.box_leer())
-	hilfe.add_theme_stylebox_override("hover", Stil.box(Stil.lasur(Stil.TEXT, 0.07), Stil.R_KLEIN))
-	hilfe.add_theme_stylebox_override("pressed", Stil.box(Stil.lasur(Stil.AKZENT, 0.14), Stil.R_KLEIN))
-	hilfe.add_theme_color_override("font_color", Stil.TEXT_MATT)
-	hilfe.pressed.connect(func(): _hilfe_umschalten())
-	zeile.add_child(hilfe)
-
-	weiter_knopf = Stil.knopf_primaer("Weiter")
-	weiter_knopf.pressed.connect(_weiter)
-	weiter_knopf.tooltip_text = "Einen Tag weiterschalten (Leertaste)"
-	zeile.add_child(weiter_knopf)
-
-## Etikett ueber Wert — die Statusanzeigen der Kopfzeile.
-## Eine Statusanzeige der Kopfzeile.
-##
-## Vorher standen die drei Werte nackt nebeneinander, getrennt durch senkrechte
-## Striche. Als abgesetzte Flaechen lesen sie sich als das, was sie sind: drei
-## Anzeigen, nicht ein Satz — und die Striche fallen weg.
-func _kopf_wert(eltern: Node, beschriftung: String) -> Label:
-	var p := PanelContainer.new()
-	var sb := Stil.box(Stil.FLAECHE_HOCH, Stil.R_KLEIN)
-	sb.content_margin_left = 14
-	sb.content_margin_right = 14
-	sb.content_margin_top = 7
-	sb.content_margin_bottom = 8
-	p.add_theme_stylebox_override("panel", sb)
-	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	eltern.add_child(p)
-	var v := Stil.vbox(1)
-	p.add_child(v)
-	v.add_child(Stil.etikett(beschriftung))
-	var l := Stil.text("—", Stil.S_KLEIN, Stil.TEXT)
-	l.add_theme_font_override("font", Stil.schnitt_halbfett())
-	v.add_child(l)
-	return l
-
-
-## Eine Kachel wie _kopf_wert, nur anklickbar.
-##
-## Zwei Zeilen und nicht drei: eine Unterzeile fuer den Gegner sah besser aus,
-## machte die Kopfzeile aber siebzehn Pixel hoeher — und damit liefen vier
-## Bildschirme wieder unter den Falz. Der Gegner steht jetzt hinter dem Wert
-## in derselben Zeile.
-func _kopf_kachel(eltern: Node, beschriftung: String, ziel: String) -> Dictionary:
-	var b := Button.new()
-	b.focus_mode = Control.FOCUS_NONE
-	b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var sb := Stil.box(Stil.FLAECHE_HOCH, Stil.R_KLEIN)
-	sb.content_margin_left = 14
-	sb.content_margin_right = 14
-	sb.content_margin_top = 7
-	sb.content_margin_bottom = 8
-	b.add_theme_stylebox_override("normal", sb)
-	b.add_theme_stylebox_override("hover", Stil.box(Stil.lasur(Stil.TEXT, 0.10), Stil.R_KLEIN))
-	b.add_theme_stylebox_override("pressed", Stil.box(Stil.lasur(Stil.AKZENT, 0.16), Stil.R_KLEIN))
-	b.add_theme_stylebox_override("focus", Stil.box_leer())
-	eltern.add_child(b)
-	var v := Stil.vbox(1)
-	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	v.set_anchors_preset(Control.PRESET_FULL_RECT)
-	b.add_child(v)
-	v.add_child(Stil.etikett(beschriftung))
-	var wert := Stil.text("—", Stil.S_KLEIN, Stil.TEXT)
-	wert.add_theme_font_override("font", Stil.schnitt_halbfett())
-	v.add_child(wert)
-	# Der Knopf muss so hoch sein wie sein Inhalt — der liegt als
-	# freigestellter Kasten darin und meldet von sich aus keine Groesse an.
-	v.resized.connect(func(): b.custom_minimum_size = Vector2(
-		maxf(b.custom_minimum_size.x, v.get_combined_minimum_size().x + 28.0),
-		v.get_combined_minimum_size().y + 15.0))
-	var kennung := ziel
-	b.pressed.connect(func(): zeige(kennung))
-	return {"knopf": b, "wert": wert}
+## Der Fuß: Datum, Saison, nächstes Spiel, offene Sachen, Kasse, Weiter.
+func _baue_kommandoleiste(eltern: Node) -> void:
+	kommando = Kommandoleiste.new()
+	eltern.add_child(kommando)
+	kommando.aufbauen()
+	kommando.gewaehlt.connect(func(id): zeige(str(id)))
+	kommando.weiter_gedrueckt.connect(_weiter)
 
 func _baue_bildschirme() -> void:
 	var liste := {
@@ -417,10 +240,10 @@ func zeige(id: String, aus_verlauf: bool = false) -> void:
 	Welt.merke_besuch(id)
 	bildschirme[id].visible = true
 	bildschirme[id].aktualisieren()
-	if menueband != null:
-		menueband.setze_aktiv(id)
-		menueband.setze_lesezeichen(Welt.lesezeichen(), Welt.lesezeichen_voll())
-		menueband.setze_verlauf(_verlaufsstelle > 0, _verlaufsstelle < _verlauf.size() - 1)
+	if navi != null:
+		navi.setze_aktiv(id)
+		navi.setze_lesezeichen(Welt.lesezeichen(), Welt.lesezeichen_voll())
+		navi.setze_verlauf(_verlaufsstelle > 0, _verlaufsstelle < _verlauf.size() - 1)
 	_kopf_auffrischen()
 	_einblenden(bildschirme[id])
 
@@ -464,56 +287,42 @@ func _kopf_auffrischen() -> void:
 	if not Welt.laeuft:
 		return
 	var t: Dictionary = Welt.trainer()
-	seitenfuss.text = Trainerkarriere.voller_name(t)
-	seitenfuss_ruf.text = Trainerkarriere.ruf_stufe(float(t.get("ruf", 0.0)))
-	for k in trainerbild.get_children():
-		k.queue_free()
-	trainerbild.add_child(Portraet.fuer_trainer(t, 32.0))
+	navi.setze_trainer(Portraet.fuer_trainer(t, 26.0),
+		Trainerkarriere.voller_name(t),
+		Trainerkarriere.ruf_stufe(float(t.get("ruf", 0.0))))
 
 	var v: Dictionary = Welt.mein_verein()
-	if kopf_wappen != null:
-		kopf_wappen.queue_free()
-		kopf_wappen = null
 	if v.is_empty():
-		kopf_verein.text = "Ohne Verein"
-		kopf_liga.text = "auf Vereinssuche"
-		kopf_kasse.text = "—"
+		navi.setze_verein("Ohne Verein", "auf Vereinssuche", null)
+		kommando.setze_kasse("—", Stil.TEXT_MATT)
 	else:
-		kopf_wappen = Wappen.fuer_verein(Welt.mein_verein_id, 34.0)
-		kopf_wappen_halter.add_child(kopf_wappen)
-		kopf_verein.text = str(v["name"])
-		kopf_liga.text = Welt.wettbewerb_name(str(v["liga"]))
-		kopf_kasse.text = Stil.geld(float(v["kasse"]))
-		kopf_kasse.add_theme_color_override("font_color",
+		navi.setze_verein(str(v["name"]), Welt.wettbewerb_name(str(v["liga"])),
+			Wappen.fuer_verein(Welt.mein_verein_id, 30.0))
+		kommando.setze_kasse(Stil.geld(float(v["kasse"])),
 			Stil.TEXT if float(v["kasse"]) >= 0.0 else Stil.ROT)
-	kopf_datum.text = Welt.datum_text()
-	kopf_saison.text = Welt.saison_text()
+	kommando.setze_zeit(Welt.datum_text(), Welt.saison_text())
 	_kopf_termine()
 
 	var offen: int = Welt.ungelesene_nachrichten()
-	if menueband != null:
-		menueband.setze_zaehler("nachrichten", offen)
-		menueband.setze_hinweis("nachrichten",
-			("%d ungelesene Nachricht(en)" % offen) if offen > 0 else "Posteingang, Medien, Chronik, Laufbahn")
-		# Eine Zahl ohne Erklaerung ist eine Aufgabe ohne Anleitung.
-		var gespraeche: int = Anliegen.anzahl(Welt.daten)
-		menueband.setze_zaehler("kabine", gespraeche)
-		menueband.setze_hinweis("kabine",
-			("%d Spieler möchten Sie sprechen — Kabine, Reiter „Gespräche“" % gespraeche) if gespraeche > 0 else "Kader, Aufstellung, Training, Kabine, Nachwuchs")
-	if kopf_glocke.has_meta("symbol"):
-		(kopf_glocke.get_meta("symbol") as Symbol).setze_farbe(Stil.AKZENT if offen > 0 else Stil.TEXT_MATT)
-	kopf_glocke.tooltip_text = "%d ungelesene Nachricht(en)" % offen if offen > 0 else "Nachrichten"
+	navi.setze_post(offen)
+	navi.setze_zaehler("nachrichten", offen)
+	navi.setze_hinweis("nachrichten",
+		("%d ungelesene Nachricht(en)" % offen) if offen > 0 else "Posteingang")
+	# Eine Zahl ohne Erklaerung ist eine Aufgabe ohne Anleitung.
+	var gespraeche: int = Anliegen.anzahl(Welt.daten)
+	navi.setze_zaehler("kabine", gespraeche)
+	navi.setze_hinweis("kabine",
+		("%d Spieler möchten Sie sprechen — Reiter „Gespräche“" % gespraeche) if gespraeche > 0
+		else "Stimmung, Hierarchie, Gespräche")
 
 	var naechstes: Dictionary = Welt.naechstes_spiel(Welt.mein_verein_id) if Welt.mein_verein_id != "" else {}
 	if _anpfiff_wartet != "":
-		weiter_knopf.text = "Anpfiff ›"
-		weiter_knopf.tooltip_text = "Die Partie wartet. Wenn die Aufstellung steht: anpfeifen."
+		kommando.setze_weiter("Anpfiff ›",
+			"Die Partie wartet. Wenn die Aufstellung steht: anpfeifen.")
 	elif not naechstes.is_empty() and int(naechstes["tag"]) == Welt.tag():
-		weiter_knopf.text = "Zum Spiel"
-		weiter_knopf.tooltip_text = "Einen Tag weiterschalten (Leertaste)"
+		kommando.setze_weiter("Zum Spiel", "Einen Tag weiterschalten (Leertaste)")
 	else:
-		weiter_knopf.text = "Weiter"
-		weiter_knopf.tooltip_text = "Einen Tag weiterschalten (Leertaste)"
+		kommando.setze_weiter("Weiter", "Einen Tag weiterschalten (Leertaste)")
 
 # ------------------------------------------------------------- Zeitablauf ---
 
@@ -530,7 +339,7 @@ func _weiter() -> void:
 		_live_starten(_anpfiff_wartet)
 		return
 	_tag_laeuft = true
-	weiter_knopf.disabled = true
+	kommando.weiter.disabled = true
 
 	var unterbrechung := Welt.tag_beginnen()
 	if unterbrechung.is_empty():
@@ -542,7 +351,7 @@ func _weiter() -> void:
 		unterbrechung = Welt.tag_abschliessen(t)
 
 	_tag_laeuft = false
-	weiter_knopf.disabled = false
+	kommando.weiter.disabled = false
 	if unterbrechung.has("art"):
 		match str(unterbrechung["art"]):
 			"eigenes_spiel":
@@ -574,7 +383,7 @@ func _spieltag_rechnen(anzahl: int) -> void:
 # ------------------------------------------------------------- Hilfe (F1) ---
 #
 # Hallenherz hat fünfundzwanzig Bildschirme. Wer zum ersten Mal hereinkommt,
-# sieht eine Seitenleiste und weiß nicht, wo er anfangen soll. F1 beantwortet
+# sieht fünf Ressorts und weiß nicht, wo er anfangen soll. F1 beantwortet
 # beides: was zuerst zu tun ist und welche Taste wohin führt.
 
 const HILFE_ERSTE_SCHRITTE := [
@@ -772,7 +581,7 @@ func _auf_live_ende(_spiel_id: String) -> void:
 		_hilfe_umschalten()
 
 ## Tastenkürzel. Ein Managerspiel wird mit den Händen auf der Tastatur
-## gespielt, nicht mit der Maus auf Wanderschaft durch eine Seitenleiste —
+## gespielt, nicht mit der Maus auf Wanderschaft durch ein Menü —
 ## wer täglich zwischen Kader, Aufstellung und Transfermarkt springt, will
 ## das in einem Anschlag tun.
 const TASTENKUERZEL := {
@@ -799,44 +608,35 @@ func _verlauf_vor() -> void:
 	_verlaufsstelle += 1
 	zeige(str(_verlauf[_verlaufsstelle]), true)
 
-## Die beiden Kacheln, die sagen, worauf es zuläuft.
+## Die beiden Angaben im Fuß, die sagen, worauf es zuläuft.
 func _kopf_termine() -> void:
-	if kopf_spiel.is_empty():
+	if kommando == null:
 		return
 	var m: Dictionary = Welt.naechstes_spiel(Welt.mein_verein_id) if Welt.mein_verein_id != "" else {}
 	if m.is_empty():
-		(kopf_spiel["wert"] as Label).text = "kein Spiel angesetzt"
-		(kopf_spiel["wert"] as Label).add_theme_color_override("font_color", Stil.TEXT_MATT)
-		(kopf_spiel["knopf"] as Button).tooltip_text = "Zum Spielplan"
+		kommando.setze_spiel("keins angesetzt", Stil.TEXT_MATT, "Zum Spielplan")
 	else:
 		var tage: int = int(m["tag"]) - Welt.tag()
 		var heim: bool = str(m["heim"]) == Welt.mein_verein_id
 		var gid: String = str(m["gast"]) if heim else str(m["heim"])
 		var gegner: String = str(Welt.verein(gid).get("name", "?"))
 		var wann: String = "heute" if tage <= 0 else ("morgen" if tage == 1 else "in %d Tagen" % tage)
-		(kopf_spiel["wert"] as Label).text = "%s · %s %s" % [wann, "gegen" if heim else "bei",
-			gegner.substr(0, 20)]
-		(kopf_spiel["wert"] as Label).add_theme_color_override("font_color",
-			Stil.SIGNAL if tage <= 1 else Stil.TEXT)
-		(kopf_spiel["knopf"] as Button).tooltip_text = "%s %s — %s. Zum Spielplan." % [
-			"gegen" if heim else "bei", gegner, Kalender.text(int(m["tag"]), Welt.startjahr(), true)]
+		kommando.setze_spiel("%s · %s %s" % [wann, "gegen" if heim else "bei", gegner.substr(0, 20)],
+			Stil.SIGNAL if tage <= 1 else Stil.TEXT,
+			"%s %s — %s. Zum Spielplan." % ["gegen" if heim else "bei", gegner,
+				Kalender.text(int(m["tag"]), Welt.startjahr(), true)])
 
 	var posten: Array = Aufgaben.offene(Welt.daten, Welt.mein_verein_id)
-	var wert: Label = kopf_draengt["wert"]
-	var knopf: Button = kopf_draengt["knopf"]
 	if posten.is_empty():
-		wert.text = "nichts — weiterschalten"
-		wert.add_theme_color_override("font_color", Stil.GRUEN)
-		knopf.tooltip_text = "Keine offene Entscheidung. Zum Büro."
+		kommando.setze_draengt("nichts", Stil.GRUEN, "Keine offene Entscheidung. Zum Büro.")
 		return
 	var erster: Dictionary = posten[0]
 	var stufe: int = int(erster["stufe"])
 	var rest: String = "  +%d" % (posten.size() - 1) if posten.size() > 1 else ""
-	wert.text = str(erster["titel"]).substr(0, 30) + rest
-	wert.add_theme_color_override("font_color",
-		Stil.ROT if stufe == Aufgaben.EILIG else (Stil.GELB if stufe == Aufgaben.OFFEN else Stil.TEXT))
-	knopf.tooltip_text = "%s\n%s\n\nInsgesamt %d offene Sachen — zum Büro." % [
-		str(erster["titel"]), str(erster["text"]), posten.size()]
+	kommando.setze_draengt(str(erster["titel"]).substr(0, 30) + rest,
+		Stil.ROT if stufe == Aufgaben.EILIG else (Stil.GELB if stufe == Aufgaben.OFFEN else Stil.TEXT),
+		"%s\n%s\n\nInsgesamt %d offene Sachen — zum Büro." % [
+			str(erster["titel"]), str(erster["text"]), posten.size()])
 
 ## Den offenen Bildschirm anheften oder ablösen.
 ##
@@ -847,8 +647,8 @@ func _lesezeichen_umschalten(id: String) -> void:
 		return
 	var abgelehnt: bool = Welt.lesezeichen_voll() and not Welt.ist_lesezeichen(id)
 	Welt.lesezeichen_umschalten(id)
-	if menueband != null:
-		menueband.setze_lesezeichen(Welt.lesezeichen(), Welt.lesezeichen_voll(), abgelehnt)
+	if navi != null:
+		navi.setze_lesezeichen(Welt.lesezeichen(), Welt.lesezeichen_voll(), abgelehnt)
 
 func _unhandled_input(ereignis: InputEvent) -> void:
 	if not Welt.laeuft or not rahmen.visible:

@@ -25,7 +25,6 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(12)
 	v.add_child(kopf)
-	kopf.add_child(Stil.titel("Medien", 0))
 	kopf.add_child(Stil.matt("Presse und Fans reagieren auf das, was tatsächlich passiert ist: auf Ergebnisse, Derbys, Serien, Einzelleistungen und die Lage im Verein.", Stil.S_KLEIN))
 	# Handgebaute Reiter statt Stil.reitergruppe: die Presseseite ist ein
 	# geteiltes Fenster, das die freie Hoehe braucht. In einem Rollbereich —

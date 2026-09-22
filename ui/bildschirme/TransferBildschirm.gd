@@ -25,7 +25,6 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
-	kopf.add_child(Stil.titel("Transfermarkt", 0))
 	var hinweis := Stil.matt("Die Suche geht über alle Spieler — nicht nur über die, die angeboten werden.", Stil.S_KLEIN)
 	hinweis.tooltip_text = "Einen Spieler ohne Wechselwunsch bekommt man auch, er kostet nur mehr. Im Spielerfenster können Sie vorher bei seinem Verein anfragen."
 	kopf.add_child(hinweis)

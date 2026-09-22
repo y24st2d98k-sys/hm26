@@ -22,8 +22,6 @@ func aufbauen() -> void:
 
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
-	kopf.add_child(Stil.titel("Statistikzentrum", 0))
-	kopf.add_child(Stil.dehner())
 
 	kategorie_wahl = OptionButton.new()
 	kategorie_wahl.custom_minimum_size = Vector2(230, 0)

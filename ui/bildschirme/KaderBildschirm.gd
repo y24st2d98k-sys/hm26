@@ -47,7 +47,6 @@ func aufbauen() -> void:
 
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
-	kopf.add_child(Stil.titel("Kader", 0))
 	modusleiste = Stil.hbox(0)
 	kopf.add_child(modusleiste)
 	_baue_modusleiste()
