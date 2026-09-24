@@ -32,7 +32,7 @@ func _init() -> void:
 func _ready() -> void:
 	theme = Stil.theme()
 	var schleier := ColorRect.new()
-	schleier.color = Color(0, 0, 0, 0.7)
+	schleier.color = Stil.lasur(Stil.TEXT, 0.45)
 	schleier.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(schleier)
 	var mitte := CenterContainer.new()
@@ -41,7 +41,7 @@ func _ready() -> void:
 	var panel := PanelContainer.new()
 	# Gemessen mit Warnbanner: der Inhalt braucht bis 560 Pixel.
 	panel.custom_minimum_size = Vector2(820, 640)
-	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
+	panel.add_theme_stylebox_override("panel", Stil.box_fenster(Stil.FLAECHE))
 	mitte.add_child(panel)
 	var m := MarginContainer.new()
 	m.add_theme_constant_override("margin_left", 18)

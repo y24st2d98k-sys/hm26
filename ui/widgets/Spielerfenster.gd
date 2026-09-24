@@ -30,7 +30,7 @@ func _init() -> void:
 func _ready() -> void:
 	theme = Stil.theme()
 	var schleier := ColorRect.new()
-	schleier.color = Color(0, 0, 0, 0.62)
+	schleier.color = Stil.lasur(Stil.TEXT, 0.45)
 	schleier.set_anchors_preset(Control.PRESET_FULL_RECT)
 	schleier.gui_input.connect(func(e):
 		if e is InputEventMouseButton and e.pressed:
@@ -46,7 +46,7 @@ func _ready() -> void:
 	# Spiel am haeufigsten liest, und ein Rollbalken darin kostet jedes Mal
 	# den Ueberblick.
 	panel.custom_minimum_size = Vector2(1220, 880)
-	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
+	panel.add_theme_stylebox_override("panel", Stil.box_fenster(Stil.FLAECHE))
 	mitte.add_child(panel)
 
 	var m := MarginContainer.new()

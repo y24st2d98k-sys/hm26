@@ -465,7 +465,7 @@ func _hilfe_bauen() -> Control:
 	var wurzel := Control.new()
 	wurzel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	var dunkel := ColorRect.new()
-	dunkel.color = Color(0, 0, 0, 0.72)
+	dunkel.color = Stil.lasur(Stil.TEXT, 0.45)
 	dunkel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	dunkel.mouse_filter = Control.MOUSE_FILTER_STOP
 	dunkel.gui_input.connect(func(e):
@@ -477,7 +477,7 @@ func _hilfe_bauen() -> Control:
 	wurzel.add_child(mitte)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(880, 0)
-	panel.add_theme_stylebox_override("panel", Stil.box_erhaben(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
+	panel.add_theme_stylebox_override("panel", Stil.box_fenster(Stil.FLAECHE))
 	mitte.add_child(panel)
 	var rand := MarginContainer.new()
 	for seite in ["left", "right", "top", "bottom"]:
@@ -558,7 +558,7 @@ func _spieltag_anzeige_bauen() -> Control:
 	wurzel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	wurzel.mouse_filter = Control.MOUSE_FILTER_STOP
 	var dunkel := ColorRect.new()
-	dunkel.color = Color(0, 0, 0, 0.45)
+	dunkel.color = Stil.lasur(Stil.TEXT, 0.45)
 	dunkel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	wurzel.add_child(dunkel)
 	var mitte := CenterContainer.new()
@@ -566,7 +566,7 @@ func _spieltag_anzeige_bauen() -> Control:
 	wurzel.add_child(mitte)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(420, 0)
-	panel.add_theme_stylebox_override("panel", Stil.box_erhaben(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
+	panel.add_theme_stylebox_override("panel", Stil.box_fenster(Stil.FLAECHE))
 	mitte.add_child(panel)
 	var rand := MarginContainer.new()
 	for seite in ["left", "right", "top", "bottom"]:
