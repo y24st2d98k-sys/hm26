@@ -64,6 +64,7 @@ func _draw() -> void:
 		"pfeil_rechts": _pfeil_rechts()
 		"pfeil_links": _pfeil_links()
 		"zahnrad": _zahnrad()
+		"tafel": _tafel()
 		"frage": _frage()
 		"doppelpfeil": _doppelpfeil()
 		"pause": _pause()
@@ -271,6 +272,13 @@ func _pfeil_links() -> void:
 
 ## Zahnrad: ein Ring und acht Zaehne. Gezeichnet statt gezeichnet abgelegt —
 ## acht kurze Striche auf dem Kreis genuegen, und bei jeder Groesse sitzen sie.
+func _tafel() -> void:
+	# Drei Zeilen einer aufgeschlagenen Seite. Vier waren bei vierzehn Pixeln
+	# ein Klumpen — die Striche liefen ineinander.
+	for i in 3:
+		var y: float = 0.26 + float(i) * 0.24
+		_linie([Vector2(0.16, y), Vector2(0.84 if i < 2 else 0.56, y)], false, staerke * 0.8)
+
 func _zahnrad() -> void:
 	_kreis(0.50, 0.50, 0.17)
 	for i in 8:

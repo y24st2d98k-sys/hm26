@@ -34,8 +34,8 @@ const HOEHE := 48
 
 func _init() -> void:
 	var box := Stil.box(Stil.FLAECHE, 0)
-	box.border_color = Stil.RAND
-	box.border_width_top = 1
+	box.border_color = Stil.TEXT
+	box.border_width_top = 2
 	box.content_margin_left = 20
 	box.content_margin_right = 16
 	box.content_margin_top = 4

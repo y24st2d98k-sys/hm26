@@ -274,15 +274,20 @@ func _kennzahlen(v: Dictionary) -> void:
 ## jedem Bildschirm steht.
 func _leitkachel(platz: int, ziel: int, vereine: int) -> PanelContainer:
 	var farbe: Color = Stil.GRUEN if platz > 0 and platz <= ziel else (
-		Stil.GELB if platz <= ziel + 2 else Stil.ROT)
+		Stil.GELB if platz <= ziel + 2 else Stil.SIGNAL)
 	var p := PanelContainer.new()
-	var sb := Stil.box_erhaben(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND)
-	sb.bg_color = Stil.FLAECHE.lerp(farbe, 0.07)
-	sb.border_color = Stil.RAND.lerp(farbe, 0.40)
-	sb.content_margin_left = 16
-	sb.content_margin_right = 14
-	sb.content_margin_top = 12
-	sb.content_margin_bottom = 13
+	var sb := StyleBoxFlat.new()
+	# Dieselbe Bauweise wie die vier Zahlen daneben — nur traegt die Linie
+	# hier die Farbe des Urteils, und die Zahl ist doppelt so gross. Ein
+	# getoenter Kasten mit Rahmen waere wieder eine Karte, und Karten gibt es
+	# auf diesem Bogen nicht.
+	sb.bg_color = Color(0, 0, 0, 0)
+	sb.border_color = farbe
+	sb.border_width_top = 3
+	sb.content_margin_left = 0
+	sb.content_margin_right = 20
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 4
 	p.add_theme_stylebox_override("panel", sb)
 	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	p.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -290,22 +295,27 @@ func _leitkachel(platz: int, ziel: int, vereine: int) -> PanelContainer:
 	p.gui_input.connect(func(e):
 		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
 			wechsel_zu("tabellen"))
-	var z := Stil.hbox(14)
+	var z := Stil.hbox(16)
 	p.add_child(z)
-	var zahl := Stil.anzeige("%d." % platz if platz > 0 else "—", Stil.S_RIESIG, farbe)
-	zahl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	z.add_child(zahl)
 	var v := Stil.vbox(2)
 	v.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	z.add_child(v)
 	v.add_child(Stil.etikett("Tabellenplatz"))
-	v.add_child(Stil.matt("von %d Vereinen" % vereine, Stil.S_MINI))
+	var zahl := Stil.text("%d." % platz if platz > 0 else "—", Stil.S_RIESIG, Stil.TEXT)
+	zahl.add_theme_font_override("font", Stil.schnitt_halbfett())
+	v.add_child(zahl)
+	var rechts := Stil.vbox(2)
+	rechts.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	z.add_child(rechts)
+	rechts.add_child(Stil.matt("von %d Vereinen" % vereine, Stil.S_MINI))
 	var auftrag: String = "Auftrag: Platz %d" % ziel
 	if platz > 0 and platz <= ziel:
 		auftrag = "Auftrag Platz %d — erfüllt" % ziel
 	elif platz > 0:
 		auftrag = "Auftrag Platz %d — %d zu wenig" % [ziel, platz - ziel]
-	v.add_child(Stil.text(auftrag, Stil.S_MINI, farbe))
+	var a := Stil.text(auftrag, Stil.S_KLEIN, farbe)
+	a.add_theme_font_override("font", Stil.schnitt_halbfett())
+	rechts.add_child(a)
 	return p
 
 func _ohne_verein() -> void:

@@ -5,32 +5,60 @@ extends Control
 ## wird ausschliesslich ueber "visible". Dadurch ist jeder Bildschirm von Anfang an
 ## ansprechbar und es gibt keine doppelt freigegebenen Knoten.
 
+## Jeder Bildschirm mit dem Satz, der ihn erklärt. Der Satz steht auf der
+## Tafel unter dem Namen: ein Register, in dem nur Namen stehen, muss man schon
+## kennen, um es zu benutzen.
 const BEREICHE := [
-	{"id": "buero", "name": "Büro", "gruppe": "Verein"},
-	{"id": "kader", "name": "Kader", "gruppe": "Verein"},
-	{"id": "taktik", "name": "Aufstellung", "gruppe": "Verein"},
-	{"id": "training", "name": "Training", "gruppe": "Verein"},
-	{"id": "kabine", "name": "Kabine", "gruppe": "Verein"},
-	{"id": "jugend", "name": "Nachwuchs", "gruppe": "Verein"},
-	{"id": "spielplan", "name": "Spielplan", "gruppe": "Wettbewerb"},
-	{"id": "tabellen", "name": "Tabellen", "gruppe": "Wettbewerb"},
-	{"id": "pokale", "name": "Pokale & Europa", "gruppe": "Wettbewerb"},
-	{"id": "national", "name": "Nationalteams", "gruppe": "Wettbewerb"},
-	{"id": "statistik", "name": "Statistiken", "gruppe": "Wettbewerb"},
-	{"id": "analyse", "name": "Analyse", "gruppe": "Wettbewerb"},
-	{"id": "transfer", "name": "Transfermarkt", "gruppe": "Markt"},
-	{"id": "scouting", "name": "Scouting", "gruppe": "Markt"},
-	{"id": "finanzen", "name": "Finanzen", "gruppe": "Führung"},
-	{"id": "halle", "name": "Halle & Fans", "gruppe": "Führung"},
-	{"id": "infrastruktur", "name": "Infrastruktur", "gruppe": "Führung"},
-	{"id": "personal", "name": "Personal", "gruppe": "Führung"},
-	{"id": "vorstand", "name": "Vorstand", "gruppe": "Führung"},
-	{"id": "karriere", "name": "Karriere", "gruppe": "Führung"},
-	{"id": "medien", "name": "Medien", "gruppe": "Umfeld"},
-	{"id": "chronik", "name": "Chronik", "gruppe": "Umfeld"},
-	{"id": "nachrichten", "name": "Nachrichten", "gruppe": "Umfeld"},
-	{"id": "system", "name": "Spielstand", "gruppe": "Umfeld"},
-	{"id": "daten", "name": "Kaderdaten", "gruppe": "Umfeld"},
+	{"id": "buero", "name": "Büro", "gruppe": "Verein",
+		"satz": "Was heute ansteht"},
+	{"id": "kader", "name": "Kader", "gruppe": "Verein",
+		"satz": "Stärken, Verträge, Form"},
+	{"id": "taktik", "name": "Aufstellung", "gruppe": "Verein",
+		"satz": "Sieben im Angriff, sieben in der Abwehr"},
+	{"id": "training", "name": "Training", "gruppe": "Verein",
+		"satz": "Woche, Schwerpunkt, Lastkonto"},
+	{"id": "kabine", "name": "Kabine", "gruppe": "Verein",
+		"satz": "Stimmung, Hierarchie, Gespräche"},
+	{"id": "jugend", "name": "Nachwuchs", "gruppe": "Verein",
+		"satz": "Zentrum, Talente, Beförderung"},
+	{"id": "spielplan", "name": "Spielplan", "gruppe": "Wettbewerb",
+		"satz": "Termine und Ergebnisse"},
+	{"id": "tabellen", "name": "Tabellen", "gruppe": "Wettbewerb",
+		"satz": "Alle Ligen, alle Plätze"},
+	{"id": "pokale", "name": "Pokale & Europa", "gruppe": "Wettbewerb",
+		"satz": "Bäume, Runden, Titel"},
+	{"id": "national", "name": "Nationalteams", "gruppe": "Wettbewerb",
+		"satz": "Kader, Turniere, Ihre Abstellungen"},
+	{"id": "statistik", "name": "Statistiken", "gruppe": "Wettbewerb",
+		"satz": "Torjäger, Quoten, Bestenlisten"},
+	{"id": "analyse", "name": "Analyse", "gruppe": "Wettbewerb",
+		"satz": "Wurfbilder und Kennzahlen"},
+	{"id": "transfer", "name": "Transfermarkt", "gruppe": "Markt",
+		"satz": "Suchen, bieten, verhandeln"},
+	{"id": "scouting", "name": "Scouting", "gruppe": "Markt",
+		"satz": "Späher, Berichte, Einschätzungen"},
+	{"id": "finanzen", "name": "Finanzen", "gruppe": "Führung",
+		"satz": "Kasse, Budget, Buchungen"},
+	{"id": "halle", "name": "Halle & Fans", "gruppe": "Führung",
+		"satz": "Preise, Dauerkarten, Programm"},
+	{"id": "infrastruktur", "name": "Infrastruktur", "gruppe": "Führung",
+		"satz": "Ausbaustufen und Projekte"},
+	{"id": "personal", "name": "Personal", "gruppe": "Führung",
+		"satz": "Stab, Späher, Bewerber"},
+	{"id": "vorstand", "name": "Vorstand", "gruppe": "Führung",
+		"satz": "Saisonziel und Vertrauen"},
+	{"id": "karriere", "name": "Karriere", "gruppe": "Führung",
+		"satz": "Ihre Laufbahn und Angebote"},
+	{"id": "medien", "name": "Medien", "gruppe": "Umfeld",
+		"satz": "Presse, Stimmen, Interviews"},
+	{"id": "chronik", "name": "Chronik", "gruppe": "Umfeld",
+		"satz": "Titel, Rekorde, Ruhmeshalle"},
+	{"id": "nachrichten", "name": "Nachrichten", "gruppe": "Umfeld",
+		"satz": "Ihr Posteingang"},
+	{"id": "system", "name": "Spielstand", "gruppe": "Umfeld",
+		"satz": "Speichern, laden, einstellen"},
+	{"id": "daten", "name": "Kaderdaten", "gruppe": "Umfeld",
+		"satz": "Echte Spieler eintragen"},
 ]
 
 ## Wie die Bildschirme zu Ressorts zusammenstehen.
@@ -65,6 +93,7 @@ var aktueller: String = ""
 var inhalt: MarginContainer
 var navi: Navigationskopf
 var kommando: Kommandoleiste
+var tafel: Tafel
 ## Der Weg durch die Bildschirme, wie im Browser: eine Liste und ein Zeiger
 ## darauf. Wer zurueckgeht und dann woandershin abbiegt, verwirft den Rest —
 ## genau wie ein Browser es tut.
@@ -96,6 +125,7 @@ func _ready() -> void:
 	add_child(Stil.grundflaeche())
 
 	_baue_rahmen()
+	_baue_tafel()
 	_baue_startbildschirm()
 	add_child(Nachberichtsfenster.new())
 	add_child(Anpfifffenster.new())
@@ -147,25 +177,44 @@ func _baue_rahmen() -> void:
 
 ## Der Kopf: Ressorts oben, die Blätter des offenen Ressorts darunter.
 func _baue_navigation(eltern: Node) -> void:
-	var namen := {}
-	for b in BEREICHE:
-		namen[str(b["id"])] = str(b["name"])
-	var ressorts: Array = []
-	for r in RESSORTS:
-		var blaetter: Array = []
-		for id in (r["blaetter"] as Array):
-			blaetter.append({"id": str(id), "name": str(namen.get(str(id), str(id)))})
-		ressorts.append({"id": str(r["id"]), "name": str(r["name"]),
-			"versteckt": bool(r.get("versteckt", false)), "blaetter": blaetter})
+	var ressorts := _ressortbaum()
 	navi = Navigationskopf.new()
 	eltern.add_child(navi)
 	navi.aufbauen(ressorts)
+	navi.tafel_gewuenscht.connect(func(): tafel.umschalten(aktueller))
 	navi.gewaehlt.connect(func(id): zeige(str(id)))
 	navi.merken_umgeschaltet.connect(func(id): _lesezeichen_umschalten(str(id)))
 	navi.zurueck_gewaehlt.connect(_verlauf_zurueck)
 	navi.vor_gewaehlt.connect(_verlauf_vor)
 	navi.hilfe_gewuenscht.connect(_hilfe_umschalten)
 	navi.vorspulen_gewuenscht.connect(func(): Vorspulfenster.oeffnen(self))
+
+## Die Ressorts mit ihren Blättern, Namen und Sätzen — Kopf und Tafel lesen
+## dieselbe Aufstellung.
+func _ressortbaum() -> Array:
+	var namen := {}
+	var saetze := {}
+	for b in BEREICHE:
+		namen[str(b["id"])] = str(b["name"])
+		saetze[str(b["id"])] = str(b.get("satz", ""))
+	var ressorts: Array = []
+	for r in RESSORTS:
+		var blaetter: Array = []
+		for id in (r["blaetter"] as Array):
+			blaetter.append({"id": str(id), "name": str(namen.get(str(id), str(id))),
+				"satz": str(saetze.get(str(id), ""))})
+		ressorts.append({"id": str(r["id"]), "name": str(r["name"]),
+			"versteckt": bool(r.get("versteckt", false)), "blaetter": blaetter})
+	return ressorts
+
+## Die Tafel liegt über allem und ist zunächst unsichtbar.
+func _baue_tafel() -> void:
+	tafel = Tafel.new()
+	add_child(tafel)
+	tafel.aufbauen(_ressortbaum())
+	tafel.gewaehlt.connect(func(id):
+		tafel.schliessen()
+		zeige(str(id)))
 
 ## Der Fuß: Datum, Saison, nächstes Spiel, offene Sachen, Kasse, Weiter.
 func _baue_kommandoleiste(eltern: Node) -> void:
@@ -305,12 +354,12 @@ func _kopf_auffrischen() -> void:
 
 	var offen: int = Welt.ungelesene_nachrichten()
 	navi.setze_post(offen)
-	navi.setze_zaehler("nachrichten", offen)
+	_zaehler_setzen("nachrichten", offen)
 	navi.setze_hinweis("nachrichten",
 		("%s ungelesen" % Stil.anzahl_mit(offen, "Nachricht", "Nachrichten")) if offen > 0 else "Posteingang")
 	# Eine Zahl ohne Erklaerung ist eine Aufgabe ohne Anleitung.
 	var gespraeche: int = Anliegen.anzahl(Welt.daten)
-	navi.setze_zaehler("kabine", gespraeche)
+	_zaehler_setzen("kabine", gespraeche)
 	navi.setze_hinweis("kabine",
 		("%d Spieler möchten Sie sprechen — Reiter „Gespräche“" % gespraeche) if gespraeche > 0
 		else "Stimmung, Hierarchie, Gespräche")
@@ -323,6 +372,13 @@ func _kopf_auffrischen() -> void:
 		kommando.setze_weiter("Zum Spiel", "Einen Tag weiterschalten (Leertaste)")
 	else:
 		kommando.setze_weiter("Weiter", "Einen Tag weiterschalten (Leertaste)")
+
+## Eine Zahl an einem Bildschirm — im Kopf und auf der Tafel.
+func _zaehler_setzen(id: String, wert: int) -> void:
+	if navi != null:
+		navi.setze_zaehler(id, wert)
+	if tafel != null:
+		tafel.setze_zaehler(id, wert)
 
 # ------------------------------------------------------------- Zeitablauf ---
 
@@ -678,6 +734,24 @@ func _unhandled_input(ereignis: InputEvent) -> void:
 		return
 	# Modifikatoren gehören den Bildschirmen, nicht der Navigation.
 	if ereignis.ctrl_pressed or ereignis.alt_pressed or ereignis.meta_pressed:
+		return
+	if taste == KEY_TAB:
+		tafel.umschalten(aktueller)
+		get_viewport().set_input_as_handled()
+		return
+	if taste == KEY_ESCAPE and tafel.visible:
+		tafel.schliessen()
+		get_viewport().set_input_as_handled()
+		return
+	if tafel.visible:
+		# Solange die Tafel offen ist, gehören die Tasten ihr: ein Druck auf
+		# "K" soll in den Kader führen und nicht die Tafel offen stehen lassen.
+		if TASTENKUERZEL.has(taste):
+			var tafelziel: String = str(TASTENKUERZEL[taste])
+			if bildschirme.has(tafelziel):
+				tafel.schliessen()
+				zeige(tafelziel)
+		get_viewport().set_input_as_handled()
 		return
 	if taste == KEY_SPACE:
 		_weiter()

@@ -8,115 +8,107 @@ extends Node
 ## alle Flaechen sind StyleBoxFlat, alle Symbole werden gezeichnet.
 
 # ---------------------------------------------------------------- Farbwelt ---
-# "Nachtblau": ein sehr tiefes Blau als Grund, Violett als Handlungsfarbe,
-# Magenta als Stimme der Oberflaeche. Die Flaechen bilden eine klare
-# Hoehenstaffelung — Grund, Karte, Zeile, Hover.
+# "Hallenbuch": Tinte auf Papier.
 #
-# Der Vorgaenger war Bernstein auf Anthrazit. Das war warm und lesbar, aber es
-# sah aus wie eine Tabellenkalkulation mit Lichtstimmung: jede Flaeche trug
-# einen Rahmen, jede Karte einen Akzentstrich, und weil alles gleich laut
-# sprach, fuehrte nichts das Auge. Der neue Grund kommt ohne Linien aus —
-# getrennt wird ueber Hoehe und Abstand, nicht ueber Striche.
-var GRUND := Color("#070a14")          # Fensterhintergrund
-var FLAECHE_TIEF := Color("#04060d")   # eingelassene Bereiche, Eingabefelder
-var FLAECHE := Color("#0f1522")        # Karten
-var FLAECHE_HOCH := Color("#151d2e")   # hervorgehobene Karten / Zeilen
-var FLAECHE_GLAS := Color("#1e283c")   # Hover, aktive Elemente
-var RAND := Color("#1a2234")
-var RAND_HELL := Color("#2b3750")
+# Der Vorgaenger war Neon auf Nachtblau — Violett fuer Handlungen, Magenta fuer
+# Ueberschriften, dazu Blau, Gruen, Gelb, Rot, Lila und Tuerkis, alle
+# vollgesaettigt, alle gleich laut. Auf einem Bildschirm mit sechzig Werten
+# rufen dann sechzig Dinge gleichzeitig, und keines davon wird gehoert.
+#
+# Hier traegt das Papier. Tinte ist fast schwarz, Zwischentoene sind Grau, und
+# es gibt genau zwei Farben mit Bedeutung: Tintenblau heisst "hier kann man
+# etwas tun", Zinnober heisst "hier draengt etwas". Gruen und Rot kommen nur
+# an Zahlen vor, die ein Vorzeichen haben. Alles andere ist Tinte.
+#
+# Flaechen sind keine Koerper mehr. Es gibt keine Karten mit Schatten,
+# Lichtkante und Rahmen — es gibt einen Bogen, auf dem Abschnitte stehen,
+# getrennt durch eine Linie und Weissraum. Was frueher ein Kasten leistete,
+# leisten jetzt Typografie und Abstand.
+var GRUND := Color("#efebe3")          # der Bogen
+var FLAECHE_TIEF := Color("#e3ded2")   # eingelassen: Eingabefelder, Tabellenkoepfe
+var FLAECHE := Color("#efebe3")        # derselbe Bogen: ein Abschnitt ist kein Koerper
+var FLAECHE_HOCH := Color("#f7f5ef")   # eine Nuance heller: betonte Zeile
+var FLAECHE_GLAS := Color("#e0dacc")   # Hover
+var RAND := Color("#d3ccbb")           # Haarlinie
+var RAND_HELL := Color("#aba391")      # tragende Linie
 
-var TEXT := Color("#f2f5fb")
-var TEXT_MATT := Color("#98a4bb")
-var TEXT_SCHWACH := Color("#5f6b83")
+var TEXT := Color("#191713")           # Tinte
+var TEXT_MATT := Color("#5c574c")
+var TEXT_SCHWACH := Color("#8b8474")
 
-var AKZENT := Color("#8b5cf6")         # Handlungsfarbe: aktiv, primaer, Fortschritt
-var AKZENT_TIEF := Color("#6d3fe0")
-var AKZENT_DUNKEL := Color("#1d1735")  # Flaeche hinter Akzenttext
-## Die Stimme der Oberflaeche: Abschnittsueberschriften, Etiketten, Rubriken.
-## Sie handelt nicht, sie benennt — deshalb eine andere Farbe als AKZENT.
-var SIGNAL := Color("#ff3d8a")
-var BLAU := Color("#38bdf8")
-var GRUEN := Color("#34d399")
-var GELB := Color("#fbbf24")
-var ROT := Color("#f87171")
-var LILA := Color("#c084fc")
-var TUERKIS := Color("#2dd4bf")
-var SCHATTEN := Color(0, 0, 0, 0.55)
+## Handlungsfarbe. Sie sagt "hier kann man etwas tun" und sonst nichts.
+var AKZENT := Color("#1d3f8f")
+var AKZENT_TIEF := Color("#152e69")
+var AKZENT_DUNKEL := Color("#dbe2f4")  # Flaeche hinter Akzenttext
+## Alarmfarbe. Sie kommt nirgends als Zierde vor — nur dort, wo etwas draengt.
+var SIGNAL := Color("#a32b17")
+var BLAU := Color("#1d3f8f")
+var GRUEN := Color("#2c6a43")
+var GELB := Color("#8a6410")
+var ROT := Color("#a32b17")
+var LILA := Color("#5b3a86")
+var TUERKIS := Color("#1c6b66")
+var SCHATTEN := Color(0, 0, 0, 0.16)
 
 # ------------------------------------------------------------- Themenwahl ---
-## Zwei Handschriften, eine Datei.
+## Dieselbe Handschrift, zweimal: auf Papier und auf Schiefer.
 ##
-## "Nachtblau" ist das, was oben steht: dunkler Grund, gerundete Karten mit
-## Hoehenstaffelung, Violett als Handlungsfarbe, Magenta als Stimme.
-##
-## "Hallenlicht" ist der Gegenentwurf und keine Aufhellung desselben Bildes.
-## Der Unterschied liegt nicht in den Farben, sondern darin, was die Flaeche
-## traegt: Nachtblau trennt ueber Hoehe — jede Karte ist ein Koerper mit
-## Schatten und Lichtkante. Hallenlicht trennt ueber Weissraum und Haarlinien;
-## es gibt keine Koerper, nur eine Seite. Damit kann Hierarchie wieder ueber
-## Typografie und Abstand entstehen statt ueber Panels, die alle gleich
-## aussehen.
-##
-## Dahinter steht der Zweck: das Spiel ist ein Lese- und Vergleichswerkzeug
-## fuer lange Sitzungen. Dichte Zahlenspalten liest man auf hellem, ruhigem
-## Grund besser, und je weniger gleichzeitig um Aufmerksamkeit ruft, desto
-## eher faellt das auf, was wirklich eine Entscheidung verlangt.
-enum { NACHTBLAU, HALLENLICHT }
-var thema: int = NACHTBLAU
-## Traegt die Flaeche Koerper (Schatten, Rundung) oder nur Linien?
-var flaechen_koerper: bool = true
+## Was wechselt, ist die Tinte — nicht der Aufbau. Es gibt in beiden Faellen
+## keine Karten, keine Schatten, keine gerundeten Kaesten; es gibt einen Bogen
+## mit Linien darauf. Ein Thema, das die Struktur aendert, waere kein Thema,
+## sondern eine zweite Oberflaeche.
+enum { HELL, DUNKEL }
+var thema: int = HELL
+## Historisch: ob Flaechen Koerper tragen. Das tun sie nirgends mehr.
+var flaechen_koerper: bool = false
 
 func thema_setzen(welches: int) -> void:
 	thema = welches
-	if welches == HALLENLICHT:
-		GRUND = Color("#f4f2ee")
-		FLAECHE_TIEF = Color("#eceae5")
-		FLAECHE = Color("#faf9f7")
-		FLAECHE_HOCH = Color("#ffffff")
-		FLAECHE_GLAS = Color("#e7e4dd")
-		RAND = Color("#d9d5cc")
-		RAND_HELL = Color("#c2bdb1")
-		TEXT = Color("#16181d")
-		TEXT_MATT = Color("#585c66")
-		TEXT_SCHWACH = Color("#8a8e99")
-		# Eine einzige Handlungsfarbe. Sie sagt "hier kann man etwas tun" und
-		# sonst nichts.
-		AKZENT = Color("#1d4ed8")
-		AKZENT_TIEF = Color("#1e40af")
-		AKZENT_DUNKEL = Color("#dfe6fb")
-		# Und eine einzige Alarmfarbe, die nirgends als Zierde vorkommt.
-		SIGNAL = Color("#b91c1c")
-		BLAU = Color("#0369a1")
-		GRUEN = Color("#15803d")
-		GELB = Color("#a16207")
-		ROT = Color("#b91c1c")
-		LILA = Color("#6d28d9")
-		TUERKIS = Color("#0f766e")
-		SCHATTEN = Color(0, 0, 0, 0.10)
-		flaechen_koerper = false
+	if welches == DUNKEL:
+		GRUND = Color("#16151a")
+		FLAECHE_TIEF = Color("#100f13")
+		FLAECHE = Color("#16151a")
+		FLAECHE_HOCH = Color("#1e1d23")
+		FLAECHE_GLAS = Color("#2a2831")
+		RAND = Color("#2e2c35")
+		RAND_HELL = Color("#4a4755")
+		TEXT = Color("#f0ece4")
+		TEXT_MATT = Color("#a09a8e")
+		TEXT_SCHWACH = Color("#6d675e")
+		AKZENT = Color("#7fa6ff")
+		AKZENT_TIEF = Color("#5b86e8")
+		AKZENT_DUNKEL = Color("#1b2440")
+		SIGNAL = Color("#f0714f")
+		BLAU = Color("#7fa6ff")
+		GRUEN = Color("#68c48c")
+		GELB = Color("#d9a83e")
+		ROT = Color("#f0714f")
+		LILA = Color("#b092e0")
+		TUERKIS = Color("#5fc0b8")
+		SCHATTEN = Color(0, 0, 0, 0.45)
 	else:
-		GRUND = Color("#070a14")
-		FLAECHE_TIEF = Color("#04060d")
-		FLAECHE = Color("#0f1522")
-		FLAECHE_HOCH = Color("#151d2e")
-		FLAECHE_GLAS = Color("#1e283c")
-		RAND = Color("#1a2234")
-		RAND_HELL = Color("#2b3750")
-		TEXT = Color("#f2f5fb")
-		TEXT_MATT = Color("#98a4bb")
-		TEXT_SCHWACH = Color("#5f6b83")
-		AKZENT = Color("#8b5cf6")
-		AKZENT_TIEF = Color("#6d3fe0")
-		AKZENT_DUNKEL = Color("#1d1735")
-		SIGNAL = Color("#ff3d8a")
-		BLAU = Color("#38bdf8")
-		GRUEN = Color("#34d399")
-		GELB = Color("#fbbf24")
-		ROT = Color("#f87171")
-		LILA = Color("#c084fc")
-		TUERKIS = Color("#2dd4bf")
-		SCHATTEN = Color(0, 0, 0, 0.55)
-		flaechen_koerper = true
+		GRUND = Color("#efebe3")
+		FLAECHE_TIEF = Color("#e3ded2")
+		FLAECHE = Color("#efebe3")
+		FLAECHE_HOCH = Color("#f7f5ef")
+		FLAECHE_GLAS = Color("#e0dacc")
+		RAND = Color("#d3ccbb")
+		RAND_HELL = Color("#aba391")
+		TEXT = Color("#191713")
+		TEXT_MATT = Color("#5c574c")
+		TEXT_SCHWACH = Color("#8b8474")
+		AKZENT = Color("#1d3f8f")
+		AKZENT_TIEF = Color("#152e69")
+		AKZENT_DUNKEL = Color("#dbe2f4")
+		SIGNAL = Color("#a32b17")
+		BLAU = Color("#1d3f8f")
+		GRUEN = Color("#2c6a43")
+		GELB = Color("#8a6410")
+		ROT = Color("#a32b17")
+		LILA = Color("#5b3a86")
+		TUERKIS = Color("#1c6b66")
+		SCHATTEN = Color(0, 0, 0, 0.16)
+	flaechen_koerper = false
 
 # ------------------------------------------------------------ Typografie ---
 const S_ETIKETT := 10
@@ -131,10 +123,15 @@ const S_ANZEIGE := 56   # Spielstandsanzeige
 # ------------------------------------------------------------- Geometrie ---
 # Groessere Radien und mehr Luft. Der alte Satz war auf Dichte ausgelegt; eine
 # Oberflaeche, die nach etwas aussehen soll, braucht zuerst Abstand.
-const R_MINI := 4
-const R_KLEIN := 8
-const R_NORMAL := 12
-const R_GROSS := 18
+# Fast keine Rundung. Ein Radius von zwoelf oder achtzehn Pixeln macht aus
+# jedem Element eine Pille und aus jedem Bildschirm eine Ansammlung weicher
+# Kacheln. Auf einem Bogen mit Linien sind zwei Pixel genug, damit nichts
+# scharfkantig wirkt — und die Pille bleibt dem vorbehalten, was wirklich eine
+# ist: Abzeichen und Balken.
+const R_MINI := 2
+const R_KLEIN := 2
+const R_NORMAL := 3
+const R_GROSS := 3
 const R_RUND := 999
 
 const A_MINI := 4
@@ -258,18 +255,22 @@ func lasur(farbe: Color, deckung: float = 0.15) -> Color:
 ## flacher radialer Schein oben links über der Mitte genügt — bewusst sieht ihn
 ## niemand, aber die Fläche bekommt eine Richtung, und alles, was darauf liegt,
 ## wirkt aufgesetzt statt eingefärbt.
+## Der Bogen.
+##
+## Vorher lag hier ein radialer Farbverlauf mit einem Lichtpunkt links oben —
+## eine Beleuchtung, die auf jedem Bildschirm dieselbe Stelle heller machte,
+## ganz gleich, was dort stand. Papier hat kein Scheinwerferlicht. Es hat eine
+## Tonung, und die ist gleichmaessig.
 func grundflaeche() -> TextureRect:
 	var g := Gradient.new()
-	g.offsets = PackedFloat32Array([0.0, 0.55, 1.0])
-	g.colors = PackedColorArray([
-		GRUND.lightened(0.075), GRUND.lightened(0.018), GRUND.darkened(0.32)])
+	g.offsets = PackedFloat32Array([0.0, 1.0])
+	g.colors = PackedColorArray([GRUND, GRUND.darkened(0.035)])
 	var t := GradientTexture2D.new()
 	t.gradient = g
-	t.width = 256
+	t.width = 8
 	t.height = 256
-	t.fill = GradientTexture2D.FILL_RADIAL
-	t.fill_from = Vector2(0.40, 0.02)
-	t.fill_to = Vector2(1.30, 1.05)
+	t.fill_from = Vector2(0.0, 0.0)
+	t.fill_to = Vector2(0.0, 1.0)
 	var r := TextureRect.new()
 	r.texture = t
 	r.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -294,32 +295,30 @@ func box(fuellung: Color, radius: int = R_NORMAL, randfarbe: Variant = null, ran
 	sb.content_margin_bottom = 6
 	return sb
 
-## Karte mit weichem Schlagschatten — fuer erhabene Flaechen und Fenster.
+## Eine Flaeche mit Haarlinie. Kein Koerper.
+##
+## Hiess einmal "erhaben" und hatte Schlagschatten und Lichtkante, damit jede
+## Karte wie ein Stueck Material ueber dem Grund schwebte. Fuenfzehn davon auf
+## einem Bildschirm sind kein Material, sondern Unruhe. Geblieben ist der
+## Name, damit nicht fuenfzig Aufrufstellen umgeschrieben werden muessen —
+## geliefert wird eine Flaeche mit einer Linie darum.
 func box_erhaben(fuellung: Color, radius: int = R_NORMAL, randfarbe: Variant = null) -> StyleBoxFlat:
-	if not flaechen_koerper:
-		# Hallenlicht kennt keine Koerper. Eine Karte ist hier ein Abschnitt
-		# der Seite: gleiche Flaeche wie der Grund, eine Haarlinie ringsum,
-		# kaum Rundung, kein Schatten. Was sie zusammenhaelt, ist der Abstand
-		# zum Nachbarn — nicht ein aufgemalter Kasten.
-		var flach := box(fuellung, 3, RAND)
-		flach.shadow_size = 0
-		return flach
-	var sb := box(fuellung, radius, randfarbe)
-	sb.shadow_color = SCHATTEN
-	sb.shadow_size = 10
-	sb.shadow_offset = Vector2(0, 3)
-	lichtkante(sb)
+	var sb := box(fuellung, mini(radius, R_NORMAL), randfarbe if randfarbe != null else RAND)
+	sb.shadow_size = 0
 	return sb
 
-## Eine hellere Oberkante. Licht kommt von oben — ohne diesen einen Pixel
-## sieht jede Fläche aus wie ein aufgemalter Kasten statt wie ein Körper.
-func lichtkante(sb: StyleBoxFlat, staerke: float = 0.055) -> StyleBoxFlat:
-	if not flaechen_koerper:
-		return sb
-	sb.border_width_top = maxi(sb.border_width_top, 1)
-	# Godot kennt nur eine Randfarbe je Box. Die Oberkante wird deshalb über
-	# eine leicht aufgehellte Randfarbe angedeutet, die zum Rest noch passt.
-	sb.border_color = sb.border_color.lerp(Color(1, 1, 1, sb.border_color.a), staerke * 2.0)
+## Schwebende Flaechen gibt es nur noch an einer Stelle: bei Fenstern, die
+## ueber allem liegen. Dort ist der Schatten kein Schmuck, sondern die Aussage
+## "darunter geht es weiter".
+func box_fenster(fuellung: Color) -> StyleBoxFlat:
+	var sb := box(fuellung, R_NORMAL, RAND_HELL)
+	sb.shadow_color = SCHATTEN
+	sb.shadow_size = 24
+	sb.shadow_offset = Vector2(0, 8)
+	return sb
+
+## Gab es, solange Flaechen Koerper waren. Tut jetzt nichts.
+func lichtkante(sb: StyleBoxFlat, _staerke: float = 0.055) -> StyleBoxFlat:
 	return sb
 
 func box_leer() -> StyleBoxEmpty:
@@ -345,8 +344,8 @@ func theme() -> Theme:
 	t.default_font_size = S_NORMAL
 
 	# Panel
-	t.set_stylebox("panel", "PanelContainer", box(FLAECHE, R_GROSS, RAND))
-	t.set_stylebox("panel", "Panel", box(FLAECHE, R_GROSS, RAND))
+	t.set_stylebox("panel", "PanelContainer", box(FLAECHE, R_NORMAL, RAND))
+	t.set_stylebox("panel", "Panel", box(FLAECHE, R_NORMAL, RAND))
 
 	# Label
 	t.set_color("font_color", "Label", TEXT)
@@ -355,20 +354,26 @@ func theme() -> Theme:
 	# Knoepfe ohne Rahmen. Eine Flaeche, die eine Stufe hoeher liegt als ihr
 	# Grund, liest sich als Knopf; ein Strich drumherum macht daraus nur einen
 	# Kasten mehr auf einem Bildschirm, der ohnehin voller Kaesten steht.
-	var b_normal := box(FLAECHE_HOCH, R_KLEIN)
-	b_normal.content_margin_left = 16
-	b_normal.content_margin_right = 16
-	b_normal.content_margin_top = 8
+	# Ein Knopf ist eine Linie um ein Wort, keine gefuellte Flaeche. Gefuellt
+	# ist nur, was die eine Handlung des Bildschirms ist — dafuer gibt es
+	# knopf_primaer. Alles andere waere eine Oberflaeche voller gleich lauter
+	# Rechtecke, und dann fuehrt wieder nichts das Auge.
+	var b_normal := box(Color(0, 0, 0, 0), R_KLEIN, RAND_HELL)
+	b_normal.content_margin_left = 14
+	b_normal.content_margin_right = 14
+	b_normal.content_margin_top = 7
 	b_normal.content_margin_bottom = 8
 	var b_hover := b_normal.duplicate() as StyleBoxFlat
 	b_hover.bg_color = FLAECHE_GLAS
+	b_hover.border_color = TEXT_MATT
 	var b_press := b_normal.duplicate() as StyleBoxFlat
-	b_press.bg_color = AKZENT_DUNKEL.lerp(AKZENT, 0.22)
+	b_press.bg_color = AKZENT_DUNKEL
+	b_press.border_color = AKZENT
 	var b_dis := b_normal.duplicate() as StyleBoxFlat
-	b_dis.bg_color = Color("#0d1320")
+	b_dis.border_color = RAND
 	var b_fokus := b_normal.duplicate() as StyleBoxFlat
 	b_fokus.bg_color = Color(0, 0, 0, 0)
-	b_fokus.border_color = lasur(AKZENT, 0.85)
+	b_fokus.border_color = AKZENT
 	b_fokus.set_border_width_all(2)
 	t.set_stylebox("normal", "Button", b_normal)
 	t.set_stylebox("hover", "Button", b_hover)
@@ -379,8 +384,8 @@ func theme() -> Theme:
 	t.set_font("font", "Button", schnitt_halbfett())
 	t.set_font("font", "OptionButton", schnitt_halbfett())
 	t.set_color("font_color", "Button", TEXT)
-	t.set_color("font_hover_color", "Button", Color.WHITE)
-	t.set_color("font_pressed_color", "Button", LILA)
+	t.set_color("font_hover_color", "Button", TEXT)
+	t.set_color("font_pressed_color", "Button", AKZENT)
 	t.set_color("font_disabled_color", "Button", TEXT_SCHWACH)
 	t.set_constant("h_separation", "Button", 8)
 
@@ -406,23 +411,23 @@ func theme() -> Theme:
 	t.set_stylebox("disabled", "OptionButton", b_dis)
 	t.set_stylebox("focus", "OptionButton", b_fokus)
 	t.set_color("font_color", "OptionButton", TEXT)
-	t.set_color("font_hover_color", "OptionButton", Color.WHITE)
+	t.set_color("font_hover_color", "OptionButton", TEXT)
 
 	# PopupMenu
-	var pm := box_erhaben(FLAECHE_HOCH, R_KLEIN, RAND_HELL)
+	var pm := box_fenster(FLAECHE_HOCH)
 	pm.content_margin_top = 6
 	pm.content_margin_bottom = 6
 	t.set_stylebox("panel", "PopupMenu", pm)
-	t.set_stylebox("hover", "PopupMenu", box(lasur(AKZENT, 0.22), R_KLEIN))
+	t.set_stylebox("hover", "PopupMenu", box(AKZENT_DUNKEL, R_MINI))
 	t.set_color("font_color", "PopupMenu", TEXT)
-	t.set_color("font_hover_color", "PopupMenu", Color.WHITE)
+	t.set_color("font_hover_color", "PopupMenu", AKZENT)
 	t.set_color("font_separator_color", "PopupMenu", TEXT_SCHWACH)
 	t.set_constant("v_separation", "PopupMenu", 4)
 
 	# ScrollBar — schlank und zurueckhaltend
 	var sbar := box(Color(0, 0, 0, 0), R_RUND)
-	var grab := box(Color("#26314a"), R_RUND)
-	var grab_h := box(Color("#3a4a6b"), R_RUND)
+	var grab := box(RAND_HELL, R_RUND)
+	var grab_h := box(TEXT_MATT, R_RUND)
 	for klasse in ["VScrollBar", "HScrollBar"]:
 		t.set_stylebox("scroll", klasse, sbar)
 		t.set_stylebox("grabber", klasse, grab)
@@ -457,14 +462,16 @@ func theme() -> Theme:
 	sepv.vertical = true
 	t.set_stylebox("separator", "VSeparator", sepv)
 
-	# Tooltip
-	var tt := box_erhaben(Color("#0b1120"), R_KLEIN, RAND_HELL)
+	# Hinweisfenster: Tinte mit Papierschrift. Auf einem hellen Bogen ist ein
+	# dunkler Kasten das Deutlichste, was es gibt — und er sagt sofort, dass er
+	# nicht zum Inhalt gehoert.
+	var tt := box(TEXT, R_MINI, TEXT)
 	tt.content_margin_left = 11
 	tt.content_margin_right = 11
 	tt.content_margin_top = 7
 	tt.content_margin_bottom = 8
 	t.set_stylebox("panel", "TooltipPanel", tt)
-	t.set_color("font_color", "TooltipLabel", TEXT)
+	t.set_color("font_color", "TooltipLabel", GRUND)
 	t.set_font_size("font_size", "TooltipLabel", S_KLEIN)
 
 	_theme = t
@@ -565,20 +572,28 @@ func anzeige(inhalt: String, groesse: int = S_RIESIG, farbe: Variant = null) -> 
 ## zwei Kaesten.
 func karte(ueberschrift: String = "", hoch: bool = false) -> VBoxContainer:
 	var p := PanelContainer.new()
-	p.add_theme_stylebox_override("panel", box_erhaben(FLAECHE_HOCH if hoch else FLAECHE, R_GROSS, RAND))
-	var m := MarginContainer.new()
-	m.add_theme_constant_override("margin_left", 18)
-	m.add_theme_constant_override("margin_right", 18)
-	m.add_theme_constant_override("margin_top", 15)
-	m.add_theme_constant_override("margin_bottom", 17)
-	p.add_child(m)
+	var sb := StyleBoxFlat.new()
+	# Ein Abschnitt, kein Kasten: oben eine tragende Linie, darunter die
+	# Rubrik, darunter der Inhalt. Links und rechts kein Rand — die Spalte
+	# selbst ist der Rand. Fuenfzehn Kaesten mit je achtzehn Pixeln
+	# Innenabstand haben auf jedem Bildschirm mehr Platz verbraucht als der
+	# Inhalt, den sie umschlossen.
+	sb.bg_color = FLAECHE_HOCH if hoch else Color(0, 0, 0, 0)
+	sb.border_color = TEXT
+	sb.border_width_top = 2
+	sb.content_margin_left = 10 if hoch else 0
+	sb.content_margin_right = 10 if hoch else 0
+	sb.content_margin_top = 9
+	sb.content_margin_bottom = 14
+	p.add_theme_stylebox_override("panel", sb)
+	p.set_meta("linie", sb)
 	var aussen := VBoxContainer.new()
-	aussen.add_theme_constant_override("separation", A_KLEIN + 2)
-	m.add_child(aussen)
+	aussen.add_theme_constant_override("separation", A_KLEIN)
+	p.add_child(aussen)
 	if ueberschrift != "":
 		var kopf := hbox(A_KLEIN)
 		aussen.add_child(kopf)
-		var kopftext := etikett(ueberschrift, SIGNAL)
+		var kopftext := etikett(ueberschrift, TEXT)
 		kopf.add_child(kopftext)
 		p.set_meta("kopftext", kopftext)
 		kopf.add_child(dehner())
@@ -605,11 +620,16 @@ func karte_wurzel(inhalt: Node) -> Control:
 ## Kante und ein eingefärbter Kopf erledigen das vor dem ersten Wort.
 func karte_betonen(inhalt: Node, farbe: Variant = null) -> void:
 	var wurzel := karte_wurzel(inhalt)
-	if wurzel == null:
+	if wurzel == null or not wurzel.has_meta("linie"):
 		return
-	var f: Color = farbe if farbe != null else AKZENT
-	var sb := box_erhaben(FLAECHE_HOCH.lerp(f, 0.055), R_GROSS, RAND.lerp(f, 0.45))
-	wurzel.add_theme_stylebox_override("panel", sb)
+	var f: Color = farbe if farbe != null else SIGNAL
+	# Die tragende Linie nimmt die Farbe an und wird dicker, die Rubrik
+	# ebenso. Frueher wurde die ganze Karte eingefaerbt und bekam einen
+	# farbigen Rahmen — auf einem Bogen ist eine dicke Linie deutlicher als
+	# eine getoente Flaeche und stoert das Lesen nicht.
+	var sb: StyleBoxFlat = wurzel.get_meta("linie")
+	sb.border_color = f
+	sb.border_width_top = 3
 	if wurzel.has_meta("kopftext"):
 		(wurzel.get_meta("kopftext") as Label).add_theme_color_override("font_color", f)
 
@@ -627,27 +647,27 @@ func karte_aktion(inhalt: Node, steuerung: Control) -> void:
 ## gleich stark und führt das Auge nirgendwohin.
 func kachel(beschriftung: String, wert: String, hinweis: String = "", farbe: Variant = null) -> PanelContainer:
 	var p := PanelContainer.new()
-	var sb := box_erhaben(FLAECHE, R_GROSS, RAND)
-	sb.content_margin_left = 15
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0, 0, 0, 0)
+	sb.border_color = farbe if farbe != null else RAND_HELL
+	sb.border_width_top = 2
+	sb.content_margin_left = 0
 	sb.content_margin_right = 14
-	sb.content_margin_top = 14
-	sb.content_margin_bottom = 15
-	if farbe != null:
-		sb.bg_color = FLAECHE.lerp(farbe as Color, 0.05)
-		sb.border_color = RAND.lerp(farbe as Color, 0.32)
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 4
 	p.add_theme_stylebox_override("panel", sb)
 	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var v := vbox(3)
+	var v := vbox(2)
 	p.add_child(v)
 	v.add_child(beschnitten(etikett(beschriftung), float(S_ETIKETT) + 5.0))
 	var w := Label.new()
 	w.text = wert
 	w.add_theme_font_size_override("font_size", S_TITEL)
-	w.add_theme_font_override("font", schnitt_fett())
-	w.add_theme_color_override("font_color", farbe if farbe != null else TEXT)
+	w.add_theme_font_override("font", schnitt_halbfett())
+	w.add_theme_color_override("font_color", TEXT)
 	w.clip_text = true
 	w.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	v.add_child(beschnitten(w, float(S_TITEL) + 9.0))
+	v.add_child(beschnitten(w, float(S_TITEL) + 8.0))
 	if hinweis != "":
 		var hl := matt(hinweis, S_MINI)
 		hl.clip_text = true
@@ -734,7 +754,7 @@ func dehner() -> Control:
 ## Formularfelder. Die getoente Fuellung traegt die Farbe allein.
 func abzeichen(beschriftung: String, farbe: Color, gefuellt: bool = false) -> PanelContainer:
 	var p := PanelContainer.new()
-	var sb := box(Color(farbe.r, farbe.g, farbe.b, 0.95) if gefuellt else lasur(farbe, 0.18), R_KLEIN)
+	var sb := box(farbe if gefuellt else lasur(farbe, 0.14), R_RUND)
 	sb.content_margin_left = 9
 	sb.content_margin_right = 9
 	sb.content_margin_top = 3
@@ -744,7 +764,7 @@ func abzeichen(beschriftung: String, farbe: Color, gefuellt: bool = false) -> Pa
 	l.text = beschriftung
 	l.add_theme_font_size_override("font_size", S_ETIKETT)
 	l.add_theme_font_override("font", schnitt_halbfett())
-	l.add_theme_color_override("font_color", Color("#080b14") if gefuellt else farbe.lightened(0.18))
+	l.add_theme_color_override("font_color", GRUND if gefuellt else farbe)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	p.add_child(l)
@@ -831,33 +851,29 @@ class MonogrammZeichner extends Control:
 func knopf_primaer(beschriftung: String) -> Button:
 	var b := Button.new()
 	b.text = beschriftung
+	# Die eine gefuellte Flaeche auf dem Bildschirm. Ohne Leuchten: ein Knopf,
+	# der glimmt, ist ein Knopf, der sich fuer wichtiger haelt als das, worauf
+	# er sich bezieht.
 	var n := box(AKZENT, R_KLEIN)
 	n.content_margin_left = 20
 	n.content_margin_right = 20
 	n.content_margin_top = 9
 	n.content_margin_bottom = 10
-	n.shadow_color = Color(AKZENT.r, AKZENT.g, AKZENT.b, 0.28)
-	n.shadow_size = 10
-	n.shadow_offset = Vector2(0, 3)
 	var h := n.duplicate() as StyleBoxFlat
-	h.bg_color = AKZENT.lightened(0.16)
-	h.shadow_color = Color(AKZENT.r, AKZENT.g, AKZENT.b, 0.50)
-	h.shadow_size = 16
+	h.bg_color = AKZENT_TIEF
 	var p := n.duplicate() as StyleBoxFlat
-	p.bg_color = AKZENT_TIEF
-	p.shadow_size = 0
+	p.bg_color = AKZENT_TIEF.darkened(0.15)
 	var d := n.duplicate() as StyleBoxFlat
-	d.bg_color = Color("#232a3c")
-	d.shadow_size = 0
+	d.bg_color = FLAECHE_GLAS
 	b.add_theme_stylebox_override("normal", n)
 	b.add_theme_stylebox_override("hover", h)
 	b.add_theme_stylebox_override("pressed", p)
 	b.add_theme_stylebox_override("disabled", d)
 	b.add_theme_stylebox_override("focus", box_leer())
-	b.add_theme_color_override("font_color", Color("#ffffff"))
-	b.add_theme_color_override("font_hover_color", Color("#ffffff"))
-	b.add_theme_color_override("font_pressed_color", Color("#ede9fe"))
-	b.add_theme_color_override("font_disabled_color", Color("#5f6b83"))
+	b.add_theme_color_override("font_color", GRUND)
+	b.add_theme_color_override("font_hover_color", GRUND)
+	b.add_theme_color_override("font_pressed_color", GRUND)
+	b.add_theme_color_override("font_disabled_color", TEXT_SCHWACH)
 	b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	return b
 
@@ -959,7 +975,7 @@ class SchalterKnopf extends Button:
 			var p := PackedVector2Array([
 				m + Vector2(s * 0.22, s * 0.52), m + Vector2(s * 0.42, s * 0.73),
 				m + Vector2(s * 0.80, s * 0.27)])
-			draw_polyline(p, Color("#171104"), 2.2, true)
+			draw_polyline(p, Stil.GRUND, 2.2, true)
 		else:
 			draw_rect(r, Stil.FLAECHE_TIEF, true)
 			draw_rect(r, Stil.RAND_HELL, false, 1.0)
@@ -989,38 +1005,47 @@ func zeilen_knopf(index: int, hervorgehoben: bool = false, hoehe: int = 36) -> B
 ## optionen: Array von {"id":…, "name":…}. rueckruf bekommt die id.
 func segmente(optionen: Array, aktiv: String, rueckruf: Callable) -> PanelContainer:
 	var p := PanelContainer.new()
-	# Der aktive Reiter ist gefuellt, nicht umrandet. Ein Rahmen um den
-	# aktiven und nichts um die anderen liest sich als "dieser ist anklickbar,
-	# die anderen nicht" — genau verkehrt herum.
-	var sb := box(FLAECHE_TIEF, R_KLEIN)
-	sb.content_margin_left = 4
-	sb.content_margin_right = 4
-	sb.content_margin_top = 4
-	sb.content_margin_bottom = 4
+	# Keine Pillen in einer Schale mehr, sondern eine Zeile Wörter auf einer
+	# Linie. Der offene Reiter steht in Tinte und traegt den Strich; die
+	# anderen stehen grau daneben. Eine gefuellte Pille sagt "Knopf" — ein
+	# Reiter ist aber kein Knopf, sondern ein Ort.
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0, 0, 0, 0)
+	sb.border_color = RAND
+	sb.border_width_bottom = 1
+	sb.content_margin_left = 0
+	sb.content_margin_right = 0
+	sb.content_margin_top = 0
+	sb.content_margin_bottom = 0
 	p.add_theme_stylebox_override("panel", sb)
 	p.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	var h := hbox(3)
+	var h := hbox(0)
 	p.add_child(h)
 	for o in optionen:
 		var id: String = str((o as Dictionary)["id"])
 		var b := Button.new()
 		b.text = str((o as Dictionary)["name"])
+		b.focus_mode = Control.FOCUS_NONE
 		b.add_theme_font_size_override("font_size", S_KLEIN)
 		b.add_theme_stylebox_override("focus", box_leer())
 		var an: bool = id == aktiv
-		var n := box(AKZENT if an else Color(0, 0, 0, 0), R_KLEIN - 2)
-		n.content_margin_left = 15
-		n.content_margin_right = 15
-		n.content_margin_top = 6
+		var n := StyleBoxFlat.new()
+		n.bg_color = Color(0, 0, 0, 0)
+		n.border_color = TEXT if an else Color(0, 0, 0, 0)
+		n.border_width_bottom = 2
+		n.content_margin_left = 2
+		n.content_margin_right = 20
+		n.content_margin_top = 4
 		n.content_margin_bottom = 7
 		var hb := n.duplicate() as StyleBoxFlat
 		if not an:
-			hb.bg_color = lasur(TEXT, 0.08)
+			hb.border_color = RAND_HELL
 		b.add_theme_stylebox_override("normal", n)
 		b.add_theme_stylebox_override("hover", hb)
 		b.add_theme_stylebox_override("pressed", n)
-		b.add_theme_color_override("font_color", Color.WHITE if an else TEXT_MATT)
-		b.add_theme_color_override("font_hover_color", Color.WHITE)
+		b.add_theme_color_override("font_color", TEXT if an else TEXT_SCHWACH)
+		b.add_theme_color_override("font_hover_color", TEXT)
+		b.add_theme_font_override("font", schnitt_halbfett() if an else grundschrift())
 		b.pressed.connect(func(): rueckruf.call(id))
 		h.add_child(b)
 	return p
@@ -1126,7 +1151,7 @@ class BalkenZeichner extends Control:
 	var wert: float = 0.0
 	var maximum: float = 100.0
 	var farbe: Color = Color.WHITE
-	var hintergrund: Color = Color("#1a2234")
+	var hintergrund: Color = Stil.FLAECHE_TIEF
 
 	## Gerundete Kapsel statt eckigem Kasten mit Rahmen.
 	##
@@ -1179,7 +1204,7 @@ class RingZeichner extends Control:
 		var m := Vector2(size.x, size.y) * 0.5
 		var dicke: float = maxf(s * 0.11, 3.0)
 		var radius: float = s * 0.5 - dicke * 0.5 - 1.0
-		draw_arc(m, radius, 0.0, TAU, 40, Color("#1b2432"), dicke, true)
+		draw_arc(m, radius, 0.0, TAU, 40, Stil.FLAECHE_TIEF, dicke, true)
 		var t: float = clampf(wert / maxf(maximum, 0.001), 0.0, 1.0)
 		if t > 0.0:
 			draw_arc(m, radius, -PI / 2.0, -PI / 2.0 + TAU * t, 40, farbe, dicke, true)
@@ -1293,10 +1318,11 @@ func tabelle(spalten: Array, dicht: bool = false) -> GridContainer:
 ## Zellen. So bekommt jede Tabelle im Spiel dasselbe Bild, ohne dass ein
 ## Bildschirm etwas tun muss.
 ##
-## Die Baender sind gerundet und liegen nicht mehr in jeder zweiten Zeile,
-## sondern in jeder: ein durchgehend ruhiger Grund liest sich besser als ein
-## Zebra, sobald die Zeilen hoch genug sind. Zonen — Europa, Abstieg — bekommen
-## eine farbige Kante links statt einer eingefaerbten Platzziffer.
+## Auf Papier trennt eine Linie, keine Flaeche. Frueher lag unter jeder Zeile
+## ein aufgehellter Balken; das war auf dunklem Grund noetig, weil es dort
+## nichts anderes gab, was Zeilen haelt. Hier genuegt eine Haarlinie zwischen
+## den Zeilen — und die hervorgehobene Zeile bekommt als einzige eine Flaeche.
+## Zonen — Europa, Abstieg — behalten die farbige Kante links.
 class RasterTabelle extends GridContainer:
 	var hervorgehoben: Array = []
 	var zonen: Dictionary = {}
@@ -1341,12 +1367,13 @@ class RasterTabelle extends GridContainer:
 			var r := Rect2(Vector2(-8.0, oben - luecke * 0.42), Vector2(size.x + 16.0, unten - oben + luecke * 0.84))
 			if z == 0:
 				draw_line(Vector2(-8.0, unten + luecke * 0.46), Vector2(size.x + 8.0, unten + luecke * 0.46),
-					Stil.RAND, 1.0)
+					Stil.TEXT, 1.5)
 				continue
 			if hervorgehoben.has(z - 1):
-				draw_style_box(Stil.box(Stil.lasur(Stil.AKZENT, 0.16), Stil.R_KLEIN), r)
-			else:
-				draw_style_box(Stil.box(Color(1, 1, 1, 0.026), Stil.R_KLEIN), r)
+				draw_style_box(Stil.box(Stil.AKZENT_DUNKEL, Stil.R_MINI), r)
+			elif z > 1:
+				draw_line(Vector2(-8.0, r.position.y), Vector2(size.x + 8.0, r.position.y),
+					Stil.RAND, 1.0)
 			if zonen.has(z - 1):
 				var kante := Rect2(r.position + Vector2(0, 3.0), Vector2(3.0, r.size.y - 6.0))
 				draw_style_box(Stil.box(zonen[z - 1] as Color, Stil.R_RUND), kante)
