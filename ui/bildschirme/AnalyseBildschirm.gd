@@ -17,6 +17,8 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
+	kopf.add_child(Stil.titel("Saisonanalyse", 0))
+	kopf.add_child(Stil.dehner())
 	kopf.add_child(Stil.segmente([
 		{"id": "eigene", "name": "Unsere Würfe"}, {"id": "gegner", "name": "Würfe der Gegner"}],
 		"eigene" if eigene_wuerfe else "gegner", func(id):

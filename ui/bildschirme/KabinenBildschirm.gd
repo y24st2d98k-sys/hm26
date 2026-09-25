@@ -33,6 +33,7 @@ func aktualisieren() -> void:
 	var v: Dictionary = Welt.verein(cid)
 	var titelzeile := Stil.hbox(12)
 	bereich.add_child(titelzeile)
+	titelzeile.add_child(Stil.titel("Die Kabine", 0))
 	if meldungstext != "":
 		titelzeile.add_child(Stil.text(meldungstext, Stil.S_KLEIN,
 			Stil.GRUEN if meldung_gut else Stil.ROT))

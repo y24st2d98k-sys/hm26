@@ -56,7 +56,7 @@ static func _gespraeche(d: Dictionary, aus: Array) -> void:
 	aus.append({
 		"stufe": EILIG if kuerzeste <= 4 else OFFEN,
 		"titel": "%d Spieler möchten Sie sprechen" % liste.size() if liste.size() > 1 else "Ein Spieler möchte Sie sprechen",
-		"text": "Antwort binnen %s. Wer eine Frist verstreichen lässt, bekommt die Antwort auf dem Feld." % Stil.anzahl_mit(kuerzeste, "Tag", "Tagen"),
+		"text": "Antwort binnen %d Tag(en). Wer eine Frist verstreichen lässt, bekommt die Antwort auf dem Feld." % kuerzeste,
 		"ziel": "kabine", "knopf": "Zur Kabine",
 	})
 
@@ -145,7 +145,7 @@ static func _scoutberichte(d: Dictionary, cid: String, aus: Array) -> void:
 		return
 	aus.append({
 		"stufe": HINWEIS,
-		"titel": "%s %s bereit" % [Stil.anzahl_mit(fertig, "Scoutbericht", "Scoutberichte"), Stil.mehrzahl(fertig, "liegt", "liegen")],
+		"titel": "%d Scoutbericht(e) liegen bereit" % fertig,
 		"text": "Ein Bericht, den niemand liest, ist ein bezahlter Auftrag ohne Ertrag.",
 		"ziel": "scouting", "knopf": "Zum Scouting",
 	})
@@ -162,7 +162,7 @@ static func _jugend(d: Dictionary, cid: String, aus: Array) -> void:
 		return
 	aus.append({
 		"stufe": OFFEN,
-		"titel": "%s %s zu alt für den Nachwuchs" % [Stil.anzahl_mit(draengen.size(), "Talent", "Talente"), Stil.mehrzahl(draengen.size(), "ist", "sind")],
+		"titel": "%d Talent(e) sind zu alt für den Nachwuchs" % draengen.size(),
 		"text": "%s. Wer mit %d Jahren nicht befördert ist, verlässt den Verein." % [
 			", ".join(PackedStringArray(draengen.slice(0, 3))), Jugend.HOECHSTALTER],
 		"ziel": "jugend", "knopf": "Zum Nachwuchs",
@@ -184,7 +184,7 @@ static func _lizenz(d: Dictionary, cid: String, aus: Array) -> void:
 		return
 	aus.append({
 		"stufe": OFFEN,
-		"titel": "%s %s offen" % [Stil.anzahl_mit(auflagen.size(), "Lizenzauflage", "Lizenzauflagen"), Stil.mehrzahl(auflagen.size(), "ist", "sind")],
+		"titel": "%d Lizenzauflage(n) sind offen" % auflagen.size(),
 		"text": str((auflagen[0] as Dictionary)["text"]),
 		"ziel": "halle", "knopf": "Zur Halle",
 	})

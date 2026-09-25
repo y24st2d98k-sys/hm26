@@ -94,7 +94,7 @@ func _baue_menue() -> void:
 	t.add_theme_font_size_override("font_size", Stil.S_RIESIG + 14)
 	titelspalte.add_child(t)
 	var unter := Stil.text("HANDBALL-MANAGER · IHRE KARRIERE AN DER SEITENLINIE",
-		Stil.S_KLEIN, Stil.TEXT_MATT)
+		Stil.S_KLEIN, Stil.SIGNAL)
 	unter.add_theme_font_override("font", Stil.schnitt_gesperrt())
 	titelspalte.add_child(unter)
 	kopf.add_child(Stil.dehner())

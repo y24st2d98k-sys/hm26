@@ -30,6 +30,8 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
+	kopf.add_child(Stil.titel("Nachrichten", 0))
+	kopf.add_child(Stil.dehner())
 	var wahl := OptionButton.new()
 	var i := 0
 	for k in TYPEN.keys():

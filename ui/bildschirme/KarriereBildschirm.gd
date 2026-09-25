@@ -14,6 +14,8 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
+	kopf.add_child(Stil.titel("Karriere", 0))
+	kopf.add_child(Stil.dehner())
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
 	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren

@@ -30,7 +30,7 @@ func _init() -> void:
 func _ready() -> void:
 	theme = Stil.theme()
 	var schleier := ColorRect.new()
-	schleier.color = Stil.lasur(Stil.TEXT, 0.45)
+	schleier.color = Color(0, 0, 0, 0.62)
 	schleier.set_anchors_preset(Control.PRESET_FULL_RECT)
 	schleier.gui_input.connect(func(e):
 		if e is InputEventMouseButton and e.pressed:
@@ -46,7 +46,7 @@ func _ready() -> void:
 	# Spiel am haeufigsten liest, und ein Rollbalken darin kostet jedes Mal
 	# den Ueberblick.
 	panel.custom_minimum_size = Vector2(1220, 880)
-	panel.add_theme_stylebox_override("panel", Stil.box_fenster(Stil.FLAECHE))
+	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.RAND_HELL))
 	mitte.add_child(panel)
 
 	var m := MarginContainer.new()
@@ -805,13 +805,11 @@ func _gespraechskarte(eltern: Node, sp: Dictionary) -> void:
 		"%d — %s" % [int(wert), Gespraech.beziehung_text(wert)], Stil.prozent_farbe(wert)))
 	for e in Gespraech.offene(Welt.daten, sid):
 		var rest: int = int(e["faellig"]) - Welt.tag()
-		karte.add_child(Stil.banner("%s — Prüfung in %s" % [
-			Gespraech.versprechen_text(e),
-			Stil.anzahl_mit(maxi(rest, 0), "Tag", "Tagen")], "warnung"))
+		karte.add_child(Stil.banner("%s — Prüfung in %d Tag(en)" % [
+			Gespraech.versprechen_text(e), maxi(rest, 0)], "warnung"))
 	var sperre: int = Gespraech.sperre_rest(Welt.daten, sp)
 	if sperre > 0:
-		karte.add_child(Stil.matt("Zuletzt vor Kurzem gesprochen — %s Ruhe." % Stil.anzahl_mit(
-			sperre, "Tag", "Tage"), Stil.S_MINI))
+		karte.add_child(Stil.matt("Zuletzt vor Kurzem gesprochen — %d Tag(e) Ruhe." % sperre, Stil.S_MINI))
 		return
 
 	var themen := Gespraech.themen(Welt.daten, sid)

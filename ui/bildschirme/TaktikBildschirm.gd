@@ -33,6 +33,8 @@ func aufbauen() -> void:
 
 	var kopf := Stil.hbox(10)
 	wurzel.add_child(kopf)
+	kopf.add_child(Stil.titel("Aufstellung & Taktik", 0))
+	kopf.add_child(Stil.dehner())
 	var auto_haken := Stil.schalter("")
 	# Kurz beschriftet, ausfuehrlich im Hinweisfenster: der ganze Satz machte
 	# die Kopfzeile breiter als der Bildschirm.

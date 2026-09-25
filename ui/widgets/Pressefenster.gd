@@ -18,7 +18,7 @@ func _init() -> void:
 func _ready() -> void:
 	theme = Stil.theme()
 	var schleier := ColorRect.new()
-	schleier.color = Stil.lasur(Stil.TEXT, 0.45)
+	schleier.color = Color(0, 0, 0, 0.7)
 	schleier.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(schleier)
 	var mitte := CenterContainer.new()
@@ -26,7 +26,7 @@ func _ready() -> void:
 	add_child(mitte)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(760, 480)
-	panel.add_theme_stylebox_override("panel", Stil.box_fenster(Stil.FLAECHE))
+	panel.add_theme_stylebox_override("panel", Stil.box(Stil.FLAECHE, Stil.R_GROSS, Stil.AKZENT_TIEF))
 	mitte.add_child(panel)
 	var m := MarginContainer.new()
 	m.add_theme_constant_override("margin_left", 22)

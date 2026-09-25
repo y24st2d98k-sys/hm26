@@ -13,11 +13,11 @@ func _ready() -> void:
 	var args := OS.get_cmdline_user_args()
 	var ordner: String = str(args[0]) if args.size() > 0 else "/tmp/hallenherz"
 	var welche: Array = args.slice(1) if args.size() > 1 else STANDARD
-	# "dunkel" vorneweg schaltet auf die dunkle Tinte um. So lassen sich beide
-	# Faerbungen nebeneinander ansehen, statt uebereinander zu reden.
-	if welche.has("dunkel"):
-		welche.erase("dunkel")
-		Stil.thema_setzen(Stil.DUNKEL)
+	# "hell" vorneweg schaltet auf die helle Handschrift um. So lassen sich
+	# beide Entwuerfe nebeneinander ansehen, statt uebereinander zu reden.
+	if welche.has("hell"):
+		welche.erase("hell")
+		Stil.thema_setzen(Stil.HALLENLICHT)
 		if welche.is_empty():
 			welche = STANDARD.duplicate()
 	DirAccess.make_dir_recursive_absolute(ordner)
@@ -62,14 +62,6 @@ func _ready() -> void:
 			await get_tree().process_frame
 			await _foto("%s/start.png" % ordner)
 			app._zeige_start(false)
-			continue
-		if str(id) == "tafel":
-			app.zeige("kader")
-			app.tafel.oeffnen("kader")
-			await get_tree().process_frame
-			await get_tree().process_frame
-			await _foto("%s/tafel.png" % ordner)
-			app.tafel.schliessen()
 			continue
 		if str(id) == "live":
 			await _live(app, ordner)

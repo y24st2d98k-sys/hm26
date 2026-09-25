@@ -58,36 +58,30 @@ func aktualisieren() -> void:
 	# der Tabellenplatz und was noch offen ist.
 	var haupt := Stil.hbox(Stil.A_NORMAL)
 	f_heute.add_child(haupt)
-
-	# Drei Spalten, und sie lesen sich von links nach rechts als Satz: was ist
-	# zu entscheiden, worauf laeuft es zu, wann ist was.
-	#
-	# Vorher stand der Kalender links und war mit Abstand das Groesste auf dem
-	# Bildschirm — fast die halbe Flaeche fuer eine Frage, die man einmal in
-	# der Woche stellt. Was zu entscheiden war, stand ganz rechts in der
-	# schmalsten Spalte, angeschnitten. Ein Buero, das man taeglich oeffnet,
-	# faengt mit dem an, was Arbeit macht, nicht mit dem Monatsblatt.
 	var links := Stil.vbox(Stil.A_NORMAL)
 	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	links.size_flags_stretch_ratio = 1.35
+	links.size_flags_stretch_ratio = 1.9
 	haupt.add_child(links)
-	_offene_posten(links)
-	# Der Erstspiel-Pfad steht unter dem, was offen ist: wer schon weiss, wo
-	# die Aufstellung liegt, soll die Frist zuerst sehen.
-	_erste_schritte(links)
-
+	_kalender(links)
 	var mitte := Stil.vbox(Stil.A_NORMAL)
 	mitte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mitte.size_flags_stretch_ratio = 1.15
 	haupt.add_child(mitte)
 	_naechstes_spiel(mitte)
 	_tabellenlage(mitte)
-
+	# Was offen ist, steht in der dritten Spalte statt ueber dem Kalender:
+	# darueber schob es alles Weitere um seine eigene Hoehe nach unten, und
+	# genau das soll das Buero nicht tun.
 	var rechts := Stil.vbox(Stil.A_NORMAL)
 	rechts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	rechts.size_flags_stretch_ratio = 1.5
+	rechts.size_flags_stretch_ratio = 1.0
 	haupt.add_child(rechts)
-	_kalender(rechts)
+	# Der Erstspiel-Pfad steht ueber dem, was offen ist: wer noch nicht weiss,
+	# wo die Aufstellung liegt, kann mit einer Frist auch nichts anfangen. Die
+	# dritte Spalte hat den Platz dafuer — gemessen 103 von 580 Pixeln, die die
+	# mittlere Spalte daneben ohnehin belegt.
+	_erste_schritte(rechts)
+	_offene_posten(rechts)
 
 	_wochenrueckblick(gruppe.feld("woche"))
 
@@ -234,9 +228,9 @@ func _kennzahlen(v: Dictionary) -> void:
 	var zeile: Dictionary = (Welt.daten["ligen"][lid]["tabelle"] as Dictionary).get(
 		Welt.mein_verein_id, Spielplan.leere_tabellenzeile())
 	var ziel: int = int(v["vorstand"]["ziel_platz"])
-	var leit := _leitkachel(platz, ziel, tabelle.size())
-	leit.size_flags_stretch_ratio = 1.7
-	reihe.add_child(leit)
+	reihe.add_child(Bausteine.kachel_zu("Tabellenplatz", "%d." % platz if platz > 0 else "—", "tabellen",
+		"Ziel: Platz %d" % ziel,
+		Stil.GRUEN if platz > 0 and platz <= ziel else (Stil.GELB if platz <= ziel + 2 else Stil.ROT)))
 	reihe.add_child(Bausteine.kachel_zu("Punkte", str(int(zeile["punkte"])), "tabellen",
 		"%d Spiele · %+d Tore" % [int(zeile["sp"]), int(zeile["tore"]) - int(zeile["gegentore"])]))
 
@@ -261,62 +255,12 @@ func _kennzahlen(v: Dictionary) -> void:
 		anzahl += 1
 	reihe.add_child(Bausteine.kachel_zu("Kaderstärke", "%d" % int(round(summe / maxf(float(anzahl), 1.0))), "kader",
 		"%d Spieler · Ruf %d" % [anzahl, int(float(v["ruf"]))]))
+	reihe.add_child(Bausteine.kachel_zu("Kasse", Stil.geld(float(v["kasse"])), "finanzen",
+		"Transferbudget %s" % Stil.geld(float(v["transferbudget"])),
+		Stil.TEXT if float(v["kasse"]) >= 0.0 else Stil.ROT))
 	var vertrauen: float = float(v["vorstand"]["vertrauen"])
 	reihe.add_child(Bausteine.kachel_zu("Vorstand", "%d" % int(vertrauen), "vorstand",
 		str(v["vorstand"]["saisonziel"]), Stil.prozent_farbe(vertrauen)))
-
-## Der Tabellenplatz, und wie er sich zum Auftrag verhaelt.
-##
-## Sechs gleich grosse Kacheln behaupten sechs gleich wichtige Dinge. Es sind
-## aber nicht sechs: an einer Zahl wird ein Trainer gemessen, die anderen
-## erklaeren sie. Also ist eine gross und die anderen sind es nicht — und die
-## Kasse steht gar nicht mehr hier, weil sie unten in der Kommandoleiste auf
-## jedem Bildschirm steht.
-func _leitkachel(platz: int, ziel: int, vereine: int) -> PanelContainer:
-	var farbe: Color = Stil.GRUEN if platz > 0 and platz <= ziel else (
-		Stil.GELB if platz <= ziel + 2 else Stil.SIGNAL)
-	var p := PanelContainer.new()
-	var sb := StyleBoxFlat.new()
-	# Dieselbe Bauweise wie die vier Zahlen daneben — nur traegt die Linie
-	# hier die Farbe des Urteils, und die Zahl ist doppelt so gross. Ein
-	# getoenter Kasten mit Rahmen waere wieder eine Karte, und Karten gibt es
-	# auf diesem Bogen nicht.
-	sb.bg_color = Color(0, 0, 0, 0)
-	sb.border_color = farbe
-	sb.border_width_top = 3
-	sb.content_margin_left = 0
-	sb.content_margin_right = 20
-	sb.content_margin_top = 8
-	sb.content_margin_bottom = 4
-	p.add_theme_stylebox_override("panel", sb)
-	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	p.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	p.tooltip_text = "Zur Tabelle"
-	p.gui_input.connect(func(e):
-		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
-			wechsel_zu("tabellen"))
-	var z := Stil.hbox(16)
-	p.add_child(z)
-	var v := Stil.vbox(2)
-	v.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	z.add_child(v)
-	v.add_child(Stil.etikett("Tabellenplatz"))
-	var zahl := Stil.text("%d." % platz if platz > 0 else "—", Stil.S_RIESIG, Stil.TEXT)
-	zahl.add_theme_font_override("font", Stil.schnitt_halbfett())
-	v.add_child(zahl)
-	var rechts := Stil.vbox(2)
-	rechts.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	z.add_child(rechts)
-	rechts.add_child(Stil.matt("von %d Vereinen" % vereine, Stil.S_MINI))
-	var auftrag: String = "Auftrag: Platz %d" % ziel
-	if platz > 0 and platz <= ziel:
-		auftrag = "Auftrag Platz %d — erfüllt" % ziel
-	elif platz > 0:
-		auftrag = "Auftrag Platz %d — %d zu wenig" % [ziel, platz - ziel]
-	var a := Stil.text(auftrag, Stil.S_KLEIN, farbe)
-	a.add_theme_font_override("font", Stil.schnitt_halbfett())
-	rechts.add_child(a)
-	return p
 
 func _ohne_verein() -> void:
 	var karte := Bausteine.karte_in(bereich, "Ohne Verein")
@@ -350,7 +294,7 @@ func _naechstes_spiel(eltern: Node) -> void:
 	box.add_child(Stil.text("%s %s" % ["gegen" if heimspiel else "bei", Welt.verein(gegner).get("name", "")], Stil.S_NORMAL))
 	box.add_child(Stil.matt(Kalender.text(int(m["tag"]), Welt.startjahr(), true)))
 	var tage: int = int(m["tag"]) - Welt.tag()
-	box.add_child(Stil.matt("in %s" % Stil.anzahl_mit(tage, "Tag", "Tagen") if tage > 0 else "heute"))
+	box.add_child(Stil.matt("in %d Tag(en)" % tage if tage > 0 else "heute"))
 	var rivalitaet: float = float((Welt.verein(Welt.mein_verein_id)["rivalen"] as Dictionary).get(gegner, 0.0))
 	if rivalitaet > 25.0:
 		karte.add_child(Stil.abzeichen(Chronik.rivalitaet_stufe(rivalitaet).to_upper(), Stil.ROT))
@@ -516,11 +460,8 @@ func _offene_posten(eltern: Node) -> void:
 		zeile.add_child(spalte)
 		var titel := Stil.text(str(eintrag["titel"]), Stil.S_KLEIN, farbe)
 		spalte.add_child(Stil.beschnitten(titel, 18.0))
-		# Der Satz bricht um, statt abgeschnitten zu werden. Er ist die
-		# Begruendung der Frist — und eine Begruendung, die mitten im Wort
-		# endet, ist keine. Die Spalte ist breit genug dafuer, seit das Buero
-		# mit dem anfaengt, was Arbeit macht, statt mit dem Monatsblatt.
-		spalte.add_child(Bausteine.fliesstext(str(eintrag["text"]), Stil.S_MINI, null, 190.0))
+		var satz := Stil.matt(str(eintrag["text"]), Stil.S_MINI)
+		spalte.add_child(Stil.beschnitten(satz, 16.0))
 		var knopf := Stil.knopf_flach(str(eintrag["knopf"]), Stil.AKZENT)
 		var ziel: String = str(eintrag["ziel"])
 		knopf.pressed.connect(func():
@@ -551,18 +492,6 @@ func _erste_schritte(eltern: Node) -> void:
 	Stil.karte_betonen(karte, Stil.TUERKIS)
 	karte.add_child(Stil.matt("%d von %d angesehen. Hier entscheidet ein Trainer, bevor angepfiffen wird." % [
 		erledigt, schritte.size()], Stil.S_MINI))
-	# Der Grund steht nur beim naechsten offenen Schritt.
-	#
-	# Vorher trug jeder der vier Schritte seine Begruendung mit, auch die
-	# abgehakten und die, die noch nicht dran sind — drei Zeilen mal vier, und
-	# die Spalte lief unter den Falz. Wer Schritt eins noch vor sich hat,
-	# braucht die Erklaerung zu Schritt vier nicht; wer ihn abgehakt hat,
-	# braucht sie gar nicht mehr.
-	var naechster: int = -1
-	for i in schritte.size():
-		if not bool((schritte[i] as Dictionary)["erledigt"]):
-			naechster = i
-			break
 	for i in schritte.size():
 		var schritt: Dictionary = schritte[i]
 		var fertig: bool = bool(schritt["erledigt"])
@@ -577,8 +506,10 @@ func _erste_schritte(eltern: Node) -> void:
 		var titel := Stil.text(str(schritt["titel"]), Stil.S_KLEIN,
 			Stil.TEXT_MATT if fertig else Stil.TEXT)
 		spalte.add_child(Stil.beschnitten(titel, 18.0))
-		if i == naechster:
-			spalte.add_child(Bausteine.fliesstext(str(schritt["text"]), Stil.S_MINI, null, 140.0))
+		# Hier bricht der Satz um, statt abgeschnitten zu werden: er ist der
+		# Grund, warum der Schritt in der Liste steht. Die Spalte hat die Hoehe
+		# dafuer — gemessen 103 von 580 Pixeln, die daneben ohnehin belegt sind.
+		spalte.add_child(Bausteine.fliesstext(str(schritt["text"]), Stil.S_MINI, null, 140.0))
 		var ziel: String = str(schritt["id"])
 		var hin := Stil.knopf_flach("Nochmal" if fertig else "Hinschauen",
 			Stil.TEXT_MATT if fertig else Stil.TUERKIS)

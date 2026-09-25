@@ -62,10 +62,6 @@ func _draw() -> void:
 		"daten": _datenbank()
 		"glocke": _glocke()
 		"pfeil_rechts": _pfeil_rechts()
-		"pfeil_links": _pfeil_links()
-		"zahnrad": _zahnrad()
-		"tafel": _tafel()
-		"frage": _frage()
 		"doppelpfeil": _doppelpfeil()
 		"pause": _pause()
 		"kreuz": _kreuz()
@@ -265,34 +261,6 @@ func _glocke() -> void:
 func _pfeil_rechts() -> void:
 	_linie([Vector2(0.24, 0.50), Vector2(0.72, 0.50)])
 	_linie([Vector2(0.54, 0.28), Vector2(0.76, 0.50), Vector2(0.54, 0.72)])
-
-func _pfeil_links() -> void:
-	_linie([Vector2(0.76, 0.50), Vector2(0.28, 0.50)])
-	_linie([Vector2(0.46, 0.28), Vector2(0.24, 0.50), Vector2(0.46, 0.72)])
-
-## Zahnrad: ein Ring und acht Zaehne. Gezeichnet statt gezeichnet abgelegt —
-## acht kurze Striche auf dem Kreis genuegen, und bei jeder Groesse sitzen sie.
-func _tafel() -> void:
-	# Drei Zeilen einer aufgeschlagenen Seite. Vier waren bei vierzehn Pixeln
-	# ein Klumpen — die Striche liefen ineinander.
-	for i in 3:
-		var y: float = 0.26 + float(i) * 0.24
-		_linie([Vector2(0.16, y), Vector2(0.84 if i < 2 else 0.56, y)], false, staerke * 0.8)
-
-func _zahnrad() -> void:
-	_kreis(0.50, 0.50, 0.17)
-	for i in 8:
-		var w: float = TAU * float(i) / 8.0
-		var r := Vector2(cos(w), sin(w))
-		var a := Vector2(0.50, 0.50) + r * 0.25
-		var b := Vector2(0.50, 0.50) + r * 0.40
-		_linie([a, b], false, staerke * 1.05)
-
-func _frage() -> void:
-	_linie([Vector2(0.33, 0.34), Vector2(0.38, 0.24), Vector2(0.56, 0.21),
-		Vector2(0.67, 0.31), Vector2(0.63, 0.45), Vector2(0.50, 0.53),
-		Vector2(0.50, 0.63)])
-	_kreis(0.50, 0.78, 0.055, true)
 
 func _doppelpfeil() -> void:
 	_linie([Vector2(0.16, 0.26), Vector2(0.46, 0.50), Vector2(0.16, 0.74)], false, staerke * 1.1)

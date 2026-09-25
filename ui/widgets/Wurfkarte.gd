@@ -23,7 +23,7 @@ const NAME := {
 }
 
 var karte: Dictionary = {}
-var farbe: Color = Stil.AKZENT
+var farbe: Color = Color("#ffb340")
 
 func _init() -> void:
 	custom_minimum_size = Vector2(300, 264)
@@ -93,11 +93,11 @@ static func _summe(e: Dictionary) -> int:
 
 ## Die angegriffene Hälfte: Torraum, Freiwurflinie, Tor rechts.
 func _feld(b: float, h: float) -> void:
-	draw_rect(Rect2(Vector2.ZERO, Vector2(b, h)), Stil.FLAECHE_TIEF, true)
+	draw_rect(Rect2(Vector2.ZERO, Vector2(b, h)), Color("#141b24"), true)
 	var tor := Vector2(b * 0.985, h * 0.5)
-	var linie := Stil.RAND_HELL
+	var linie := Color("#3f4c5b")
 	# Torraum (6 m) und Freiwurflinie (9 m) als Halbkreise um das Tor
-	for paar in [[0.34, linie, 0], [0.52, Stil.RAND, 2]]:
+	for paar in [[0.34, linie, 0], [0.52, Color("#313d4a"), 2]]:
 		var radius: float = float(paar[0]) * b
 		var vorher := Vector2.ZERO
 		for i in range(31):
@@ -107,4 +107,4 @@ func _feld(b: float, h: float) -> void:
 				draw_line(vorher, p, paar[1], 1.2)
 			vorher = p
 	draw_rect(Rect2(Vector2.ZERO, Vector2(b, h)), linie, false, 1.4)
-	draw_line(Vector2(b * 0.985, h * 0.36), Vector2(b * 0.985, h * 0.64), Stil.TEXT, 3.0)
+	draw_line(Vector2(b * 0.985, h * 0.36), Vector2(b * 0.985, h * 0.64), Color("#eef3f9"), 3.0)

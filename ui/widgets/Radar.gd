@@ -29,8 +29,8 @@ const ACHSEN_TW := [
 var werte_a: Array = []
 var werte_b: Array = []
 var achsen: Array = []
-var farbe_a: Color = Stil.AKZENT
-var farbe_b: Color = Stil.SIGNAL
+var farbe_a: Color = Color("#ffb340")
+var farbe_b: Color = Color("#4fa8f5")
 var name_a: String = ""
 var name_b: String = ""
 
@@ -77,9 +77,9 @@ func _draw() -> void:
 		for i in range(n):
 			ring.append(m + _richtung(i, n) * radius * stufe)
 		ring.append(ring[0])
-		draw_polyline(ring, Stil.lasur(Stil.TEXT, 0.16 if stufe < 1.0 else 0.34), 1.0, true)
+		draw_polyline(ring, Color(1, 1, 1, 0.10 if stufe < 1.0 else 0.20), 1.0, true)
 	for i in range(n):
-		draw_line(m, m + _richtung(i, n) * radius, Stil.lasur(Stil.TEXT, 0.14), 1.0)
+		draw_line(m, m + _richtung(i, n) * radius, Color(1, 1, 1, 0.08), 1.0)
 
 	# Erst beide Fuellungen, dann beide Umrisse — sonst verschwindet der
 	# zweite Spieler unter der Flaeche des ersten.
@@ -117,7 +117,7 @@ func _punkte(werte: Array, m: Vector2, radius: float, n: int) -> PackedVector2Ar
 func _fuellung(werte: Array, m: Vector2, radius: float, n: int, farbe: Color) -> void:
 	var punkte := _punkte(werte, m, radius, n)
 	if punkte.size() >= 3:
-		draw_colored_polygon(punkte, Color(farbe.r, farbe.g, farbe.b, 0.14))
+		draw_colored_polygon(punkte, Color(farbe.r, farbe.g, farbe.b, 0.18))
 
 func _umriss(werte: Array, m: Vector2, radius: float, n: int, farbe: Color) -> void:
 	var punkte := _punkte(werte, m, radius, n)

@@ -14,6 +14,8 @@ func aufbauen() -> void:
 	add_child(v)
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
+	kopf.add_child(Stil.titel("Finanzen", 0))
+	kopf.add_child(Stil.dehner())
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
 	# Kein Rollbereich um den ganzen Bildschirm: die Reiter bringen ihren
@@ -125,7 +127,7 @@ func _sponsoren(cid: String, v: Dictionary, eltern: Node) -> void:
 		g.add_child(Stil.text(Stil.geld(float(s["wert"])), Stil.S_KLEIN, Stil.GRUEN))
 		g.add_child(Stil.matt(Stil.geld(float(s["wert"]) * float(s.get("bonus_titel", 0.0))), Stil.S_KLEIN))
 		var rest: int = int(s["bis_saison"]) - Welt.saison_index() + 1
-		g.add_child(Stil.text(Stil.anzahl_mit(maxi(rest, 0), "Jahr", "Jahre"), Stil.S_KLEIN,
+		g.add_child(Stil.text("%d Jahr(e)" % maxi(rest, 0), Stil.S_KLEIN,
 			Stil.GELB if rest <= 1 else Stil.TEXT_MATT))
 	if (v["sponsoren"] as Array).is_empty():
 		sponsoren.add_child(Stil.leerzustand("Kein Partner unter Vertrag."))

@@ -47,6 +47,7 @@ func aufbauen() -> void:
 
 	var kopf := Stil.hbox(10)
 	v.add_child(kopf)
+	kopf.add_child(Stil.titel("Kader", 0))
 	modusleiste = Stil.hbox(0)
 	kopf.add_child(modusleiste)
 	_baue_modusleiste()
@@ -399,7 +400,7 @@ func _planung() -> void:
 	if luecken.is_empty():
 		tiefe.add_child(Stil.text("Auf keiner Position droht in den nächsten drei Jahren eine Lücke.", Stil.S_KLEIN, Stil.GRUEN))
 	for l2 in luecken:
-		var wann: String = "schon jetzt" if int(l2["in_jahren"]) == 0 else "in %s" % Stil.anzahl_mit(int(l2["in_jahren"]), "Jahr", "Jahren")
+		var wann: String = "schon jetzt" if int(l2["in_jahren"]) == 0 else "in %d Jahr(en)" % int(l2["in_jahren"])
 		tiefe.add_child(Stil.text("%s: %s nur %d von %d." % [
 			Spielerfabrik.POSITION_NAME[str(l2["position"])], wann, int(l2["ist"]), int(l2["soll"])],
 			Stil.S_KLEIN, Stil.GELB))

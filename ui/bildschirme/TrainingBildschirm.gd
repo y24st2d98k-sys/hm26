@@ -26,6 +26,7 @@ func aufbauen() -> void:
 	add_child(wurzel)
 	var kopf := Stil.hbox(10)
 	wurzel.add_child(kopf)
+	kopf.add_child(Stil.titel("Training & Belastung", 0))
 	kopf.add_child(Stil.dehner())
 	meldung = Stil.text("", Stil.S_KLEIN, Stil.GRUEN)
 	kopf.add_child(meldung)
