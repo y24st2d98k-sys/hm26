@@ -296,6 +296,8 @@ func starte(spiel_id: String) -> void:
 
 func _anpfiff() -> void:
 	angepfiffen = true
+	Klang.spiele("pfiff", -2.0)
+	Klang.halle_an(sim.hallenpuls if sim != null else 50.0)
 	_ansprache_aufbauen(false)
 	anpfiff_knopf.visible = false
 	hinweis.text = ""
@@ -476,12 +478,44 @@ func _ereignis_abschliessen(e: Dictionary) -> void:
 	_anzeige_auffrischen()
 	_szene_auffrischen(e)
 	_wirkung_zeigen(e)
+	_ton_zu(e)
+	if sim != null:
+		Klang.halle_pegel(sim.hallenpuls)
 	if str(e["typ"]) == "halbzeit":
 		_setze_tempo(0)
 		hinweis.text = "Halbzeit — Ansprache halten, wechseln, umstellen."
 		_ansprache_aufbauen(true)
 	if str(e["typ"]) == "ende":
 		_ende()
+
+## Der Ton zum Ereignis.
+##
+## Bewusst nicht zu jedem: ein Spiel, das bei jedem Fehlpass etwas sagt, sagt
+## nach fünf Minuten nichts mehr. Es pfeift, es jubelt, und bei einer Parade
+## geht ein Raunen durch die Halle. Der Rest bleibt still.
+func _ton_zu(e: Dictionary) -> void:
+	var typ: String = str(e["typ"])
+	var eigen: bool = str(e.get("team", "")) == _meine_seite()
+	match typ:
+		"tor":
+			# Ein Heimtor ist lauter als eines der Gäste — die Halle gehört
+			# dem Heimverein, und das soll man hören.
+			Klang.spiele("jubel", 0.0 if eigen else -9.0)
+		"parade", "block":
+			Klang.spiele("raunen", -4.0 if eigen else -10.0)
+		"fehlwurf":
+			if eigen:
+				Klang.spiele("raunen", -12.0)
+		"zeitstrafe", "rot", "siebenmeter":
+			Klang.spiele("pfiff", -4.0)
+		"halbzeit", "ende":
+			Klang.spiele("pfiff_lang", -2.0)
+
+## Welche Seite dem Trainer gehört — für die Lautstärke des Jubels.
+func _meine_seite() -> String:
+	if sim == null:
+		return "heim"
+	return "heim" if str(sim.spiel.get("heim", "")) == Welt.mein_verein_id else "gast"
 
 ## Ein kurzer Lichtblitz dort, wo etwas passiert ist.
 func _wirkung_zeigen(e: Dictionary) -> void:
@@ -522,6 +556,7 @@ func _ende() -> void:
 	if fertig:
 		return
 	fertig = true
+	Klang.halle_aus()
 	uhr.stop()
 	abschluss_knopf.visible = true
 	hinweis.text = "Abpfiff."

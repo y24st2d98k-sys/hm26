@@ -35,6 +35,7 @@ func aktualisieren() -> void:
 	links.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	oben.add_child(links)
 	links.add_child(_automatik())
+	links.add_child(_ton())
 	links.add_child(_verlassen())
 	# Ein Platz ist eine Zeile, keine Karte.
 	#
@@ -119,6 +120,42 @@ func _app() -> Node:
 			return knoten
 		knoten = knoten.get_parent()
 	return null
+
+## Lautstärke. Ein Regler, kein Mischpult.
+##
+## Es gibt genau eine Tonquelle im Spiel — die Halle während der Live-Partie
+## samt Pfiff und Jubel. Drei Regler für Musik, Effekte und Sprache wären drei
+## Regler für nichts.
+func _ton() -> Control:
+	var karte := Stil.karte("Ton")
+	karte.add_child(Stil.matt(
+		"Halle, Pfiff und Jubel während der Live-Partie. Alle Klänge werden beim Start erzeugt — das Spiel bringt keine Audiodateien mit. Ganz links ist aus.",
+		Stil.S_KLEIN))
+	var zeile := Stil.hbox(12)
+	karte.add_child(zeile)
+	var regler := HSlider.new()
+	regler.min_value = 0.0
+	regler.max_value = 100.0
+	regler.step = 5.0
+	regler.value = float(Welt.einstellung("lautstaerke", 0.55)) * 100.0
+	regler.custom_minimum_size = Vector2(260, 0)
+	regler.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	zeile.add_child(regler)
+	var wert := Stil.text("%d %%" % int(regler.value), Stil.S_KLEIN, Stil.TEXT)
+	wert.custom_minimum_size = Vector2(56, 0)
+	zeile.add_child(wert)
+	var probe := Stil.knopf("Probe")
+	probe.tooltip_text = "Einen Pfiff und einen Torjubel abspielen."
+	probe.pressed.connect(func():
+		Klang.spiele("pfiff", -2.0)
+		Klang.spiele("jubel", 0.0))
+	zeile.add_child(probe)
+	regler.value_changed.connect(func(v):
+		wert.text = "%d %%" % int(v)
+		Klang.pegel_setzen(v / 100.0)
+		if not Welt.daten.is_empty():
+			(Welt.daten["einstellungen"] as Dictionary)["lautstaerke"] = v / 100.0)
+	return Stil.karte_wurzel(karte)
 
 ## Schalter für die wöchentliche Sicherung.
 func _automatik() -> Control:

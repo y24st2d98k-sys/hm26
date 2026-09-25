@@ -16,6 +16,7 @@ config/features=PackedStringArray("4.3", "GL Compatibility")
 Stil="*res://autoload/Stil.gd"
 Namen="*res://autoload/Namen.gd"
 Welt="*res://autoload/Welt.gd"
+Klang="*res://autoload/Klang.gd"
 
 [display]
 
