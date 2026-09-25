@@ -12,9 +12,13 @@ extends RefCounted
 ## die Zweite gegen die Zweite desselben Gegners an. Das braucht keinen
 ## eigenen Spielplan, hält die Tabelle synchron und kostet nichts.
 ##
-## Wer aufläuft, entscheidet sich von selbst: alle Jugendspieler, dazu Profis,
-## die kaum Einsatzzeit bekommen oder aus einer Verletzung zurückkommen. Wer
-## partout nicht spielen soll, wird gesperrt (`nicht_zweite`).
+## Wer aufläuft, schlägt die Automatik vor: alle Jugendspieler, dazu Profis,
+## die kaum Einsatzzeit bekommen oder aus einer Verletzung zurückkommen. Der
+## Trainer überstimmt sie mit einer Rolle je Spieler — und das ist der
+## eigentliche Zweck einer Reservemannschaft. Wer einen Siebzehnjährigen
+## aufbauen will, stellt ihn auf; wer ihn schonen will, lässt ihn draußen.
+## Bis hierher konnte man nur sperren, und damit war die einzige Entscheidung
+## "spielt gar nicht".
 ##
 ## Die Partien der Zweiten laufen nicht durch die volle Simulation. Das wäre
 ## bei 68 Paarungen je Spieltag eine zweite Sekunde Rechenzeit für etwas, das
@@ -66,7 +70,12 @@ static func kandidaten(d: Dictionary, cid: String) -> Array:
 			continue
 		var sp: Dictionary = d["spieler"][sid2]
 		var minuten: float = float(((sp["stats"]["saison"]) as Dictionary).get("minuten", 0.0))
-		if minuten <= MINUTENGRENZE and int(sp["alter"]) <= JUNGPROFI_ALTER:
+		# Wen der Trainer ausdrücklich aufstellt, der spielt — auch wenn er
+		# nach der Automatik längst genug Profiminuten hätte. Eine Vorgabe,
+		# die eine Faustregel nicht überstimmt, ist keine Vorgabe.
+		if rolle(d, str(sid2)) == "gesetzt":
+			liste.append(str(sid2))
+		elif minuten <= MINUTENGRENZE and int(sp["alter"]) <= JUNGPROFI_ALTER:
 			liste.append(str(sid2))
 		elif minuten <= 40.0:
 			# Auch ein erfahrener Spieler, der monatelang nicht gespielt hat,
@@ -81,12 +90,52 @@ static func _einsatzfaehig(d: Dictionary, sid: String) -> bool:
 	return (sp["verletzung"] as Dictionary).is_empty() and int(sp["sperre"]) <= 0
 
 static func _gesperrt(d: Dictionary, sid: String) -> bool:
-	return bool((d["spieler"][sid] as Dictionary).get("nicht_zweite", false))
+	return rolle(d, sid) == "nie"
+
+## Die vier Rollen in der Reservemannschaft.
+##
+## Sie steuern nicht, *ob* jemand im Aufgebot steht, sondern *wo*. Das ist
+## dasselbe: die ersten sieben spielen zweiundfünfzig Minuten, der Rest kommt
+## in Abschnitten, und die letzten stehen bei acht. Wer oben steht, spielt.
+const ROLLEN := [
+	{"id": "gesetzt", "name": "Gesetzt", "satz": "Steht in den ersten Sieben."},
+	{"id": "normal", "name": "Rotation", "satz": "Spielt, wenn Platz ist — nach Stärke."},
+	{"id": "selten", "name": "Selten", "satz": "Nur wenn sonst niemand da ist."},
+	{"id": "nie", "name": "Gar nicht", "satz": "Steht nicht im Aufgebot."},
+]
+const ROLLE_STANDARD := "normal"
+
+static func rolle(d: Dictionary, sid: String) -> String:
+	var sp: Dictionary = (d.get("spieler", {}) as Dictionary).get(sid, {})
+	if sp.is_empty():
+		return ROLLE_STANDARD
+	# Ältere Spielstände kennen nur den Sperrschalter.
+	if not sp.has("zweite_rolle"):
+		return "nie" if bool(sp.get("nicht_zweite", false)) else ROLLE_STANDARD
+	var r: String = str(sp["zweite_rolle"])
+	for e in ROLLEN:
+		if str((e as Dictionary)["id"]) == r:
+			return r
+	return ROLLE_STANDARD
+
+static func rolle_setzen(d: Dictionary, sid: String, r: String) -> void:
+	if not (d.get("spieler", {}) as Dictionary).has(sid):
+		return
+	d["spieler"][sid]["zweite_rolle"] = r
+	# Den alten Schalter mitführen, damit nichts auseinanderläuft.
+	d["spieler"][sid]["nicht_zweite"] = r == "nie"
+
+## Wie weit vorn eine Rolle im Aufgebot steht. Klein ist vorn.
+static func _rang(r: String) -> int:
+	match r:
+		"gesetzt": return 0
+		"normal": return 1
+		"selten": return 2
+	return 3
 
 ## Sperrt einen Spieler für die Zweite oder gibt ihn wieder frei.
 static func freistellen(d: Dictionary, sid: String, gesperrt: bool) -> void:
-	if d["spieler"].has(sid):
-		d["spieler"][sid]["nicht_zweite"] = gesperrt
+	rolle_setzen(d, sid, "nie" if gesperrt else ROLLE_STANDARD)
 
 ## Das tatsächliche Aufgebot einer Partie: die stärksten Kandidaten, aber immer
 ## mit einem Torwart, sonst steht das Tor leer.
@@ -99,8 +148,11 @@ static func aufgebot(d: Dictionary, cid: String) -> Array:
 			tore.append(sid)
 		else:
 			feld.append(sid)
-	feld = Spielerfabrik.nach_staerke(d, feld)
-	tore = Spielerfabrik.nach_staerke(d, tore)
+	# Erst die Rolle, dann die Stärke. Die Reihenfolge ist die Einsatzzeit:
+	# _spieler_verbuchen gibt den ersten sieben zweiundfünfzig Minuten und
+	# staffelt den Rest nach unten ab.
+	feld = _ordnen(d, feld)
+	tore = _ordnen(d, tore)
 	var raus: Array = []
 	if not tore.is_empty():
 		raus.append(tore[0])
@@ -109,6 +161,18 @@ static func aufgebot(d: Dictionary, cid: String) -> Array:
 			break
 		raus.append(sid2)
 	return raus
+
+## Beide Schlüssel in einem Vergleich: Godots Sortierung ist nicht stabil,
+## zweimal hintereinander zu sortieren verwirft also die erste Ordnung.
+static func _ordnen(d: Dictionary, liste: Array) -> Array:
+	var sortiert: Array = liste.duplicate()
+	sortiert.sort_custom(func(a, b):
+		var ra: int = _rang(rolle(d, str(a)))
+		var rb: int = _rang(rolle(d, str(b)))
+		if ra != rb:
+			return ra < rb
+		return Spielerfabrik.gesamt(d["spieler"][str(a)]) > Spielerfabrik.gesamt(d["spieler"][str(b)]))
+	return sortiert
 
 ## Die Spielstärke der Zweiten. Torhüter zählt doppelt, wie in jedem
 ## Handballspiel.

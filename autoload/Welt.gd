@@ -926,6 +926,12 @@ func _daten_auffrischen() -> void:
 				vertrag["praemie_tor"] = 0.0
 			if not vertrag.has("praemie_sieg"):
 				vertrag["praemie_sieg"] = 0.0
+			# In einer Akademie verdient niemand etwas. Aeltere Spielstaende
+			# tragen dort noch ein Wochengehalt; bezahlt wurde es nie, aber es
+			# stand im Vertrag und ging bei der Befoerderung als Untergrenze
+			# in das erste Profigehalt ein.
+			if bool(sp.get("jugendspieler", false)):
+				vertrag["gehalt"] = 0.0
 		if not (sp.get("stats", {}) as Dictionary).has("monat"):
 			(sp.get("stats", {}) as Dictionary)["monat"] = Spielerfabrik.leere_saisonstats()
 		for zeitraum in ["saison", "karriere"]:

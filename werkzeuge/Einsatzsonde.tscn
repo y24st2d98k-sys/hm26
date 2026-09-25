@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://werkzeuge/Einsatzsonde.gd" id="1"]
+
+[node name="Einsatzsonde" type="Node"]
+script = ExtResource("1")

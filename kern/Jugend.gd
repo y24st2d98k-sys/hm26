@@ -71,9 +71,18 @@ static func erzeuge_jahrgang(d: Dictionary, cid: String, anzahl: int) -> Array:
 		sp["jugendspieler"] = true
 		sp["aus_eigener_jugend"] = true
 		sp["kenntnis"] = clampf(45.0 + qualitaet * 0.35, 40.0, 92.0)
+		# Kein Gehalt.
+		#
+		# In einer Akademie verdient niemand etwas — es ist eine Ausbildung
+		# mit Schule daneben, kein Arbeitsverhältnis. Bis hierher stand hier
+		# ein Wochengehalt von zwei- bis dreihundert Euro; bezahlt wurde es
+		# nie (Finanzen.spielergehaelter zählt nur den Profikader), aber es
+		# stand im Vertrag, wurde angezeigt und ging bei der Beförderung als
+		# Untergrenze in das erste Profigehalt ein. Was die Ausbildung kostet,
+		# steht ohnehin woanders: in der Ausbaustufe Jugendarbeit.
 		sp["vertrag"] = {
 			"bis_saison": Welt.saison_index() + Namen.wuerfel(2, 4),
-			"gehalt": 120.0 + ziel * 3.0,
+			"gehalt": 0.0,
 			"rolle": "talent",
 			"ablöseklausel": 0.0,
 			"unterschrieben_saison": Welt.saison_index(),
@@ -181,8 +190,10 @@ static func befoerdern(d: Dictionary, sid: String) -> Dictionary:
 	sp["kenntnis"] = 100.0
 	sp["moral"] = clampf(float(sp["moral"]) + 15.0, 5.0, 100.0)
 	sp["vertrag"]["rolle"] = "talent"
-	sp["vertrag"]["gehalt"] = maxf(float(sp["vertrag"].get("gehalt", 200.0)),
-		Finanzen.gehaltswunsch(d, cid, sp) * 0.6)
+	# Der erste Profivertrag. Er bemisst sich an dem, was der Spieler heute
+	# kann — nicht an dem, was in seinem Fördervertrag stand, denn dort stand
+	# nichts.
+	sp["vertrag"]["gehalt"] = Finanzen.gehaltswunsch(d, cid, sp) * 0.6
 	# Der Vorstand sieht Nachwuchsarbeit gern — je nach eigener Haltung.
 	var jugendfokus: float = float(v["vorstand"].get("jugendfokus", 50.0))
 	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + jugendfokus * 0.02, 0.0, 100.0)

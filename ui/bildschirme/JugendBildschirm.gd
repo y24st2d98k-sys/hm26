@@ -230,19 +230,43 @@ func _zweite() -> void:
 			var dz: int = int((z as Dictionary)["diff"])
 			gt.add_child(Stil.text("%+d" % dz, Stil.S_KLEIN, Stil.GRUEN if dz >= 0 else Stil.ROT))
 
-	var kader := Bausteine.karte_in(inhalt, "Aufgebot und Leistungen")
+	var kader := Bausteine.karte_in(inhalt, "Einsatzplanung")
 	var aufgebot := Zweite.aufgebot(Welt.daten, cid)
 	var alle := Zweite.kandidaten(Welt.daten, cid)
 	kader.add_child(Bausteine.fliesstext(
-		"Aufgestellt wird von selbst: die Jugend, dazu Profis unter %d Jahren mit wenig Einsatzzeit und jeder, der Spielpraxis braucht. Wer oben gebraucht wird, nehmen Sie mit dem Haken heraus." % Zweite.JUNGPROFI_ALTER,
+		"Sie bestimmen, wer viel spielt. Gesetzt heißt: in den ersten Sieben, also rund zweiundfünfzig Minuten. Rotation heißt: nach Stärke, wenn Platz ist. Die Reihenfolge im Aufgebot ist die Einsatzzeit — es sind %d Plätze, und wer weiter hinten steht, kommt in Abschnitten." % Zweite.AUFGEBOT,
 		Stil.S_MINI))
 	if alle.is_empty():
 		kader.add_child(Stil.leerzustand("Niemand kommt derzeit für die Zweite in Frage."))
 		return
-	var g := Stil.tabelle(["Pos", "Name", "Alter", "Stärke", "Spiele", "Minuten", "Tore", "Note", "Freigegeben"])
-	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	kader.add_child(g)
-	for sid in alle:
+	# Zwei Gruppen, eine Mannschaft.
+	#
+	# Der Trainer denkt in Akademie und Profikader, und genau so steht es
+	# hier. Auflaufen tun beide für dieselbe Zweite: eine eigene
+	# Jugendrunde mit eigenem Spielplan gibt es im Spiel nicht.
+	var akademie: Array = []
+	var profis: Array = []
+	for sid0 in alle:
+		if bool(Welt.spieler(str(sid0)).get("jugendspieler", false)):
+			akademie.append(str(sid0))
+		else:
+			profis.append(str(sid0))
+	var geordnet: Array = []
+	if not akademie.is_empty():
+		geordnet.append({"kopf": "Aus der Akademie", "ids": akademie})
+	if not profis.is_empty():
+		geordnet.append({"kopf": "Aus dem Profikader", "ids": profis})
+	for gruppe in geordnet:
+		kader.add_child(Stil.band(str((gruppe as Dictionary)["kopf"])))
+		var gg := Stil.tabelle(["Pos", "Name", "Alter", "Stärke", "Spiele", "Minuten", "Tore", "Note", "Einsatz"])
+		gg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		kader.add_child(gg)
+		_einsatzzeilen(gg, (gruppe as Dictionary)["ids"], aufgebot)
+	return
+
+## Eine Gruppe von Spielern als Tabellenzeilen.
+func _einsatzzeilen(g: GridContainer, ids: Array, aufgebot: Array) -> void:
+	for sid in ids:
 		var sp: Dictionary = Welt.spieler(sid)
 		var k := Zweite.statistik(sp)
 		var dabei: bool = aufgebot.has(sid)
@@ -268,13 +292,43 @@ func _zweite() -> void:
 		var n: float = Zweite.note(sp)
 		g.add_child(Stil.text("—" if n <= 0.0 else "%.2f" % n, Stil.S_KLEIN,
 			Stil.prozent_farbe(n * 10.0) if n > 0.0 else Stil.TEXT_MATT))
-		var haken := CheckBox.new()
-		haken.button_pressed = not bool(sp.get("nicht_zweite", false))
-		haken.tooltip_text = "Steht im Aufgebot der Zweiten." if dabei else "Kommt in Frage, ist heute aber nicht unter den ersten %d." % Zweite.AUFGEBOT
-		haken.toggled.connect(func(an):
-			Zweite.freistellen(Welt.daten, sid, not an)
-			aktualisieren())
-		g.add_child(haken)
+		g.add_child(_einsatzwahl(sid, dabei))
+
+## Die Einsatzrolle eines Spielers in der Zweiten.
+##
+## Vorher stand hier ein Haken: mitspielen ja oder nein. Damit war die
+## einzige Entscheidung, die ein Trainer über seine Reserve treffen konnte,
+## "gar nicht" — und genau die trifft man fast nie. Die eigentliche Frage
+## einer zweiten Mannschaft ist, wer viel spielt und wer wenig: der
+## Siebzehnjährige, den man aufbauen will, gehört in die ersten Sieben, der
+## Profi auf dem Weg zurück braucht dreißig Minuten, und der Torwart Nummer
+## drei soll nicht dem Talent den Platz wegnehmen.
+##
+## Die Rolle ist genau dieser Hebel: Zweite.aufgebot sortiert danach, und die
+## Reihenfolge im Aufgebot ist die Einsatzzeit — die ersten sieben spielen
+## zweiundfünfzig Minuten, der Rest wird nach hinten abgestuft.
+func _einsatzwahl(sid: String, dabei: bool) -> Control:
+	var jetzt := Zweite.rolle(Welt.daten, sid)
+	var optionen: Array = []
+	for r in Zweite.ROLLEN:
+		optionen.append({"id": str((r as Dictionary)["id"]), "name": str((r as Dictionary)["name"])})
+	var wahl := OptionButton.new()
+	for i in optionen.size():
+		wahl.add_item(str((optionen[i] as Dictionary)["name"]), i)
+		wahl.set_item_metadata(i, str((optionen[i] as Dictionary)["id"]))
+		if str((optionen[i] as Dictionary)["id"]) == jetzt:
+			wahl.selected = i
+	var hinweis := ""
+	for r2 in Zweite.ROLLEN:
+		if str((r2 as Dictionary)["id"]) == jetzt:
+			hinweis = str((r2 as Dictionary)["satz"])
+	wahl.tooltip_text = "%s\n\n%s" % [hinweis,
+		"Steht an diesem Wochenende im Aufgebot." if dabei
+		else "Steht an diesem Wochenende nicht im Aufgebot — es sind nur %d Plätze." % Zweite.AUFGEBOT]
+	wahl.item_selected.connect(func(i):
+		Zweite.rolle_setzen(Welt.daten, sid, str(wahl.get_item_metadata(i)))
+		aktualisieren())
+	return wahl
 
 func _zahl(beschriftung: String, wert: String, farbe: Color) -> Control:
 	var v := Stil.vbox(1)
