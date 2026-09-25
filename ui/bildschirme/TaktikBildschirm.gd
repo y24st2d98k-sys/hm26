@@ -82,6 +82,9 @@ func aufbauen() -> void:
 		{"id": "bank", "name": "Bank"},
 	])
 	wurzel.add_child(reiter)
+	reitergruppe = reiter
+	# Beim Reiterwechsel neu aufbauen — es wird ja nur noch der offene gebaut.
+	reiter.bei_wechsel = func(_id): aktualisieren()
 	var inhalt := reiter.feld("aufstellung")
 
 	warnungen_bereich = Stil.vbox(4)
@@ -160,6 +163,15 @@ func _melde(text: String, gut: bool = true) -> void:
 		meldung.text = text
 		meldung.add_theme_color_override("font_color", Stil.GRUEN if gut else Stil.ROT)
 
+## Die Reitergruppe des Bildschirms — gebraucht wird sie, um zu wissen,
+## welcher Reiter offen ist und also gebaut werden muss.
+var reitergruppe = null
+
+func _offener_reiter() -> String:
+	if reitergruppe == null:
+		return "aufstellung"
+	return str(reitergruppe.aktiv)
+
 func aktualisieren() -> void:
 	if angriff_bereich == null:
 		return
@@ -177,17 +189,33 @@ func aktualisieren() -> void:
 	if Welt.mein_verein_id == "":
 		bank_bereich.add_child(Stil.matt("Sie haben derzeit keinen Verein."))
 		return
-	_warnungen()
-	_angriff()
-	_abwehr()
-	_taktik()
-	_gegnerplan()
-	_spielbuch()
-	_profile()
-	_anweisungen()
-	_einsatzzeiten()
-	_bank()
-	_feld_auffrischen()
+	# Nur den offenen Reiter aufbauen.
+	#
+	# Sieben Reiter, und bei jedem Auffrischen wurden alle sieben gefüllt —
+	# sechs davon unsichtbar. Gemessen mit werkzeuge/Leistung.gd war dieser
+	# Bildschirm mit 171 Millisekunden der langsamste des Spiels, und das bei
+	# jedem Wechsel der Aufstellung, jedem Tageswechsel und jedem Öffnen. Eine
+	# Anweisungsliste mit sieben Positionen zu bauen, die niemand ansieht,
+	# kostet genauso viel wie eine, die jemand ansieht.
+	match _offener_reiter():
+		"aufstellung":
+			_warnungen()
+			_angriff()
+			_abwehr()
+			_feld_auffrischen()
+		"spielidee":
+			_taktik()
+		"vorlagen":
+			_profile()
+		"anweisungen":
+			_anweisungen()
+		"matchplan":
+			_gegnerplan()
+			_spielbuch()
+		"einsatz":
+			_einsatzzeiten()
+		"bank":
+			_bank()
 
 ## Die Segmentleiste der Vorschau. Sie zeigt, welche Formation zu sehen ist —
 ## also muss sie nach einem Umschalten neu gebaut werden.
