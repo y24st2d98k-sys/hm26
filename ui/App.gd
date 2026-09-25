@@ -96,10 +96,23 @@ var _spieltag_schleier: Control
 var _spieltag_balken: Control
 var _spieltag_text: Label
 
+## Kleinste Fenstergroesse, unter der nichts mehr lesbar ist.
+##
+## Die logische Flaeche bleibt durch stretch/aspect="keep" immer 1500x940 und
+## wird auf das Fenster skaliert. Ohne Untergrenze laesst sich das Fenster auf
+## Briefmarkengroesse ziehen, und dann steht die ganze Oberflaeche da wie
+## durch das falsche Ende eines Fernrohrs. Zwei Drittel der Entwurfsgroesse
+## sind die Grenze: darunter sind die Tabellenspalten nicht mehr zu treffen.
+const FENSTER_MINDESTENS := Vector2i(1120, 630)
+
 func _ready() -> void:
 	theme = Stil.theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(Stil.grundflaeche())
+	var fenster := get_window()
+	if fenster != null:
+		fenster.min_size = FENSTER_MINDESTENS
+		fenster.title = "Hallenherz"
 
 	_baue_rahmen()
 	_baue_startbildschirm()
@@ -656,7 +669,7 @@ func _hilfe_bauen() -> Control:
 	rechts.custom_minimum_size = Vector2(330, 0)
 	reihe.add_child(rechts)
 	rechts.add_child(Stil.etikett("Tastenkürzel"))
-	for e2 in [["Leertaste", "Einen Tag weiter"], ["F1", "Diese Hilfe"],
+	for e2 in [["Leertaste", "Einen Tag weiter"], ["F1", "Diese Hilfe"], ["F11", "Vollbild"],
 			["1 – 0", "Die zehn häufigsten Bildschirme"],
 			["B / K / A", "Büro, Kader, Aufstellung"],
 			["T / F / N", "Transfermarkt, Finanzen, Nachrichten"],
@@ -787,6 +800,16 @@ const TASTENKUERZEL := {
 ## Wie viele Schritte der Weg zurueckreicht.
 const VERLAUF_LAENGE := 30
 
+## Vollbild an und aus. Jedes verkaufte Spiel kann das, und wer es sucht,
+## sucht es auf F11.
+func _vollbild_umschalten() -> void:
+	var fenster := get_window()
+	if fenster == null:
+		return
+	var voll: bool = fenster.mode == Window.MODE_FULLSCREEN or fenster.mode == Window.MODE_EXCLUSIVE_FULLSCREEN
+	fenster.mode = Window.MODE_WINDOWED if voll else Window.MODE_FULLSCREEN
+	Welt.setze_einstellung("vollbild", not voll)
+
 func _verlauf_zurueck() -> void:
 	if _verlaufsstelle <= 0:
 		return
@@ -885,6 +908,10 @@ func _unhandled_input(ereignis: InputEvent) -> void:
 		return
 	if taste == KEY_L:
 		_lesezeichen_umschalten(aktueller)
+		get_viewport().set_input_as_handled()
+		return
+	if taste == KEY_F11:
+		_vollbild_umschalten()
 		get_viewport().set_input_as_handled()
 		return
 	if taste == KEY_F1:

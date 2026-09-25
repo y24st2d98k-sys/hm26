@@ -201,6 +201,61 @@ static func _dauerschaden(d: Dictionary, sid: String, felder: Dictionary) -> voi
 	})
 
 ## Wird von der Simulation aufgerufen, wenn sich jemand im Spiel verletzt.
+## Blessuren: die kurzen Sachen, die jeder Profi mehrmals im Jahr hat.
+##
+## Gemessen mit werkzeuge/Verletzungssonde.gd: nur 44,7 Prozent der
+## Bundesligaspieler verletzten sich ueberhaupt einmal in einer Spielzeit, der
+## VBG-Sportreport nennt fast drei Viertel. Die Ausfalltage lagen dabei fast
+## richtig (29,4 gegen 34). Das Spiel hatte also zu wenige und dafuer zu lange
+## Verletzungen: ein paar Kreuzbaender, und sonst war der Kader gesund.
+##
+## In Wirklichkeit ist das Gegenteil der Normalfall — die Prellung, die zwei
+## Trainingstage kostet, der verdrehte Knoechel, der Infekt. Fuer den Manager
+## ist genau diese Sorte die interessante: sie zwingt zur Rotation, ohne eine
+## Saison zu entscheiden. Wer keinen zweiten Mann auf der Position hat, merkt
+## das dann jede zweite Woche und nicht einmal in drei Jahren.
+const BLESSUREN := [
+	{"art": "Prellung", "region": "muskulatur", "von": 2, "hoch": 5},
+	{"art": "Muskelverhaertung", "region": "muskulatur", "von": 3, "hoch": 7},
+	{"art": "Umgeknickt", "region": "sprunggelenk", "von": 2, "hoch": 6},
+	{"art": "Fingerverletzung", "region": "hand", "von": 3, "hoch": 8},
+	{"art": "Schlag auf das Knie", "region": "knie", "von": 2, "hoch": 5},
+	{"art": "Rueckenbeschwerden", "region": "ruecken", "von": 2, "hoch": 6},
+	{"art": "Schulterprellung", "region": "schulter", "von": 2, "hoch": 6},
+	{"art": "Infekt", "region": "kopf", "von": 3, "hoch": 7},
+]
+
+## Wie oft jemand sich etwas Kleines zuzieht — je Minute auf der Platte.
+##
+## Das Lastkonto entscheidet mit: wer ausgelaugt spielt, holt sich die
+## Prellung, die ein frischer Spieler wegsteckt. Die medizinische Abteilung
+## senkt es wie bei den grossen Verletzungen auch.
+const BLESSUR_GRUND := 0.00046
+
+static func blessurrisiko(d: Dictionary, sid: String) -> float:
+	var sp: Dictionary = d["spieler"][sid]
+	var last: float = float(sp["last"]) / 100.0
+	var fit: float = float(sp["fitness"]) / 100.0
+	var wert: float = BLESSUR_GRUND * (0.65 + 0.7 * last) * (1.3 - 0.4 * fit)
+	var verein: String = str(sp["verein"])
+	if verein != "" and d["vereine"].has(verein):
+		wert *= praeventionsfaktor(d, verein)
+	return wert
+
+## Eine Blessur zuziehen. Keine Vorgeschichte, kein Dauerschaden, kein Eintrag
+## in der Laufbahn — das hier ist kein Karriereereignis, sondern ein Ausfall.
+static func blessur(d: Dictionary, sid: String) -> Dictionary:
+	var sp: Dictionary = d["spieler"][sid]
+	var e: Dictionary = Namen.waehle(BLESSUREN)
+	var tage: int = Namen.wuerfel(int(e["von"]), int(e["hoch"]))
+	sp["verletzung"] = {
+		"art": str(e["art"]), "tage": tage, "rest": tage, "schwere": 1,
+		"region": str(e["region"]), "im_spiel": true, "seit_tag": int(d["tag"]),
+		"leicht": true,
+	}
+	sp["fitness"] = clampf(float(sp["fitness"]) - 4.0, 20.0, 100.0)
+	return sp["verletzung"]
+
 static func verletzung_im_spiel(d: Dictionary, sid: String) -> Dictionary:
 	return erzeuge_verletzung(d, sid, true)
 
@@ -225,6 +280,12 @@ static func risiko_roh(sp: Dictionary) -> float:
 	# ein Spieler 15 Tage je Spielzeit aus und nur gut ein Viertel der Kader
 	# verletzte sich ueberhaupt einmal. Der VBG-Sportreport nennt 34 Ausfalltage
 	# und fast drei Viertel aller Profis.
+	# Ein schmalerer Spann bei der Neigung waere denkbar — anfaellige und
+	# robuste Spieler liegen heute um das Dreifache auseinander, und es trifft
+	# dadurch immer dieselben. Gemessen gebracht hat es 1,3 Punkte mehr
+	# Betroffene (48,0 auf 49,3 Prozent) und fuenf Ausfalltage weniger (33,1
+	# auf 28,3, Ziel 34). Das ist der schlechtere Tausch, also bleibt es, wie
+	# es ist.
 	return 0.00105 * (0.5 + neigung) * (0.7 + 1.5 * last) * (1.5 - 0.6 * fit) * alter_mod
 
 ## Wie stark die medizinische Abteilung eines Vereins das Risiko senkt.
@@ -296,7 +357,20 @@ static func spiel_nachwirkung(d: Dictionary, m: Dictionary) -> void:
 			var ausdauer: float = float(sp["attr"]["ausdauer"]) / 20.0
 			sp["last"] = clampf(float(sp["last"]) + minuten * (0.42 - 0.18 * ausdauer) + 2.0, 0.0, 100.0)
 			sp["fitness"] = clampf(float(sp["fitness"]) - minuten * 0.16, 25.0, 100.0)
-			# Nachwirkende Blessuren
+			# Erst das Schwere, dann das Kleine. Ein Spieler, der sich das
+			# Kreuzband gerissen hat, zieht sich am selben Abend keine
+			# Prellung mehr zu.
+			if sp["verletzung"].is_empty() and Namen.zufall() < blessurrisiko(d, sid) * minuten:
+				var bl := blessur(d, sid)
+				if str(sp["verein"]) == Welt.mein_verein_id:
+					Welt.nachricht({
+						"typ": "medizin", "wichtig": false,
+						"betreff": "Angeschlagen: %s" % Spielerfabrik.voller_name(sp),
+						"text": "%s hat sich eine Blessur zugezogen (%s). Ausfall: etwa %d Tage." % [
+							Spielerfabrik.kurz_name(sp), str(bl["art"]), int(bl["tage"])],
+						"daten": {"spieler": sid},
+					})
+			# Nachwirkende Verletzungen
 			if sp["verletzung"].is_empty() and Namen.zufall() < risiko(d, sid) * minuten * 0.22:
 				var v := erzeuge_verletzung(d, sid, true)
 				if str(sp["verein"]) == Welt.mein_verein_id:

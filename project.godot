@@ -8,6 +8,7 @@ config_version=5
 config/name="Hallenherz"
 config/description="Ein tiefgehender Handball-Manager. Alle Grafiken prozedural, keine externen Assets."
 run/main_scene="res://ui/App.tscn"
+config/version="1.0"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 
 [autoload]
@@ -18,10 +19,33 @@ Welt="*res://autoload/Welt.gd"
 
 [display]
 
-window/size/viewport_width=1500
-window/size/viewport_height=940
+; Die Grundflaeche ist das, wofuer die Bildschirme gebaut sind — und sie war
+; es nie.
+;
+; Bis hierher stand hier 1500x940, waehrend jede Layoutpruefung mit einem
+; Fenster von 1680x945 lief. Durch stretch/aspect="expand" waechst die
+; Zeichenflaeche mit dem Fenster: bei 1680 Pixeln sind es 1671, und genau
+; dafuer wurden fuenfundzwanzig Bildschirme entworfen und freigegeben. In der
+; Groesse, in der das Spiel tatsaechlich startet, waren es 478 Layoutfehler —
+; Spalten, die ueber den Rand laufen, gemessen mit werkzeuge/Layoutpruefung.gd
+; bei 1500x940.
+;
+; "expand" senkt die Flaeche nie unter diese Grundgroesse ab; ein kleineres
+; Fenster skaliert sie herunter, statt Inhalt abzuschneiden. Damit passt es
+; auf jedem Schirm, und die Pruefung misst endlich das, was ausgeliefert wird.
+window/size/viewport_width=1680
+window/size/viewport_height=945
 window/size/resizable=true
 window/stretch/mode="canvas_items"
+; "keep" statt "expand": die logische Flaeche bleibt immer 1500x940.
+;
+; Mit "expand" haengt die nutzbare Breite am Seitenverhaeltnis des Fensters —
+; auf einem 4:3-Schirm bleiben von 1500 Pixeln nur rund 1253 uebrig. Gemessen
+; mit werkzeuge/Layoutpruefung.gd bei 1280x960: 503 Layoutfehler, Inhalte bis
+; zu 311 Pixel ueber dem rechten Rand. Die Bildschirme sind fuer eine feste
+; Flaeche gebaut und pruefen sich auch so; dann muss die Flaeche auch fest
+; sein. Ungenutzter Rand links und rechts ist der Preis, und er ist klein
+; gegen einen Kader, dessen Gehaltsspalte auf halber Strecke aufhoert.
 window/stretch/aspect="expand"
 
 [debug]

@@ -7,7 +7,10 @@ extends Node
 ## davon ins Fenster passt — und nennt den groessten Brocken darin, damit man
 ## weiss, wo man ansetzt.
 
-const FENSTER := Vector2i(1680, 945)
+## Die Fenstergroesse laesst sich uebergeben: "1500 940" misst in der Groesse,
+## in der das Spiel tatsaechlich startet, nicht in der, die gerade am Schirm
+## haengt. Beides gehoert geprueft — ein Kaeufer sieht zuerst die Startgroesse.
+var FENSTER := Vector2i(1680, 945)
 
 func _log(t: String) -> void:
 	printerr(t)
@@ -36,6 +39,11 @@ func _ready() -> void:
 	app._zeige_start(false)
 
 	var liste: Array = OS.get_cmdline_user_args()
+	if liste.size() >= 2 and str(liste[0]).is_valid_int() and str(liste[1]).is_valid_int():
+		FENSTER = Vector2i(int(liste[0]), int(liste[1]))
+		get_window().size = FENSTER
+		await get_tree().process_frame
+		liste = liste.slice(2)
 	if liste.is_empty():
 		liste = (app.bildschirme as Dictionary).keys()
 		liste.sort()

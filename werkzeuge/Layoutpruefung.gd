@@ -46,14 +46,33 @@ func _ready() -> void:
 	_log("Geprüft am %s" % Welt.datum_text())
 	_schlimmsten_fall_herstellen()
 
-	get_window().size = Vector2i(1680, 945)
+	# Zwei Zahlen als Argument setzen die Fenstergroesse. Das ist kein
+	# Beiwerk: durch stretch/aspect="expand" haengt die nutzbare Breite am
+	# Seitenverhaeltnis. Auf einem 4:3-Schirm bleiben von 1500 logischen Pixeln
+	# nur rund 1253 uebrig, und was bei 16:9 gerade noch passt, ist dort
+	# abgeschnitten. Geprueft gehoert beides.
+	var wargs := OS.get_cmdline_user_args()
+	var fenster := Vector2i(1680, 945)
+	if wargs.size() >= 2 and str(wargs[0]).is_valid_int() and str(wargs[1]).is_valid_int():
+		fenster = Vector2i(int(wargs[0]), int(wargs[1]))
+	get_window().size = fenster
 	var app: Node = load("res://ui/App.tscn").instantiate()
 	add_child(app)
 	await get_tree().process_frame
 	app._zeige_start(false)
 	await get_tree().process_frame
 
-	var breite: float = float(get_window().size.x)
+	# Nicht die Fenstergroesse in Pixeln, sondern die logische Zeichenflaeche.
+	#
+	# Das Spiel laeuft mit stretch/mode="canvas_items": der Inhalt wird auf das
+	# Fenster skaliert, und was die Bildschirme an Platz haben, steht im
+	# sichtbaren Rechteck des Viewports — nicht in der Pixelbreite des
+	# Fensters. Wer gegen die Fensterbreite prueft, misst bei jeder anderen
+	# Groesse als der Entwurfsgroesse Unsinn: bei 1280 Pixeln meldete diese
+	# Pruefung fuenfhundert Fehler, die keine waren.
+	var breite: float = get_viewport().get_visible_rect().size.x
+	_log("Fenster %d x %d, Zeichenflaeche %d x %d" % [get_window().size.x, get_window().size.y,
+		int(get_viewport().get_visible_rect().size.x), int(get_viewport().get_visible_rect().size.y)])
 	for id in app.bildschirme.keys():
 		app.zeige(str(id))
 		app.bewegung_beenden()

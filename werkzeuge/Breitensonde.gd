@@ -8,7 +8,15 @@ func _log(t: String) -> void:
 	printerr(t)
 
 func _ready() -> void:
-	get_window().size = Vector2i(1680, 945)
+	# Zwei Zahlen vorneweg setzen die Fenstergroesse; alles Weitere sind
+	# Bildschirmkennungen. So laesst sich in der Groesse messen, in der das
+	# Spiel wirklich startet — und nicht nur in der, die gerade am Schirm haengt.
+	var args := OS.get_cmdline_user_args()
+	var fenster := Vector2i(1680, 945)
+	if args.size() >= 2 and str(args[0]).is_valid_int() and str(args[1]).is_valid_int():
+		fenster = Vector2i(int(args[0]), int(args[1]))
+		args = args.slice(2)
+	get_window().size = fenster
 	await get_tree().process_frame
 	var vorschau := Weltgenerator.erzeuge(2026, 424242)
 	var cid: String = str(vorschau["ligen"]["l_de1"]["vereine"][0])
@@ -27,7 +35,7 @@ func _ready() -> void:
 	add_child(app)
 	await get_tree().process_frame
 	app._zeige_start(false)
-	var welche: Array = OS.get_cmdline_user_args()
+	var welche: Array = args
 	if welche.is_empty():
 		welche = ["buero"]
 	for id in welche:
