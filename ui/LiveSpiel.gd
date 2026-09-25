@@ -344,7 +344,11 @@ func _schritt() -> void:
 		# Die Simulation hat den Angriff schon zu Ende gerechnet und das
 		# Angriffsrecht weitergegeben. Das Feld muss den Angriff zeigen, von dem
 		# das Ereignis handelt — sonst laufen Bild und Ticker auseinander.
-		_szene_auffrischen({}, str(e["team"]))
+		#
+		# Und zwar den Angriff, nicht die Mannschaft im Ereignis: bei einer
+		# Parade steht dort die haltende Seite, und dann stellte sich das ganze
+		# Feld falschherum auf.
+		_szene_auffrischen({}, _angreifer_zu(e))
 
 ## Baut aus einem Ereignis die Takte eines Angriffs. Der letzte Takt traegt das
 ## Ereignis selbst — dort erscheint der Text im Ticker.
@@ -357,12 +361,19 @@ func _zug_bauen(e: Dictionary) -> Array:
 	var typ: String = str(e["typ"])
 	if not ANGRIFFSAUSGANG.has(typ):
 		return []
-	var seite: String = str(e["team"])
+	# Wer angegriffen hat, steht im Ereignis — und nicht in "team". Bei einer
+	# Parade ist "team" die haltende Mannschaft und "spieler" ihr Torwart; wer
+	# das als Angriff liest, laesst den Ball zum eigenen Torwart passen und von
+	# dort ins gegnerische Tor werfen. Genau das war zu sehen.
+	var seite: String = str(e.get("angreifer", e.get("team", "")))
 	if seite != "heim" and seite != "gast":
 		return []
 	var takte: Array = []
 	var mannschaft: Dictionary = sim.heim if seite == "heim" else sim.gast
-	var schuetze: String = str(e.get("spieler", ""))
+	var schuetze: String = str(e.get("schuetze", e.get("spieler", "")))
+	# Und niemals der eigene Torwart: er steht am anderen Ende des Feldes.
+	if schuetze != "" and schuetze == str((mannschaft["angriff_auf"] as Dictionary).get("TW", "")):
+		schuetze = ""
 	var stationen := _anspielstationen(mannschaft, schuetze)
 	var vorher := ""
 	for i in range(stationen.size()):
@@ -671,7 +682,8 @@ func _szene_auffrischen(e: Dictionary = {}, seite: String = "") -> void:
 ## des Ereignisses, sonst das aktuelle Angriffsrecht der Engine.
 func _angreifer_zu(e: Dictionary) -> String:
 	if not e.is_empty() and ANGRIFFSAUSGANG.has(str(e.get("typ", ""))):
-		var seite: String = str(e.get("team", ""))
+		# "angreifer" und nicht "team": siehe _zug_bauen.
+		var seite: String = str(e.get("angreifer", e.get("team", "")))
 		if seite == "heim" or seite == "gast":
 			return seite
 	return sim.angriffsrecht

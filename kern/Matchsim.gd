@@ -413,6 +413,20 @@ func schnell_simulieren() -> void:
 		while not _warteschlange.is_empty():
 			ereignisse.append(_warteschlange.pop_front())
 
+## Ein Ereignis fuer den Ticker und die Live-Ansicht.
+##
+## "team" und "spieler" sind die Sicht des Tickers: bei einer Parade ist das der
+## haltende Torwart und seine Mannschaft, bei einem Block der Blocker. Wer
+## angegriffen hat, steht deshalb zusaetzlich in "angreifer", und wer geworfen
+## hat in "schuetze" — jedes Ereignis, das einen Angriff abschliesst, traegt
+## beide.
+##
+## Das war der Fehler, den man im Spiel sehen konnte: die Live-Ansicht las
+## "team" als angreifende Mannschaft und "spieler" als Werfer. Bei einer Parade
+## baute sie daraus einen Angriff der verteidigenden Mannschaft mit dem Torwart
+## als Werfer — der Ball wurde also zum eigenen Torwart gepasst und von dort ins
+## gegnerische Tor geworfen. Rund ein Drittel aller Angriffe endet mit Parade
+## oder Block, und alle liefen falschherum ab.
 func _ereignis(typ: String, team: String, spieler_id: String, text: String, extra: Dictionary = {}) -> Dictionary:
 	var e := {
 		"zeit": zeit,
@@ -1156,7 +1170,8 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary, grunddiff:
 		zst["bewertung"] += 0.16
 		_bewertung_dampfen(zst)
 		var t1 := Textbank.satz(Textbank.FEHLWURF, rng, Spielerfabrik.kurz_name(sp))
-		_warteschlange.append(_ereignis("fehlwurf", _seite(a), schuetze, t1, {"position": pos}))
+		_warteschlange.append(_ereignis("fehlwurf", _seite(a), schuetze, t1,
+			{"position": pos, "angreifer": _seite(a), "schuetze": schuetze}))
 		_puls_aendern(a, -2.0)
 		return {"gegenstoss": rng.randf() < 0.19}
 	elif w < p_vorbei + (1.0 - p_vorbei) * p_tor:
@@ -1411,7 +1426,9 @@ func _tor(a: Dictionary, v: Dictionary, schuetze: String, pos: String, ist_7m: b
 	_lauf_aktualisieren(_seite(a))
 	_puls_aendern(a, 3.0 if a["ist_heim"] else -2.0)
 	var text := _tortext(sp, pos, ist_7m, assist, a)
-	_warteschlange.append(_ereignis("tor", _seite(a), schuetze, text, {"position": pos, "assist": assist, "siebenmeter": ist_7m, "gegenstoss": _gegenstoss}))
+	_warteschlange.append(_ereignis("tor", _seite(a), schuetze, text,
+		{"position": pos, "assist": assist, "siebenmeter": ist_7m, "gegenstoss": _gegenstoss,
+		"angreifer": _seite(a), "schuetze": schuetze}))
 	# Nach dem Tor pruefen, ob 7-gegen-6 aktiviert wird
 	sieben_gegen_sechs_pruefen(v)
 	sieben_gegen_sechs_pruefen(a)
@@ -1467,7 +1484,8 @@ func _parade(a: Dictionary, v: Dictionary, schuetze: String, tw: String, pos: St
 	var text := Textbank.satz(Textbank.PARADE, rng,
 		Spielerfabrik.kurz_name(daten["spieler"][tw]) if tw != "" else "Der Torwart")
 	_puls_aendern(v, 5.0 if v["ist_heim"] else -3.0)
-	_warteschlange.append(_ereignis("parade", _seite(v), tw, text, {"position": pos, "schuetze": schuetze}))
+	_warteschlange.append(_ereignis("parade", _seite(v), tw, text,
+		{"position": pos, "schuetze": schuetze, "angreifer": _seite(a)}))
 	return {"gegenstoss": rng.randf() < 0.29}
 
 func _block(a: Dictionary, v: Dictionary, schuetze: String, pos: String) -> Dictionary:
@@ -1483,7 +1501,8 @@ func _block(a: Dictionary, v: Dictionary, schuetze: String, pos: String) -> Dict
 			Spielerfabrik.kurz_name(daten["spieler"][schuetze])])
 	else:
 		text = Textbank.satz(Textbank.BLOCK, rng, Spielerfabrik.kurz_name(daten["spieler"][schuetze]))
-	_warteschlange.append(_ereignis("block", _seite(v), blocker, text, {"position": pos}))
+	_warteschlange.append(_ereignis("block", _seite(v), blocker, text,
+		{"position": pos, "schuetze": schuetze, "angreifer": _seite(a)}))
 	_puls_aendern(v, 3.0 if v["ist_heim"] else -2.0)
 	return {"gegenstoss": rng.randf() < 0.22}
 
@@ -1523,7 +1542,8 @@ func _ballverlust(a: Dictionary, v: Dictionary, ursache: String = "") -> Diction
 		if rng.randf() >= LEERES_TOR_TREFFER:
 			_wurf_notieren(v, "LT", "vorbei")
 			text += " Der Gegenwurf auf das leere Tor geht daneben."
-			_warteschlange.append(_ereignis("fehlwurf", _seite(v), werfer, text, {"position": "RM"}))
+			_warteschlange.append(_ereignis("fehlwurf", _seite(v), werfer, text,
+				{"position": "RM", "angreifer": _seite(v), "schuetze": werfer}))
 			_puls_aendern(a, -2.0)
 			return {"gegenstoss": false}
 		_wurf_notieren(v, "LT", "tor")
@@ -1533,11 +1553,13 @@ func _ballverlust(a: Dictionary, v: Dictionary, ursache: String = "") -> Diction
 			v["zustand"][werfer]["tore"] += 1
 			v["zustand"][werfer]["bewertung"] -= 0.35
 		text += " Und der Ball landet im verwaisten Tor!"
-		_warteschlange.append(_ereignis("tor", _seite(v), werfer, text, {"position": "RM", "leeres_tor": true}))
+		_warteschlange.append(_ereignis("tor", _seite(v), werfer, text,
+			{"position": "RM", "leeres_tor": true, "angreifer": _seite(v), "schuetze": werfer}))
 		_lauf_aktualisieren(_seite(v))
 		_puls_aendern(v, 8.0 if v["ist_heim"] else -6.0)
 		return {"gegenstoss": false}
-	_warteschlange.append(_ereignis("ballverlust", _seite(a), verursacher, text))
+	_warteschlange.append(_ereignis("ballverlust", _seite(a), verursacher, text,
+		{"angreifer": _seite(a), "schuetze": ""}))
 	_puls_aendern(a, -3.0)
 	return {"gegenstoss": rng.randf() < 0.32}
 
@@ -1573,7 +1595,8 @@ func _siebenmeter(a: Dictionary, v: Dictionary) -> Dictionary:
 	_bewertung_dampfen(a["zustand"][schuetze])
 	var tw_text := "Der Torwart hält!" if tw == "" else Textbank.satz(
 		Textbank.SIEBENMETER_GEHALTEN, rng, Spielerfabrik.kurz_name(daten["spieler"][tw]))
-	_warteschlange.append(_ereignis("parade", _seite(v), tw, tw_text, {"position": "RM", "schuetze": schuetze}))
+	_warteschlange.append(_ereignis("parade", _seite(v), tw, tw_text,
+		{"position": "RM", "schuetze": schuetze, "angreifer": _seite(a)}))
 	_puls_aendern(v, 9.0 if v["ist_heim"] else -6.0)
 	return {"gegenstoss": false}
 
