@@ -8,19 +8,41 @@ extends Control
 
 signal beendet(spiel_id: String)
 
+## Die Tempostufen.
+##
+## Hier stand eine feste Sekundenzahl je Takt, und ein Timer hat sie abgezaehlt.
+## Damit war jeder Takt gleich lang: ein Anspiel an den Kreis so lang wie ein
+## Wurf, ein Tor so lang wie ein Wechsel. Genau daran sah man, dass das Spiel in
+## Schritten laeuft und nicht flieszt. Jetzt hat jeder Takt seine eigene Dauer,
+## und die Stufe ist ein Faktor darauf.
 const TEMPI := [
-	{"name": "Pause", "sekunden": 0.0},
-	{"name": "Langsam", "sekunden": 0.75},
-	{"name": "Normal", "sekunden": 0.30},
-	{"name": "Schnell", "sekunden": 0.10},
+	{"name": "Pause", "faktor": 0.0},
+	{"name": "Langsam", "faktor": 1.15},
+	{"name": "Normal", "faktor": 2.8},
+	{"name": "Schnell", "faktor": 6.5},
 ]
+
+## Wie lange ein Takt dauert, bevor die Tempostufe ihn teilt. Ein Pass richtet
+## sich zusaetzlich nach der Flugzeit des Balls — je weiter, je laenger.
+const TAKTDAUER := {"pass": 0.26, "bewegung": 0.75, "wurf": 0.50, "ereignis": 0.35}
+
+## Und was ein Ereignis wert ist. Ein Tor darf man sehen, ein Wechsel nicht.
+const EREIGNISDAUER := {
+	"tor": 1.30, "parade": 0.70, "block": 0.55, "fehlwurf": 0.60,
+	"ballverlust": 0.50, "siebenmeter": 0.85, "zeitstrafe": 0.85, "rot": 1.20,
+	"auszeit": 1.00, "halbzeit": 1.30, "ende": 1.50, "wechsel": 0.28,
+	"verletzung": 0.95, "lauf": 0.55, "taktik": 0.55, "passiv": 0.45,
+	"verwarnung": 0.50, "anwurf": 0.70, "gespann": 0.60, "wechselfehler": 0.80,
+	"matchplan": 0.70,
+}
 
 var sim: Matchsim = null
 var mid: String = ""
 var mein_team: Dictionary = {}
 var gegner_team: Dictionary = {}
 var tempo: int = 2
-var uhr: Timer
+## Wie lange der laufende Takt noch dauert, in Sekunden der Darstellung.
+var _takt_rest: float = 0.0
 var fertig: bool = false
 
 var feld: Spielfeld
@@ -69,10 +91,7 @@ func _ready() -> void:
 	bg.color = Stil.GRUND
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
-	uhr = Timer.new()
-	uhr.one_shot = false
-	uhr.timeout.connect(_schritt)
-	add_child(uhr)
+	set_process(true)
 	_baue()
 
 func _baue() -> void:
@@ -267,6 +286,10 @@ func starte(spiel_id: String) -> void:
 	gegner_team = sim.gast if heim_ist_mein else sim.heim
 	feld.lebendig = true
 	_zug.clear()
+	# Die Taktuhr zuruecksetzen: _ende hat sie auf unendlich gestellt, damit
+	# nach dem Abpfiff nichts mehr laeuft. Ohne das hier tickt die zweite
+	# Partie nie.
+	_takt_rest = 0.0
 	# Trikotfarben — und zwar unterscheidbare.
 	#
 	# Zwei Vereine mit gruenem Wappen ergaben zwei gruene Mannschaften, und
@@ -312,12 +335,26 @@ func _setze_tempo(i: int) -> void:
 			angepfiffen = true
 			anpfiff_knopf.visible = false
 	_baue_tempoleiste()
-	var sekunden: float = float(TEMPI[i]["sekunden"])
-	if sekunden <= 0.0 or fertig:
-		uhr.stop()
-	else:
-		uhr.wait_time = sekunden
-		uhr.start()
+	# Bei einem Wechsel der Stufe soll sofort etwas passieren und nicht erst
+	# der alte Takt ablaufen.
+	if i > 0:
+		_takt_rest = minf(_takt_rest, 0.05)
+
+## Die Taktuhr. Sie laeuft in Bildern und nicht in Timerschritten — nur so
+## kann ein Takt so lang sein, wie er dauert.
+func _process(delta: float) -> void:
+	if sim == null or fertig or not visible:
+		return
+	var faktor: float = float(TEMPI[clampi(tempo, 0, TEMPI.size() - 1)]["faktor"])
+	if faktor <= 0.0:
+		return
+	_takt_rest -= delta * faktor
+	# Bei hohem Tempo passen mehrere Takte in ein Bild — aber nicht endlos,
+	# sonst rechnet ein langsames Bild die halbe Partie durch.
+	var runden := 0
+	while _takt_rest <= 0.0 and not fertig and runden < 8:
+		_schritt()
+		runden += 1
 
 # ----------------------------------------------------------------- Ablauf ---
 
@@ -325,13 +362,17 @@ func _setze_tempo(i: int) -> void:
 ## dann der Abschluss. Alles andere (Zeitstrafe, Wechsel, Pause) erscheint sofort.
 const ANGRIFFSAUSGANG := ["tor", "fehlwurf", "parade", "block", "ballverlust"]
 
+## Ereignisse, nach denen der genannte Spieler den Ball hat. Nur bei diesen
+## wandert der Ring mit.
+const BALLTRAEGER_EREIGNIS := ["parade", "block", "ballverlust", "siebenmeter", "anwurf"]
+
 func _schritt() -> void:
 	if sim == null or fertig:
 		return
 	# Ein Angriff besteht aus mehreren Takten. Solange noch welche offen sind,
 	# wird gespielt und kein neues Ereignis geholt.
 	if not _zug.is_empty():
-		_takt_ausfuehren(_zug.pop_front())
+		_takt_rest += _takt_ausfuehren(_zug.pop_front())
 		return
 	var e := sim.naechstes_ereignis()
 	if e.is_empty():
@@ -340,6 +381,7 @@ func _schritt() -> void:
 	_zug = _zug_bauen(e)
 	if _zug.is_empty():
 		_ereignis_abschliessen(e)
+		_takt_rest += float(EREIGNISDAUER.get(str(e.get("typ", "")), TAKTDAUER["ereignis"]))
 	else:
 		# Die Simulation hat den Angriff schon zu Ende gerechnet und das
 		# Angriffsrecht weitergegeben. Das Feld muss den Angriff zeigen, von dem
@@ -393,7 +435,16 @@ func _zug_bauen(e: Dictionary) -> Array:
 	takte.append({"art": "ereignis", "ereignis": e})
 	return takte
 
-## Zwei bis drei Mitspieler, über die der Ball vor dem Abschluss läuft.
+## Über wen der Ball vor dem Abschluss läuft.
+##
+## Vorher waren es zwei bis drei Stationen — gemessen 1,9 Pässe je Angriff. Ein
+## Handballangriff hat fünf bis acht: der Ball läuft einmal quer, kommt zurück,
+## geht an den Kreis und wieder heraus. Genau das ist der Angriff, den man sehen
+## will, und er hat gefehlt.
+##
+## Der Ball darf dabei über denselben Mann zweimal laufen — ein Rückpass auf den
+## Mittelmann ist die häufigste Station überhaupt —, aber nie zweimal
+## hintereinander auf denselben.
 func _anspielstationen(mannschaft: Dictionary, schuetze: String) -> Array:
 	var feldspieler: Array = []
 	for pos in (mannschaft["angriff_auf"] as Dictionary).keys():
@@ -402,15 +453,28 @@ func _anspielstationen(mannschaft: Dictionary, schuetze: String) -> Array:
 		var sid: String = str(mannschaft["angriff_auf"][pos])
 		if sid != "" and sid != schuetze:
 			feldspieler.append(sid)
+	if feldspieler.is_empty():
+		return [schuetze] if schuetze != "" else []
 	feldspieler.shuffle()
-	var anzahl: int = mini(feldspieler.size(), 2 if randf() < 0.6 else 3)
-	var kette: Array = feldspieler.slice(0, anzahl)
-	if schuetze != "":
+	var anzahl: int = 3 + (1 if randf() < 0.55 else 0) + (1 if randf() < 0.25 else 0)
+	var kette: Array = []
+	var vorher := ""
+	for i in range(anzahl):
+		var sid2: String = str(feldspieler[i % feldspieler.size()])
+		if sid2 == vorher:
+			sid2 = str(feldspieler[(i + 1) % feldspieler.size()])
+		if sid2 == vorher:
+			continue
+		kette.append(sid2)
+		vorher = sid2
+	if schuetze != "" and schuetze != vorher:
 		kette.append(schuetze)
 	return kette
 
-func _takt_ausfuehren(takt: Dictionary) -> void:
-	var dauer: float = maxf(uhr.wait_time, 0.08)
+## Fuehrt einen Takt aus und gibt zurueck, wie lange er dauert. Die Dauer ist
+## nicht mehr fuer alle gleich: ein Pass richtet sich nach der Flugzeit des
+## Balls, ein Wurf nach Anlauf und Flug, ein Tor darf man sehen.
+func _takt_ausfuehren(takt: Dictionary) -> float:
 	match str(takt["art"]):
 		"pass":
 			var empfaenger: String = str(takt["sid"])
@@ -420,7 +484,7 @@ func _takt_ausfuehren(takt: Dictionary) -> void:
 			# angenommen und nicht abgewartet.
 			var tor_p: Vector2 = feld.tormitte(seite_p) if seite_p != "" else ziel_p
 			feld.vorstossen(empfaenger, (tor_p - ziel_p) * Vector2(1.0, 0.35), 1.1, 1.5)
-			feld.ball_spielen(feld.spielerpunkt(empfaenger), dauer * 0.85)
+			var flug: float = feld.ball_spielen(feld.spielerpunkt(empfaenger))
 			# Der abgebende Spieler loest sich nach dem Pass von seiner Stelle.
 			var von: String = str(takt.get("von", ""))
 			if von != "":
@@ -429,8 +493,10 @@ func _takt_ausfuehren(takt: Dictionary) -> void:
 			feld.hervorgehoben = empfaenger
 			if seite_p != "":
 				feld.abwehr_verschieben("gast" if seite_p == "heim" else "heim", ziel_p, 1.0)
+			return flug + float(TAKTDAUER["pass"])
 		"bewegung":
 			_bewegung_spielen(str(takt["seite"]), str(takt.get("traeger", "")))
+			return float(TAKTDAUER["bewegung"])
 		"wurf":
 			var seite: String = str(takt["seite"])
 			var ziel: Vector2 = feld.tormitte(seite)
@@ -447,9 +513,13 @@ func _takt_ausfuehren(takt: Dictionary) -> void:
 			feld.hervorgehoben = schuetze
 			# Die Deckung stellt sich in die Wurfbahn.
 			feld.abwehr_verschieben("gast" if seite == "heim" else "heim", von_s, 1.25)
-			feld.ball_werfen(ziel, dauer * 0.8, 1.8)
+			var wurfflug: float = feld.ball_werfen(ziel, 1.8)
+			return wurfflug + float(TAKTDAUER["wurf"])
 		"ereignis":
-			_ereignis_abschliessen(takt["ereignis"])
+			var e: Dictionary = takt["ereignis"]
+			_ereignis_abschliessen(e)
+			return float(EREIGNISDAUER.get(str(e.get("typ", "")), TAKTDAUER["ereignis"]))
+	return float(TAKTDAUER["ereignis"])
 
 ## Eine Bewegung ohne Ball: Kreuzen im Rückraum oder ein Kreisläufer, der sich
 ## auf die andere Seite absetzt. Das ist der Unterschied zwischen sieben
@@ -551,7 +621,7 @@ func _ueberspringen() -> void:
 		return
 	angepfiffen = true
 	anpfiff_knopf.visible = false
-	uhr.stop()
+	_takt_rest = 9.0e9
 	_zug.clear()
 	while not sim.beendet:
 		var e := sim.naechstes_ereignis()
@@ -568,7 +638,7 @@ func _ende() -> void:
 		return
 	fertig = true
 	Klang.halle_aus()
-	uhr.stop()
+	_takt_rest = 9.0e9
 	abschluss_knopf.visible = true
 	hinweis.text = "Abpfiff."
 	_ansprache_aufbauen(false)
@@ -660,12 +730,30 @@ func _szene_auffrischen(e: Dictionary = {}, seite: String = "") -> void:
 		return
 	var angreift: String = seite if seite != "" else _angreifer_zu(e)
 	feld.angreifer = angreift
+	# Beide Mannschaften stehen so, wie sie eingestellt sind.
+	#
+	# Das Spielfeld hatte genau eine Variable fuer das Abwehrsystem, und die
+	# Live-Ansicht hat sie nie gesetzt: auf der Platte stand deshalb jede
+	# Abwehr als flache Sechserkette, egal ob 6-0, 5-1, 4-2 oder 3-2-1
+	# eingestellt war, und beide Mannschaften standen gleich. Dasselbe fuer den
+	# Angriff — ein Kreisfokus sah aus wie ein Aussenfokus.
+	feld.abwehr_system_heim = str((sim.heim["taktik"] as Dictionary).get("abwehr", "6-0"))
+	feld.abwehr_system_gast = str((sim.gast["taktik"] as Dictionary).get("abwehr", "6-0"))
+	feld.angriff_system_heim = str((sim.heim["taktik"] as Dictionary).get("angriff", "positionsangriff"))
+	feld.angriff_system_gast = str((sim.gast["taktik"] as Dictionary).get("angriff", "positionsangriff"))
 	feld.setze_szene({
 		"heim": _team_szene(sim.heim, angreift == "heim"),
 		"gast": _team_szene(sim.gast, angreift == "gast"),
 	})
 	_aufstellungsleiste_auffrischen(angreift)
-	if not e.is_empty() and str(e.get("spieler", "")) != "":
+	# Der weisse Ring markiert, wer den Ball hat — und nur das.
+	#
+	# Hier stand jedes Ereignis mit einem Spieler darin, also auch ein Wechsel,
+	# eine Verwarnung oder eine Zeitstrafe. Der Ring sprang dann auf einen
+	# Verteidiger, waehrend der Ball beim Aussen lag; auf dem Bildschirm war
+	# damit nicht mehr zu sehen, wer angespielt ist.
+	if not e.is_empty() and str(e.get("spieler", "")) != "" \
+			and str(e.get("typ", "")) in BALLTRAEGER_EREIGNIS:
 		feld.hervorgehoben = str(e["spieler"])
 	if e.is_empty():
 		# Neuer Angriff: beide Mannschaften stehen wieder in ihrer Formation,
@@ -675,7 +763,7 @@ func _szene_auffrischen(e: Dictionary = {}, seite: String = "") -> void:
 		var angreifer: Dictionary = sim.heim if angreift == "heim" else sim.gast
 		var aufbau: String = str((angreifer["angriff_auf"] as Dictionary).get("RM", ""))
 		if aufbau != "":
-			feld.ball_spielen(feld.spielerpunkt(aufbau), maxf(uhr.wait_time, 0.1) * 0.8)
+			feld.ball_spielen(feld.spielerpunkt(aufbau))
 	feld.queue_redraw()
 
 ## Wer greift im gezeigten Bild an? Bei einem Angriffsereignis die Mannschaft

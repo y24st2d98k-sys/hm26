@@ -48,13 +48,18 @@ func _ready() -> void:
 	_log("=== Die Live-Ansicht, %d Partie(n) ===" % partien)
 
 	var gesamt := {"takte": 0, "wuerfe": 0, "bewegungen": 0, "paesse": 0,
-		"laeufer": 0.0, "bilder": 0, "ohne_ball": 0.0}
+		"laeufer": 0.0, "bilder": 0, "ohne_ball": 0.0,
+		"dauern": [], "spielzeit": 0.0}
 	for i in range(partien):
 		var mid := _eigene_partie()
 		if mid == "":
 			_log("   Keine eigene Partie gefunden.")
 			break
 		_partie_spielen(mid, gesamt)
+	# Und eine zweite Partie in derselben Ansicht: _ende stellt die Taktuhr auf
+	# unendlich, und wenn starte sie nicht zuruecksetzt, tickt die naechste
+	# Partie nie. Genau das ist beim Umbau passiert.
+	_zweite_partie_pruefen()
 
 	var bilder: float = maxf(float(gesamt["bilder"]), 1.0)
 	_log("")
@@ -63,6 +68,7 @@ func _ready() -> void:
 		int(gesamt["bewegungen"])])
 	_log("In Bewegung je Bild: %.2f Spieler von 14, davon %.2f ohne Ball" % [
 		float(gesamt["laeufer"]) / bilder, float(gesamt["ohne_ball"]) / bilder])
+	_taktlaengen(gesamt)
 	_log("")
 	if fehler == 0:
 		_log("— Feldsonde bestanden (%d Prüfungen) —" % geprueft)
@@ -82,9 +88,18 @@ func _partie_spielen(mid: String, gesamt: Dictionary) -> void:
 	live.visible = true
 	add_child(live)
 	live.starte(mid)
-	live._setze_tempo(2)
-	live.uhr.stop()
 	var feld: Spielfeld = live.feld
+	# Die Engine darf hier nicht mittakten.
+	#
+	# Sowohl die Ansicht als auch das Feld rechnen in _process weiter, und die
+	# Engine ruft das mit der Bildrate der Maschine auf — zusaetzlich zu den
+	# Aufrufen dieser Sonde. Damit mass zweimal dieselbe Saat zweimal etwas
+	# anderes (963 Takte gegen 1028), und eine Sonde, die das tut, taugt nichts.
+	# Direkt aufgerufen laeuft _process trotzdem; abgeschaltet ist nur, dass die
+	# Engine es zusaetzlich tut.
+	live.set_process(false)
+	feld.set_process(false)
+	live._setze_tempo(0)
 	var schritte := 0
 	while not live.fertig and schritte < 8000:
 		var vorher_ball: Vector2 = feld._ballpunkt()
@@ -92,8 +107,13 @@ func _partie_spielen(mid: String, gesamt: Dictionary) -> void:
 		var art := ""
 		if offen > 0:
 			art = str(((live._zug as Array)[0] as Dictionary).get("art", ""))
+		var vorher_rest: float = live._takt_rest
 		live._schritt()
 		schritte += 1
+		var dauer: float = live._takt_rest - vorher_rest
+		if dauer > 0.0 and dauer < 100.0:
+			(gesamt["dauern"] as Array).append(dauer)
+			gesamt["spielzeit"] = float(gesamt["spielzeit"]) + dauer
 		if art != "":
 			gesamt["takte"] = int(gesamt["takte"]) + 1
 			match art:
@@ -102,6 +122,7 @@ func _partie_spielen(mid: String, gesamt: Dictionary) -> void:
 				"bewegung": gesamt["bewegungen"] = int(gesamt["bewegungen"]) + 1
 		_takt_pruefen(live, feld, art, vorher_ball)
 		_bewegung_messen(feld, gesamt)
+		_formationen_pruefen(live, feld)
 	live.queue_free()
 
 ## Nach jedem Takt: passt das Bild zur Simulation?
@@ -153,3 +174,117 @@ func _bewegung_messen(feld: Spielfeld, gesamt: Dictionary) -> void:
 		gesamt["laeufer"] = float(gesamt["laeufer"]) + float(laeufer)
 		gesamt["ohne_ball"] = float(gesamt["ohne_ball"]) + float(ohne_ball)
 		gesamt["bilder"] = int(gesamt["bilder"]) + 1
+
+
+## Wie lang ein Takt dauert — und wie verschieden.
+##
+## Vorher war jeder Takt gleich lang, weil ein Timer sie abzaehlte: ein Pass
+## ueber zwei Meter so lang wie ein Wurf, ein Tor so lang wie ein Wechsel.
+## Genau daran sieht man, ob ein Spiel flieszt oder in Schritten laeuft, und
+## deshalb steht es hier als Zahl.
+func _taktlaengen(gesamt: Dictionary) -> void:
+	var d: Array = gesamt["dauern"]
+	if d.is_empty():
+		return
+	var summe := 0.0
+	var kleinste := 999.0
+	var groesste := 0.0
+	for w in d:
+		summe += float(w)
+		kleinste = minf(kleinste, float(w))
+		groesste = maxf(groesste, float(w))
+	var mittel: float = summe / float(d.size())
+	var quadrate := 0.0
+	for w2 in d:
+		quadrate += (float(w2) - mittel) * (float(w2) - mittel)
+	var streuung: float = sqrt(quadrate / float(d.size()))
+	_log("Taktlänge: Mittel %.2f s, Streuung %.2f, von %.2f bis %.2f" % [
+		mittel, streuung, kleinste, groesste])
+	_pruefe(streuung > 0.10, "alle Takte sind gleich lang — das Spiel läuft in Schritten")
+	_log("Spieldauer je Stufe:  %s" % _stufen(float(gesamt["spielzeit"])))
+
+func _stufen(spielzeit: float) -> String:
+	var teile: PackedStringArray = PackedStringArray()
+	for t in LiveSpiel.TEMPI:
+		var f: float = float((t as Dictionary)["faktor"])
+		if f <= 0.0:
+			continue
+		teile.append("%s %d:%02d" % [str((t as Dictionary)["name"]),
+			int(spielzeit / f) / 60, int(spielzeit / f) % 60])
+	return "  ".join(teile)
+
+## Steht jede Abwehr in dem System, das ihre Mannschaft eingestellt hat?
+func _formationen_pruefen(live: LiveSpiel, feld: Spielfeld) -> void:
+	for seite in ["heim", "gast"]:
+		var t: Dictionary = live.sim.heim if seite == "heim" else live.sim.gast
+		# Niemand steht auf zwei Plaetzen zugleich — weder im Angriff noch in
+		# der Abwehr. Das ist die Bedingung dafuer, dass eine Formation
+		# ueberhaupt eine sein kann.
+		for block in ["angriff_auf", "abwehr_auf"]:
+			var gesehen := {}
+			for pos_d in (t[block] as Dictionary).keys():
+				var sid_d: String = str((t[block] as Dictionary)[pos_d])
+				if sid_d == "":
+					continue
+				_pruefe(not gesehen.has(sid_d),
+					"%s: ein Spieler steht in %s auf zwei Plätzen (%s und %s)" % [
+						seite, block, str(gesehen.get(sid_d, "")), str(pos_d)])
+				gesehen[sid_d] = str(pos_d)
+		var soll: String = str((t["taktik"] as Dictionary).get("abwehr", "6-0"))
+		var ist: String = feld.abwehr_system_heim if seite == "heim" else feld.abwehr_system_gast
+		_pruefe(ist == soll, "%s verteidigt %s, gezeichnet wird %s" % [seite, soll, ist])
+		var soll_a: String = str((t["taktik"] as Dictionary).get("angriff", "positionsangriff"))
+		var ist_a: String = feld.angriff_system_heim if seite == "heim" else feld.angriff_system_gast
+		_pruefe(ist_a == soll_a, "%s greift %s an, gezeichnet wird %s" % [seite, soll_a, ist_a])
+		# Und die Spieler stehen auch wirklich dort, wo das System sie hinstellt.
+		# Die Variable zu setzen genuegt nicht — sie muss auch gelesen werden.
+		if feld.angreifer == seite:
+			continue
+		var kette: Array = Spielfeld.ABWEHR_SYSTEME.get(soll, [])
+		if kette.is_empty():
+			continue
+		for pos in (feld.szene.get(seite, {}) as Dictionary).keys():
+			if not Spielfeld.ist_abwehrplatz(str(pos)):
+				continue
+			var sid: String = str(((feld.szene[seite] as Dictionary)[pos] as Dictionary).get("sid", ""))
+			if sid == "" or not (feld._ziel as Dictionary).has(sid):
+				continue
+			var b: Vector2 = kette[Spielfeld.abwehr_index(str(pos))]
+			var soll_p := Vector2(Spielfeld.LAENGE - b.x, b.y) if seite == "heim" else b
+			var doppelt := 0
+			for pos2 in (feld.szene[seite] as Dictionary).keys():
+				if str(((feld.szene[seite] as Dictionary)[pos2] as Dictionary).get("sid", "")) == sid:
+					doppelt += 1
+			_pruefe((feld._ziel[sid] as Vector2).distance_to(soll_p) < 0.05,
+				"%s steht auf %s nicht dort, wo %s ihn hinstellt: %s statt %s (%d Plätze)" % [
+					seite, pos, soll, str(feld._ziel[sid]), str(soll_p), doppelt])
+
+
+## Laeuft eine zweite Partie in derselben Ansicht wieder an?
+func _zweite_partie_pruefen() -> void:
+	var mid := _eigene_partie()
+	if mid == "":
+		return
+	var live := LiveSpiel.new()
+	live.visible = true
+	add_child(live)
+	live.set_process(false)
+	live.feld.set_process(false)
+	live.starte(mid)
+	live._setze_tempo(0)
+	live._ende()
+	var zweite := _eigene_partie()
+	if zweite == "":
+		live.queue_free()
+		return
+	live.starte(zweite)
+	live._setze_tempo(2)
+	# Gemessen wird, ob die Simulation laeuft — nicht der Stand der Taktuhr.
+	# Die steht nach ein paar Takten wieder im Plus, und die erste Fassung
+	# dieser Pruefung hat daraus einen Fehler gemacht, den es nicht gab.
+	var vorher: int = (live.sim.ereignisse as Array).size()
+	for i in range(6):
+		live._process(0.2)
+	_pruefe((live.sim.ereignisse as Array).size() > vorher,
+		"nach einer beendeten Partie laeuft die naechste nicht mehr an")
+	live.queue_free()

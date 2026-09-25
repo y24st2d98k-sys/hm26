@@ -11,6 +11,42 @@ const ANGRIFF_RECHTS := {
 	"LA": Vector2(30.5, 2.4), "RL": Vector2(27.5, 6.4), "RM": Vector2(26.0, 10.0),
 	"RR": Vector2(27.5, 13.6), "RA": Vector2(30.5, 17.6), "KM": Vector2(34.6, 10.0),
 }
+
+## Und die Angriffsformation richtet sich nach dem, was eingestellt ist.
+##
+## Bis hierher stand jeder Angriff gleich da — ein Kreisfokus sah aus wie ein
+## Aussenfokus, und wer die Einstellung aenderte, sah keinen Unterschied. Die
+## Zahlen sind Meter vom linken Rand; das Tor steht bei x = 40, die
+## Sechsmeterlinie bei etwa x = 34, die Neunmeterlinie bei x = 31.
+const ANGRIFF_SYSTEME := {
+	# Der Lehrbuchangriff: drei Rueckraumspieler, zwei Aussen, ein Kreis.
+	"positionsangriff": {
+		"LA": Vector2(30.5, 2.4), "RL": Vector2(27.5, 6.4), "RM": Vector2(26.0, 10.0),
+		"RR": Vector2(27.5, 13.6), "RA": Vector2(30.5, 17.6), "KM": Vector2(34.6, 10.0),
+	},
+	# Alles auf den Kreis: der Rueckraum rueckt auf, die Aussen ziehen ein und
+	# binden ihre Verteidiger nah am Kreis.
+	"kreisfokus": {
+		"LA": Vector2(31.4, 3.6), "RL": Vector2(28.6, 6.9), "RM": Vector2(27.2, 10.0),
+		"RR": Vector2(28.6, 13.1), "RA": Vector2(31.4, 16.4), "KM": Vector2(34.9, 9.2),
+	},
+	# Ueber aussen: die Fluegel gehen weit und hoch, der Rueckraum zieht die
+	# Deckung in die Mitte.
+	"aussenfokus": {
+		"LA": Vector2(32.2, 1.5), "RL": Vector2(27.0, 6.0), "RM": Vector2(25.4, 10.0),
+		"RR": Vector2(27.0, 14.0), "RA": Vector2(32.2, 18.5), "KM": Vector2(34.4, 10.6),
+	},
+	# Aus dem Rueckraum: die drei gehen an die Neun, der Kreis bindet zwei.
+	"rueckraumfokus": {
+		"LA": Vector2(30.0, 2.6), "RL": Vector2(29.4, 6.8), "RM": Vector2(28.6, 10.0),
+		"RR": Vector2(29.4, 13.2), "RA": Vector2(30.0, 17.4), "KM": Vector2(34.7, 10.0),
+	},
+	# Tempospiel: breit und hoch, damit der erste Pass nach vorn geht.
+	"tempospiel": {
+		"LA": Vector2(31.0, 1.8), "RL": Vector2(26.2, 5.6), "RM": Vector2(24.6, 10.0),
+		"RR": Vector2(26.2, 14.4), "RA": Vector2(31.0, 18.2), "KM": Vector2(34.6, 10.0),
+	},
+}
 ## Sechs Plaetze vor dem eigenen Tor. Frueher lagen die beiden Innenblocker
 ## fast deckungsgleich auf der Mittelachse — ihre Namen ueberdeckten sich.
 const ABWEHR_RECHTS := [
@@ -83,7 +119,20 @@ var ball: Vector2 = Vector2(20.0, 10.0)
 var hervorgehoben: String = ""
 var nur_angriff: bool = false
 ## Welches Abwehrsystem gezeichnet wird: "6-0", "5-1", "4-2" oder "3-2-1".
+##
+## Es gab genau diese eine Variable fuer beide Mannschaften, und die
+## Live-Ansicht setzte sie nie. Auf der Platte stand deshalb jede Abwehr als
+## flache Sechserkette, egal was die beiden Mannschaften eingestellt hatten —
+## eine 3-2-1 war von einer 6-0 nicht zu unterscheiden. Die Vorschau im
+## Taktikbildschirm zeigt eine Mannschaft und benutzt weiter dieses Feld; die
+## Live-Ansicht setzt die beiden darunter.
 var abwehr_system: String = "6-0"
+var abwehr_system_heim: String = ""
+var abwehr_system_gast: String = ""
+## Dasselbe fuer den Angriff.
+var angriff_system: String = "positionsangriff"
+var angriff_system_heim: String = ""
+var angriff_system_gast: String = ""
 var puls: float = 50.0
 var zeige_puls: bool = true
 ## Hochformat: das Feld steht, statt zu liegen. Die Aufstellungsvorschau nutzt
@@ -105,6 +154,8 @@ const TEMPO := 7.5
 var _ist: Dictionary = {}        # sid -> Vector2, wo der Spieler gerade steht
 var _ziel: Dictionary = {}       # sid -> Vector2, wohin er unterwegs ist
 var _zittern: Dictionary = {}    # sid -> float, Phase der kleinen Standbewegung
+var _rolle: Dictionary = {}      # sid -> {"pos","seite","greift_an","index","rechts"}
+var _lauftempo: Dictionary = {}  # sid -> Vector2, Metern je Sekunde
 ## Laufwege: sid -> {"punkt": Vector2, "rest": float, "dauer": float, "tempo": float}
 ## Ein Laufweg zieht einen Spieler zeitweise von seinem Formationsplatz weg —
 ## der Kreislaeufer loest sich, der Aussen zieht in die Luecke, der
@@ -129,6 +180,7 @@ func _process(delta: float) -> void:
 	if not lebendig or not is_visible_in_tree():
 		return
 	_zeit += delta
+	_ballnah_bestimmen()
 	var bewegt := false
 	for sid in _laufwege.keys():
 		var l: Dictionary = _laufwege[sid]
@@ -152,9 +204,12 @@ func _process(delta: float) -> void:
 				tempo = TEMPO * clampf(laenge / 7.0, 1.0, 3.2)
 			var schritt: float = minf(tempo * delta, laenge)
 			_ist[sid] = ist + weg / laenge * schritt
+			# Wie schnell er gerade laeuft — daraus wird die Bewegungsspur.
+			_lauftempo[sid] = weg / laenge * (schritt / maxf(delta, 0.001))
 			bewegt = true
 		else:
 			_ist[sid] = ziel
+			_lauftempo[sid] = Vector2.ZERO
 	if _ball_t < 1.0:
 		_ball_t = minf(_ball_t + delta / maxf(_ball_dauer, 0.05), 1.0)
 		bewegt = true
@@ -180,6 +235,19 @@ func _process(delta: float) -> void:
 		bewegt = true
 	if bewegt or lebendig:
 		queue_redraw()
+
+## Wo der Ball waere, laege er am Boden. Der Unterschied zu _ballpunkt ist
+## seine Flughoehe — und genau daraus wird der Schatten.
+func _ballboden() -> Vector2:
+	if _ball_t >= 1.0:
+		return _ball_nach
+	return _ball_von.lerp(_ball_nach, _ball_t)
+
+## Wie hoch der Ball gerade fliegt, 0 bis 1.
+func _ballhoehe() -> float:
+	if _ball_t >= 1.0 or _ball_bogen <= 0.0:
+		return 0.0
+	return sin(_ball_t * PI)
 
 ## Wo der Ball gerade ist — auf der Flugbahn zwischen Start und Ziel.
 func _ballpunkt() -> Vector2:
@@ -208,8 +276,14 @@ func _ziele_berechnen() -> void:
 		for pos in spieler.keys():
 			var eintrag: Dictionary = spieler[pos]
 			var sid: String = str(eintrag.get("sid", "%s_%s" % [seite, pos]))
-			var ziel := _position(str(pos), greift_an, nach_rechts, int(eintrag.get("index", 0)))
+			var ziel := _position(str(pos), greift_an, nach_rechts,
+				int(eintrag.get("index", 0)), seite)
 			_ziel[sid] = ziel
+			# Wer er im System ist. Ohne das laesst sich die laufende Bewegung
+			# ohne Ball nicht rechnen: ein Kreislaeufer wandert an der Sechs,
+			# ein Aussen oeffnet sich, ein Verteidiger schiebt in der Kette.
+			_rolle[sid] = {"pos": str(pos), "seite": seite, "greift_an": greift_an,
+				"index": int(eintrag.get("index", 0)), "rechts": nach_rechts}
 			if not _ist.has(sid):
 				_ist[sid] = ziel
 			if not _zittern.has(sid):
@@ -220,17 +294,108 @@ func _ziele_berechnen() -> void:
 			_ziel.erase(sid2)
 			_ist.erase(sid2)
 			_zittern.erase(sid2)
+			_rolle.erase(sid2)
 			_laufwege.erase(sid2)
 
 ## Wo steht dieser Spieler gerade? Faellt auf seinen Sollplatz zurueck.
 func spielerpunkt(sid: String) -> Vector2:
 	return _ist.get(sid, _ziel.get(sid, Vector2(20.0, 10.0)))
 
-## Wohin dieser Spieler gerade unterwegs ist — Laufweg vor Formationsplatz.
+# ---------------------------------------------- Bewegung ohne den Ball ---
+#
+# Ein Handballspiel besteht nicht aus sieben Kreisen, die Baelle tauschen.
+# Waehrend der Ball laeuft, wandert der Kreislaeufer an der Sechs, oeffnen sich
+# die Aussen zur Ecke, kippt der Rueckraum zur Ballseite, schiebt die Deckung
+# als Kette und tritt der ballnahe Verteidiger heraus.
+#
+# Das alles haengt hier an keinem Ereignis: es wird in jedem Bild aus der
+# Ballposition gerechnet. Vorher bewegte sich nur, wer gerade einen Laufweg
+# zugewiesen bekommen hatte — zwischen zwei Takten stand das Bild, und deshalb
+# sah es aus, als laufe das Spiel in Schritten.
+
+## Wie weit die Kette dem Ball in der Breite folgt, je Meter Ballversatz.
+const BLOCK_FOLGT := 0.40
+## So weit tritt der ballnahe Verteidiger heraus.
+const HERAUS := 1.7
+## Wie weit der Kreislaeufer an der Sechs wandert.
+const KREIS_WANDERT := 3.8
+## Wie weit sich ein Aussen oeffnet, wenn der Ball auf seiner Seite ist.
+const AUSSEN_OEFFNET := 1.4
+## Wie weit der Rueckraum zur Ballseite kippt, je Meter Ballversatz.
+const RUECKRAUM_KIPPT := 0.26
+## Amplitude der ruhigen Eigenbewegung in Metern. Niemand steht still.
+const EIGENBEWEGUNG := 0.40
+
+## Je Bild einmal gerechnet: wer auf jeder Seite dem Ball am naechsten steht.
+var _ballnah: Dictionary = {}
+
+func _ballnah_bestimmen() -> void:
+	_ballnah.clear()
+	var ball_p: Vector2 = _ballpunkt()
+	for sid in _rolle.keys():
+		var r: Dictionary = _rolle[sid]
+		if bool(r["greift_an"]) or str(r["pos"]) == "TW":
+			continue
+		var seite: String = str(r["seite"])
+		var d: float = (_ziel.get(sid, Vector2(20.0, 10.0)) as Vector2).distance_to(ball_p)
+		if not _ballnah.has(seite) or d < float((_ballnah[seite] as Dictionary)["d"]):
+			_ballnah[seite] = {"sid": str(sid), "d": d}
+
+## Der laufende Versatz eines Spielers gegenueber seinem Formationsplatz.
+func _bewegungsversatz(sid: String) -> Vector2:
+	var r: Dictionary = _rolle.get(sid, {})
+	if r.is_empty():
+		return Vector2.ZERO
+	var pos: String = str(r["pos"])
+	var basis: Vector2 = _ziel.get(sid, Vector2(20.0, 10.0))
+	var ball_p: Vector2 = _ballpunkt()
+	var ph: float = float(_zittern.get(sid, 0.0))
+	# Die ruhige Eigenbewegung: klein, langsam, fuer jeden anders.
+	var v := Vector2(cos(_zeit * 0.85 + ph), sin(_zeit * 1.25 + ph)) * EIGENBEWEGUNG
+	if pos == "TW":
+		# Der Torwart stellt sich zum Ball und bleibt in seinem Kasten.
+		v.y += clampf((ball_p.y - 10.0) * 0.20, -2.2, 2.2)
+		return v
+	var zum_tor: float = 1.0 if bool(r.get("rechts", true)) else -1.0
+	if bool(r["greift_an"]):
+		match pos:
+			"KM":
+				# Der Kreislaeufer geht dorthin, wo der Ball ist, und arbeitet
+				# an der Linie.
+				v.y += clampf((ball_p.y - basis.y) * 0.62, -KREIS_WANDERT, KREIS_WANDERT)
+				v.x += zum_tor * sin(_zeit * 0.7 + ph) * 0.35
+			"LA", "RA":
+				# Der Aussen oeffnet sich zur Ecke, wenn der Ball auf seine
+				# Seite kommt, und zieht sonst ein.
+				var naehe: float = clampf(1.0 - absf(ball_p.y - basis.y) / 9.0, 0.0, 1.0)
+				v.x += zum_tor * naehe * AUSSEN_OEFFNET
+				v.y += (1.0 if basis.y > BREITE * 0.5 else -1.0) * naehe * 0.7
+			_:
+				# Der Rueckraum kippt zur Ballseite; wer den Ball hat, stoesst an.
+				v.y += clampf((ball_p.y - basis.y) * RUECKRAUM_KIPPT, -2.4, 2.4)
+				if str(hervorgehoben) == sid:
+					v.x += zum_tor * 0.9
+		return v
+	# Abwehr: die Kette schiebt zum Ball, der ballnahe Mann tritt heraus.
+	v.y += clampf((ball_p.y - basis.y) * BLOCK_FOLGT, -2.8, 2.8)
+	var nah: Dictionary = _ballnah.get(str(r["seite"]), {})
+	if str(nah.get("sid", "")) == sid:
+		var weg: Vector2 = ball_p - basis
+		var laenge: float = weg.length()
+		if laenge > 0.25:
+			v += weg / laenge * minf(HERAUS, laenge * 0.5)
+	return v
+
+## Wohin dieser Spieler gerade unterwegs ist — Laufweg vor Formationsplatz,
+## und darauf der laufende Versatz.
 func _laufziel(sid: String) -> Vector2:
+	var v: Vector2 = _bewegungsversatz(sid)
 	if _laufwege.has(sid):
-		return (_laufwege[sid] as Dictionary)["punkt"]
-	return _ziel.get(sid, Vector2(20.0, 10.0))
+		# Auf einem Laufweg bleibt nur ein Rest der Eigenbewegung — sonst zoege
+		# der Versatz den Spieler von seinem Laufweg weg.
+		return (_laufwege[sid] as Dictionary)["punkt"] + v * 0.25
+	var ziel: Vector2 = _ziel.get(sid, Vector2(20.0, 10.0)) + v
+	return Vector2(clampf(ziel.x, 0.5, LAENGE - 0.5), clampf(ziel.y, 0.6, BREITE - 0.6))
 
 ## Der Formationsplatz eines Spielers. Alle Laufwege rechnen von hier aus —
 ## sonst schaukeln sie sich auf: jeder Pass zoege den Verteidiger ein Stueck
@@ -302,21 +467,41 @@ func abwehr_verschieben(verteidiger: String, ballpunkt: Vector2, staerke: float 
 func laufwege_loesen() -> void:
 	_laufwege.clear()
 
+## Wie schnell ein Pass und ein Wurf fliegen, in Metern je Sekunde.
+##
+## Vorher bekam jeder Ballweg dieselbe Dauer, egal wie weit er war: ein Anspiel
+## an den Kreis ueber zwei Meter brauchte so lange wie ein Pass ueber die halbe
+## Feldbreite. Genau daran sah man, dass der Ball springt und nicht fliegt.
+## Fuenfzehn Meter je Sekunde ist ein gespielter Pass, dreiundzwanzig ein Wurf —
+## ein Bundesligawurf ist schneller, aber dann ist er auf dem Bildschirm nicht
+## mehr zu sehen.
+const PASS_TEMPO := 15.0
+const WURF_TEMPO := 23.0
+
 ## Der Ball wandert flach zu einem Punkt (Pass, Dribbling, Anspiel).
-func ball_spielen(nach: Vector2, dauer: float = 0.32) -> void:
+## Gibt die Flugzeit zurueck, damit der Takt sich nach ihr richten kann.
+func ball_spielen(nach: Vector2, hoechstens: float = 0.0) -> float:
 	_ball_von = _ballpunkt()
 	_ball_nach = nach
-	_ball_dauer = maxf(dauer, 0.05)
+	var dauer: float = clampf(_ball_von.distance_to(nach) / PASS_TEMPO, 0.10, 0.80)
+	if hoechstens > 0.0:
+		dauer = minf(dauer, hoechstens)
+	_ball_dauer = dauer
 	_ball_bogen = 0.0
 	_ball_t = 0.0
+	return dauer
 
 ## Der Ball fliegt in hohem Bogen — ein Wurf.
-func ball_werfen(nach: Vector2, dauer: float = 0.30, hoehe: float = 1.6) -> void:
+func ball_werfen(nach: Vector2, hoehe: float = 1.6, hoechstens: float = 0.0) -> float:
 	_ball_von = _ballpunkt()
 	_ball_nach = nach
-	_ball_dauer = maxf(dauer, 0.05)
+	var dauer: float = clampf(_ball_von.distance_to(nach) / WURF_TEMPO, 0.10, 0.60)
+	if hoechstens > 0.0:
+		dauer = minf(dauer, hoechstens)
+	_ball_dauer = dauer
 	_ball_bogen = hoehe
 	_ball_t = 0.0
+	return dauer
 
 ## Ball ohne Flug an eine Stelle setzen (Anwurf, Auszeit, Halbzeit).
 func ball_setzen(punkt: Vector2) -> void:
@@ -512,9 +697,20 @@ func _draw() -> void:
 			var kraft: float = clampf(float(l2["rest"]) / maxf(float(l2["dauer"]), 0.01), 0.0, 1.0)
 			_gestrichelt(von, nach, Color(1, 1, 1, 0.26 * kraft), s)
 
-	# Ball mit weichem Schein
+	# Ball mit weichem Schein — und mit Schatten auf dem Parkett.
+	#
+	# Ein Wurf fliegt: das steht in der Flugbahn, war aber nicht zu sehen, weil
+	# der Ball nur ein Kreis war, der sich verschiebt. Der Schatten bleibt am
+	# Boden, der Ball steigt darueber und wird dabei groesser — daran liest man
+	# die Hoehe, ohne dass irgendwo eine Zahl steht.
 	var bp := _m(_ballpunkt() if lebendig else ball)
 	var br: float = maxf(s * 0.3, 3.0)
+	if lebendig:
+		var hoehe: float = _ballhoehe()
+		if hoehe > 0.01:
+			var schatten := _m(_ballboden())
+			draw_circle(schatten, br * (0.85 + hoehe * 0.35), Color(0, 0, 0, 0.30 - hoehe * 0.12))
+		br *= 1.0 + hoehe * 0.30
 	draw_circle(bp, br * 2.1, Color(1, 0.95, 0.8, 0.10))
 	draw_circle(bp, br, Color("#f7f2e4"))
 	draw_arc(bp, br, 0.0, TAU, 12, Color("#2a2118"), maxf(s * 0.05, 1.0))
@@ -607,7 +803,7 @@ func _entzerren(s: float) -> void:
 			# Trikots anschliessend dorthin.
 			var im_block: bool = ist_abwehrplatz(str(pos))
 			var platz: int = abwehr_index(str(pos)) if im_block else int(eintrag.get("index", 0))
-			var meter: Vector2 = _position(str(pos), greift_an and not im_block, nach_rechts, platz)
+			var meter: Vector2 = _position(str(pos), greift_an and not im_block, nach_rechts, platz, seite)
 			if lebendig and _ist.has(sid_e):
 				meter = _ist[sid_e]
 			schluessel.append("%s|%s" % [seite, pos])
@@ -659,12 +855,12 @@ func _zeichne_koerper(seite: String, s: float) -> void:
 		var im_block: bool = ist_abwehrplatz(pos)
 		var greift_an_hier: bool = greift_an and not im_block
 		var platz: int = abwehr_index(pos) if im_block else int(eintrag.get("index", 0))
-		var meter: Vector2 = _position(pos, greift_an_hier, nach_rechts, platz)
+		var meter: Vector2 = _position(pos, greift_an_hier, nach_rechts, platz, seite)
 		if lebendig and _ist.has(sid_e):
+			# Hier stand ein Wippen von zehn Zentimetern, damit stehende Spieler
+			# nicht wie Pfosten wirken. Es ist nicht mehr noetig: die Spieler
+			# stehen nicht mehr, sondern laufen — siehe _bewegungsversatz.
 			meter = _ist[sid_e]
-			# Ein winziges Wippen: ohne das wirken stehende Spieler wie Pfosten.
-			meter.y += sin(_zeit * 2.1 + float(_zittern.get(sid_e, 0.0))) * 0.10
-			meter.x += cos(_zeit * 1.7 + float(_zittern.get(sid_e, 0.0))) * 0.07
 		var p: Vector2 = _versatz.get("%s|%s" % [seite, pos], _m(meter))
 		var r: float = maxf(s * 0.46, 6.0)
 		var ist_tw: bool = pos == "TW"
@@ -679,6 +875,13 @@ func _zeichne_koerper(seite: String, s: float) -> void:
 			f = f.lerp(Color("#101820"), 0.62)
 		_punkte["%s|%s" % [seite, pos]] = {"p": p, "r": r, "f": f, "bestraft": bestraft or matt,
 			"greift_an": greift_an_hier, "nach_rechts": nach_rechts, "ist_tw": ist_tw}
+		# Wer laeuft, zieht eine kurze Spur hinter sich her. Das ist der
+		# Unterschied zwischen einem Kreis, der an einer anderen Stelle steht,
+		# und einem Spieler, der dorthin gelaufen ist.
+		var tempo_v: Vector2 = _lauftempo.get(sid_e, Vector2.ZERO)
+		if lebendig and tempo_v.length() > 2.2:
+			var zurueck: Vector2 = _m(meter - tempo_v * 0.085) - p
+			draw_line(p + zurueck, p, Color(f.r, f.g, f.b, 0.30), r * 1.15, true)
 		# Schatten, Trikot, Rand — der Rand haelt die Farbe auch auf hellem Parkett lesbar
 		draw_circle(p + Vector2(0, maxf(s * 0.1, 1.0)), r, Color(0, 0, 0, 0.35))
 		draw_circle(p, r, f)
@@ -770,18 +973,30 @@ func _zeichne_namen(seite: String, s: float) -> void:
 		draw_string(schrift, stelle, beschriftung, HORIZONTAL_ALIGNMENT_LEFT, -1, groesse,
 			Color("#8d99a6") if bool(lage["bestraft"]) else Color("#dbe4ee"))
 
-func _position(pos: String, greift_an: bool, nach_rechts: bool, index: int) -> Vector2:
+func _position(pos: String, greift_an: bool, nach_rechts: bool, index: int,
+		seite: String = "") -> Vector2:
 	if pos == "TW":
 		return Vector2(1.2 if nach_rechts else LAENGE - 1.2, 10.0)
 	if greift_an:
-		var basis: Vector2 = ANGRIFF_RECHTS.get(pos, Vector2(26.0, 10.0))
+		var form: Dictionary = ANGRIFF_SYSTEME.get(_angriffsart(seite), ANGRIFF_RECHTS)
+		var basis: Vector2 = form.get(pos, ANGRIFF_RECHTS.get(pos, Vector2(26.0, 10.0)))
 		return basis if nach_rechts else Vector2(LAENGE - basis.x, basis.y)
 	# In der Abwehr steht die Mannschaft vor dem eigenen Tor — und zwar so,
 	# wie das eingestellte System es vorsieht.
-	var kette: Array = ABWEHR_SYSTEME.get(abwehr_system, ABWEHR_RECHTS)
+	var kette: Array = ABWEHR_SYSTEME.get(_abwehrart(seite), ABWEHR_RECHTS)
 	var i: int = clampi(index, 0, kette.size() - 1)
 	var b: Vector2 = kette[i]
 	return Vector2(LAENGE - b.x, b.y) if nach_rechts else b
+
+## Welches Abwehrsystem diese Seite spielt. Ohne eigene Angabe das gemeinsame
+## Feld — das ist der Fall in der Vorschau, die nur eine Mannschaft zeigt.
+func _abwehrart(seite: String) -> String:
+	var eigen: String = abwehr_system_heim if seite == "heim" else abwehr_system_gast
+	return eigen if ABWEHR_SYSTEME.has(eigen) else abwehr_system
+
+func _angriffsart(seite: String) -> String:
+	var eigen: String = angriff_system_heim if seite == "heim" else angriff_system_gast
+	return eigen if ANGRIFF_SYSTEME.has(eigen) else angriff_system
 
 ## Beide Formationen auf einem Feld: Angriff am fremden Tor, Abwehr am
 ## eigenen, Torwart dazwischen im eigenen Kasten.

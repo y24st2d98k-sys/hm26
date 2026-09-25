@@ -1755,11 +1755,44 @@ func _zurueck_aufs_feld(t: Dictionary, sid: String) -> void:
 	cache_verwerfen(t)
 	if not (t["bank"] as Array).has(sid):
 		(t["bank"] as Array).append(sid)
-	# Leere Abwehrplaetze zuerst fuellen
+	# Leere Abwehrplaetze zuerst fuellen — aber nicht doppelt.
+	if _steht_in_abwehr(t, sid):
+		return
 	for pos in (t["abwehr_auf"] as Dictionary).keys():
 		if str(t["abwehr_auf"][pos]) == "":
 			t["abwehr_auf"][pos] = sid
 			break
+
+## Steht dieser Spieler schon in der Abwehr?
+func _steht_in_abwehr(t: Dictionary, sid: String) -> bool:
+	if sid == "":
+		return false
+	for pos in (t["abwehr_auf"] as Dictionary).keys():
+		if str(pos) != "TW" and str(t["abwehr_auf"][pos]) == sid:
+			return true
+	return false
+
+## Leere Abwehrplaetze mit dem besten Mann besetzen, der noch nicht in der
+## Abwehr steht. Ein Abwehrspezialist sitzt im Angriff auf der Bank — die Bank
+## ist deshalb der richtige Ort, um zu suchen.
+func _abwehr_auffuellen(t: Dictionary) -> void:
+	for pos in (t["abwehr_auf"] as Dictionary).keys():
+		if str(pos) == "TW" or str(t["abwehr_auf"][pos]) != "":
+			continue
+		var best := ""
+		var bw := -1.0
+		for sid in t["bank"]:
+			var sp: Dictionary = daten["spieler"][sid]
+			if bool(sp["ist_torwart"]) or bool(t["zustand"][sid]["rot"]):
+				continue
+			if _steht_in_abwehr(t, str(sid)):
+				continue
+			var w: float = Spielerfabrik.gesamt(sp) * (float(t["zustand"][sid]["kraft"]) / 100.0)
+			if w > bw:
+				bw = w
+				best = str(sid)
+		if best != "":
+			t["abwehr_auf"][pos] = best
 
 func _bester_von_bank(t: Dictionary, pos: String) -> String:
 	var best := ""
@@ -2081,9 +2114,20 @@ func wechsel(t: Dictionary, raus: String, rein: String, pos: String = "") -> boo
 		if str(t["angriff_auf"][p]) == raus:
 			t["angriff_auf"][p] = rein
 			gefunden = true
+	# Ein Spieler steht auf genau einem Abwehrplatz.
+	#
+	# Hier stand nur die Zuweisung. Wenn der Hereinkommende schon einen
+	# Abwehrplatz hatte — ein Abwehrspezialist, der im Angriff auf der Bank
+	# sitzt —, stand er danach auf zweien: die Mannschaft verteidigte sichtbar
+	# mit fuenf Mann, und in der Aufstellung stand er doppelt. Gefunden hat das
+	# werkzeuge/Feldsonde.gd an der Zeichnung; ein Spieler kann nicht an zwei
+	# Stellen stehen, also stand er an der falschen.
+	var schon_in_abwehr: bool = _steht_in_abwehr(t, rein)
 	for p in (t["abwehr_auf"] as Dictionary).keys():
 		if str(t["abwehr_auf"][p]) == raus:
-			t["abwehr_auf"][p] = rein
+			t["abwehr_auf"][p] = "" if schon_in_abwehr else rein
+	if schon_in_abwehr:
+		_abwehr_auffuellen(t)
 	if not gefunden and pos != "":
 		t["angriff_auf"][pos] = rein
 		gefunden = true
