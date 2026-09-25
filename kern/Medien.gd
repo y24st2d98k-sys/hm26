@@ -6,8 +6,6 @@ extends RefCounted
 ## Hoehe des Ergebnisses, Derbycharakter, Serie, Einzelleistungen, Zuschauerzahl,
 ## Vorstandslage und Tabellensituation fliessen in Schlagzeile und Tonfall ein.
 
-const TONFALL_FARBE := {"jubel": "gruen", "lob": "gruen", "neutral": "matt", "kritik": "gelb", "verriss": "rot"}
-
 # ------------------------------------------------------------- Grundlagen ---
 
 ## Wer diesen Artikel schreibt.

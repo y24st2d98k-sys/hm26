@@ -5,6 +5,14 @@ extends RefCounted
 ## Vertrauen, mit dem ein neu verpflichteter Trainer startet.
 const NEUSTART_VERTRAUEN := 58.0
 
+## Ab welchem Anteil der Spielzeit für eigene Akademiespieler der Vorstand
+## ausdrücklich lobt. Ein Bundesligist, der ein Fünftel seiner Minuten an
+## Eigengewächse gibt, arbeitet nach den Maßstäben der Liga gut.
+const EIGENGEWAECHS_ANTEIL := 0.22
+## Was dieses Lob an Vertrauen wert ist, bevor die Haltung des Vorstands zur
+## Jugend es verstärkt oder dämpft.
+const EIGENGEWAECHS_VERTRAUEN := 3.0
+
 const ZIELE := [
 	{"schluessel": "titel", "text": "Meistertitel", "min": 1, "max": 1},
 	{"schluessel": "meisterschaftskampf", "text": "Kampf um die Meisterschaft", "min": 1, "max": 2},
@@ -123,7 +131,55 @@ static func wochenpruefung(d: Dictionary, cid: String) -> void:
 	v["fans"]["zufriedenheit"] = clampf(float(v["fans"]["zufriedenheit"]) + abweichung * 0.3 * gewicht, 0.0, 100.0)
 	if Trainerkarriere.hat_praegung(d, "eiserne_hand"):
 		v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"]) + 0.15, 0.0, 100.0)
+	_jugendlob_pruefen(d, cid)
 	_konsequenzen(d, cid, platz, gewicht)
+
+## Welcher Anteil der gespielten Minuten auf Spieler aus der eigenen Akademie
+## entfaellt.
+static func eigengewaechsanteil(d: Dictionary, cid: String) -> float:
+	var v: Dictionary = d["vereine"].get(cid, {})
+	if v.is_empty():
+		return 0.0
+	var gesamt := 0.0
+	var eigen := 0.0
+	for sid in (v.get("kader", []) as Array):
+		var sp: Dictionary = d["spieler"].get(str(sid), {})
+		if sp.is_empty():
+			continue
+		var minuten: float = float(((sp["stats"] as Dictionary)["saison"] as Dictionary).get("minuten", 0.0))
+		gesamt += minuten
+		if str(sp.get("ausbildungsverein", "")) == cid:
+			eigen += minuten
+	if gesamt <= 0.0:
+		return 0.0
+	return eigen / gesamt
+
+## Der Vorstand lobt ausdrücklich, wer auf die eigene Jugend setzt.
+##
+## Bis hierher war Nachwuchsarbeit ein reines Kostenthema: die Akademie zahlte
+## man, und wer aufstieg, brachte einmalig ein bisschen Vertrauen. Ob er dann
+## spielte, war dem Präsidium gleich. Damit war die teure Entscheidung, einen
+## Achtzehnjährigen den Sommer über aufzubauen statt einen fertigen Mann zu
+## kaufen, sportlich riskant und sonst folgenlos.
+static func _jugendlob_pruefen(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	var saison: Dictionary = v.get("saison", {})
+	if saison.is_empty() or bool(saison.get("jugendlob", false)):
+		return
+	if eigengewaechsanteil(d, cid) < EIGENGEWAECHS_ANTEIL:
+		return
+	saison["jugendlob"] = true
+	var jugendfokus: float = float(v["vorstand"].get("jugendfokus", 50.0)) / 100.0
+	v["vorstand"]["vertrauen"] = clampf(float(v["vorstand"]["vertrauen"])
+		+ EIGENGEWAECHS_VERTRAUEN * (0.4 + jugendfokus), 0.0, 100.0)
+	if cid == Welt.mein_verein_id:
+		Welt.nachricht({
+			"typ": "vorstand",
+			"betreff": "Der Vorstand lobt die Nachwuchsarbeit",
+			"text": "%s Ein Blick auf die Einsatzzeiten zeigt: %d Prozent der Spielzeit gehen an Spieler aus der eigenen Akademie." % [
+				Namen.waehle(Textbank.VORSTAND_LOB_JUGEND),
+				int(roundf(eigengewaechsanteil(d, cid) * 100.0))],
+		})
 
 ## Mischung aus Ruf und tatsaechlicher Kaderstaerke. Dieselbe Groesse misst
 ## das Saisonziel, jedes einzelne Spiel und die Lage vor einer Partie.

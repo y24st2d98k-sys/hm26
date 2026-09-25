@@ -1380,6 +1380,22 @@ func raster(spalten: int, abstand_px: int = 12) -> GridContainer:
 	g.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return g
 
+## Die Farbe eines Tonfalls — für Schlagzeilen, Hallenfunk und Pressestimmen.
+##
+## Diese Zuordnung stand dreimal im Spiel: als Tabelle in kern/Medien.gd, die
+## niemand las, und als zwei wortgleiche Kopien in zwei Bildschirmen. Eine
+## Regel, drei Orte — und beim Nachziehen einer Farbe hätte man zwei davon
+## vergessen.
+func tonfarbe(tonfall: String) -> Color:
+	match tonfall:
+		"jubel", "lob":
+			return GRUEN
+		"kritik":
+			return GELB
+		"verriss":
+			return ROT
+	return TEXT
+
 ## Formatiert Geldbetraege kompakt und deutsch.
 func geld(betrag: float) -> String:
 	var vz := "-" if betrag < 0 else ""

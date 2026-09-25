@@ -16,11 +16,12 @@ const EIGENE_DATEI := "user://kader_eigen.json"
 const PROJEKTDATEI := "res://daten/kader.json"
 
 const POSITIONEN := ["TW", "LA", "RL", "RM", "RR", "RA", "KM"]
-const FELDER := ["vorname", "nachname", "position", "nation", "alter", "staerke"]
-## Angaben ueber die CSV-Grundfelder hinaus. Sie kommen nicht aus der CSV,
-## sondern aus dem Datenbildschirm oder aus daten/kader.json, und duerfen beim
-## Normieren nicht verlorengehen.
-const ZUSATZFELDER := ["nummer", "attribute", "stammschuetze", "bild"]
+# Die sechs Grundangaben einer CSV-Zeile sind vorname, nachname, position,
+# nation, alter, staerke. Darueber hinaus kennt ein Datensatz nummer,
+# attribute, stammschuetze und bild; die kommen nicht aus der CSV, sondern aus
+# dem Datenbildschirm oder aus daten/kader.json. Beides stand hier bis vor
+# kurzem als Liste — aber _normieren zaehlt die Felder einzeln auf und hat die
+# Listen nie gelesen. Wer eine Angabe hinzufuegt, aendert _normieren.
 
 static var _eigene: Dictionary = {}
 static var _geladen: bool = false

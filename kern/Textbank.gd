@@ -98,6 +98,10 @@ const TOR := {
 	],
 }
 
+## Ein Torwart haelt in einer Bundesligapartie rund dreiundzwanzig Mal. Mit
+## zehn Saetzen stand jeder davon zweimal im Ticker; deshalb sind es jetzt
+## mehr. Ein Platzhalter, und Zeilen ohne Namen sind erlaubt — Textbank.satz
+## setzt nur ein, wo etwas einzusetzen ist.
 const PARADE := [
 	"Parade!",
 	"Gehalten — starke Reaktion.",
@@ -109,6 +113,16 @@ const PARADE := [
 	"Kein Durchkommen — %s hält den Ball fest.",
 	"Der Wurf war platziert, %s war besser.",
 	"%s wirft sich in den Winkel und kratzt den Ball heraus.",
+	"%s hat die Ecke gelesen.",
+	"Mit dem Oberschenkel geklärt — %s bleibt dran.",
+	"%s macht sich lang und hält.",
+	"Der Ball klatscht %s auf die Brust.",
+	"Stark! %s war schon unterwegs, bevor der Ball kam.",
+	"%s lässt sich nicht täuschen.",
+	"Die Halle steht: %s hält den Ball.",
+	"Aus kurzer Distanz gehalten — das war Reflex, nicht Stellung.",
+	"%s wehrt mit dem Handrücken ab, der Ball springt ins Seitenaus.",
+	"%s bleibt lange stehen und macht das Tor zu.",
 ]
 
 const FEHLWURF := [
@@ -120,8 +134,15 @@ const FEHLWURF := [
 	"%s trifft nur das Außennetz.",
 	"Der Wurf von %s verfehlt das Tor deutlich.",
 	"Pfosten! %s kann es nicht fassen.",
+	"%s zieht ab und verzieht.",
+	"Innenpfosten und heraus — %s hält sich den Kopf.",
+	"%s wirft aus der Drehung und trifft nichts.",
+	"Am kurzen Eck vorbei.",
+	"%s bekommt den Arm nicht frei und wirft ins Nichts.",
+	"Der Ball segelt über das Tor in die Zuschauer.",
 ]
 
+## Fuer den Fall, dass kein Blocker feststeht. Ein Platzhalter: der Werfer.
 const BLOCK := [
 	"Block! Der Wurf von %s wird abgewehrt.",
 	"Die Abwehr stellt sich in den Weg — Block gegen %s.",
@@ -130,6 +151,29 @@ const BLOCK := [
 	"%s wirft in den Block.",
 ]
 
+## Und der Normalfall: der Blocker ist bekannt.
+##
+## Achtung, die Reihenfolge ist fest: erst der Blocker, dann der Werfer. Und
+## jede Zeile braucht genau zwei Platzhalter, sonst bricht der Aufruf.
+##
+## Diese Bank gab es nicht, und deshalb war die alte darueber praktisch tot:
+## Matchsim zog einen Satz und ueberschrieb ihn anschliessend mit einem festen
+## "X stellt sich in den Wurf von Y", sobald ein Blocker feststand — und das
+## stand er fast immer. Knapp acht Blocks je Partie, ein einziger Satzbau.
+const BLOCK_NAMEN := [
+	"%s stellt sich in den Wurf von %s.",
+	"%s blockt den Wurf von %s.",
+	"%s bekommt die Hände hoch — geblockt gegen %s.",
+	"Block von %s! %s findet keinen Weg durch.",
+	"%s wirft %s den Ball vom Arm.",
+	"%s steht richtig und wehrt den Wurf von %s ab.",
+	"%s greift zu und blockt %s.",
+	"Da ist %s im Weg, und %s bleibt nur der Ärger.",
+	"%s macht den Raum zu, %s wirft in die Hände.",
+	"Der Wurf von %s prallt an %s ab.",
+]
+
+## Ohne bekannten Verursacher. Keine Platzhalter.
 const BALLVERLUST := [
 	"Ballverlust.",
 	"Der Pass kommt nicht an.",
@@ -141,12 +185,40 @@ const BALLVERLUST := [
 	"Stürmerfoul — Ball und Angriff sind weg.",
 ]
 
+## Mit bekanntem Verursacher — ein Platzhalter, sein Name.
+##
+## Dieselbe Geschichte wie beim Block: Matchsim schrieb bisher immer
+## "Schrittfehler: Müller." und liess die Bank darueber liegen. Rund elf
+## technische Fehler je Mannschaft und Partie in genau einer Form.
+## Die Art des Fehlers steht bewusst nicht in diesen Zeilen: sie wird an
+## anderer Stelle gewuerfelt, und eine Zeile, die "vertaendelt" sagt, passt
+## nicht zu jedem gezogenen Grund.
+const BALLVERLUST_NAMEN := [
+	"%s vertändelt den Ball.",
+	"%s bringt den Pass nicht an.",
+	"Der Ball rutscht %s durch die Hände.",
+	"%s wird abgefangen — der Angriff ist vorbei.",
+	"%s geht einen Schritt zu weit.",
+	"%s setzt sich durch und wird dafür gepfiffen.",
+	"Die Abwehr liest %s wie ein Buch.",
+	"%s verliert den Ball am Kreis.",
+	"%s will zu viel und verliert den Ball.",
+	"Der Pass von %s landet im Seitenaus.",
+	"%s stolpert über den eigenen Anlauf.",
+	"Ballverlust durch %s — die Halle stöhnt.",
+]
+
 const ZEITSTRAFE := [
 	"Zwei Minuten für %s.",
 	"%s muss runter — Zeitstrafe.",
 	"Das war zu viel: %s sieht die Zeitstrafe.",
 	"Die Schiedsrichter zeigen auf die Bank. %s nimmt Platz.",
 	"%s geht für zwei Minuten vom Feld.",
+	"Gestreckter Arm, klare Sache: zwei Minuten für %s.",
+	"%s hält fest und wird dafür bestraft.",
+	"Der Pfiff kommt sofort — %s sitzt zwei Minuten.",
+	"%s diskutiert, aber die Zeitstrafe steht.",
+	"Zeitstrafe gegen %s. Die Mannschaft spielt in Unterzahl weiter.",
 ]
 
 const AUSZEIT := [
@@ -154,6 +226,101 @@ const AUSZEIT := [
 	"Grüne Karte: %s unterbricht.",
 	"%s holt die Mannschaft zusammen.",
 	"Auszeit %s — die Tafel kommt hoch.",
+	"%s reißt die Partie an sich und nimmt die Auszeit.",
+	"Die grüne Karte von %s liegt auf dem Tisch.",
+	"%s bittet zur Besprechung an die Bank.",
+	"Auszeit für %s. Der Trainer zeichnet auf die Tafel.",
+]
+
+## Der Wechsel ist das haeufigste Ereignis des Spiels: neunzehn Mal je Partie,
+## gemessen mit werkzeuge/Tickersonde.gd, und bis hierher immer derselbe Satz —
+## sechshundertsiebenundfuenfzig Mal in vierunddreissig Partien. Kein anderer
+## Text im Spiel kam auf ein Zehntel davon.
+##
+## Drei Platzhalter in fester Reihenfolge: Verein, der Kommende, der Gehende.
+const WECHSEL := [
+	"Wechsel bei %s: %s kommt für %s.",
+	"%s wechselt: %s für %s.",
+	"%s bringt %s, %s geht vom Feld.",
+	"Bei %s kommt %s für %s.",
+	"%s tauscht %s ein, %s aus.",
+	"Wechsel an der Bank von %s — %s für %s.",
+	"%s schickt %s aufs Feld, %s nimmt Platz.",
+	"%s: %s ersetzt %s.",
+	"Frische Beine bei %s: %s kommt, %s geht.",
+	"%s nimmt %s vom Feld und bringt dafür %s.",
+	"Neu bei %s: %s, dafür raus %s.",
+	"%s wechselt durch — %s kommt für %s.",
+]
+
+## Der gehaltene Siebenmeter hat seinen eigenen Satz, weil er ein eigenes
+## Ereignis ist — der Torwart gegen einen Mann, sonst nichts. Ein Platzhalter:
+## der Torwart. Zeilen ohne Namen sind erlaubt.
+const SIEBENMETER_GEHALTEN := [
+	"%s hält den Siebenmeter!",
+	"Gehalten! %s bleibt Sieger im Duell vom Punkt.",
+	"%s ahnt die Ecke und hält.",
+	"Der Strafwurf bleibt liegen — %s war da.",
+	"%s hält! Die Halle explodiert.",
+	"Vom Punkt gehalten. %s hat sich nicht bewegt, bis der Ball kam.",
+	"%s wehrt den Siebenmeter mit dem Fuß ab.",
+	"Kein Tor vom Punkt — %s hat gelesen, wohin er geht.",
+]
+
+## Ein Platzhalter: der Verwarnte.
+const VERWARNUNG := [
+	"Gelbe Karte für %s.",
+	"%s sieht die Gelbe Karte.",
+	"Verwarnung gegen %s.",
+	"Die Schiedsrichter verwarnen %s.",
+	"Gelb für %s — die nächste Aktion kostet zwei Minuten.",
+	"%s wird verwarnt und weiß, was das heißt.",
+	"Erste Verwarnung für %s.",
+	"Gelbe Karte: %s hat zu hart zugepackt.",
+]
+
+## Zwei Platzhalter in fester Reihenfolge: Verein, dann der Schuetze.
+const SIEBENMETER := [
+	"Siebenmeter für %s — %s legt sich den Ball zurecht.",
+	"Strafwurf für %s. %s tritt an.",
+	"Siebenmeter! %s bekommt ihn, %s nimmt ihn.",
+	"Die Schiedsrichter zeigen auf den Punkt: Siebenmeter für %s, %s wirft.",
+	"%s hat den Strafwurf, %s stellt sich an die Linie.",
+	"Siebenmeter für %s — %s greift sich den Ball.",
+	"Strafwurf: %s, ausgeführt von %s.",
+	"Vom Punkt für %s: %s.",
+]
+
+## Ein Platzhalter: der Verein, der den Torwart herausnimmt.
+const SIEBEN_GEGEN_SECHS_AN := [
+	"%s nimmt den Torwart heraus und spielt 7 gegen 6.",
+	"%s geht ins Risiko: leeres Tor, sieben Feldspieler.",
+	"Der Torwart von %s verlässt das Tor — 7 gegen 6.",
+	"%s stellt um auf sieben Feldspieler.",
+	"Leeres Tor bei %s. Jetzt zählt jeder Ballverlust doppelt.",
+	"%s bringt den siebten Feldspieler und lässt das Tor leer.",
+	"Hohes Risiko bei %s: 7 gegen 6.",
+]
+
+## Ein Platzhalter: der Verein, der zurueckstellt.
+const SIEBEN_GEGEN_SECHS_AUS := [
+	"%s stellt wieder auf regulären Angriff um.",
+	"Der Torwart von %s geht zurück ins Tor.",
+	"%s beendet das Spiel mit sieben Feldspielern.",
+	"Wieder regulär bei %s — das Tor ist besetzt.",
+	"%s nimmt das Risiko heraus und spielt 6 gegen 6.",
+	"Der siebte Feldspieler von %s geht runter.",
+]
+
+## Ein Platzhalter: der Verein, dem das Vorwarnzeichen gilt.
+const PASSIV := [
+	"Vorwarnzeichen gegen %s — das Spiel wird passiv.",
+	"Die Hand geht hoch: Vorwarnzeichen gegen %s.",
+	"%s muss zum Abschluss kommen — Vorwarnzeichen.",
+	"Vorwarnzeichen. %s hat jetzt wenige Pässe.",
+	"Zu wenig Tempo bei %s, die Schiedsrichter warnen vor.",
+	"%s spielt auf Zeit, das Vorwarnzeichen steht.",
+	"Passives Spiel bei %s wird angezeigt.",
 ]
 
 ## Achtung, die Reihenfolge der Platzhalter ist fest: erst die Zahl, dann der

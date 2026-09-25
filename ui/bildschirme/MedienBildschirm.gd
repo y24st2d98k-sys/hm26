@@ -123,7 +123,7 @@ func _kopfzeile(a: Dictionary, index: int) -> Control:
 	spalte.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	spalte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	spalte.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var titel := Stil.text(str(a["schlagzeile"]), Stil.S_KLEIN, _farbe(str(a["tonfall"])))
+	var titel := Stil.text(str(a["schlagzeile"]), Stil.S_KLEIN, Stil.tonfarbe(str(a["tonfall"])))
 	titel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	spalte.add_child(Stil.beschnitten(titel, 18.0))
 	var unter := Stil.matt("%s · %s" % [str(a["outlet"]),
@@ -147,7 +147,7 @@ func _bericht_zeichnen() -> void:
 	kopf.add_child(Stil.matt("· %s · %s · %s" % [
 		str(offen.get("gattung", "Tageszeitung")), str(offen["haltung"]),
 		Kalender.text(int(offen["tag"]), Welt.startjahr())], Stil.S_MINI))
-	var titel := Stil.text(str(offen["schlagzeile"]), Stil.S_TITEL - 6, _farbe(str(offen["tonfall"])))
+	var titel := Stil.text(str(offen["schlagzeile"]), Stil.S_TITEL - 6, Stil.tonfarbe(str(offen["tonfall"])))
 	titel.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	titel.custom_minimum_size = Vector2(420, 0)
 	bericht.add_child(titel)
@@ -188,17 +188,9 @@ func _hallenfunk() -> void:
 		kopf.add_child(Stil.matt("· %s" % str(b["typ"]), Stil.S_MINI))
 		kopf.add_child(Stil.dehner())
 		kopf.add_child(Stil.matt("%s ♥" % Stil.zahl(int(b["gefaellt"])), Stil.S_MINI))
-		var t2 := Stil.text(str(b["text"]), Stil.S_KLEIN, _farbe(str(b["tonfall"])))
+		var t2 := Stil.text(str(b["text"]), Stil.S_KLEIN, Stil.tonfarbe(str(b["tonfall"])))
 		t2.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		t2.custom_minimum_size = Vector2(260, 0)
 		karte.add_child(t2)
 
-func _farbe(tonfall: String) -> Color:
-	match tonfall:
-		"jubel", "lob":
-			return Stil.GRUEN
-		"kritik":
-			return Stil.GELB
-		"verriss":
-			return Stil.ROT
-	return Stil.TEXT
+

@@ -148,7 +148,9 @@ static func _unzufriedenheit_pflegen(d: Dictionary, cid: String) -> void:
 				Welt.nachricht({
 					"typ": "kabine", "wichtig": true,
 					"betreff": "%s bittet um einen Wechsel" % Spielerfabrik.voller_name(sp),
-					"text": "%s ist mit seiner Rolle unzufrieden und hat den Verein um die Freigabe für einen Wechsel gebeten." % Spielerfabrik.kurz_name(sp),
+					"text": "%s ist mit seiner Rolle unzufrieden und hat den Verein um die Freigabe für einen Wechsel gebeten. %s" % [
+						Spielerfabrik.kurz_name(sp),
+						str(Namen.waehle(Textbank.SPIELER_TRANSFERWUNSCH)) % Spielerfabrik.kurz_name(sp)],
 					"daten": {"spieler": sid},
 				})
 		elif float(sp["unzufriedenheit"]) < 30.0 and bool(sp["transferwunsch"]):

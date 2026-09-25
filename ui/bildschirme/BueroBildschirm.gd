@@ -403,18 +403,8 @@ func _presse(eltern: Node) -> void:
 	for a in presse.slice(0, 4):
 		var z := Stil.vbox(1)
 		karte.add_child(z)
-		z.add_child(Stil.text(str(a["schlagzeile"]), Stil.S_KLEIN, _tonfarbe(str(a["tonfall"]))))
+		z.add_child(Stil.text(str(a["schlagzeile"]), Stil.S_KLEIN, Stil.tonfarbe(str(a["tonfall"]))))
 		z.add_child(Stil.matt("%s · %s" % [str(a["outlet"]), Kalender.kurz(int(a["tag"]), Welt.startjahr())], Stil.S_MINI))
-
-func _tonfarbe(tonfall: String) -> Color:
-	match tonfall:
-		"jubel", "lob":
-			return Stil.GRUEN
-		"kritik":
-			return Stil.GELB
-		"verriss":
-			return Stil.ROT
-	return Stil.TEXT
 
 func _finanzen(eltern: Node) -> void:
 	var karte := Bausteine.karte_zu(eltern, "Finanzen", "finanzen", "Zu Etat, Sponsoren und Buchungen")

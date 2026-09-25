@@ -187,6 +187,10 @@ static func befoerdern(d: Dictionary, sid: String) -> Dictionary:
 	Trikot.vergeben(d, cid, sid)
 	Laufbahn.aus_der_jugend(d, sid, cid)
 	sp["jugendspieler"] = false
+	# Wer hier hochkommt, bleibt ein Eigengewaechs dieses Vereins — auch wenn
+	# er in zehn Jahren woanders spielt. Der Vorstand rechnet damit, die Fans
+	# rechnen damit, und die Laufbahn erzaehlt es.
+	sp["ausbildungsverein"] = cid
 	sp["kenntnis"] = 100.0
 	sp["moral"] = clampf(float(sp["moral"]) + 15.0, 5.0, 100.0)
 	sp["vertrag"]["rolle"] = "talent"

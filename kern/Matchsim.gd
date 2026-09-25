@@ -452,7 +452,7 @@ func _angriff_simulieren() -> void:
 	if bool(a["vorwarnung"]):
 		a["stats"]["vorwarnungen_passiv"] = int(a["stats"].get("vorwarnungen_passiv", 0)) + 1
 		_warteschlange.append(_ereignis("passiv", _seite(a), "",
-			"Vorwarnzeichen gegen %s — das Spiel wird passiv." % a["name"]))
+			Textbank.satz(Textbank.PASSIV, rng, str(a["name"]))))
 	zeit += dauer
 	_kraft_verbrauchen(a, dauer, true)
 	_kraft_verbrauchen(v, dauer, false)
@@ -793,8 +793,19 @@ const SCHONGANG_ABSCHLUSS := -0.300
 ## Hebel greift erst ab sechs Toren Vorsprung nach der dreissigsten Minute —
 ## die zusaetzlichen Klatschen entstehen frueher.
 ##
-## Also bleibt es bei 2,10, und die 19,6 Prozent bleiben der Preis dafuer,
-## dass Haerte und Risiko keine Fallen mehr sind.
+## Also bleibt es bei 2,10, und die Klatschen bleiben der Preis dafuer, dass
+## Haerte und Risiko keine Fallen mehr sind.
+##
+## Nachtrag: die 19,6 Prozent von damals stimmen nicht mehr. Nachdem
+## WURF_AUSGLEICH die Positionsquoten wieder angehoben hat, sind es 17,7
+## Prozent bei einer Streuung des Torabstands von 6,85 — die Wirklichkeit
+## nennt 15 Prozent bei 6,8. Die Streuung stimmt damit auf zwei Stellen, und
+## der Rest ist kein Streuungsproblem mehr, sondern eine Frage der Randform:
+## echter Handball hat weniger Ausreisser, als eine Normalverteilung mit
+## dieser Streuung hergibt (erwartet 16,4 Prozent, gemessen 17,7).
+## Was dagegen helfen wuerde, muesste vor der dreissigsten Minute greifen,
+## denn dort greift der Schongang noch nicht — und genau das ist oben
+## zweimal gemessen gescheitert.
 const SCHONGANG_DAUER := 2.10
 const SCHONGANG_VOLL := 12.0
 
@@ -1465,9 +1476,13 @@ func _block(a: Dictionary, v: Dictionary, schuetze: String, pos: String) -> Dict
 	if blocker != "":
 		v["zustand"][blocker]["blocks"] += 1
 		v["zustand"][blocker]["bewertung"] -= 0.12
-	var text := Textbank.satz(Textbank.BLOCK, rng, Spielerfabrik.kurz_name(daten["spieler"][schuetze]))
+	var text := ""
 	if blocker != "":
-		text = "%s stellt sich in den Wurf von %s." % [Spielerfabrik.kurz_name(daten["spieler"][blocker]), Spielerfabrik.kurz_name(daten["spieler"][schuetze])]
+		text = Textbank.satz(Textbank.BLOCK_NAMEN, rng,
+			[Spielerfabrik.kurz_name(daten["spieler"][blocker]),
+			Spielerfabrik.kurz_name(daten["spieler"][schuetze])])
+	else:
+		text = Textbank.satz(Textbank.BLOCK, rng, Spielerfabrik.kurz_name(daten["spieler"][schuetze]))
 	_warteschlange.append(_ereignis("block", _seite(v), blocker, text, {"position": pos}))
 	_puls_aendern(v, 3.0 if v["ist_heim"] else -2.0)
 	return {"gegenstoss": rng.randf() < 0.22}
@@ -1486,7 +1501,16 @@ func _ballverlust(a: Dictionary, v: Dictionary, ursache: String = "") -> Diction
 		v["zustand"][gewinner]["bewertung"] -= 0.1
 	var arten := ["Schrittfehler", "Stürmerfoul", "technischer Fehler", "Fehlpass", "Doppelfehler"]
 	var art := ursache if ursache != "" else str(arten[rng.randi_range(0, arten.size() - 1)])
-	var text := "%s: %s." % [art, Spielerfabrik.kurz_name(daten["spieler"][verursacher])] if verursacher != "" else Textbank.satz(Textbank.BALLVERLUST, rng)
+	# Die knappe Form nennt den Grund, die Bank erzaehlt ihn. Beides
+	# abwechselnd, damit der Ticker weder eintoenig noch grundlos wird.
+	var text := ""
+	if verursacher == "":
+		text = Textbank.satz(Textbank.BALLVERLUST, rng)
+	elif rng.randf() < 0.40:
+		text = "%s: %s." % [art, Spielerfabrik.kurz_name(daten["spieler"][verursacher])]
+	else:
+		text = Textbank.satz(Textbank.BALLVERLUST_NAMEN, rng,
+			Spielerfabrik.kurz_name(daten["spieler"][verursacher]))
 	var leeres_tor_risiko: float = LEERES_TOR_WURF
 	if Trainerkarriere.bonus_fuer(daten, str(a["cid"]), "hasardeur"):
 		leeres_tor_risiko = 0.26
@@ -1533,7 +1557,9 @@ func _siebenmeter(a: Dictionary, v: Dictionary) -> Dictionary:
 		var tsp: Dictionary = daten["spieler"][tw]
 		halten = (float(tsp["attr"]["siebenmeterabwehr"]) * 2.2 + float(tsp["attr"]["reflexe"]) * 1.0) / 3.2 * 5.0
 	var p: float = clampf(SIEBENMETER_GRUND + (guete - halten) * 0.0055, 0.45, 0.95)
-	_warteschlange.append(_ereignis("siebenmeter", _seite(a), schuetze, "Siebenmeter für %s — %s legt sich den Ball zurecht." % [a["kurz"], Spielerfabrik.kurz_name(sp)], {"position": "RM"}))
+	_warteschlange.append(_ereignis("siebenmeter", _seite(a), schuetze,
+		Textbank.satz(Textbank.SIEBENMETER, rng,
+			[str(a["kurz"]), Spielerfabrik.kurz_name(sp)]), {"position": "RM"}))
 	if rng.randf() < p:
 		_wurf_notieren(a, "7M", "tor")
 		return _tor(a, v, schuetze, "RM", true)
@@ -1545,7 +1571,8 @@ func _siebenmeter(a: Dictionary, v: Dictionary) -> Dictionary:
 		_bewertung_dampfen(v["zustand"][tw])
 	a["zustand"][schuetze]["bewertung"] += 0.35
 	_bewertung_dampfen(a["zustand"][schuetze])
-	var tw_text := "Der Torwart hält!" if tw == "" else "%s hält den Siebenmeter!" % Spielerfabrik.kurz_name(daten["spieler"][tw])
+	var tw_text := "Der Torwart hält!" if tw == "" else Textbank.satz(
+		Textbank.SIEBENMETER_GEHALTEN, rng, Spielerfabrik.kurz_name(daten["spieler"][tw]))
 	_warteschlange.append(_ereignis("parade", _seite(v), tw, tw_text, {"position": "RM", "schuetze": schuetze}))
 	_puls_aendern(v, 9.0 if v["ist_heim"] else -6.0)
 	return {"gegenstoss": false}
@@ -1600,7 +1627,7 @@ func _verwarnung(v: Dictionary) -> void:
 	v["stats"]["verwarnungen"] = int(v["stats"].get("verwarnungen", 0)) + 1
 	var sp: Dictionary = daten["spieler"][suender]
 	_warteschlange.append(_ereignis("verwarnung", _seite(v), suender,
-		"Gelbe Karte für %s." % Spielerfabrik.kurz_name(sp)))
+		Textbank.satz(Textbank.VERWARNUNG, rng, Spielerfabrik.kurz_name(sp))))
 
 ## Wen es trifft.
 ##
@@ -1651,7 +1678,8 @@ func _zeitstrafe(v: Dictionary, a: Dictionary) -> void:
 	else:
 		(v["gesperrt"] as Array).append({"sid": suender, "bis": zeit + 120.0})
 		_vom_platz_nehmen(v, suender)
-		_warteschlange.append(_ereignis("zeitstrafe", _seite(v), suender, "Zwei Minuten für %s." % Spielerfabrik.kurz_name(sp)))
+		_warteschlange.append(_ereignis("zeitstrafe", _seite(v), suender,
+			Textbank.satz(Textbank.ZEITSTRAFE, rng, Spielerfabrik.kurz_name(sp))))
 	_puls_aendern(a, 4.0 if a["ist_heim"] else -2.0)
 
 func _strafzeiten_pruefen(t: Dictionary) -> void:
@@ -1750,7 +1778,8 @@ func sieben_gegen_sechs_pruefen(t: Dictionary) -> void:
 	if aktiv:
 		t["stats"]["sieben_gegen_sechs"] += 1
 	cache_verwerfen(t)
-	var text := "%s nimmt den Torwart heraus und spielt 7 gegen 6." % t["name"] if aktiv else "%s stellt wieder auf regulären Angriff um." % t["name"]
+	var text := Textbank.satz(Textbank.SIEBEN_GEGEN_SECHS_AN if aktiv
+		else Textbank.SIEBEN_GEGEN_SECHS_AUS, rng, str(t["name"]))
 	_warteschlange.append(_ereignis("taktik", _seite(t), "", text))
 
 # ------------------------------------------------------------- Kraft/Puls ---
@@ -2049,8 +2078,10 @@ func wechsel(t: Dictionary, raus: String, rein: String, pos: String = "") -> boo
 		_warteschlange.append(_ereignis("wechselfehler", _seite(t), rein, "Wechselfehler bei %s — zwei Minuten!" % t["name"]))
 		_zeitstrafe(t, gegner)
 	else:
-		_warteschlange.append(_ereignis("wechsel", _seite(t), rein, "Wechsel bei %s: %s kommt für %s." % [
-			t["kurz"], Spielerfabrik.kurz_name(daten["spieler"][rein]), Spielerfabrik.kurz_name(daten["spieler"][raus])]))
+		_warteschlange.append(_ereignis("wechsel", _seite(t), rein,
+			Textbank.satz(Textbank.WECHSEL, rng, [str(t["kurz"]),
+				Spielerfabrik.kurz_name(daten["spieler"][rein]),
+				Spielerfabrik.kurz_name(daten["spieler"][raus])])))
 	return true
 
 func _auszeit_pruefen(a: Dictionary, v: Dictionary) -> void:
@@ -2075,7 +2106,8 @@ func auszeit(t: Dictionary) -> bool:
 	lauf["tore"] = 0
 	if not bool(t["ist_heim"]):
 		hallenpuls = clampf(hallenpuls - 6.0, 5.0, 100.0)
-	_warteschlange.append(_ereignis("auszeit", _seite(t), "", "Auszeit %s. Der Trainer stellt die Mannschaft neu ein." % t["name"]))
+	_warteschlange.append(_ereignis("auszeit", _seite(t), "",
+		Textbank.satz(Textbank.AUSZEIT, rng, str(t["name"]))))
 	return true
 
 # ------------------------------------------------------------- Ansprache ---
