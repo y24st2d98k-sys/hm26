@@ -294,7 +294,9 @@ func tag_weiter() -> Dictionary:
 		return erg
 	var t: int = tag()
 	spieltag_abwickeln(t)
-	return tag_abschliessen(t)
+	var ergebnis := tag_abschliessen(t)
+	sicherung_nachholen()
+	return ergebnis
 
 ## Erster Teil eines Tages: Datum vorstellen, alle Tagessysteme laufen lassen
 ## und prüfen, ob eine Partie des Spielers ansteht. Gibt eine Unterbrechung
@@ -435,6 +437,12 @@ func vorspulen_schritt(ziel_tag: int, eigene_simulieren: bool, hoechstens: int) 
 	return {"tage": geschafft, "grund": "unterwegs", "weiter": true}
 
 ## Rechnet alle Partien eines Tages ab (ohne die des Spielers, falls schon gespielt).
+## Ohne Oberflaeche gibt es niemanden, der die Vormerkung einloest — deshalb
+## tut es der Tagesschritt selbst. So verhalten sich Sonden wie vorher.
+func sicherung_nachholen() -> void:
+	if _sicherung_offen:
+		sicherung_einloesen()
+
 func spieltag_abwickeln(t: int) -> void:
 	spieltag_starten(t)
 	while spieltag_scheibe(9999) > 0:
@@ -622,7 +630,16 @@ func wochenrhythmus(t: int) -> void:
 		# Wochenabrechnung mit dem danach und zeigt Veraenderungen, die gar
 		# nicht aus der vergangenen Woche stammen.
 		Wochenbericht.festhalten(daten, mein_verein_id)
-		automatisch_speichern()
+		# Die Sicherung wird nur vorgemerkt, nicht ausgefuehrt.
+		#
+		# Gemessen mit werkzeuge/Tagesprofil.gd: der Montag kostet 2,3
+		# Sekunden, davon 1,34 allein das Schreiben des Spielstands — mehr als
+		# die Haelfte. Diese Zeit steht mitten im Tagesschritt, also zwischen
+		# dem Druck auf "Weiter" und dem Moment, in dem der neue Tag zu sehen
+		# ist. Die Oberflaeche loest die Vormerkung ein, wenn sie den neuen
+		# Stand gezeichnet hat: dieselbe Rechenzeit, aber der Spieler sieht
+		# waehrenddessen, wo er ist, statt auf ein eingefrorenes Bild.
+		_sicherung_offen = true
 
 func saison_pruefen(t: int) -> void:
 	var tis: int = Kalender.tag_in_saison(t)
@@ -636,6 +653,20 @@ func saison_pruefen(t: int) -> void:
 		saison_gewechselt.emit(saison_index())
 		unterbrechung = {"art": "neue_saison"}
 		automatisch_speichern()
+
+## Eine vorgemerkte Wochensicherung, die noch nicht geschrieben ist.
+var _sicherung_offen: bool = false
+
+func sicherung_offen() -> bool:
+	return _sicherung_offen
+
+## Schreibt eine vorgemerkte Sicherung. Gibt zurueck, ob etwas geschrieben
+## wurde — die Oberflaeche zeigt dann kurz an, dass gesichert wird.
+func sicherung_einloesen() -> bool:
+	if not _sicherung_offen:
+		return false
+	_sicherung_offen = false
+	return automatisch_speichern()
 
 ## Wöchentlicher Sicherungspunkt auf Platz 0. Läuft still im Hintergrund und
 ## lässt sich in den Einstellungen abschalten.

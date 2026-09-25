@@ -556,6 +556,10 @@ func _weiter() -> void:
 
 	_tag_laeuft = false
 	weiter_knopf.disabled = false
+	# Erst zeichnen, dann sichern. Die Wochensicherung kostet gut eine
+	# Sekunde; sie im Tagesschritt zu schreiben hiess, dass der Spieler diese
+	# Sekunde auf den alten Tag schaut. Jetzt sieht er den neuen.
+	_sicherung_einloesen()
 	if unterbrechung.has("art"):
 		match str(unterbrechung["art"]):
 			"eigenes_spiel":
@@ -566,6 +570,15 @@ func _weiter() -> void:
 			"neue_saison":
 				zeige("buero")
 	_auffrischen()
+
+## Die vorgemerkte Wochensicherung schreiben, nachdem der neue Tag steht.
+func _sicherung_einloesen() -> void:
+	if not Welt.sicherung_offen():
+		return
+	_auffrischen()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	Welt.sicherung_einloesen()
 
 ## Rechnet den Spieltag in Scheiben und hält die Anzeige dabei am Leben.
 ## Kleine Spieltage laufen ohne Anzeige durch — ein Balken, der für 80

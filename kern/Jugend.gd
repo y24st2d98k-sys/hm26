@@ -151,6 +151,7 @@ static func jahreswechsel(d: Dictionary) -> void:
 			(v["jugend"] as Array).erase(sid)
 			sp["jugendspieler"] = false
 			sp["verein"] = ""
+			KI.freie_leeren()  # er steht jetzt im Markt der Vereinslosen
 			sp["vertrag"] = {}
 			if cid == Welt.mein_verein_id:
 				Welt.nachricht({
@@ -200,6 +201,7 @@ static func freigeben(d: Dictionary, sid: String) -> Dictionary:
 	(d["vereine"][cid]["jugend"] as Array).erase(sid)
 	sp["jugendspieler"] = false
 	sp["verein"] = ""
+	KI.freie_leeren()  # er steht jetzt im Markt der Vereinslosen
 	sp["vertrag"] = {}
 	return {"ok": true, "grund": "%s wurde aus dem Nachwuchs entlassen." % Spielerfabrik.voller_name(sp)}
 

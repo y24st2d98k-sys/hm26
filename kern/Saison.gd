@@ -468,6 +468,7 @@ static func _vertraege_ablaufen(d: Dictionary) -> void:
 				Trikot.vergeben(d, stamm, sid)
 			else:
 				sp["verein"] = ""
+				KI.freie_leeren()  # er steht jetzt im Markt der Vereinslosen
 			sp["leihe"] = {}
 			continue
 		if int(sp["vertrag"].get("bis_saison", 9)) > saison:
@@ -486,6 +487,7 @@ static func _vertraege_ablaufen(d: Dictionary) -> void:
 		(d["vereine"][cid]["kader"] as Array).erase(sid)
 		Transfermarkt.aufstellung_saeubern(d, cid, sid)
 		sp["verein"] = ""
+		KI.freie_leeren()  # er steht jetzt im Markt der Vereinslosen
 		sp["vertrag"] = {}
 
 static func _karriereenden(d: Dictionary) -> void:
@@ -513,6 +515,7 @@ static func _karriereenden(d: Dictionary) -> void:
 						int(sp["stats"]["karriere"]["spiele"]), int(sp["stats"]["karriere"]["tore"])],
 				})
 		sp["verein"] = ""
+		KI.freie_leeren()  # er steht jetzt im Markt der Vereinslosen
 		sp["karriereende"] = Welt.saison_index()
 		spieler_entfernen(d, sid)
 

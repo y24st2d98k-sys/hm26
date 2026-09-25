@@ -127,6 +127,7 @@ static func bericht(d: Dictionary, a: Dictionary, qualitaet: float) -> Array:
 		# Ein gesichtetes Talent ist nur so gut bekannt, wie der Scout taugt.
 		sp["kenntnis"] = clampf(24.0 + qualitaet * 0.42, 18.0, 88.0)
 		sp["verein"] = ""
+		KI.freie_leeren()  # er steht jetzt im Markt der Vereinslosen
 		sp["jugendspieler"] = true
 		sp["nachwuchskandidat"] = true
 		sp["vertrag"] = {}

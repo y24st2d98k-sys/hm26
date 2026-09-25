@@ -24,6 +24,37 @@ func _messen(feld: String, usec: int, tag: int) -> void:
 		maxima[feld] = ms
 		spitzentag[feld] = tag
 
+## Der Montag ist der teuerste Tag der Woche und besteht aus zehn Systemen.
+## Ohne diese Zerlegung weiss man, dass er zwei Sekunden kostet, aber nicht,
+## welches der zehn sie verbraucht.
+func _montag_zerlegen(tag: int) -> void:
+	if Kalender.wochentag(tag) != 0:
+		Welt.wochenrhythmus(tag)
+		return
+	var d: Dictionary = Welt.daten
+	var mein: String = Welt.mein_verein_id
+	for schritt in [
+			["mo_training", func(): Training.wochenwechsel(d)],
+			["mo_video", func(): Videostudium.wochenwechsel(d)],
+			["mo_vertrautheit", func(): Vertrautheit.wochenwechsel(d)],
+			["mo_spielzuege", func(): Spielzuege.wochenwechsel(d)],
+			["mo_finanzen", func(): Finanzen.wochenabrechnung(d)],
+			["mo_medien", func(): Medien.wochenrueckblick(d, mein)],
+			["mo_vorstand", func(): Vorstand.wochenpruefung(d, mein)],
+			["mo_ki", func(): KI.wochenlogik(d)],
+			["mo_scouting", func(): Scouting.wochenbericht(d, mein)],
+			["mo_wochenbericht", func(): Wochenbericht.festhalten(d, mein)],
+			["mo_speichern", func(): Welt.automatisch_speichern()],
+		]:
+		var t0 := Time.get_ticks_usec()
+		(schritt[1] as Callable).call()
+		_messen(str(schritt[0]), Time.get_ticks_usec() - t0, tag)
+	if Kalender.datum(tag, Welt.startjahr())["tag"] == 1:
+		var t1 := Time.get_ticks_usec()
+		Auszeichnungen.monatswahl(d, mein)
+		Auszeichnungen.monat_zuruecksetzen(d)
+		_messen("mo_auszeichnungen", Time.get_ticks_usec() - t1, tag)
+
 func _ready() -> void:
 	var welt := Weltgenerator.erzeuge(2026, SAAT)
 	var cid: String = str(welt["ligen"]["l_de1"]["vereine"][0])
@@ -45,7 +76,7 @@ func _ready() -> void:
 		Welt.spieltag_abwickeln(tag)
 		_messen("spieltag_abwickeln", Time.get_ticks_usec() - t2, tag)
 		var t3 := Time.get_ticks_usec()
-		Welt.wochenrhythmus(tag)
+		_montag_zerlegen(tag)
 		_messen("wochenrhythmus", Time.get_ticks_usec() - t3, tag)
 		var t4 := Time.get_ticks_usec()
 		Welt.saison_pruefen(tag)

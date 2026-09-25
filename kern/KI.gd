@@ -635,6 +635,56 @@ static func schwaechste_position(d: Dictionary, cid: String) -> String:
 ## Wen ein Verein sucht, haengt an seinem Plan: ein Verein im Umbruch schaut
 ## auf Zwanzigjaehrige, einer im Abstiegskampf auf Dreissigjaehrige, die
 ## sofort spielen koennen.
+## Die vereinslosen Spieler je Position, einmal je Tag zusammengestellt.
+##
+## Hier lag die zweitgroesste Bremse des Montags. _bester_freier ging fuer
+## jeden Verein und jeden Versuch die gesamte Spielerliste der Welt durch:
+## einhundertsechsundfuenfzig Vereine mal bis zu acht Versuchen mal
+## dreitausendsechshundert Spieler sind ueber vier Millionen Durchlaeufe in
+## einem einzigen Wochenlauf. Gemessen mit werkzeuge/Tagesprofil.gd: 768
+## Millisekunden, direkt hinter der Sicherung.
+##
+## Die Liste aendert sich innerhalb eines Tages nur dadurch, dass jemand
+## verpflichtet wird — Vertraege laufen erst zum Saisonwechsel aus. Also wird
+## sie einmal gebaut und bei jeder Verpflichtung um einen Namen gekuerzt.
+static var _freie: Dictionary = {}
+static var _freie_tag: int = -1
+
+## Den ganzen Index verwerfen. Noetig nur, wenn jemand vereinslos *wird* —
+## und das passiert zum Saisonwechsel, nicht mitten in der Woche.
+static func freie_leeren() -> void:
+	_freie.clear()
+	_freie_tag = -1
+
+## Einen Namen aus dem Index nehmen, weil er jetzt einen Verein hat.
+##
+## Nicht den ganzen Index: kader_auffuellen verpflichtet bis zu acht Spieler
+## je Verein, und bei einhundertsechsundfuenfzig Vereinen waere ein
+## Neuaufbau je Verpflichtung teurer als gar kein Index.
+static func frei_streichen(sid: String) -> void:
+	for pos in _freie.keys():
+		(_freie[pos] as Array).erase(sid)
+
+static func _freie_auf_position(d: Dictionary, pos: String) -> Array:
+	var heute: int = int(d.get("tag", 0))
+	if heute != _freie_tag:
+		_freie.clear()
+		_freie_tag = heute
+	if _freie.has(pos):
+		return _freie[pos]
+	var liste: Array = []
+	for sid in d["spieler"].keys():
+		var sp: Dictionary = d["spieler"][sid]
+		if str(sp["verein"]) != "" or str(sp["position"]) != pos:
+			continue
+		# Ein gesichtetes Nachwuchstalent ist kein vereinsloser Profi: es
+		# gehoert in eine Akademie und nicht in einen Profikader.
+		if bool(sp.get("jugendspieler", false)):
+			continue
+		liste.append(sid)
+	_freie[pos] = liste
+	return liste
+
 static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: bool = false) -> String:
 	var v: Dictionary = d["vereine"][cid]
 	var spielraum: float = float(v["gehaltsbudget"]) * 1.1 - Finanzen.spielergehaelter(d, cid) - Finanzen.personalgehaelter(d, cid)
@@ -661,13 +711,9 @@ static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: boo
 	var plan_jugend: float = clampf(Vereinsplan.eigenschaft(d, cid, "jugend"), 0.4, 1.8)
 	var best := ""
 	var bw := -1.0
-	for sid in d["spieler"].keys():
-		var sp: Dictionary = d["spieler"][sid]
-		if str(sp["verein"]) != "" or str(sp["position"]) != pos:
-			continue
-		# Ein gesichtetes Nachwuchstalent ist kein vereinsloser Profi: es
-		# gehoert in eine Akademie und nicht in einen Profikader.
-		if bool(sp.get("jugendspieler", false)):
+	for sid in _freie_auf_position(d, pos):
+		var sp: Dictionary = d["spieler"].get(str(sid), {})
+		if sp.is_empty() or str(sp["verein"]) != "":
 			continue
 		# Der Plan des Vereins gewichtet mit: derselbe Spieler ist fuer einen
 		# Verein im Umbruch mehr wert als fuer einen im Abstiegskampf.

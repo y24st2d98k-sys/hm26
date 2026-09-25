@@ -553,6 +553,13 @@ static func transfer_durchfuehren(d: Dictionary, sid: String, nach: String, abl�
 		praemie_tor: float = 0.0, praemie_sieg: float = 0.0) -> void:
 	var sp: Dictionary = d["spieler"][sid]
 	var von: String = str(sp["verein"])
+	# Der Index der Vereinslosen fuehrt diesen Namen nicht mehr. Wer zu einem
+	# Verein geht, wird gestrichen; wer vereinslos wird, macht den ganzen
+	# Index ungueltig — das ist der seltene Fall.
+	if nach == "":
+		KI.freie_leeren()
+	else:
+		KI.frei_streichen(sid)
 	# Die Zusatzklauseln des alten Vertrags müssen abgerechnet werden, bevor
 	# der neue Vertrag sie überschreibt.
 	var alte_beteiligung: float = float(sp.get("vertrag", {}).get("weiterverkauf", 0.0))
