@@ -110,6 +110,20 @@ func _videovergleich(n: int) -> void:
 		mittel.append(_messe(n, func(): _video(a)))
 	_ausgabe("Videostudium", ["ohne", "voll"], mittel, n)
 
+## Alle Formationen gleich eingespielt.
+##
+## Ohne das misst die Sonde die Gewohnheit und nicht den Hebel: die
+## Stammformation eines Vereins startet bei Vertrautheit 100, jede andere bei
+## 25, und der Faktor darauf reicht von 0,925 bis 1,0. Das sind bis zu
+## siebeneinhalb Prozent Wirksamkeit — mehr, als die meisten Hebel überhaupt
+## bewegen. Eine Messung ohne diesen Ausgleich sagt nur, welche Formation der
+## Verein schon kann.
+func _vertrautheit_gleich(cid: String) -> void:
+	var k: Dictionary = Vertrautheit.konto(d, cid)
+	for bereich in ["abwehr", "angriff"]:
+		for f in (k[bereich] as Dictionary).keys():
+			k[bereich][f] = 100.0
+
 func _messe(n: int, setzen: Callable) -> float:
 	var summe := 0.0
 	for i in range(n):
@@ -340,37 +354,69 @@ func _goldregel(n: int) -> void:
 	_log("")
 	_log("%s zu Hause, %d Partien je Feld." % [str(d["vereine"][heim]["name"]), n])
 	_log("")
-	_log("%-16s %-22s %-22s %-22s %s" % ["Hebel", str(lagen[0]["name"]),
-		str(lagen[1]["name"]), str(lagen[2]["name"]), "Urteil"])
+	_log("Alle Werte in Toren aus Sicht der Heimmannschaft. * ist die beste Wahl der Lage.")
 	var goldene := 0
 	for h in hebel:
-		var beste_je_lage: Array = []
+		# Jede Möglichkeit in jeder Lage, nicht nur die beste. Wer nur den
+		# Sieger nennt, verschweigt, ob er um ein halbes Tor gewonnen hat oder
+		# um drei — und genau das ist der Unterschied zwischen "lageabhängig"
+		# und "hier liegt der Zufall obenauf".
+		_log("")
+		_log("%s" % str(h["name"]).to_upper())
+		_log("  %-18s %12s %12s %12s" % ["", str(lagen[0]["name"]),
+			str(lagen[1]["name"]), str(lagen[2]["name"])])
+		var spalten: Array = []
 		for lage in lagen:
 			gast = str(lage["gast"])
 			var m0: Dictionary = d["spiele"][paarung]
 			m0["heim"] = heim
 			m0["gast"] = gast
 			d["vereine"][heim]["taktik"] = Weltgenerator.standard_taktik()
+			_vertrautheit_gleich(heim)
 			var mittel: Array = []
 			for w in (h["werte"] as Array):
 				mittel.append(_messe(n, func(): d["vereine"][heim]["taktik"][str(h["feld"])] = w))
+			spalten.append(mittel)
+		var beste_je_lage: Array = []
+		for sp in spalten:
 			var b := 0
-			for j in range(mittel.size()):
-				if float(mittel[j]) > float(mittel[b]):
-					b = j
-			beste_je_lage.append({"wert": str((h["werte"] as Array)[b]),
-				"diff": float(mittel[b])})
+			for j2 in range((sp as Array).size()):
+				if float((sp as Array)[j2]) > float((sp as Array)[b]):
+					b = j2
+			beste_je_lage.append(b)
+		for i2 in (h["werte"] as Array).size():
+			var zeile := "  %-18s" % str((h["werte"] as Array)[i2])
+			for sl in spalten.size():
+				var wert: float = float((spalten[sl] as Array)[i2])
+				var mark: String = " *" if int(beste_je_lage[sl]) == i2 else "  "
+				zeile += "%10s%s" % ["%+.1f" % wert, mark]
+			_log(zeile)
 		var verschieden := {}
-		for e in beste_je_lage:
-			verschieden[str(e["wert"])] = true
-		var urteil := "goldene Regel" if verschieden.size() == 1 else "lageabhängig"
-		if verschieden.size() == 1:
+		for sl2 in spalten.size():
+			verschieden[str((h["werte"] as Array)[int(beste_je_lage[sl2])])] = true
+		# Der Standardfehler eines Feldes liegt bei rund 7/sqrt(n) Toren. Ein
+		# Sieger, der weniger als zwei davon vor dem Zweiten liegt, ist keiner.
+		var fehler: float = 7.0 / sqrt(float(n)) * 2.0
+		var eindeutig := 0
+		for sl3 in spalten.size():
+			var sp3: Array = spalten[sl3]
+			var b3: int = int(beste_je_lage[sl3])
+			# Kein Nullpunkt als Startwert: Tordifferenzen sind oft alle
+			# negativ, und dann bliebe der Vergleich am letzten Eintrag
+			# haengen statt am zweitbesten.
+			var zweiter := -1.0e9
+			for i3 in sp3.size():
+				if i3 != b3 and float(sp3[i3]) > zweiter:
+					zweiter = float(sp3[i3])
+			if float(sp3[b3]) - zweiter > fehler:
+				eindeutig += 1
+		var urteil := "lageabhängig"
+		if verschieden.size() == 1 and eindeutig >= 2:
+			urteil = "GOLDENE REGEL"
 			goldene += 1
-		_log("%-16s %-22s %-22s %-22s %s" % [str(h["name"]),
-			"%s (%+.1f)" % [str(beste_je_lage[0]["wert"]), float(beste_je_lage[0]["diff"])],
-			"%s (%+.1f)" % [str(beste_je_lage[1]["wert"]), float(beste_je_lage[1]["diff"])],
-			"%s (%+.1f)" % [str(beste_je_lage[2]["wert"]), float(beste_je_lage[2]["diff"])],
-			urteil])
+		elif verschieden.size() == 1:
+			urteil = "immer dieselbe Wahl, aber unter der Auflösung"
+		_log("  → %s (Auflösungsgrenze %.1f Tore)" % [urteil, fehler])
 	_log("")
 	if goldene == 0:
 		_log("Keine goldene Regel: jeder Hebel will je nach Gegner etwas anderes.")

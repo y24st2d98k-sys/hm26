@@ -317,6 +317,12 @@ func tag_beginnen() -> Dictionary:
 	daten["tag"] = tag() + 1
 	var t: int = tag()
 
+	# Vor allem anderen: die Trainerteams des Tages fassen ihren Plan. Das
+	# muss hier stehen und nicht erst beim Anpfiff — die eigene Partie
+	# unterbricht den Tag, bevor spieltag_starten ueberhaupt laeuft, und der
+	# Vorbericht soll den Plan des Gegners zeigen koennen.
+	KI.matchplaene_fuer_tag(daten, spiele_am_tag(t))
+
 	Training.tageswechsel(daten)
 	Trainingslager.tageswechsel(daten)
 	Medizin.tageswechsel(daten)
@@ -456,6 +462,9 @@ func spieltag_starten(t: int) -> int:
 			continue
 		_spieltag_rest.append(mid)
 	_spieltag_gesamt = _spieltag_rest.size()
+	# Die Trainerteams bereiten sich vor, bevor irgendetwas angepfiffen wird.
+	# So steht der Plan schon, wenn der Vorbericht ihn zeigen soll.
+	KI.matchplaene_fuer_tag(daten, _spieltag_rest)
 	return _spieltag_gesamt
 
 ## Rechnet bis zu `anzahl` Partien und gibt zurück, wie viele noch offen sind.

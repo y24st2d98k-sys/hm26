@@ -56,6 +56,123 @@ static func aufstellung_pruefen(d: Dictionary, cid: String) -> void:
 	Weltgenerator.setze_standardaufstellung(d, cid)
 	taktik_anpassen(d, cid)
 
+## Wie viele Partien ein Trainerteam zurueckschaut, wenn es den Gegner liest.
+const LESEFENSTER := 6
+## Ab welchem Anteil ein Angriff als Handschrift gilt und nicht als Zufall.
+const HANDSCHRIFT := 0.5
+
+## Was ein Verein zuletzt gespielt hat — die Grundlage jeder Vorbereitung.
+##
+## Ohne diese Liste kann niemand den Gegner lesen, und ohne Lesen gibt es
+## keine Gegenmassnahme. Sechs Eintraege reichen: wer in sechs Partien
+## viermal dasselbe gespielt hat, hat eine Handschrift.
+static func stil_verbuchen(d: Dictionary, cid: String, stil: String) -> void:
+	if not (d.get("vereine", {}) as Dictionary).has(cid):
+		return
+	var v: Dictionary = d["vereine"][cid]
+	var liste: Array = v.get("angriffsverlauf", [])
+	liste.append(stil)
+	while liste.size() > LESEFENSTER:
+		liste.pop_front()
+	v["angriffsverlauf"] = liste
+
+## Der Angriff, den ein Verein erkennbar bevorzugt — oder "" fuer unlesbar.
+static func handschrift(d: Dictionary, cid: String) -> String:
+	var liste: Array = (d.get("vereine", {}) as Dictionary).get(cid, {}).get("angriffsverlauf", [])
+	if liste.size() < 3:
+		return ""
+	var zaehler := {}
+	for e in liste:
+		zaehler[str(e)] = int(zaehler.get(str(e), 0)) + 1
+	var oft := ""
+	var n := 0
+	for k in zaehler.keys():
+		if int(zaehler[k]) > n:
+			n = int(zaehler[k])
+			oft = str(k)
+	return oft if float(n) / float(liste.size()) >= HANDSCHRIFT else ""
+
+## Alle Computertrainer eines Spieltags bereiten sich vor — vor dem Anwurf.
+##
+## Das passiert nicht erst in Matchsim, damit der Vorbericht den Plan zeigen
+## kann, bevor die Partie laeuft. Wer Videostudium betrieben hat, soll wissen,
+## was auf ihn zukommt; das ist der Ertrag dieser Arbeit.
+static func matchplaene_fuer_tag(d: Dictionary, partien: Array) -> void:
+	for mid in partien:
+		var m: Dictionary = (d.get("spiele", {}) as Dictionary).get(str(mid), {})
+		if m.is_empty() or bool(m.get("gespielt", false)) or str(m.get("art", "")) == "turnier":
+			continue
+		matchplan_stellen(d, str(m["heim"]), str(m["gast"]), str(mid))
+		matchplan_stellen(d, str(m["gast"]), str(m["heim"]), str(mid))
+
+## Der Matchplan eines Computertrainers gegen genau diesen Gegner.
+##
+## Bis hierher war der Gegnerplan ein Werkzeug, das nur der Mensch hatte. Das
+## ist der eigentliche Grund, warum es eine goldene Regel geben konnte: wer
+## immer dasselbe spielt, bekam nie die Quittung. Ein Trainerteam, das eine
+## Woche Zeit hat, sieht sich sechs Partien des Gegners an — und wenn darin
+## viermal derselbe Angriff steht, stellt es sich darauf ein.
+##
+## Es gelingt nicht immer. Ob ueberhaupt ein Plan entsteht, haengt am Trainer
+## (ein Abwehrfanatiker bereitet gruendlicher vor als ein Hasardeur) und am
+## Verein (wer Analysten bezahlen kann, sieht mehr). Und ein Plan kostet:
+## Manndeckung oeffnet die Abwehr, Kreis zustellen laesst den Rueckraum frei.
+## Genau deshalb ist es eine Entscheidung und kein Automatismus.
+static func matchplan_stellen(d: Dictionary, cid: String, gegner: String, spiel: String = "") -> void:
+	if not (d.get("vereine", {}) as Dictionary).has(cid):
+		return
+	var v: Dictionary = d["vereine"][cid]
+	if bool(v.get("ist_mensch", false)) or bool(v.get("ist_nationalteam", false)):
+		return
+	# Einmal je Partie. Wer bei jedem Aufruf neu wuerfelt, zeigt im Vorbericht
+	# etwas anderes, als er dann spielt.
+	if spiel != "":
+		var vorhanden := Gegnerplan.plan(d, cid)
+		if str(vorhanden.get("spiel", "")) == spiel:
+			return
+	# Wie gruendlich bereitet dieser Trainer vor? Die Abwehrachse sagt es, der
+	# Ruf des Vereins entscheidet mit, wie viel Zuarbeit er bekommt.
+	var sorgfalt: float = Gegnertrainer.achse(d, cid, "bollwerk") * 0.7 \
+		+ clampf(float(v.get("ruf", 50.0)) / 100.0, 0.0, 1.0) * 0.3
+	if Namen.zufall() > sorgfalt * 0.8:
+		Gegnerplan.setzen(d, cid, gegner, "keins", "", spiel)
+		return
+	var stil := handschrift(d, gegner)
+	# Ein Gegner, der immer ueber den Kreis kommt, bekommt den Innenblock
+	# zugestellt. Das ist die Antwort, die es im Spiel schon gab — sie wurde
+	# nur nie von einem Computertrainer gegeben.
+	if stil == "kreisfokus":
+		Gegnerplan.setzen(d, cid, gegner, "kreis_zustellen", "", spiel)
+		return
+	# Sonst gilt der Mann, der die Tore wirft. Ein Hasardeur geht in
+	# Manndeckung, ein vorsichtiger Trainer doppelt nur.
+	var ziel := _gefaehrlichster(d, gegner)
+	if ziel == "":
+		Gegnerplan.setzen(d, cid, gegner, "keins", "", spiel)
+		return
+	var mutig: bool = Gegnertrainer.achse(d, cid, "wagemut") > 0.55
+	Gegnerplan.setzen(d, cid, gegner, "manndeckung" if mutig else "doppeln", ziel, spiel)
+
+## Wer beim Gegner die Tore wirft. Gezaehlt wird die laufende Saison; wer
+## wenig gespielt hat, faellt heraus.
+static func _gefaehrlichster(d: Dictionary, gegner: String) -> String:
+	var best := ""
+	var bw := 0.0
+	for sid in ((d["vereine"][gegner].get("kader", [])) as Array):
+		var sp: Dictionary = d["spieler"].get(str(sid), {})
+		if sp.is_empty() or bool(sp.get("ist_torwart", false)):
+			continue
+		var saison: Dictionary = (sp.get("stats", {}) as Dictionary).get("saison", {})
+		var spiele: int = int(saison.get("spiele", 0))
+		if spiele < 3:
+			continue
+		var quote: float = float(saison.get("tore", 0)) / float(spiele)
+		if quote > bw:
+			bw = quote
+			best = str(sid)
+	# Unter vier Toren je Partie ist niemand ein Fall fuer Manndeckung.
+	return best if bw >= 4.0 else ""
+
 ## Legt die Handschrift eines Vereins fest: welche Deckung er spielt und
 ## worauf sein Angriff ausgerichtet ist.
 ##
@@ -523,6 +640,17 @@ static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: boo
 	var spielraum: float = float(v["gehaltsbudget"]) * 1.1 - Finanzen.spielergehaelter(d, cid) - Finanzen.personalgehaelter(d, cid)
 	var grenze: float = float(v["gehaltsbudget"]) * (0.16 if notlage else 0.06)
 	grenze = maxf(grenze, spielraum) * Vereinsplan.etatfaktor(d, cid)
+	# Dieselbe Latte wie beim Verlaengern.
+	#
+	# Hier war das Leck. Ein Verein liess einen Spieler ziehen, weil er mehr
+	# als fuenfzehn Punkte unter der eigenen Stammsieben lag — und holte sich
+	# danach den, den ein anderer Verein aus demselben Grund gehen liess. Der
+	# Markt der Vereinslosen besteht fast nur aus Mitlaeufern, und ohne
+	# Untergrenze wanderten sie im Kreis. Wer nicht gut genug zum Bleiben war,
+	# ist auch nicht gut genug zum Holen.
+	var latte: float = -1.0
+	if not notlage:
+		latte = _stammniveau(d, cid) - MITLAEUFER_ABSTAND
 	# Ruf und Lohnniveau einmal holen: die Schleife laeuft ueber alle Spieler
 	# der Welt und wird oefter durchlaufen, als es auf den ersten Blick aussieht.
 	var ruf: float = float(v["ruf"])
@@ -547,7 +675,16 @@ static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: boo
 		var gewicht: float = clampf(1.25 - abstand * 0.07, 0.35, 1.25)
 		if int(sp["alter"]) <= 22:
 			gewicht *= plan_jugend
-		var w: float = Spielerfabrik.gesamt(sp) * gewicht
+		var staerke: float = Spielerfabrik.gesamt(sp)
+		# Ein junger Spieler wird an seiner Decke gemessen und nicht an
+		# seinem heutigen Stand — genau wie beim Verlaengern. Sonst kaeme
+		# kein Verein mehr an ein Talent, das noch nichts vorzuweisen hat.
+		var messlatte: float = staerke
+		if int(sp["alter"]) <= 22:
+			messlatte = maxf(staerke, float(sp.get("potenzial", 0.0)) - 4.0)
+		if latte > 0.0 and messlatte < latte:
+			continue
+		var w: float = staerke * gewicht
 		if w <= bw:
 			continue
 		if Spielerfabrik.gehaltsvorstellung(sp, ruf, niveau) > grenze:

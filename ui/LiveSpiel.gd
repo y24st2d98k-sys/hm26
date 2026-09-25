@@ -601,7 +601,7 @@ func _ereignisfarbe(e: Dictionary) -> Color:
 			return Stil.ROT if eigene else Stil.GELB
 		"verwarnung", "passiv":
 			return Stil.GELB
-		"auszeit", "taktik", "lauf":
+		"auszeit", "taktik", "lauf", "matchplan":
 			return Stil.AKZENT
 		"halbzeit", "ende", "anwurf":
 			return Stil.LILA

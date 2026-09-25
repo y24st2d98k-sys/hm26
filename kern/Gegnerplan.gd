@@ -41,7 +41,7 @@ const MITTEL := {
 }
 
 static func leer() -> Dictionary:
-	return {"gegner": "", "mittel": "keins", "ziel": ""}
+	return {"gegner": "", "mittel": "keins", "ziel": "", "spiel": ""}
 
 static func plan(d: Dictionary, cid: String) -> Dictionary:
 	var v: Dictionary = d["vereine"][cid]
@@ -61,11 +61,19 @@ static func fuer(d: Dictionary, cid: String, gegner: String) -> Dictionary:
 			return leer()
 	return p
 
-static func setzen(d: Dictionary, cid: String, gegner: String, mittel: String, ziel: String = "") -> void:
+## `spiel` haelt fest, fuer welche Partie der Plan gefasst wurde.
+##
+## Ohne diese Kennung wuerde ein Computertrainer seinen Plan bei jedem Aufruf
+## neu wuerfeln — und dann stuende im Vorbericht etwas anderes als spaeter auf
+## der Platte. Ein Plan, den man vorher sehen kann, muss derselbe sein, der
+## dann gespielt wird.
+static func setzen(d: Dictionary, cid: String, gegner: String, mittel: String,
+		ziel: String = "", spiel: String = "") -> void:
 	var p := plan(d, cid)
 	p["gegner"] = gegner
 	p["mittel"] = mittel if MITTEL.has(mittel) else "keins"
 	p["ziel"] = ziel
+	p["spiel"] = spiel
 
 # ---------------------------------------------------------------- Wirkung ---
 
@@ -112,7 +120,13 @@ static func deckungswerte(p: Dictionary) -> Dictionary:
 			return {"zeitstrafe": 1.09, "ballgewinn": 1.06, "block": 0.97}
 		"kreis_zustellen":
 			# Der Kreis wird zugemacht, der Fernwurf dafür freigegeben.
-			return {"kreis": 0.72, "fern": 1.16, "block": 1.05}
+			#
+			# Die Zahlen standen hier verkehrt herum. In der Deckungstabelle
+			# heißt ein hoher Wert "hier steht die Abwehr gut" — dieselbe
+			# Sprache muss ein Matchplan sprechen, sonst macht "Kreis
+			# zustellen" den Kreis auf. Gemerkt hat es bis jetzt niemand,
+			# weil beide Tabellen nie gelesen wurden.
+			return {"kreis": 1.30, "fern": 0.87, "block": 1.05}
 	return {}
 
 ## Ein Satz für die Oberfläche: was der Plan gerade vorsieht.

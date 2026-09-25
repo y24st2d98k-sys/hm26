@@ -371,6 +371,12 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 	# Vertraege ablaufen lassen. Andersherum waere der Spieler schon
 	# vereinslos und die Zusage ginge ins Leere.
 	Vorvertrag.einloesen(d)
+	# Ausgemustert wird VOR dem Vertragsablauf. Danach waeren die gerade
+	# freigewordenen Spieler ebenfalls vereinslos, und ein Mann, dessen
+	# Vertrag heute endet, haette keinen Sommer Zeit, einen neuen zu finden —
+	# er flöge im selben Atemzug aus dem Spiel. So trifft es nur die, die
+	# schon eine ganze Saison lang keinen Verein gefunden haben.
+	_vereinslose_ausmustern(d)
 	_vertraege_ablaufen(d)
 	_karriereenden(d)
 	_nachwuchs(d)
@@ -507,6 +513,34 @@ static func _karriereenden(d: Dictionary) -> void:
 						int(sp["stats"]["karriere"]["spiele"]), int(sp["stats"]["karriere"]["tore"])],
 				})
 		sp["verein"] = ""
+		sp["karriereende"] = Welt.saison_index()
+		spieler_entfernen(d, sid)
+
+## Wer eine ganze Saison keinen Verein gefunden hat, hoert auf.
+##
+## Ohne das waere der Markt der Vereinslosen eine Schublade ohne Boden. Ein
+## Karriereende gab es erst ab zweiunddreissig; ein Sechsundzwanzigjaehriger
+## mit Wert 55, den niemand mehr holt, blieb bis in alle Ewigkeit darin
+## liegen und wurde mit jedem Jahr zu einem weiteren Namen, den die Suche
+## durchgehen muss. Im Profihandball ist das anders: wer ein Jahr ohne
+## Vertrag ist, spielt danach in der Regel nicht mehr oben.
+##
+## Die Wahrscheinlichkeit steigt mit schwaecherer Leistung und mit dem Alter.
+## Ein junger Starker bleibt fast sicher drin — er hat nur noch keinen Verein
+## gefunden, und das ist kein Karriereende.
+const VEREINSLOS_GRUNDRISIKO := 0.40
+
+static func _vereinslose_ausmustern(d: Dictionary) -> void:
+	for sid in d["spieler"].keys().duplicate():
+		var sp: Dictionary = d["spieler"][sid]
+		if str(sp["verein"]) != "" or bool(sp.get("jugendspieler", false)):
+			continue
+		var g: float = Spielerfabrik.gesamt(sp)
+		var p: float = clampf(VEREINSLOS_GRUNDRISIKO
+			+ (62.0 - g) * 0.02
+			+ (float(sp["alter"]) - 27.0) * 0.04, 0.05, 0.95)
+		if Namen.zufall() > p:
+			continue
 		sp["karriereende"] = Welt.saison_index()
 		spieler_entfernen(d, sid)
 

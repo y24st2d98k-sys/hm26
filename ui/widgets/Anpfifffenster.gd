@@ -116,8 +116,39 @@ func _zeichne() -> void:
 		["TW", "A1", "A2", "A3", "A4", "A5", "A6"],
 		str((v.get("taktik", {}) as Dictionary).get("abwehr", "6-0")))
 
+	_gegnerplan_melden(inhalt, cid, gid)
 	_taktik(inhalt, v)
 	_warnungen(inhalt, v)
+
+## Was der Gegner sich vorgenommen hat — wenn die Videoarbeit es hergibt.
+##
+## Das ist der Ertrag des Videostudiums, den es bisher nicht gab. Bisher
+## brachte die Arbeit einen stillen Faktor auf die Wirksamkeit: man sah nichts
+## davon und konnte nichts damit anfangen. Jetzt steht hier, ob der Gegner
+## den Kreis zustellt oder den besten Rückraumschützen in Manndeckung nimmt —
+## und darauf kann man reagieren, bevor angepfiffen wird. Ohne Videoarbeit
+## merkt man es erst in der zehnten Minute.
+const AUFDECKEN_AB := 1.4
+
+func _gegnerplan_melden(eltern: Node, cid: String, gid: String) -> void:
+	var plan: Dictionary = Gegnerplan.fuer(Welt.daten, gid, cid)
+	var stand: Dictionary = Videostudium.stand(Welt.daten, cid)
+	var arbeit: float = float(stand.get("arbeit", 0.0)) if str(stand.get("gegner", "")) == gid else 0.0
+	if arbeit < AUFDECKEN_AB:
+		if plan.is_empty() or str(plan.get("mittel", "keins")) == "keins":
+			return
+		eltern.add_child(Stil.banner(
+			"Über die Absichten von %s liegt nichts vor. Eine gesichtete Aufzeichnung hätte es gezeigt."
+			% str(Welt.verein(gid).get("name", "?")), "info"))
+		return
+	if plan.is_empty() or str(plan.get("mittel", "keins")) == "keins":
+		eltern.add_child(Stil.banner(
+			"Die Auswertung zeigt nichts Besonderes: %s spielt seine gewohnte Abwehr."
+			% str(Welt.verein(gid).get("name", "?")), "erfolg"))
+		return
+	eltern.add_child(Stil.banner("Aus der Videoauswertung: %s hat sich etwas vorgenommen — %s"
+		% [str(Welt.verein(gid).get("name", "?")),
+			Gegnerplan.beschreibung(Welt.daten, plan)], "warnung"))
 
 
 ## Die Knopfleiste am Fuß — sie wird einmal gebaut und nicht neu gezeichnet.

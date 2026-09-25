@@ -19,11 +19,30 @@ const SPIELZEIT := 3600.0
 const ANWEISUNG_GUETE := 2.0
 const HALBZEIT := 1800.0
 
+## Die Abwehrformationen. Ein hoher Wert heisst durchweg: hier steht die
+## Abwehr gut — ausser bei "zeitstrafe", wo er heisst, dass es haeufiger
+## gepfiffen wird, und bei "kraft", wo er den Verbrauch meint.
+##
+## Zwei Dinge standen hier falsch, und beide fielen erst auf, als "kreis",
+## "aussen" und "fern" ueberhaupt gelesen wurden (siehe deckungswirkung).
+##
+## Erstens die Richtung an den Aussenpositionen: die 6-0 war als schlechter
+## eingetragen als die 4-2. Eine tiefe, kompakte Abwehr ist am Kreis und an
+## den Fluegeln stark und laesst von neun Metern werfen; eine offene 4-2 macht
+## genau das Gegenteil. Das ist der eigentliche Handel zwischen den beiden,
+## und er stand verkehrt herum in der Tabelle.
+##
+## Zweitens die Spanne beim Ballgewinn. 0,84 gegen 1,40 sind zwei Drittel mehr
+## eroberte Baelle — ueber eine Partie rund sechs zusaetzliche Ballverluste
+## des Gegners, und die meisten davon werden zu Tempogegenstoessen. Gegen
+## diesen Betrag kommt keine Formation an; gemessen lag die 4-2 gegen einen
+## gleichstarken Gegner elfeinhalb Tore vor der 6-0. Im Handball presst eine
+## offene Deckung mehr, aber nicht um zwei Drittel.
 const DECKUNG := {
-	"6-0": {"block": 1.12, "ballgewinn": 0.84, "zeitstrafe": 0.92, "kreis": 1.10, "aussen": 0.92, "fern": 0.90, "kraft": 0.95},
-	"5-1": {"block": 1.02, "ballgewinn": 1.06, "zeitstrafe": 1.04, "kreis": 0.98, "aussen": 0.98, "fern": 1.06, "kraft": 1.0},
-	"3-2-1": {"block": 0.94, "ballgewinn": 1.24, "zeitstrafe": 1.26, "kreis": 0.88, "aussen": 1.02, "fern": 1.16, "kraft": 1.12},
-	"4-2": {"block": 0.88, "ballgewinn": 1.40, "zeitstrafe": 1.46, "kreis": 0.82, "aussen": 1.06, "fern": 1.20, "kraft": 1.2},
+	"6-0": {"block": 1.12, "ballgewinn": 0.90, "zeitstrafe": 0.88, "kreis": 1.18, "aussen": 1.10, "fern": 0.84, "kraft": 0.95},
+	"5-1": {"block": 1.02, "ballgewinn": 1.00, "zeitstrafe": 1.02, "kreis": 1.06, "aussen": 1.02, "fern": 1.00, "kraft": 1.0},
+	"3-2-1": {"block": 0.94, "ballgewinn": 1.10, "zeitstrafe": 1.22, "kreis": 0.88, "aussen": 0.94, "fern": 1.12, "kraft": 1.12},
+	"4-2": {"block": 0.88, "ballgewinn": 1.18, "zeitstrafe": 1.44, "kreis": 0.74, "aussen": 0.86, "fern": 1.20, "kraft": 1.22},
 }
 
 const ANGRIFF_GEGEN_DECKUNG := {
@@ -104,9 +123,20 @@ func vorbereiten() -> void:
 		* (0.66 + 0.34 * _stimmungsanteil())
 		* Fanszene.pulsfaktor(daten, str(spiel["heim"]))
 		+ float(programm.get("puls", 0.0)), 15.0, 98.0)
+	# Erst bereiten die Computertrainer sich auf diesen Gegner vor, dann gilt
+	# der Plan. Gelesen wird dabei nur, was der Gegner bisher gespielt hat —
+	# nicht, was er heute vorhat. Ein Trainer, der die Aufstellung des Gegners
+	# vor dem Anwurf kennt, wäre kein Gegner, sondern ein Hellseher.
+	if str(spiel.get("art", "")) != "turnier":
+		KI.matchplan_stellen(daten, str(heim["cid"]), str(gast["cid"]), str(spiel.get("id", "")))
+		KI.matchplan_stellen(daten, str(gast["cid"]), str(heim["cid"]), str(spiel.get("id", "")))
 	# Der Matchplan gilt nur gegen den Verein, für den er gemacht wurde.
 	heim["gegnerplan"] = Gegnerplan.fuer(daten, str(heim["cid"]), str(gast["cid"]))
 	gast["gegnerplan"] = Gegnerplan.fuer(daten, str(gast["cid"]), str(heim["cid"]))
+	# Und was heute gespielt wird, geht in die Akte — für das nächste Mal.
+	if str(spiel.get("art", "")) != "turnier":
+		KI.stil_verbuchen(daten, str(heim["cid"]), str(heim["taktik"].get("angriff", "positionsangriff")))
+		KI.stil_verbuchen(daten, str(gast["cid"]), str(gast["taktik"].get("angriff", "positionsangriff")))
 	gespann = Schiedsrichter.fuer_partie(daten, str(spiel["id"]))
 	gespann_tagesform = Schiedsrichter.tagesform(gespann, rng)
 	angriffsrecht = "heim" if rng.randf() < 0.5 else "gast"
@@ -116,6 +146,19 @@ func vorbereiten() -> void:
 		daten["vereine"][spiel["heim"]]["halle"]["name"], Stil.zahl(zuschauer)]))
 	if not gespann.is_empty():
 		_warteschlange.append(_ereignis("gespann", "", "", "Es pfeift das Gespann %s." % Schiedsrichter.namen_lang(gespann)))
+	# Was sich eine Mannschaft für diese Partie vorgenommen hat, sieht man in
+	# den ersten Minuten auf der Platte — also steht es im Ticker. Eine
+	# Gegenmaßnahme, die unsichtbar bleibt, ist keine Entscheidung, auf die
+	# man reagieren kann, sondern eine Zahl, die anders ausfällt.
+	_matchplan_melden(heim, "heim")
+	_matchplan_melden(gast, "gast")
+
+func _matchplan_melden(t: Dictionary, seite: String) -> void:
+	var p: Dictionary = t["gegnerplan"]
+	if p.is_empty() or str(p.get("mittel", "keins")) == "keins":
+		return
+	_warteschlange.append(_ereignis("matchplan", seite, "", "%s hat sich etwas vorgenommen — %s" % [
+		str(daten["vereine"][str(t["cid"])]["name"]), Gegnerplan.beschreibung(daten, p)]))
 
 func _auslastung() -> float:
 	var kap: float = maxf(float(daten["vereine"][spiel["heim"]]["halle"]["kapazitaet"]), 1.0)
@@ -487,6 +530,103 @@ const STAERKE_GRENZE := 40.0
 const TREFFER_POSITION := {
 	"LA": 0.583, "RA": 0.583, "KM": 0.692, "RL": 0.456, "RM": 0.475, "RR": 0.456,
 }
+## Wie stark eine Abwehr darauf reagiert, dass ein Angriff immer dieselbe
+## Position sucht.
+##
+## Hier lag die goldene Regel. Der Kreiswurf trifft zu 69 Prozent, der
+## Rueckraumwurf zu 46 — und der Angriffsstil durfte achtunddreissig Prozent
+## der Wuerfe an den Kreis schieben, ohne dass es etwas kostete. Damit war
+## "Kreisfokus" in jeder Lage die beste Wahl: gegen den Staerksten, auf
+## Augenhoehe und gegen den Schwaechsten. Gemessen mit
+## werkzeuge/Hebelsonde.gd, Feld "goldregel".
+##
+## In Wirklichkeit gibt es diesen Freibetrag nicht. Wer immer den Kreis sucht,
+## bekommt ihn zugestellt: die Abwehr sackt ein, der Anspielweg ist zu, und
+## der Kreislaeufer wirft bedraengt statt frei. Umgekehrt steht der Fluegel
+## plotzlich allein, wenn nie jemand zu ihm passt. Genau das macht dieser
+## Faktor — er zieht von der Wurfquote ab, was der Stil einer Position an
+## Aufmerksamkeit zuschanzt, und schlaegt drauf, was er ihr nimmt.
+##
+## Der Wert ist so gewaehlt, dass kein Stil mehr flaechendeckend der beste
+## ist. Was danach entscheidet, ist die Deckung des Gegners und die Frage,
+## wer im eigenen Kader ueberhaupt trifft.
+const FOKUS_STRAFE := 0.22
+
+## Was die Abwehrformation an dieser Wurfposition wirklich ausrichtet.
+##
+## Hier fehlte die halbe Deckungstabelle. Die Formationen oben tragen sieben
+## Spalten, aber nur vier davon wurden je gelesen: Block, Ballgewinn,
+## Zeitstrafe und Kraftverbrauch. Was eine Abwehr eigentlich ausmacht — wo sie
+## dicht ist und wo sie Löcher hat — stand in "kreis", "aussen" und "fern" und
+## wirkte nirgends.
+##
+## Damit war die 6-0 eine Falle: ihre einzige Stärke ist, dass am Kreis nichts
+## durchgeht, und genau die war nicht eingebaut. Uebrig blieb eine Formation,
+## die schlechter Baelle gewinnt als jede andere. Gemessen gegen eine
+## gleichstarke Mannschaft lag sie achteinhalb Tore hinter der 4-2 — die
+## meistgespielte Abwehr des deutschen Handballs war die schlechteste Wahl
+## des Spiels.
+##
+## Jetzt entscheidet die Formation mit, von wo geworfen wird. Und zwar vor
+## allem darueber, wohin der Angriff ueberhaupt kommt — nicht darueber, wie
+## gut ein schon angesetzter Wurf sitzt.
+##
+## Der Unterschied ist nicht akademisch. Im ersten Versuch verschob die
+## Formation nur die Trefferquote, und damit wurde die 6-0 noch schlechter:
+## der Fernwurf ist mit 46 Prozent ohnehin der wertloseste Abschluss des
+## Spiels, und ihn zusaetzlich um zwoelf Prozent aufzuwerten, zaehlt denselben
+## Vorteil zweimal. Eine tiefe Abwehr ist deshalb gut, weil sie den Gegner
+## *zwingt*, von neun Metern zu werfen — also gehoert ihre Wirkung in die
+## Wurfverteilung. Wer innen zumacht, bekommt Fernwuerfe; wer vorne presst,
+## laesst Kreis und Aussen frei.
+##
+## Am Abschluss bleibt ein kleiner Rest: ein Wurf gegen eine Abwehr, die genau
+## dort steht, ist auch bedraengter. Mehr als ein Rest darf es nicht sein.
+const DECKUNG_WIRKUNG := 0.28
+## Wie stark die Formation die Wurfverteilung verschiebt.
+const DECKUNG_VERTEILUNG := 1.0
+
+static func deckungswirkung(td: Dictionary, pos: String) -> float:
+	var schluessel := ""
+	match pos:
+		"KM":
+			schluessel = "kreis"
+		"LA", "RA":
+			schluessel = "aussen"
+		"RL", "RM", "RR":
+			schluessel = "fern"
+		_:
+			return 1.0
+	# In der Tabelle heisst ein hoher Wert "hier steht die Abwehr gut". Auf die
+	# Wurfquote schlaegt er deshalb nach unten durch.
+	var f: float = float(td.get(schluessel, 1.0))
+	return clampf(1.0 - (f - 1.0) * DECKUNG_WIRKUNG, 0.86, 1.14)
+
+## Wie die Abwehrformation den Weg des Angriffs verschiebt: wo sie steht,
+## kommt seltener jemand zum Wurf.
+static func deckungsverteilung(td: Dictionary, pos: String) -> float:
+	var schluessel := ""
+	match pos:
+		"KM":
+			schluessel = "kreis"
+		"LA", "RA":
+			schluessel = "aussen"
+		"RL", "RM", "RR":
+			schluessel = "fern"
+		_:
+			return 1.0
+	var f: float = float(td.get(schluessel, 1.0))
+	return clampf(1.0 - (f - 1.0) * DECKUNG_VERTEILUNG, 0.55, 1.45)
+
+static func fokusfaktor(stil: String, pos: String) -> float:
+	var neutral: Dictionary = WURFVERTEILUNG["positionsangriff"]
+	var n: float = float(neutral.get(pos, 0.0))
+	if n <= 0.0:
+		return 1.0
+	var gewaehlt: Dictionary = WURFVERTEILUNG.get(stil, neutral)
+	var fokus: float = float(gewaehlt.get(pos, n)) / n
+	return clampf(1.0 - (fokus - 1.0) * FOKUS_STRAFE, 0.70, 1.15)
+
 ## Der Tempogegenstoss ist der beste Abschluss, den der Handball kennt: ein
 ## Wurf aus dem Lauf auf einen Torwart, der allein im Tor steht.
 const TREFFER_GEGENSTOSS := 0.824
@@ -503,7 +643,12 @@ const TREFFER_LEERES_TOR := 0.93
 ## weiterer Schritt auf 14,6 brachte die Quote zwar ueber die Schwelle, kostete
 ## aber zweieinhalb Punkte an der Tabellenspitze: mehr Tore heisst frueher
 ## sechs Tore Vorsprung, und dort greift der Schongang.
-const WURF_AUSGLEICH := 13.6
+## Und von 13,6 auf 16,6, nachdem die Abwehrformation die Wurfverteilung
+## verschiebt: eine 6-0 draengt den Angriff an die Neunmeterlinie, und dort
+## trifft er schlechter. Das ist genau der Zweck der Aenderung — es senkt aber
+## den Ligaschnitt, gemessen von 59,4 auf 56,3 Tore je Partie. Der Ausgleich
+## hebt alle Positionen gleichmaessig an; Spielraum nach oben war an jeder.
+const WURF_AUSGLEICH := 17.8
 ## Wie weit Koennen, Tagesform und Torwart die Positionsquote hoechstens
 ## verschieben. Ein ueberragender Kreislaeufer trifft oefter als ein
 ## durchschnittlicher — aber auch er wirft nicht vom Fluegel wie vom Kreis.
@@ -971,7 +1116,8 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary, grunddiff:
 	# Die Position gibt die Quote vor, Koennen und Torwart verschieben sie.
 	# Der Hallenpuls wirkt direkt auf den Abschluss, nicht nur ueber den
 	# Staerkevergleich — sonst verschwindet der Heimvorteil.
-	var ziel: float = float(TREFFER_POSITION.get(pos, 0.60))
+	var ziel: float = float(TREFFER_POSITION.get(pos, 0.60)) * fokusfaktor(
+		str(a.get("wurfstil", a["taktik"]["angriff"])), pos) * deckungswirkung(td, pos)
 	if _gegenstoss:
 		ziel = TREFFER_GEGENSTOSS
 	if bool(a.get("vorwarnung", false)):
@@ -983,7 +1129,12 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary, grunddiff:
 		+ float(int(a.get("ueberzahl", 0))) * UEBERZAHL_ABSCHLUSS
 		+ clampf(grunddiff, -STAERKE_GRENZE, STAERKE_GRENZE) * STAERKE_AM_WURF,
 		ziel * WURF_UNTEN_ANTEIL, minf(ziel * WURF_OBEN_ANTEIL, 0.97))
-	var p_vorbei: float = clampf(0.085 - (wurfguete - paradenwert) * 0.0009, 0.04, 0.14)
+	# Fehlwuerfe: gemessen lagen sie bei 8,7 Prozent aller Abschluesse, in der
+	# Bundesliga sind es rund sechs. Die drei Prozentpunkte gehoeren dem
+	# Torhueter — die Torquote bleibt davon unberuehrt, weil sie unten auf den
+	# verbleibenden Wurf hochgerechnet wird. Was sich aendert, ist nur, ob ein
+	# nicht verwandelter Ball daneben geht oder gehalten wird.
+	var p_vorbei: float = clampf(0.066 - (wurfguete - paradenwert) * 0.0009, 0.03, 0.12)
 	# Blockierte und vorbeigeworfene Baelle gehen von derselben Quote ab. Damit
 	# am Ende wirklich `treffer` uebrig bleibt, wird die Torchance des
 	# verbleibenden Wurfs entsprechend hochgerechnet.
@@ -1120,14 +1271,20 @@ func _wurf_notieren(a: Dictionary, pos: String, ergebnis: String) -> void:
 
 func _wurfposition(a: Dictionary) -> String:
 	var stil: String = str(a["taktik"]["angriff"])
-	var verteilung: Dictionary = WURFVERTEILUNG.get(stil, WURFVERTEILUNG["positionsangriff"])
+	if not WURFVERTEILUNG.has(stil):
+		stil = "positionsangriff"
 	if a["sieben_gegen_sechs"]:
-		verteilung = WURFVERTEILUNG["rueckraumfokus"]
+		stil = "rueckraumfokus"
 	# Unter dem Vorwarnzeichen wird geworfen, wer den Ball hat — und das ist
 	# der Rueckraum. Am Kreis oder aussen laesst sich ein erzwungener Wurf
 	# nicht ansetzen.
 	if bool(a.get("vorwarnung", false)):
-		verteilung = WURFVERTEILUNG["rueckraumfokus"]
+		stil = "rueckraumfokus"
+	# Der Stil, aus dem die Verteilung wirklich kommt — der Abschluss rechnet
+	# mit demselben, sonst straft der Fokusfaktor eine Verteilung ab, die gar
+	# nicht gespielt wurde.
+	a["wurfstil"] = stil
+	var verteilung: Dictionary = WURFVERTEILUNG[stil]
 	var gesamt := 0.0
 	var gewichte := {}
 	for pos in verteilung.keys():
@@ -1145,6 +1302,9 @@ func _wurfposition(a: Dictionary) -> String:
 		# eigentliche Zweck der Massnahme — nicht, dass er schlechter trifft,
 		# sondern dass er den Ball nicht bekommt.
 		g *= Gegnerplan.wurfanteil(_gegner_zu(a)["gegnerplan"], sid)
+		# Und die Formation, gegen die gespielt wird: wo die Abwehr steht,
+		# kommt seltener jemand zum Abschluss.
+		g *= deckungsverteilung(_deckungswerte(_gegner_zu(a)), pos)
 		gewichte[pos] = g
 		gesamt += g
 	# Wer den Kreis anspielt, verschiebt Abschluesse zum Kreislaeufer.
