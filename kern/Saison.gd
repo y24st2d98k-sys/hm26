@@ -542,6 +542,19 @@ static func _vereinslose_ausmustern(d: Dictionary) -> void:
 		var p: float = clampf(VEREINSLOS_GRUNDRISIKO
 			+ (62.0 - g) * 0.02
 			+ (float(sp["alter"]) - 27.0) * 0.04, 0.05, 0.95)
+		# Wer jung ist, hoert nicht auf, nur weil ihn diesen Sommer niemand
+		# wollte.
+		#
+		# Die Regel war fuer den Sechsundzwanzigjaehrigen gedacht, den niemand
+		# mehr holt. Sie traf aber auch den Zwanzigjaehrigen, und der ist keine
+		# gescheiterte Karriere, sondern ein Spaetzuender — er spielt eine
+		# Klasse tiefer und kommt mit dreiundzwanzig wieder. Gemessen mit
+		# werkzeuge/Alterssonde.gd: nach fuenf Jahren standen in der ganzen
+		# Welt noch zwei Neunzehnjaehrige und acht Zwanzigjaehrige, zu Beginn
+		# waren es dreizehn und dreizehn. Ein Spiel, dem die Jugend ausgeht,
+		# wird mit jeder Spielzeit schwaecher.
+		if int(sp["alter"]) <= 22:
+			p *= 0.22
 		if Namen.zufall() > p:
 			continue
 		sp["karriereende"] = Welt.saison_index()
