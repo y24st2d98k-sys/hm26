@@ -164,7 +164,11 @@ static func verpflichten(d: Dictionary, sid: String) -> Dictionary:
 	sp["verein"] = cid
 	sp["nachwuchskandidat"] = false
 	sp["jugendspieler"] = true
+	# Nicht im eigenen Jahrgang geboren, aber hier ausgebildet: fuer die
+	# Kurve, die Ultras und die Treue zaehlt der Verein, der ihn grossgezogen
+	# hat, nicht der, in dessen Jahrgang er stand.
 	sp["aus_eigener_jugend"] = false
+	sp["ausbildungsverein"] = cid
 	sp["kenntnis"] = clampf(float(sp["kenntnis"]) + 20.0, 0.0, 100.0)
 	sp["vertrag"] = {
 		"bis_saison": Welt.saison_index() + Namen.wuerfel(3, 5),

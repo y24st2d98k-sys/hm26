@@ -348,6 +348,8 @@ static func verein_fuehren(d: Dictionary, cid: String) -> void:
 	_trainingsplan(d, cid)
 	_videostudium(d, cid)
 	_vertraege_pflegen(d, cid)
+	_gehaltslast_senken(d, cid)
+	_zahlungsverzug(d, cid)
 	kader_auffuellen(d, cid)
 	if Namen.zufall() < 0.05:
 		Mentoring.automatisch(d, cid)
@@ -530,6 +532,138 @@ static func _kaderschnitt(d: Dictionary, cid: String) -> float:
 ## Krise. Ein echter Vorstand sieht dabei nicht zu.
 const NOTKADER := 13
 
+## Ab welcher Gehaltsauslastung ein Verein einen Gutverdiener abgibt.
+const UEBERLAST_GRENZE := 108.0
+## Und ab wann er ihn wieder von der Liste nimmt.
+const UEBERLAST_ENTSPANNT := 98.0
+
+## Ein Verein ueber seinem Gehaltsbudget trennt sich von einem Gutverdiener.
+##
+## Bisher gab es dafuer nur einen halben Weg: _vertraege_pflegen liess bei einer
+## Auslastung ueber 112 Prozent auslaufende Vertraege gehen. Wer sein Budget
+## mitten in der Saison ueberschritt — nach einem Abstieg, nach einem
+## Einbruch an der Kasse —, konnte nichts tun als warten. Deshalb stand ein
+## Drittel der Liga dauerhaft im Minus, ohne dass irgendwo eine Gegenbewegung
+## einsetzte.
+##
+## Verkauft wird nicht der Beste, sondern der, dessen Vertrag am wenigsten zu
+## seiner Leistung passt — so wie ein Verein es wirklich haelt.
+static func _gehaltslast_senken(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	var auslastung: float = Finanzen.gehaltsauslastung(d, cid)
+	if auslastung < UEBERLAST_GRENZE:
+		# Entspannt: wer nur wegen der Gehaltslast auf der Liste stand, darf
+		# wieder bleiben.
+		if auslastung < UEBERLAST_ENTSPANNT:
+			for sid in (v["kader"] as Array):
+				var frei: Dictionary = d["spieler"][sid]
+				if str(frei.get("listung_grund", "")) == "gehaltslast":
+					frei["auf_transferliste"] = false
+					frei["listung_grund"] = ""
+		return
+	# Einer nach dem anderen: steht schon jemand im Schaufenster, wartet der
+	# Verein ab. Die Prüfung läuft eigens vorweg und nicht in der Auswahl —
+	# sonst haengt sie an der Reihenfolge des Kaders.
+	for sid_offen in (v["kader"] as Array):
+		if bool((d["spieler"][sid_offen] as Dictionary).get("auf_transferliste", false)):
+			return
+	var stamm := _stammniveau(d, cid)
+	var wahl := ""
+	var schlechtestes := 0.0
+	for sid2 in (v["kader"] as Array):
+		var sp: Dictionary = d["spieler"][sid2]
+		if bool(sp.get("jugendspieler", false)):
+			continue
+		var gehalt: float = float(sp["vertrag"].get("gehalt", 0.0))
+		if gehalt <= 0.0:
+			continue
+		# Ein Talent wird an seiner Decke gemessen, nicht an seinem Stand —
+		# sonst verkauft ein Verein in Not genau die Zukunft, die er braucht.
+		var messlatte: float = Spielerfabrik.gesamt(sp)
+		if int(sp["alter"]) <= 22:
+			messlatte = maxf(messlatte, float(sp.get("potenzial", 0.0)) - 4.0)
+		if messlatte >= stamm:
+			continue
+		# Gehalt je Staerkepunkt unter dem Niveau der Stammsieben: je hoeher,
+		# desto weniger passt der Vertrag zur Leistung.
+		var missverhaeltnis: float = gehalt * (stamm - messlatte)
+		if missverhaeltnis > schlechtestes:
+			schlechtestes = missverhaeltnis
+			wahl = str(sid2)
+	if wahl == "":
+		return
+	var gewaehlt: Dictionary = d["spieler"][wahl]
+	gewaehlt["auf_transferliste"] = true
+	gewaehlt["listung_grund"] = "gehaltslast"
+
+## Ab welchem Minus (Anteil des Jahresetats) ein Verein Gehaelter nicht mehr
+## bedient und Spieler ausserordentlich kuendigen.
+const VERZUG_KASSE := -0.45
+
+## Der letzte Ausweg: wer nicht mehr zahlen kann, verliert Spieler.
+##
+## Bis hierher konnte ein Verein beliebig tief ins Minus rutschen. Die Prüfung
+## meldete das als Fehler ("Vereine tief im Minus"), und sie hatte recht: es gab
+## keinen Weg zurueck. Das Darlehen war ausgeschoepft, der Gutverdiener stand im
+## Schaufenster, und wenn ihn in einer kleinen Liga niemand wollte, lief die
+## Kasse weiter nach unten — Jahr fuer Jahr, ohne Ende.
+##
+## In der Wirklichkeit endet das anders: bleiben Gehaelter aus, kuendigt der
+## Spieler ausserordentlich und geht ablosefrei. Genau das passiert hier, und
+## damit loest sich die Last auch dann, wenn es keinen Kaeufer gibt. Fuer den
+## Menschen vor dem Bildschirm ist es zugleich eine Gelegenheit: in der Liste
+## der Vereinslosen stehen dann Spieler, die dort sonst nie stehen wuerden.
+static func _zahlungsverzug(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	if float(v["kasse"]) > float(v["jahresetat"]) * VERZUG_KASSE:
+		return
+	if (v["kader"] as Array).size() <= 14:
+		# Unter der Notgrenze wird niemand mehr abgegeben — sonst kann der
+		# Verein nicht mehr aufstellen, und das ist nicht schwer, sondern kaputt.
+		return
+	# Es kuendigt der, dessen Vertrag am wenigsten zu seiner Leistung passt —
+	# dieselbe Messlatte wie beim Verkaufen.
+	var stamm := _stammniveau(d, cid)
+	var wahl := ""
+	var schlechtestes := 0.0
+	for sid in (v["kader"] as Array):
+		var sp: Dictionary = d["spieler"][sid]
+		if bool(sp.get("jugendspieler", false)):
+			continue
+		var gehalt: float = float(sp["vertrag"].get("gehalt", 0.0))
+		if gehalt <= 0.0:
+			continue
+		var messlatte: float = Spielerfabrik.gesamt(sp)
+		if int(sp["alter"]) <= 22:
+			messlatte = maxf(messlatte, float(sp.get("potenzial", 0.0)) - 4.0)
+		if messlatte >= stamm:
+			continue
+		var missverhaeltnis: float = gehalt * (stamm - messlatte)
+		if missverhaeltnis > schlechtestes:
+			schlechtestes = missverhaeltnis
+			wahl = str(sid)
+	if wahl == "":
+		# Der letzte Ausweg schont niemanden.
+		#
+		# Zuerst stand hier nur die Messlatte von oben, und damit gab der Verein
+		# genau die Billigen ab: das sparte wenig, und die teuren Vertraege
+		# blieben liegen. Gemessen in der Prüfung rutschte MT Melsungen ueber
+		# drei Stichtage von 2,94 auf 4,78 Millionen Minus, waehrend es Woche fuer
+		# Woche Spieler verlor. Ein Verein in dieser Lage verliert zuerst seinen
+		# Bestverdiener — der hat die hoechste Last und die meisten Abnehmer.
+		var teuerstes := 0.0
+		for sid2 in (v["kader"] as Array):
+			var sp2: Dictionary = d["spieler"][sid2]
+			if bool(sp2.get("jugendspieler", false)):
+				continue
+			var g2: float = float(sp2["vertrag"].get("gehalt", 0.0))
+			if g2 > teuerstes:
+				teuerstes = g2
+				wahl = str(sid2)
+	if wahl == "":
+		return
+	Transfermarkt.vertrag_aufloesen(d, wahl, true)
+
 static func kader_auffuellen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	# Eine Nationalmannschaft nominiert, sie verpflichtet nicht: sonst wuerden
@@ -690,6 +824,20 @@ static func _bester_freier(d: Dictionary, cid: String, pos: String, notlage: boo
 	var spielraum: float = float(v["gehaltsbudget"]) * 1.1 - Finanzen.spielergehaelter(d, cid) - Finanzen.personalgehaelter(d, cid)
 	var grenze: float = float(v["gehaltsbudget"]) * (0.16 if notlage else 0.06)
 	grenze = maxf(grenze, spielraum) * Vereinsplan.etatfaktor(d, cid)
+	# Wer sein Gehaltsbudget schon ueberschreitet, verpflichtet niemanden mehr.
+	#
+	# Hier lag das Leck der Wirtschaft. Der Boden von sechs Prozent des
+	# Wochenbudgets galt auch dann, wenn ueberhaupt kein Spielraum mehr war —
+	# und kader_auffuellen holt in einem Durchgang bis zu acht Spieler. Gemessen
+	# mit werkzeuge/Wirtschaftssonde.gd zahlten die kleinen Vereine dadurch 125
+	# bis 141 Prozent ihres Etats an Gehalt, bei einem Budget von 94 Prozent,
+	# und machten Jahr fuer Jahr Verlust: ein Drittel der Liga stand im Minus.
+	#
+	# Die Notlage bleibt ausgenommen. Ein Verein ohne Torwart muss einen holen,
+	# auch wenn er ihn sich nicht leisten kann — das ist dann sein Problem und
+	# nicht das der Buchhaltung.
+	if not notlage and spielraum <= 0.0:
+		return ""
 	# Dieselbe Latte wie beim Verlaengern.
 	#
 	# Hier war das Leck. Ein Verein liess einen Spieler ziehen, weil er mehr
@@ -771,6 +919,12 @@ static func _infrastruktur(d: Dictionary, cid: String) -> void:
 		return
 	var bereiche := ["trainingszentrum", "jugendarbeit", "medizin", "analyse", "regeneration", "halle"]
 	var bereich: String = str(Namen.waehle(bereiche))
+	# Sitze, die niemand fuellt, kosten Betrieb und bringen nichts — und die
+	# groesste Halle der Liga ist die Grenze.
+	if bereich == "halle" and not Finanzen.halle_lohnt(d, cid):
+		return
+	if bereich != "halle" and int(v["infrastruktur"].get(bereich, 1)) >= 10:
+		return
 	var kosten: float = Finanzen.ausbaukosten(d, cid, bereich)
 	if float(v["kasse"]) > kosten * 2.5:
 		Finanzen.ausbau_starten(d, cid, bereich)

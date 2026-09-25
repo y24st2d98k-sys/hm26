@@ -21,6 +21,9 @@ const WOCHEN_JE_SAISON := 52
 
 ## Höchstverschuldung, gemessen am Jahresetat.
 const SCHULDENDECKEL := 0.85
+## Bis zu welcher Restschuld (Anteil des Jahresetats) die KI noch einmal
+## nachfasst. Darueber hilft kein Darlehen mehr, sondern nur der Verkauf.
+const ZWEITDARLEHEN_DECKEL := 0.55
 
 static func liste(d: Dictionary, cid: String) -> Array:
 	var v: Dictionary = d["vereine"][cid]
@@ -166,11 +169,18 @@ static func ki_pruefen(d: Dictionary, cid: String) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	if not (v["halle"]["bauprojekt"] as Dictionary).is_empty():
 		return
-	if not liste(d, cid).is_empty():
-		return
 	if float(v["kasse"]) > 0.0:
 		return
-	# Ein Verein im Minus überbrückt, statt Spieler zu verscherbeln.
+	# Ein zweites Darlehen ist erlaubt, solange die Bank Luft laesst.
+	#
+	# Hier stand ein hartes "wer schon eines hat, bekommt keines mehr". Wer
+	# einmal ueberbrueckt hatte und danach weiter blutete, konnte gar nichts
+	# mehr tun: keine zweite Rate, kein Verkauf, nichts. Gemessen mit
+	# werkzeuge/Wirtschaftssonde.gd standen Vereine dadurch jahrelang bei zwei
+	# bis drei Millionen im Minus, und die Prüfung meldete sie als pleite.
+	# Der Schuldendeckel in hoechstbetrag zieht die Grenze, nicht die Anzahl.
+	if restschuld(d, cid) > float(v["jahresetat"]) * ZWEITDARLEHEN_DECKEL:
+		return
 	var bedarf: float = minf(absf(float(v["kasse"])) * 1.6 + 60000.0, hoechstbetrag(d, cid))
 	if bedarf < 25000.0:
 		return

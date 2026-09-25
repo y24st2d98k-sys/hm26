@@ -260,6 +260,11 @@ static func verletzung_im_spiel(d: Dictionary, sid: String) -> Dictionary:
 	return erzeuge_verletzung(d, sid, true)
 
 ## Wahrscheinlichkeit, dass sich ein Spieler gerade verletzt (pro Angriff auf dem Feld).
+## Was ein Spieler ohne jede Last am Tag abbaut, und welcher Anteil der
+## aufgelaufenen Last dazukommt.
+const GRUNDERHOLUNG := 1.0
+const ERHOLUNG_ANTEIL := 0.055
+
 static func risiko(d: Dictionary, sid: String) -> float:
 	var sp: Dictionary = d["spieler"][sid]
 	var basis: float = risiko_roh(sp)
@@ -327,7 +332,23 @@ static func tageswechsel(d: Dictionary) -> void:
 					})
 			continue
 		# Lastabbau und Fitnessaufbau
-		var regeneration: float = 1.6
+		#
+		# Der Abbau haengt an der Last selbst, nicht nur an einem festen
+		# Tagessatz. Vorher stand hier eine reine Subtraktion, und damit gab es
+		# gar keinen Gleichgewichtspunkt: ein Lastkonto wuchs entweder auf
+		# hundert oder lag auf null, und dazwischen hing es davon ab, ob die
+		# Woche ein Spiel hatte. Gemessen mit werkzeuge/Lastsonde.gd lag die
+		# Liga bei Trainingsintensitaet 30 auf einer mittleren Last von 14,3 und
+		# bei 100 auf 22,5 — acht Punkte Unterschied fuer den ganzen Weg von
+		# einem Schongang bis zum Dauerschinden. Das Verletzungsrisiko haengt an
+		# dieser Last, und deshalb kostete hohe Intensitaet fast nichts: elf
+		# Prozent mehr Ausfalltage fuer fuenfundsiebzig Prozent mehr
+		# Entwicklung. Damit war "Intensitaet 100" immer richtig.
+		#
+		# Wer erschoepft ist, erholt sich in absoluten Zahlen schneller als wer
+		# frisch ist — das ist auch physiologisch der richtige Verlauf und gibt
+		# dem Konto einen Punkt, auf den es zulaeuft.
+		var regeneration: float = GRUNDERHOLUNG + float(sp["last"]) * ERHOLUNG_ANTEIL
 		var verein2: String = str(sp["verein"])
 		if verein2 != "" and d["vereine"].has(verein2):
 			var v: Dictionary = d["vereine"][verein2]

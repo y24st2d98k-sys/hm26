@@ -22,16 +22,44 @@ const PLAETZE := {
 }
 const REIHENFOLGE := ["Trikotbrust", "Hallenname", "Ausrüster", "Ärmel", "Rückenpartner"]
 
-## Anteil des Jahresetats, den ein durchschnittlicher Verein über Sponsoring
-## einnimmt. Der grösste Einzelposten auf der Einnahmenseite.
-const GRUNDANTEIL := 0.52
+## Was ein Sitzplatz im Jahr an Sponsorengeld wert ist.
+##
+## Hier stand ein Anteil des Jahresetats (0,52), und das war im Kreis gerechnet:
+## seit Finanzen.saison_budgets den Etat am Umsatz des Vorjahres bemisst, und
+## der Umsatz zu einem Drittel aus Sponsoring besteht, senkte jeder Sparzwang
+## auch die Einnahmen. Gemessen mit werkzeuge/Wirtschaftssonde.gd fiel das
+## Sponsoring dadurch auf 32 Prozent des Ertrags, während die Zuschauer auf 44
+## stiegen — in der Bundesliga ist es umgekehrt, dort ist Sponsoring die größte
+## Säule.
+##
+## Ein Sponsor kauft keine Bilanz, er kauft eine Bühne: eine gefüllte Halle,
+## den Namen des Vereins, das Ansehen der Liga, Titel. Genau daran bemisst es
+## sich jetzt — und der Etat kommt darin nicht mehr vor.
+## Der erste Wert (570) war geschaetzt und zu hoch: gemessen kamen 6,76 Mio.
+## Sponsoring je Verein heraus, angepeilt waren 4,3.
+##
+## Vor allem war er allein: nur die Halle zu zaehlen hat die kleinen Vereine
+## ausgetrocknet. Die Prüfung, die alle Ligen ansieht und nicht nur die
+## Bundesliga, meldete danach neun Vereine unter zwei Millionen Minus — GOG,
+## Mors-Thy, SønderjyskE, Lemvig, Eisenach, Balingen, alle mit kleinen Hallen.
+## Ein Sponsor kauft eine Buehne, aber auch einen Markt: den Namen des Vereins
+## in seiner Region, in seiner Liga, in seinem Land. Beides zaehlt jetzt.
+const JE_PLATZ := 225.0
+## Welcher Anteil der wirtschaftlichen Grundgroesse (Finanzen.grundetat, also
+## Ruf mal Liga mal Landeswohlstand) als Marktseite dazukommt.
+const MARKTANTEIL := 0.33
 
 ## Wie viel Sponsorengeld ein Verein im Jahr insgesamt anziehen kann.
 static func marktwert(d: Dictionary, cid: String) -> float:
 	var v: Dictionary = d["vereine"][cid]
 	var liga: Dictionary = d["ligen"].get(str(v["liga"]), {})
-	var wert: float = float(v["jahresetat"]) * GRUNDANTEIL
-	# Die Bühne zählt: eine erste Liga bringt Partner, die eine zweite nicht sieht.
+	var plaetze: float = maxf(float((v.get("halle", {}) as Dictionary).get("kapazitaet", 2000.0)), 500.0)
+	# Die Bühne: Plätze in der Halle, und wer darauf steht.
+	var buehne: float = plaetze * JE_PLATZ * (0.55 + float(v["ruf"]) / 120.0)
+	# Und der Markt, in dem der Verein steht.
+	var markt: float = Finanzen.grundetat(d, cid) * MARKTANTEIL
+	var wert: float = buehne + markt
+	# Eine erste Liga bringt Partner, die eine zweite nicht sieht.
 	wert *= 0.72 + float(liga.get("ruf", 50.0)) / 190.0
 	# Volle Halle und treue Anhänger sind ein Verkaufsargument.
 	var fans: Dictionary = v["fans"]

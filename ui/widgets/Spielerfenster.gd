@@ -679,7 +679,8 @@ func _entwicklung(sp: Dictionary) -> void:
 		Stil.wert_farbe(float(sp["attr"]["arbeitseinsatz"]))))
 	karte.add_child(Stil.info_zeile("Verletzungsanfälligkeit", "%d" % Spielerfabrik.anzeige(float(sp["verletzungsneigung"])),
 		Stil.wert_farbe(20.0 - float(sp["verletzungsneigung"]))))
-	if bool(sp.get("aus_eigener_jugend", false)):
+	if str(sp.get("ausbildungsverein", "")) != "" \
+			and str(sp.get("ausbildungsverein", "")) == str(sp.get("verein", "")):
 		karte.add_child(Stil.text("Aus der eigenen Jugend.", Stil.S_KLEIN, Stil.GRUEN))
 	var kurve: Array = sp.get("staerke_verlauf", [])
 	if kurve.size() >= 3:

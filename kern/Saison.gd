@@ -380,6 +380,8 @@ static func neue_saison(d: Dictionary, mein: String) -> void:
 	_vertraege_ablaufen(d)
 	_karriereenden(d)
 	_nachwuchs(d)
+	# Erst merken, was eingenommen wurde, dann die Jahressummen leeren.
+	Finanzen.umsatz_festhalten(d)
 	_statistiken_umlegen(d)
 	attributstand_festhalten(d)
 	_wettbewerbe_zuruecksetzen(d)

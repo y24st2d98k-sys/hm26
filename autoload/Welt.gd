@@ -932,6 +932,17 @@ func _daten_auffrischen() -> void:
 			# in das erste Profigehalt ein.
 			if bool(sp.get("jugendspieler", false)):
 				vertrag["gehalt"] = 0.0
+		# Wer hat ihn grossgezogen?
+		#
+		# Bis hierher stand im Spielstand nur das Ja/Nein "aus_eigener_jugend",
+		# und fuenf Stellen lasen es als "aus UNSERER Jugend" — die Ultras, die
+		# Wechselbereitschaft, das Spielerfenster, der Fingerabdruck. Ein
+		# gekaufter Spieler, der irgendwo anders in der Akademie war, zaehlte
+		# damit als Eigengewaechs seines neuen Vereins. Fuer alte Spielstaende
+		# ist der heutige Verein die beste Auskunft, die es gibt.
+		if not sp.has("ausbildungsverein"):
+			sp["ausbildungsverein"] = str(sp.get("verein", "")) \
+				if bool(sp.get("aus_eigener_jugend", false)) else ""
 		if not (sp.get("stats", {}) as Dictionary).has("monat"):
 			(sp.get("stats", {}) as Dictionary)["monat"] = Spielerfabrik.leere_saisonstats()
 		for zeitraum in ["saison", "karriere"]:

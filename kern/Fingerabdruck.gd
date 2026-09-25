@@ -85,7 +85,7 @@ static func _zahlen(d: Dictionary, cid: String, t: Dictionary) -> Array:
 			continue
 		alter += float(sp["alter"])
 		anzahl += 1
-		if bool(sp.get("aus_eigener_jugend", false)):
+		if str(sp.get("ausbildungsverein", "")) == str(cid):
 			eigene += 1
 			eigene_minuten += float(sp["stats"]["saison"]["minuten"])
 	if anzahl > 0:

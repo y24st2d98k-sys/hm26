@@ -145,7 +145,7 @@ static func begruendungen(d: Dictionary, cid: String) -> Dictionary:
 	var jung := 0
 	for sid in v["kader"]:
 		var sp: Dictionary = d["spieler"][sid]
-		if bool(sp.get("aus_eigener_jugend", false)):
+		if str(sp.get("ausbildungsverein", "")) == str(cid):
 			eigene += 1
 		if int(sp["alter"]) <= 21:
 			jung += 1

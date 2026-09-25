@@ -40,7 +40,14 @@ static func bindung(d: Dictionary, sid: String) -> float:
 	# besseren Angebots.
 	var jahre: float = maxf(float(Welt.saison_index()) - float(sp["vertrag"].get("unterschrieben_saison", 0)), 0.0)
 	w += minf(jahre * 6.5, 30.0)
-	if bool(sp.get("aus_eigener_jugend", false)):
+	# Und zwar aus der Jugend DIESES Vereins.
+	#
+	# Hier stand nur das Ja/Nein "aus_eigener_jugend". Das ist wahr, solange
+	# der Spieler bei seinem Ausbildungsverein steht — nach einem Wechsel
+	# bekam ein gekaufter Spieler denselben Treuebonus bei einem Verein, der
+	# ihn nur bezahlt hat.
+	if str(sp.get("ausbildungsverein", "")) != "" \
+			and str(sp.get("ausbildungsverein", "")) == str(sp.get("verein", "")):
 		w += 17.0
 	w += float(sp["charakter"].get("loyalitaet", 12.0)) / 20.0 * 24.0
 	match str(sp["vertrag"].get("rolle", "rotation")):

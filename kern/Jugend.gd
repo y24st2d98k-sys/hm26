@@ -70,6 +70,7 @@ static func erzeuge_jahrgang(d: Dictionary, cid: String, anzahl: int) -> Array:
 		sp["verein"] = cid
 		sp["jugendspieler"] = true
 		sp["aus_eigener_jugend"] = true
+		sp["ausbildungsverein"] = cid
 		sp["kenntnis"] = clampf(45.0 + qualitaet * 0.35, 40.0, 92.0)
 		# Kein Gehalt.
 		#

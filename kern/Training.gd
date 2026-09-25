@@ -125,7 +125,7 @@ static func _verein_trainieren(d: Dictionary, cid: String) -> void:
 		var verletzt: bool = not (sp["verletzung"] as Dictionary).is_empty()
 		# Belastung durch Training
 		if not verletzt:
-			var last_zuwachs: float = intensitaet * 7.0 * float(sp_daten["last"])
+			var last_zuwachs: float = intensitaet * TRAININGSLAST * float(sp_daten["last"])
 			if regeneriert:
 				last_zuwachs *= 0.25
 			sp["last"] = clampf(float(sp["last"]) + last_zuwachs - 2.0, 0.0, 100.0)
@@ -154,6 +154,15 @@ const ERFAHRUNG_TW := ["tw_stellung", "siebenmeterabwehr", "anspiel", "ausstrahl
 	"nervenstaerke", "uebersicht", "fuehrung"]
 ## Ab wann Erfahrung mehr zaehlt als Zuwachs durch Training.
 const ERFAHRUNG_AB := 28
+## Was eine Woche Training bei voller Intensitaet auf das Lastkonto legt.
+##
+## Sieben waren zu wenig. Der Tagesabzug in Medizin.tageslauf nimmt rund
+## siebzehn Punkte je Woche, ein Pflichtspiel legt siebzehn drauf — sieben
+## Punkte Trainingslast gingen darin unter, und die Intensitaet war damit
+## folgenlos fuer das Risiko. Gemessen mit werkzeuge/Lastsonde.gd: mittlere
+## Last 14,3 bei Intensitaet 30 gegen 22,5 bei 100.
+const TRAININGSLAST := 16.0
+
 ## Grundtempo der Entwicklung, je Woche und gezogenem Attribut.
 ##
 ## Frueher stand hier 0.052. Damit kam ein Zwanzigjaehriger mit 61 in fuenf

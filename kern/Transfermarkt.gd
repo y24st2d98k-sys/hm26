@@ -780,14 +780,23 @@ static func auf_transferliste(d: Dictionary, sid: String, wert: bool) -> void:
 	d["spieler"][sid]["auf_transferliste"] = wert
 
 ## Einen Spieler entlassen (Vertragsaufloesung gegen Abfindung).
-static func vertrag_aufloesen(d: Dictionary, sid: String) -> Dictionary:
+## Einen Vertrag aufloesen.
+##
+## ohne_abfindung ist der Zahlungsverzug: ein Spieler, dessen Verein ihn nicht
+## mehr bezahlt, kann ausserordentlich kuendigen und geht ohne einen Cent. Das
+## ist kein Schlupfloch fuer den Trainer, sondern der letzte Ausweg eines
+## Vereins, der am Ende ist — und der Weg, auf dem sich eine Gehaltslast wieder
+## loest, wenn zum Verkaufen niemand da ist.
+static func vertrag_aufloesen(d: Dictionary, sid: String, ohne_abfindung: bool = false) -> Dictionary:
 	var sp: Dictionary = d["spieler"][sid]
 	var cid: String = str(sp["verein"])
 	var rest: int = maxi(int(sp["vertrag"].get("bis_saison", 0)) - Welt.saison_index(), 0)
-	var abfindung: float = float(sp["vertrag"].get("gehalt", 0.0)) * 52.0 * float(rest) * 0.45
+	var abfindung: float = 0.0 if ohne_abfindung else \
+		float(sp["vertrag"].get("gehalt", 0.0)) * 52.0 * float(rest) * 0.45
 	if float(d["vereine"][cid]["kasse"]) < abfindung:
 		return {"ok": false, "grund": "Die Abfindung von %s ist nicht finanzierbar." % Stil.geld(abfindung)}
-	Finanzen.buchen(d, cid, -abfindung, "Abfindung %s" % Spielerfabrik.voller_name(sp), "transfer")
+	if abfindung > 0.0:
+		Finanzen.buchen(d, cid, -abfindung, "Abfindung %s" % Spielerfabrik.voller_name(sp), "transfer")
 	Ehemalige.vermerken(d, cid, sid, "freistellung", "", 0.0)
 	Konkurrenz.speicher_leeren(sid)
 	Projekte.aufgeben(d, cid, sid)
@@ -795,6 +804,9 @@ static func vertrag_aufloesen(d: Dictionary, sid: String) -> Dictionary:
 	aufstellung_saeubern(d, cid, sid)
 	sp["verein"] = ""
 	sp["vertrag"] = {}
+	KI.freie_leeren()  # er steht jetzt im Markt der Vereinslosen
+	if ohne_abfindung:
+		return {"ok": true, "grund": "%s hat seinen Vertrag wegen ausstehender Gehälter gekündigt." % Spielerfabrik.voller_name(sp)}
 	return {"ok": true, "grund": "%s wurde freigestellt (Abfindung: %s)." % [Spielerfabrik.voller_name(sp), Stil.geld(abfindung)]}
 
 # ------------------------------------------------------------- KI-Markt ---
