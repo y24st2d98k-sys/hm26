@@ -67,6 +67,7 @@ func _bericht(d: Dictionary, titel: String) -> void:
 	var spieler := 0
 	var stamm_summe := 0.0
 	var mitlaeufer := 0
+	var herkunft := {}
 	var vereine: Array = d["ligen"][lid]["vereine"]
 	for c in vereine:
 		var kader: Array = d["vereine"][str(c)].get("kader", [])
@@ -85,10 +86,35 @@ func _bericht(d: Dictionary, titel: String) -> void:
 			stamm += float(werte[i])
 		stamm = stamm / maxf(float(k), 1.0)
 		stamm_summe += stamm
-		for w in werte:
-			if float(w) < stamm - MITLAEUFER_ABSTAND:
-				mitlaeufer += 1
+		# Und woher sie kommen. Die Zahl allein sagt nur, dass zu viele zu
+		# schwache Spieler in den Kadern stehen; erst die Herkunft sagt, an
+		# welcher Tuer sie hereinkommen.
+		for sid2 in kader:
+			var sp2: Dictionary = d["spieler"][str(sid2)]
+			if Spielerfabrik.gesamt(sp2) >= stamm - MITLAEUFER_ABSTAND:
+				continue
+			mitlaeufer += 1
+			var her := "gekauft oder geerbt"
+			if str(sp2.get("ausbildungsverein", "")) == str(c):
+				her = "eigene Akademie"
+			elif str(sp2.get("ausbildungsverein", "")) != "":
+				her = "fremde Akademie"
+			elif int(sp2["alter"]) >= 32:
+				her = "gealtert"
+			herkunft[her] = int(herkunft.get(her, 0)) + 1
 	var n: float = float(vereine.size())
-	_log("%-22s %8.1f %9.1f %10.1f %11.1f %9.1f %%" % [titel, groesse / n,
+	_log("%-22s %8.1f %9.1f %10.1f %11.1f %9.1f %%   %s" % [titel, groesse / n,
 		alter / maxf(float(spieler), 1.0), stamm_summe / n,
-		float(mitlaeufer) / n, float(mitlaeufer) / maxf(float(spieler), 1.0) * 100.0])
+		float(mitlaeufer) / n, float(mitlaeufer) / maxf(float(spieler), 1.0) * 100.0,
+		_herkunftstext(herkunft, mitlaeufer)])
+
+## Die Herkunft der Mitläufer in einer Zeile.
+func _herkunftstext(herkunft: Dictionary, gesamt: int) -> String:
+	if gesamt <= 0:
+		return ""
+	var liste: Array = herkunft.keys()
+	liste.sort_custom(func(a, b): return int(herkunft[a]) > int(herkunft[b]))
+	var teile: PackedStringArray = PackedStringArray()
+	for k in liste:
+		teile.append("%s %d %%" % [str(k), int(round(float(herkunft[k]) / float(gesamt) * 100.0))])
+	return "  ".join(teile)
