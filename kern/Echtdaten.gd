@@ -10,10 +10,12 @@ extends RefCounted
 const PFAD_LIGEN := "res://daten/ligen.json"
 const PFAD_KADER := "res://daten/kader.json"
 const PFAD_SPIELPLAN := "res://daten/spielplan.json"
+const PFAD_SCHIEDSRICHTER := "res://daten/schiedsrichter.json"
 
 static var _ligen: Dictionary = {}
 static var _kader: Dictionary = {}
 static var _spielplan: Dictionary = {}
+static var _schiedsrichter: Dictionary = {}
 static var _geladen: bool = false
 
 static func laden() -> void:
@@ -23,6 +25,7 @@ static func laden() -> void:
 	_ligen = _lies(PFAD_LIGEN)
 	_kader = _lies(PFAD_KADER)
 	_spielplan = _lies(PFAD_SPIELPLAN)
+	_schiedsrichter = _lies(PFAD_SCHIEDSRICHTER) if FileAccess.file_exists(PFAD_SCHIEDSRICHTER) else {}
 
 static func _lies(pfad: String) -> Dictionary:
 	if not FileAccess.file_exists(pfad):
@@ -82,6 +85,11 @@ static func spielplan_fuer(liganame: String) -> Array:
 	laden()
 	var plaene: Dictionary = _spielplan.get("spielplaene", {})
 	return (plaene.get(liganame, {}) as Dictionary).get("partien", [])
+
+## Die echten Gespanne: [{"a": "Vorname Name", "b": "…", "nation": "de"}].
+static func schiedsrichter() -> Array:
+	laden()
+	return _schiedsrichter.get("gespanne", [])
 
 static func spielplan_stand() -> String:
 	laden()
@@ -231,6 +239,13 @@ static func abgleich(d: Dictionary) -> Dictionary:
 			else:
 				sp["bild"] = str(e["bild"])
 			geaendert = true
+
+		# Körperdaten und Wurfhand gelten unmittelbar — sie entwickeln sich im
+		# Spiel nicht, also gibt es nichts zu bewahren.
+		for feld in ["hand", "groesse", "gewicht"]:
+			if e.has(feld) and str(e[feld]) != "" and str(e[feld]) != str(sp.get(feld, "")):
+				Spielerfabrik.koerper_uebernehmen(sp, {feld: e[feld]}, 0)
+				geaendert = true
 
 		var neu_pos: String = str(e.get("position", ""))
 		if neu_pos != "" and neu_pos != str(sp["position"]) and Spielerfabrik.POSITIONEN.has(neu_pos):

@@ -290,6 +290,12 @@ static func grundetat(d: Dictionary, cid: String) -> float:
 	var v: Dictionary = d["vereine"].get(cid, {})
 	if v.is_empty():
 		return LOHN_REFERENZ
+	# Ein echter Etat aus dem Datensatz verschiebt den Richtwert dauerhaft —
+	# als Verhältnis, damit Auf- und Abstieg und Rufgewinn weiter wirken.
+	return grundetat_formel(d, v) * float(v.get("etat_faktor", 1.0))
+
+## Der Richtwert allein aus Ruf, Liga und Reichtum der Nation.
+static func grundetat_formel(d: Dictionary, v: Dictionary) -> float:
 	var liga: Dictionary = d["ligen"].get(str(v["liga"]), {})
 	var reichtum: float = float((d["nationen"] as Dictionary).get(str(v["nation"]), {}).get("reichtum", 1.0))
 	var wert: float = pow(maxf(float(v["ruf"]), 10.0), 2.62) * 52.0 * reichtum

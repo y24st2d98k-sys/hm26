@@ -40,9 +40,47 @@ static func leer() -> Dictionary:
 ## Legt den Gespann-Pool an. Wird einmal beim Weltaufbau gerufen.
 static func erzeugen(d: Dictionary, nationen: Array) -> void:
 	var pool := leer()
-	for i in range(ANZAHL):
+	# Zuerst die echten Gespanne aus daten/schiedsrichter.json. Ihre Namen
+	# stehen fest, ihre Neigungen würfelt das Spiel — wie streng ein Duo
+	# wirklich pfeift, weiß keine Tabelle.
+	var echte: Array = Echtdaten.schiedsrichter() if bool(d.get("echte_welt", false)) else []
+	var nummer := 0
+	for e in echte:
+		var eintrag: Dictionary = e
+		if str(eintrag.get("a", "")) == "" or str(eintrag.get("b", "")) == "":
+			continue
+		nummer += 1
+		var nat_e: String = str(eintrag.get("nation", "de"))
+		var g_e := _gespann_bauen(d, "sr_%03d" % nummer, nat_e)
+		g_e["a"] = str(eintrag["a"])
+		g_e["b"] = str(eintrag["b"])
+		g_e["echt"] = true
+		if eintrag.has("erfahrung"):
+			g_e["erfahrung"] = float(eintrag["erfahrung"])
+		for feld in ["strenge", "zweikampf", "heimneigung", "konstanz"]:
+			if eintrag.has(feld):
+				g_e[feld] = clampf(float(eintrag[feld]), 5.0, 95.0)
+		pool["gespanne"][g_e["id"]] = g_e
+		(pool["reihenfolge"] as Array).append(g_e["id"])
+	# Jede Liga braucht Gespanne aus dem eigenen Land — wo der Datensatz
+	# weniger als drei kennt, ergänzt das Spiel erfundene.
+	var je_nation := {}
+	for gid in pool["reihenfolge"]:
+		var n: String = str(pool["gespanne"][gid]["nation"])
+		je_nation[n] = int(je_nation.get(n, 0)) + 1
+	if not echte.is_empty():
+		for nat_f in nationen:
+			while int(je_nation.get(str(nat_f), 0)) < 3:
+				nummer += 1
+				var g_f := _gespann_bauen(d, "sr_%03d" % nummer, str(nat_f))
+				g_f["nation"] = str(nat_f)
+				pool["gespanne"][g_f["id"]] = g_f
+				(pool["reihenfolge"] as Array).append(g_f["id"])
+				je_nation[str(nat_f)] = int(je_nation.get(str(nat_f), 0)) + 1
+	while nummer < ANZAHL:
+		nummer += 1
 		var nat: String = str(Namen.waehle(nationen)) if not nationen.is_empty() else "de"
-		var g := _gespann_bauen(d, "sr_%03d" % (i + 1), nat)
+		var g := _gespann_bauen(d, "sr_%03d" % nummer, nat)
 		pool["gespanne"][g["id"]] = g
 		(pool["reihenfolge"] as Array).append(g["id"])
 	d["schiedsrichter"] = pool
@@ -85,6 +123,20 @@ static func fuer_partie(d: Dictionary, mid: String) -> Dictionary:
 	var reihe: Array = pool.get("reihenfolge", [])
 	if reihe.is_empty():
 		return {}
+	# Eine Ligapartie pfeift ein Gespann aus dem eigenen Land, sofern es eins
+	# gibt — ein dänisches Duo in Lemgo gibt es nur im Europapokal.
+	var spiel: Dictionary = (d.get("spiele", {}) as Dictionary).get(mid, {})
+	var liga: Dictionary = (d.get("ligen", {}) as Dictionary).get(str(spiel.get("wettbewerb", "")), {})
+	if liga.is_empty():
+		liga = (d.get("pokale", {}) as Dictionary).get(str(spiel.get("wettbewerb", "")), {})
+	var nation: String = str(liga.get("nation", ""))
+	if nation != "":
+		var heimisch: Array = []
+		for gid in reihe:
+			if str((pool["gespanne"][gid] as Dictionary).get("nation", "")) == nation:
+				heimisch.append(gid)
+		if heimisch.size() >= 3:
+			return (pool["gespanne"] as Dictionary).get(str(heimisch[abs(hash(mid)) % heimisch.size()]), {})
 	return (pool["gespanne"] as Dictionary).get(str(reihe[abs(hash(mid)) % reihe.size()]), {})
 
 ## Beide Namen als eine Zeile: „Berger / Weickert“.

@@ -256,6 +256,7 @@ static func _erzeuge_vereine(d: Dictionary) -> void:
 		_erzeuge_personal(d, cid)
 	for cid2 in clubs(d):
 		Jugend.erzeuge_jahrgang(d, cid2, Namen.wuerfel(3, 5))
+	_vorvertraege_aufloesen(d)
 	# Rivalitaeten innerhalb der Ligen
 	_erzeuge_rivalitaeten(d)
 	# Ein Grundstock an vereinslosen Spielern
@@ -312,6 +313,41 @@ static func _verein_aus_datensatz(d: Dictionary, cid: String, eintrag: Dictionar
 	# erst, wenn alle Vereine angelegt sind — vorher gibt es die IDs nicht.
 	if eintrag.has("rivalen"):
 		verein["rivalen_kurz"] = (eintrag["rivalen"] as Dictionary).duplicate()
+	# Der Cheftrainer. Gegnertrainer.erzeuge() setzt ihn auf die Bank.
+	var tr: Variant = eintrag.get("trainer", null)
+	if typeof(tr) == TYPE_STRING and str(tr) != "":
+		var teile: PackedStringArray = str(tr).split(" ", false, 1)
+		tr = {"vorname": teile[0], "nachname": teile[1] if teile.size() > 1 else ""}
+	if typeof(tr) == TYPE_DICTIONARY and not (tr as Dictionary).is_empty():
+		verein["trainer_datensatz"] = (tr as Dictionary).duplicate()
+	# Die Namen im Trainerstab; die Fähigkeiten würfelt das Spiel.
+	if typeof(eintrag.get("stab", null)) == TYPE_DICTIONARY:
+		verein["stab_datensatz"] = (eintrag["stab"] as Dictionary).duplicate()
+	# Etat: der tatsächliche Jahresetat in Euro. Das Spiel merkt sich nur das
+	# Verhältnis zum eigenen Richtwert — so bleibt er richtig, wenn der Verein
+	# absteigt oder an Ruf gewinnt (siehe Finanzen.grundetat).
+	if float(eintrag.get("etat", 0.0)) > 0.0:
+		var etat: float = float(eintrag["etat"])
+		var formel: float = Finanzen.grundetat_formel(d, verein)
+		verein["etat_faktor"] = clampf(etat / maxf(formel, 1.0), 0.35, 3.0)
+		var anteil: float = etat / maxf(float(verein["jahresetat"]), 1.0)
+		for feld in ["kasse", "transferbudget", "gehaltsbudget"]:
+			verein[feld] = float(verein[feld]) * anteil
+		verein["jahresetat"] = etat
+		verein["etat_datensatz"] = etat
+	if typeof(eintrag.get("sponsoren", null)) == TYPE_DICTIONARY:
+		verein["sponsoren_datensatz"] = (eintrag["sponsoren"] as Dictionary).duplicate()
+	# Zuschauerschnitt der Vorsaison: eine volle Halle heißt treue Fans.
+	if int(eintrag.get("zuschauerschnitt", 0)) > 0:
+		var kap: float = maxf(float(verein["halle"]["kapazitaet"]), 1.0)
+		var auslastung: float = clampf(float(eintrag["zuschauerschnitt"]) / kap, 0.15, 1.0)
+		verein["zuschauerschnitt_datensatz"] = int(eintrag["zuschauerschnitt"])
+		verein["fans"]["treue"] = clampf(25.0 + auslastung * 68.0, 20.0, 95.0)
+		verein["fans"]["zufriedenheit"] = clampf(40.0 + auslastung * 45.0, 35.0, 88.0)
+		verein["fans"]["mitglieder"] = int(float(eintrag["zuschauerschnitt"]) * 1.4)
+	for feld2 in ["homepage", "liga_seit", "meistertitel", "pokalsiege"]:
+		if eintrag.has(feld2):
+			verein[feld2] = eintrag[feld2]
 	return verein
 
 ## Das Wappen eines echten Vereins: seine tatsaechlichen Farben, sein Kuerzel und
@@ -539,6 +575,7 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 		sp_e["wert"] = Spielerfabrik.marktwert(sp_e)
 		# Erst nach dem Marktwert — die Klausel rechnet damit.
 		_klausel_setzen(sp_e)
+		_vertrag_aus_datensatz(d, sp_e, eintrag)
 		d["spieler"][sid_e] = sp_e
 		(verein["kader"] as Array).append(sid_e)
 		belegt[pos_e] = int(belegt[pos_e]) + 1
@@ -585,6 +622,72 @@ static func _fuelle_kader(d: Dictionary, cid: String) -> void:
 	Trikot.kader_nummerieren(d, cid)
 	setze_standardaufstellung(d, cid)
 
+## Was der Datensatz über Vertrag und Zustand eines echten Spielers weiß.
+##
+##  * `vertrag_bis`  — Jahr, in dem der Vertrag am 30. Juni endet (2028 heißt:
+##    er läuft bis zum Ende der Saison 2027/28)
+##  * `gehalt`       — Jahresgehalt in Euro, brutto
+##  * `ablöse` / `klausel` — festgeschriebene Ausstiegsklausel in Euro
+##  * `verletzt`     — {"art": "Kreuzbandriss", "tage": 120} oder mit "bis": "2027-01-15"
+##  * `vorvertrag`   — Name des Vereins, bei dem er für die nächste Saison
+##    unterschrieben hat. Aufgelöst wird das erst, wenn alle Vereine stehen.
+##  * `kapitaen`     — true: er führt die Mannschaft aufs Feld
+static func _vertrag_aus_datensatz(d: Dictionary, sp: Dictionary, eintrag: Dictionary) -> void:
+	var startjahr: int = int(d["startjahr"])
+	var vertrag: Dictionary = sp["vertrag"]
+	if int(eintrag.get("vertrag_bis", 0)) > startjahr:
+		vertrag["bis_saison"] = int(eintrag["vertrag_bis"]) - startjahr - 1
+		vertrag["unterschrieben_saison"] = mini(int(vertrag.get("unterschrieben_saison", 0)), 0)
+	if float(eintrag.get("gehalt", 0.0)) > 0.0:
+		# Das Spiel rechnet Gehälter je Woche.
+		vertrag["gehalt"] = float(eintrag["gehalt"]) / 52.0
+	var klausel: float = float(eintrag.get("klausel", eintrag.get("ablöse", 0.0)))
+	if klausel > 0.0:
+		vertrag["ablöseklausel"] = klausel
+	var verletzt: Variant = eintrag.get("verletzt", null)
+	if typeof(verletzt) == TYPE_DICTIONARY and not (verletzt as Dictionary).is_empty():
+		var v: Dictionary = verletzt
+		var tage: int = int(v.get("tage", 0))
+		if tage <= 0 and str(v.get("bis", "")) != "":
+			var teile: PackedStringArray = str(v["bis"]).split("-")
+			if teile.size() == 3:
+				tage = Kalender.tag_aus_datum(int(teile[2]), int(teile[1]), int(teile[0]), startjahr)
+		if tage > 0:
+			var schwere: int = 3 if tage > 90 else (2 if tage > 21 else 1)
+			sp["verletzung"] = {
+				"art": str(v.get("art", "Verletzung")), "tage": tage, "rest": tage, "schwere": schwere,
+				"region": str(v.get("region", "knie")), "im_spiel": false, "seit_tag": 0,
+			}
+			sp["fitness"] = clampf(float(sp["fitness"]) - float(schwere) * 12.0, 20.0, 100.0)
+	if str(eintrag.get("vorvertrag", "")) != "":
+		sp["vorvertrag_name"] = str(eintrag["vorvertrag"])
+	if bool(eintrag.get("kapitaen", false)):
+		sp["kapitaen_datensatz"] = true
+
+## Löst die Vorverträge aus dem Datensatz auf, sobald alle Vereine stehen.
+static func _vorvertraege_aufloesen(d: Dictionary) -> void:
+	var nach_name := {}
+	for cid in clubs(d):
+		nach_name[str(d["vereine"][cid]["name"])] = str(cid)
+	for sid in d["spieler"].keys():
+		var sp: Dictionary = d["spieler"][sid]
+		if not sp.has("vorvertrag_name"):
+			continue
+		var ziel: String = str(nach_name.get(str(sp["vorvertrag_name"]), ""))
+		sp.erase("vorvertrag_name")
+		if ziel == "" or ziel == str(sp.get("verein", "")):
+			continue
+		# Ein Vorvertrag setzt voraus, dass der alte Vertrag im Sommer endet.
+		sp["vertrag"]["bis_saison"] = 0
+		var ruf: float = float(d["vereine"][ziel]["ruf"])
+		sp["vorvertrag"] = {
+			"verein": ziel,
+			"gehalt": Spielerfabrik.gehaltsvorstellung(sp, ruf, Finanzen.lohnniveau(d, ziel)),
+			"laufzeit": 3,
+			"rolle": "rotation",
+			"saison": 0,
+		}
+
 static func _zufalls_alter(rang: int, _gesamt: int) -> int:
 	var w: float = Namen.zufall()
 	if rang == 0:
@@ -627,6 +730,9 @@ static func _verteile_rollen(d: Dictionary, cid: String) -> void:
 	var best := -1.0
 	for sid in liste:
 		var f: float = float((d["spieler"][sid]["attr"] as Dictionary)["fuehrung"]) + float(d["spieler"][sid]["alter"]) * 0.2
+		# Der echte Kapitän aus dem Datensatz trägt die Binde.
+		if bool(d["spieler"][sid].get("kapitaen_datensatz", false)):
+			f += 1000.0
 		if f > best:
 			best = f
 			kap = sid
@@ -762,11 +868,36 @@ static func _erzeuge_personal(d: Dictionary, cid: String) -> void:
 		var pid := erzeuge_mitarbeiter(d, rolle, ruf, verein["nation"])
 		d["personal"][pid]["verein"] = cid
 		(verein["personal"] as Array).append(pid)
+	_stab_benennen(d, cid)
 	var scouts: int = 1 + int(ruf / 34.0)
 	for i in range(scouts):
 		var pid := erzeuge_mitarbeiter(d, "scout", ruf - float(i) * 6.0, verein["nation"])
 		d["personal"][pid]["verein"] = cid
 		(verein["personal"] as Array).append(pid)
+
+## Gibt dem Trainerstab die echten Namen aus dem Datensatz:
+## {"cotrainer": "Christian Sprenger", "torwarttrainer": {"vorname": …, "nation": "dk"}}
+static func _stab_benennen(d: Dictionary, cid: String) -> void:
+	var verein: Dictionary = d["vereine"][cid]
+	var stab: Dictionary = verein.get("stab_datensatz", {})
+	if stab.is_empty():
+		return
+	for pid in verein["personal"]:
+		var p: Dictionary = d["personal"][pid]
+		var vorgabe: Variant = stab.get(str(p["rolle"]), null)
+		if vorgabe == null:
+			continue
+		if typeof(vorgabe) == TYPE_STRING:
+			var teile: PackedStringArray = str(vorgabe).split(" ", false, 1)
+			vorgabe = {"vorname": teile[0], "nachname": teile[1] if teile.size() > 1 else ""}
+		var e: Dictionary = vorgabe
+		p["vorname"] = str(e.get("vorname", p["vorname"]))
+		p["nachname"] = str(e.get("nachname", p["nachname"]))
+		p["nation"] = str(e.get("nation", p["nation"]))
+		if int(e.get("alter", 0)) > 0:
+			p["alter"] = int(e["alter"])
+		p["echt"] = true
+	verein.erase("stab_datensatz")
 
 static func erzeuge_mitarbeiter(d: Dictionary, rolle: String, ruf: float, nation: String) -> String:
 	var pid := _neue_personal_id(d)

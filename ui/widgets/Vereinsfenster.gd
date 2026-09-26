@@ -77,6 +77,9 @@ func _zeichne() -> void:
 	box.add_child(Stil.titel(str(v["name"]), 0))
 	box.add_child(Stil.matt("%s · gegründet %d · %s · %s Plätze" % [
 		str(v["ort"]), int(v["gegruendet"]), str(v["halle"]["name"]), Stil.zahl(int(v["halle"]["kapazitaet"]))]))
+	var trainer: String = "Sie" if bool(v.get("ist_mensch", false)) else Gegnertrainer.voller_name(Gegnertrainer.fuer(Welt.daten, cid))
+	if trainer != "":
+		box.add_child(Stil.matt("Trainer: %s" % trainer))
 	box.add_child(Bausteine.formkurve(v["formkurve"], 8))
 
 	# Profil und Kader in zwei Reitern: der Kader allein ist mit achtzehn

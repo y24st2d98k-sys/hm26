@@ -223,8 +223,47 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 		"trainingsfokus": "",
 		"entwicklung_log": [],
 	}
+	koerper_wuerfeln(spieler)
 	spieler["wert"] = marktwert(spieler)
 	return spieler
+
+# ------------------------------------------------------------ Körper ---
+#
+# Wurfhand, Größe und Gewicht. Die Hand ist die einzige der drei Angaben, die
+# im Spiel etwas entscheidet: die rechte Seite gehört den Linkshändern. Ein
+# Rechtshänder im rechten Rückraum wirft aus dem falschen Winkel, ein
+# Linkshänder auf Linksaußen genauso — beides geht, kostet aber, und genau das
+# fehlte, solange jeder Spieler auf jede Seite umgestellt werden konnte, als
+# hätte er zwei gleich gute Hände.
+
+## Anteil der Linkshänder je Stammposition. Auf der rechten Seite sind sie die
+## Regel, sonst so selten wie in der Bevölkerung.
+const LINKS_ANTEIL := {"TW": 0.14, "LA": 0.04, "RL": 0.05, "RM": 0.09, "RR": 0.88, "RA": 0.9, "KM": 0.1}
+## Mittlere Größe (cm) und Streuung je Position.
+const GROESSE_MITTEL := {"TW": 193.0, "LA": 182.0, "RL": 196.0, "RM": 189.0, "RR": 194.0, "RA": 183.0, "KM": 196.0}
+## Body-Mass-Index-Mittel je Position — Kreisläufer sind schwer, Außen leicht.
+const BMI_MITTEL := {"TW": 25.5, "LA": 23.8, "RL": 26.0, "RM": 25.2, "RR": 25.6, "RA": 23.8, "KM": 28.6}
+
+## Würfelt Wurfhand, Größe und Gewicht, soweit sie noch nicht gesetzt sind.
+static func koerper_wuerfeln(sp: Dictionary) -> void:
+	var pos: String = str(sp.get("position", "RM"))
+	if not sp.has("hand"):
+		sp["hand"] = "L" if Namen.zufall() < float(LINKS_ANTEIL.get(pos, 0.1)) else "R"
+	if not sp.has("groesse"):
+		sp["groesse"] = int(roundf(Namen.glocke(float(GROESSE_MITTEL.get(pos, 190.0)), 5.0, 168.0, 212.0)))
+	if not sp.has("gewicht"):
+		var m: float = float(sp["groesse"]) / 100.0
+		sp["gewicht"] = int(roundf(Namen.glocke(float(BMI_MITTEL.get(pos, 25.0)), 1.4, 20.0, 33.0) * m * m))
+
+## Linkshänder? Ältere Spielstände kennen die Hand nicht — dort gilt die
+## Stammposition als Hinweis.
+static func linkshaender(sp: Dictionary) -> bool:
+	if sp.has("hand"):
+		return str(sp["hand"]) == "L"
+	return str(sp.get("position", "")) in ["RR", "RA"]
+
+static func hand_text(sp: Dictionary) -> String:
+	return "Linkshänder" if linkshaender(sp) else "Rechtshänder"
 
 ## Erzeugt einen Spieler mit vorgegebener Identität (echte Daten).
 ## Attribute entstehen wie bei jedem anderen Spieler aus Position und Zielstärke —
@@ -232,6 +271,9 @@ static func erzeuge(id: String, kultur: String, alter_jahre: int, ziel_gesamt: f
 static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String, startjahr: int) -> Dictionary:
 	var nation: String = str(eintrag.get("nation", "de"))
 	var alter_jahre: int = int(eintrag.get("alter", 26))
+	var gd: Dictionary = geburtsdatum_lesen(str(eintrag.get("geburtsdatum", "")))
+	if not gd.is_empty():
+		alter_jahre = startjahr - int(gd["jahr"]) - (1 if int(gd["monat"]) > 7 else 0)
 	var ziel: float = float(eintrag.get("staerke", 60.0))
 	var sp := erzeuge(id, nation, alter_jahre, ziel, position, startjahr)
 	sp["vorname"] = str(eintrag.get("vorname", sp["vorname"]))
@@ -262,6 +304,7 @@ static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String,
 	# umschreiben lassen.
 	if str(eintrag.get("bild", "")) != "":
 		sp["bild"] = str(eintrag["bild"])
+	koerper_uebernehmen(sp, eintrag, startjahr)
 	var werte: Dictionary = eintrag.get("attribute", {})
 	for name in werte.keys():
 		if not (sp["attr"] as Dictionary).has(name):
@@ -280,6 +323,71 @@ static func erzeuge_mit_namen(id: String, eintrag: Dictionary, position: String,
 	# aus drei Saisons Training. Siehe Echtdaten.abgleich().
 	sp["datenspur"] = {"staerke": ziel, "attribute": werte.duplicate()}
 	return sp
+
+## Übernimmt, was der Datensatz über Person und Körper weiß: Geburtsdatum,
+## Wurfhand, Größe, Gewicht und weitere Positionen. Was fehlt, bleibt so, wie
+## erzeuge() es gewürfelt hat.
+static func koerper_uebernehmen(sp: Dictionary, eintrag: Dictionary, startjahr: int) -> void:
+	var gd: Dictionary = geburtsdatum_lesen(str(eintrag.get("geburtsdatum", "")))
+	if not gd.is_empty():
+		var jahr: int = int(gd["jahr"])
+		var monat: int = int(gd["monat"])
+		var tag: int = int(gd["tag"])
+		# Das Alter gilt am 1. Juli des Startjahres, dem ersten Spieltag des
+		# Kalenders; der Geburtstag im Kalender ist der Tag der Saison.
+		var alter_jahre: int = startjahr - jahr
+		if monat > 7 or (monat == 7 and tag > 1):
+			alter_jahre -= 1
+		sp["alter"] = clampi(alter_jahre, 14, 48)
+		sp["geburtsjahr"] = jahr
+		sp["geburtsdatum"] = "%04d-%02d-%02d" % [jahr, monat, tag]
+		var tag_im_jahr: int = tag - 1
+		for m in range(monat - 1):
+			tag_im_jahr += int(Kalender.MONATSTAGE[m])
+		sp["geburtstag_doy"] = posmod(tag_im_jahr - Kalender.JULI_ERSTER, Kalender.TAGE_IM_JAHR)
+		# Wer am 1. Juli Geburtstag hat, ist oben schon mitgezählt.
+		sp["hatte_geburtstag"] = int(sp["geburtstag_doy"]) <= 3
+	var hand: String = str(eintrag.get("hand", "")).to_upper()
+	if hand in ["L", "R"]:
+		sp["hand"] = hand
+	if int(eintrag.get("groesse", 0)) >= 150:
+		sp["groesse"] = int(eintrag["groesse"])
+	if int(eintrag.get("gewicht", 0)) >= 50:
+		sp["gewicht"] = int(eintrag["gewicht"])
+	var zp: Array = eintrag.get("zweitpositionen", [])
+	if not zp.is_empty() and not bool(sp["ist_torwart"]):
+		var liste: Array[String] = []
+		for p in zp:
+			var pos: String = str(p)
+			if POSITIONEN.has(pos) and pos != "TW" and pos != str(sp["position"]) and not liste.has(pos):
+				liste.append(pos)
+		sp["zweitpositionen"] = liste
+
+## "1994-02-28" oder "28.02.1994" — alles andere wird ignoriert.
+static func geburtsdatum_lesen(text: String) -> Dictionary:
+	text = text.strip_edges()
+	if text == "":
+		return {}
+	var teile: PackedStringArray
+	var jahr := 0
+	var monat := 0
+	var tag := 0
+	if text.contains("-"):
+		teile = text.split("-")
+		if teile.size() != 3:
+			return {}
+		jahr = int(teile[0]); monat = int(teile[1]); tag = int(teile[2])
+	elif text.contains("."):
+		teile = text.split(".")
+		if teile.size() != 3:
+			return {}
+		tag = int(teile[0]); monat = int(teile[1]); jahr = int(teile[2])
+	else:
+		return {}
+	if jahr < 1950 or jahr > 2020 or monat < 1 or monat > 12 or tag < 1 or tag > 31:
+		return {}
+	tag = mini(tag, int(Kalender.MONATSTAGE[monat - 1]))
+	return {"jahr": jahr, "monat": monat, "tag": tag}
 
 static func leere_statistik() -> Dictionary:
 	return {
@@ -528,6 +636,16 @@ static func eignung(spieler: Dictionary, position: String) -> float:
 	var basis: float = float((POSITION_NAEHE.get(eigen, {}) as Dictionary).get(position, 0.2))
 	if position in spieler["zweitpositionen"]:
 		basis = maxf(basis, 0.86)
+	# Die Wurfhand: rechts spielen Linkshänder, links Rechtshänder. Wer auf die
+	# falsche Seite gestellt wird, verliert den Wurfwinkel; wer auf die richtige
+	# kommt, hat ihn — ein linker Rückraum, der Linkshänder ist, taugt
+	# rechts mehr als die Positionsnähe allein sagt. Die Rückraummitte ist
+	# beidseitig und bleibt unberührt.
+	var links: bool = linkshaender(spieler)
+	if position in ["RR", "RA"]:
+		basis = basis * 0.84 if not links else maxf(basis, minf(basis + 0.15, 0.8))
+	elif position in ["LA", "RL"]:
+		basis = basis * 0.88 if links else basis
 	return clampf(basis, 0.05, 1.0)
 
 ## Effektiver Angriffswert auf einer konkreten Position (inkl. Eignungsabschlag).

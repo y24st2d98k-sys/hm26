@@ -147,6 +147,18 @@ func _kopf(sp: Dictionary) -> void:
 		int(sp["alter"]), Namen.KULTUR_NAME.get(str(sp["nation"]), str(sp["nation"])),
 		str(Welt.verein(str(sp["verein"])).get("name", "vereinslos"))]))
 	zeile.add_child(Bausteine.status_zeichen(sid))
+	# Körper und Wurfhand in einer eigenen, leisen Zeile — sie entscheiden,
+	# auf welcher Seite jemand spielen kann.
+	var koerper: Array = []
+	if sp.has("groesse"):
+		koerper.append("%s m" % String.num(float(sp["groesse"]) / 100.0, 2).replace(".", ","))
+	if sp.has("gewicht"):
+		koerper.append("%d kg" % int(sp["gewicht"]))
+	koerper.append(Spielerfabrik.hand_text(sp))
+	if str(sp.get("geburtsdatum", "")) != "":
+		var gd: PackedStringArray = str(sp["geburtsdatum"]).split("-")
+		koerper.append("geb. %s.%s.%s" % [gd[2], gd[1], gd[0]])
+	links.add_child(Stil.matt(" · ".join(koerper)))
 
 	var rechts := Stil.vbox(2)
 	rechts.custom_minimum_size = Vector2(230, 0)

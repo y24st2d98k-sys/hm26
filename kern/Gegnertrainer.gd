@@ -80,21 +80,43 @@ static func erzeuge(d: Dictionary, cid: String) -> Dictionary:
 		for i in gewicht:
 			moegliche.append(arch)
 	var archetyp: Dictionary = Namen.waehle(moegliche)
+	# Der echte Trainer aus dem Datensatz sitzt zuerst auf der Bank. Er wird
+	# nur einmal verbraucht: wer ihn entlässt, bekommt einen erfundenen
+	# Nachfolger, nicht denselben Mann zurück.
+	var echt: Dictionary = v.get("trainer_datensatz", {})
+	v.erase("trainer_datensatz")
+	if not echt.is_empty():
+		for a2 in ARCHETYPEN:
+			if str((a2 as Dictionary)["id"]) == str(echt.get("archetyp", "")):
+				archetyp = a2
 	var achsen := {}
 	for achse in (archetyp["achsen"] as Dictionary).keys():
 		achsen[achse] = clampf(float(archetyp["achsen"][achse])
 			+ Namen.bereich(-STREUUNG, STREUUNG), 12.0, 94.0)
 	var nation: String = str(v.get("nation", "de"))
+	var vorname: String = Namen.vorname(nation)
+	var nachname: String = Namen.nachname(nation)
+	var alter_jahre: int = Namen.wuerfel(36, 62)
+	var seit: int = Welt.saison_index()
+	if not echt.is_empty():
+		vorname = str(echt.get("vorname", vorname))
+		nachname = str(echt.get("nachname", nachname))
+		nation = str(echt.get("nation", nation))
+		alter_jahre = int(echt.get("alter", alter_jahre))
+		# "seit": Jahr des Amtsantritts. Die Saison 2023/24 ist Jahr 2023.
+		if int(echt.get("seit", 0)) > 1900:
+			seit = Welt.saison_index() - maxi(int(d.get("startjahr", 2026)) - int(echt["seit"]), 0)
 	return {
-		"vorname": Namen.vorname(nation),
-		"nachname": Namen.nachname(nation),
+		"vorname": vorname,
+		"nachname": nachname,
 		"nation": nation,
-		"alter": Namen.wuerfel(36, 62),
+		"alter": alter_jahre,
+		"echt": not echt.is_empty(),
 		"archetyp": str(archetyp["id"]),
 		"archetyp_name": str(archetyp["name"]),
 		"satz": str(archetyp["satz"]),
 		"achsen": achsen,
-		"seit_saison": Welt.saison_index(),
+		"seit_saison": seit,
 		"spiele": 0, "siege": 0, "unentschieden": 0, "niederlagen": 0,
 		"stationen": 1,
 	}

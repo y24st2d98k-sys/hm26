@@ -118,10 +118,17 @@ static func erstbelegung(d: Dictionary) -> void:
 		var v: Dictionary = d["vereine"][cid]
 		v["sponsoren"] = []
 		v["sponsorangebote"] = []
+		# Die echten Partner aus dem Datensatz, {"Trikotbrust": "Provinzial"}.
+		# Der Name ist echt, die Summe schätzt das Spiel.
+		var echt: Dictionary = v.get("sponsoren_datensatz", {})
 		for platz in REIHENFOLGE:
 			var a := angebot(d, cid, platz)
 			a["jahre"] = Namen.wuerfel(1, 4)
+			if str(echt.get(platz, "")) != "":
+				a["name"] = str(echt[platz])
+				a["jahre"] = Namen.wuerfel(2, 4)
 			_unterschreiben(d, cid, a)
+		v.erase("sponsoren_datensatz")
 
 # ------------------------------------------------------------ Saisonlauf ---
 
