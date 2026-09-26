@@ -5,7 +5,7 @@
   "spielplaene": {
     "Opel Handball-Bundesliga": {
       "saison": "2026/27",
-      "quelle": "HBL GmbH, vorläufige Spielpläne 2026/27",
+      "quelle": "Sportradar-Daten über die Sport1-Datenschnittstelle (sport1.de/daten/handball, Abruf 26.09.2026); verlegte Spiele mit neuem Termin",
       "partien": [
         {
           "spieltag": 1,
@@ -23,52 +23,2131 @@
         },
         {
           "spieltag": 1,
-          "datum": "2026-08-29",
-          "zeit": "",
+          "datum": "2026-08-28",
+          "zeit": "19:00",
+          "heim": "TVB Stuttgart",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-28",
+          "zeit": "20:00",
           "heim": "SG Flensburg-Handewitt",
           "gast": "ThSV Eisenach"
         },
         {
           "spieltag": 1,
           "datum": "2026-08-29",
-          "zeit": "",
-          "heim": "VfL Gummersbach",
-          "gast": "SC Magdeburg"
-        },
-        {
-          "spieltag": 1,
-          "datum": "2026-08-29",
-          "zeit": "",
-          "heim": "TSV Hannover-Burgdorf",
-          "gast": "Rhein-Neckar Löwen"
-        },
-        {
-          "spieltag": 1,
-          "datum": "2026-08-29",
-          "zeit": "",
+          "zeit": "19:00",
           "heim": "Frisch Auf Göppingen",
           "gast": "HC Erlangen"
         },
         {
           "spieltag": 1,
           "datum": "2026-08-30",
-          "zeit": "",
-          "heim": "TVB Stuttgart",
-          "gast": "Bergischer HC"
+          "zeit": "15:00",
+          "heim": "VfL Gummersbach",
+          "gast": "SC Magdeburg"
         },
         {
           "spieltag": 1,
           "datum": "2026-08-30",
-          "zeit": "",
+          "zeit": "16:30",
           "heim": "HSG Wetzlar",
           "gast": "SG BBM Bietigheim"
         },
         {
           "spieltag": 1,
           "datum": "2026-08-30",
-          "zeit": "",
+          "zeit": "16:30",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "18:00",
           "heim": "HBW Balingen-Weilstetten",
           "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-02",
+          "zeit": "19:00",
+          "heim": "HC Erlangen",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-02",
+          "zeit": "19:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-02",
+          "zeit": "19:00",
+          "heim": "MT Melsungen",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-02",
+          "zeit": "20:00",
+          "heim": "Bergischer HC",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-02",
+          "zeit": "20:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-03",
+          "zeit": "19:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-03",
+          "zeit": "19:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-03",
+          "zeit": "20:00",
+          "heim": "ThSV Eisenach",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-03",
+          "zeit": "20:15",
+          "heim": "SC Magdeburg",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-05",
+          "zeit": "19:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-05",
+          "zeit": "19:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-05",
+          "zeit": "20:00",
+          "heim": "Bergischer HC",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-05",
+          "zeit": "20:00",
+          "heim": "VfL Gummersbach",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-06",
+          "zeit": "15:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-06",
+          "zeit": "16:30",
+          "heim": "SG BBM Bietigheim",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-06",
+          "zeit": "16:30",
+          "heim": "TVB Stuttgart",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-06",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-07",
+          "zeit": "19:00",
+          "heim": "HSG Wetzlar",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-10",
+          "zeit": "19:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-10",
+          "zeit": "19:00",
+          "heim": "ThSV Eisenach",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-11",
+          "zeit": "20:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-12",
+          "zeit": "19:00",
+          "heim": "THW Kiel",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-13",
+          "zeit": "15:00",
+          "heim": "SC Magdeburg",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-13",
+          "zeit": "16:30",
+          "heim": "HC Erlangen",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-13",
+          "zeit": "16:30",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-13",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-13",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-17",
+          "zeit": "19:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-18",
+          "zeit": "19:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-18",
+          "zeit": "20:00",
+          "heim": "ThSV Eisenach",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-19",
+          "zeit": "19:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-20",
+          "zeit": "15:00",
+          "heim": "Bergischer HC",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-20",
+          "zeit": "16:30",
+          "heim": "HSG Wetzlar",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-20",
+          "zeit": "16:30",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-20",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-20",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-26",
+          "zeit": "20:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-26",
+          "zeit": "20:00",
+          "heim": "SC Magdeburg",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-27",
+          "zeit": "15:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-27",
+          "zeit": "16:30",
+          "heim": "VfL Gummersbach",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-27",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-28",
+          "zeit": "19:30",
+          "heim": "HC Erlangen",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "16:30",
+          "heim": "TVB Stuttgart",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-01",
+          "zeit": "19:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-01",
+          "zeit": "19:00",
+          "heim": "ThSV Eisenach",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-02",
+          "zeit": "19:00",
+          "heim": "HSG Wetzlar",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-02",
+          "zeit": "20:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-03",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-03",
+          "zeit": "19:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-03",
+          "zeit": "20:00",
+          "heim": "MT Melsungen",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-03",
+          "zeit": "20:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-04",
+          "zeit": "15:00",
+          "heim": "SC Magdeburg",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-08",
+          "zeit": "19:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-08",
+          "zeit": "19:00",
+          "heim": "TVB Stuttgart",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-09",
+          "zeit": "19:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-10",
+          "zeit": "19:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-11",
+          "zeit": "15:00",
+          "heim": "THW Kiel",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-11",
+          "zeit": "16:30",
+          "heim": "HC Erlangen",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-11",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-11-01",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-12-13",
+          "zeit": "16:30",
+          "heim": "Bergischer HC",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-15",
+          "zeit": "19:00",
+          "heim": "HSG Wetzlar",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-15",
+          "zeit": "19:00",
+          "heim": "THW Kiel",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-16",
+          "zeit": "20:00",
+          "heim": "ThSV Eisenach",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-17",
+          "zeit": "19:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-17",
+          "zeit": "20:00",
+          "heim": "MT Melsungen",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-18",
+          "zeit": "15:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-18",
+          "zeit": "16:30",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-18",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-19",
+          "zeit": "19:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-22",
+          "zeit": "19:00",
+          "heim": "TVB Stuttgart",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-23",
+          "zeit": "19:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-23",
+          "zeit": "20:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-24",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-24",
+          "zeit": "20:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-25",
+          "zeit": "15:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-25",
+          "zeit": "16:30",
+          "heim": "Bergischer HC",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-25",
+          "zeit": "16:30",
+          "heim": "Füchse Berlin",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-25",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-29",
+          "zeit": "19:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-29",
+          "zeit": "19:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-30",
+          "zeit": "19:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-31",
+          "zeit": "19:00",
+          "heim": "THW Kiel",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-31",
+          "zeit": "19:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-31",
+          "zeit": "20:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-01",
+          "zeit": "15:00",
+          "heim": "HSG Wetzlar",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-01",
+          "zeit": "16:30",
+          "heim": "ThSV Eisenach",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-14",
+          "zeit": "15:55",
+          "heim": "Füchse Berlin",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-14",
+          "zeit": "19:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-14",
+          "zeit": "19:00",
+          "heim": "HC Erlangen",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-14",
+          "zeit": "20:00",
+          "heim": "Bergischer HC",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-14",
+          "zeit": "20:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-15",
+          "zeit": "15:00",
+          "heim": "SC Magdeburg",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-15",
+          "zeit": "16:30",
+          "heim": "MT Melsungen",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-15",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-03",
+          "zeit": "19:00",
+          "heim": "TVB Stuttgart",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-20",
+          "zeit": "19:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-20",
+          "zeit": "20:00",
+          "heim": "HC Erlangen",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-21",
+          "zeit": "19:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-21",
+          "zeit": "19:00",
+          "heim": "ThSV Eisenach",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-21",
+          "zeit": "20:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-22",
+          "zeit": "15:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-22",
+          "zeit": "16:30",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-22",
+          "zeit": "17:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-22",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-26",
+          "zeit": "19:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-27",
+          "zeit": "19:00",
+          "heim": "VfL Gummersbach",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-27",
+          "zeit": "20:00",
+          "heim": "Bergischer HC",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-27",
+          "zeit": "20:00",
+          "heim": "HSG Wetzlar",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-28",
+          "zeit": "19:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-29",
+          "zeit": "15:00",
+          "heim": "TVB Stuttgart",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-29",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-29",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-30",
+          "zeit": "19:00",
+          "heim": "Füchse Berlin",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-04",
+          "zeit": "19:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-05",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-05",
+          "zeit": "19:00",
+          "heim": "HC Erlangen",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-05",
+          "zeit": "20:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-06",
+          "zeit": "15:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-06",
+          "zeit": "16:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-06",
+          "zeit": "16:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-06",
+          "zeit": "17:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-06",
+          "zeit": "17:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-09-30",
+          "zeit": "19:00",
+          "heim": "SC Magdeburg",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-10",
+          "zeit": "19:00",
+          "heim": "Bergischer HC",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-10",
+          "zeit": "19:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-11",
+          "zeit": "20:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-12",
+          "zeit": "19:00",
+          "heim": "ThSV Eisenach",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-13",
+          "zeit": "15:00",
+          "heim": "HSG Wetzlar",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-13",
+          "zeit": "16:30",
+          "heim": "Füchse Berlin",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-13",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-13",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-19",
+          "zeit": "19:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-19",
+          "zeit": "19:00",
+          "heim": "THW Kiel",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-19",
+          "zeit": "20:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-19",
+          "zeit": "20:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-20",
+          "zeit": "15:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-20",
+          "zeit": "16:30",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-20",
+          "zeit": "16:30",
+          "heim": "TVB Stuttgart",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-20",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-20",
+          "zeit": "18:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-22",
+          "zeit": "19:00",
+          "heim": "HC Erlangen",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-22",
+          "zeit": "19:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-22",
+          "zeit": "19:00",
+          "heim": "ThSV Eisenach",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-22",
+          "zeit": "20:00",
+          "heim": "THW Kiel",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-22",
+          "zeit": "20:00",
+          "heim": "VfL Gummersbach",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-23",
+          "zeit": "19:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-23",
+          "zeit": "19:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-23",
+          "zeit": "20:00",
+          "heim": "MT Melsungen",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-23",
+          "zeit": "20:00",
+          "heim": "TVB Stuttgart",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-11",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "TVB Stuttgart",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-18",
+          "zeit": "18:00",
+          "heim": "ThSV Eisenach",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "TVB Stuttgart",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "ThSV Eisenach",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-18",
+          "zeit": "18:00",
+          "heim": "ThSV Eisenach",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "TVB Stuttgart",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-25",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-01",
+          "zeit": "18:00",
+          "heim": "ThSV Eisenach",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-15",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "TVB Stuttgart",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-22",
+          "zeit": "18:00",
+          "heim": "ThSV Eisenach",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-29",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "TVB Stuttgart",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-13",
+          "zeit": "18:00",
+          "heim": "ThSV Eisenach",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-16",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-16",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-16",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-16",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-16",
+          "zeit": "18:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-16",
+          "zeit": "18:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-16",
+          "zeit": "18:00",
+          "heim": "TVB Stuttgart",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-16",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-06-05",
+          "zeit": "",
+          "heim": "MT Melsungen",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-26",
+          "zeit": "18:00",
+          "heim": "TVB Stuttgart",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "ThSV Eisenach",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-29",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "Handball Sport Verein Hamburg"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "VfL Gummersbach"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "HC Erlangen",
+          "gast": "SG Flensburg-Handewitt"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "HSG Wetzlar",
+          "gast": "Füchse Berlin"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "Rhein-Neckar Löwen",
+          "gast": "TSV Hannover-Burgdorf"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "SG BBM Bietigheim",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "TBV Lemgo Lippe",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "THW Kiel",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-06-02",
+          "zeit": "18:00",
+          "heim": "TVB Stuttgart",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "Bergischer HC",
+          "gast": "HSG Wetzlar"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "Füchse Berlin",
+          "gast": "TVB Stuttgart"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "Handball Sport Verein Hamburg",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "MT Melsungen",
+          "gast": "THW Kiel"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "SC Magdeburg",
+          "gast": "HBW Balingen-Weilstetten"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "ThSV Eisenach",
+          "gast": "Frisch Auf Göppingen"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-06",
+          "zeit": "18:00",
+          "heim": "VfL Gummersbach",
+          "gast": "Rhein-Neckar Löwen"
         }
       ]
     },
@@ -282,6 +2361,2154 @@
           "zeit": "",
           "heim": "RK Ajdovščina",
           "gast": "RD LL Grosist Slovan"
+        }
+      ]
+    },
+    "2. Handball-Bundesliga": {
+      "saison": "2026/27",
+      "quelle": "Sportradar-Daten über die Sport1-Datenschnittstelle (sport1.de/daten/handball, Abruf 26.09.2026); verlegte Spiele mit neuem Termin",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-08-28",
+          "zeit": "19:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-28",
+          "zeit": "19:30",
+          "heim": "TuS N-Lübbecke",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-28",
+          "zeit": "20:00",
+          "heim": "TV Hüttenberg",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "19:30",
+          "heim": "HSC 2000 Coburg",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "17:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "17:00",
+          "heim": "TuSEM Essen",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-31",
+          "zeit": "19:30",
+          "heim": "SC DHfK Leipzig",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-04",
+          "zeit": "19:00",
+          "heim": "TuS Ferndorf",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-04",
+          "zeit": "19:30",
+          "heim": "TV Großwallstadt",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-04",
+          "zeit": "20:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-05",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-05",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-05",
+          "zeit": "19:30",
+          "heim": "HC Elbflorenz",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "17:00",
+          "heim": "GWD Minden",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "17:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-09",
+          "zeit": "19:30",
+          "heim": "1. VfL Potsdam",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-11",
+          "zeit": "19:00",
+          "heim": "TuSEM Essen",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-11",
+          "zeit": "19:30",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-11",
+          "zeit": "20:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "19:30",
+          "heim": "HSC 2000 Coburg",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "19:30",
+          "heim": "SC DHfK Leipzig",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-13",
+          "zeit": "17:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-14",
+          "zeit": "19:30",
+          "heim": "TV Emsdetten",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-18",
+          "zeit": "19:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-18",
+          "zeit": "19:30",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-18",
+          "zeit": "20:00",
+          "heim": "TuS Ferndorf",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-19",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-19",
+          "zeit": "19:30",
+          "heim": "1. VfL Potsdam",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "17:00",
+          "heim": "HC Elbflorenz",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "17:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "17:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "16:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "19:30",
+          "heim": "TV Hüttenberg",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "17:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "17:00",
+          "heim": "TV Emsdetten",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "17:00",
+          "heim": "TuSEM Essen",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-30",
+          "zeit": "19:30",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-02",
+          "zeit": "19:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-02",
+          "zeit": "19:30",
+          "heim": "TuSEM Essen",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-03",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-03",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-03",
+          "zeit": "19:30",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "17:00",
+          "heim": "GWD Minden",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "17:00",
+          "heim": "HC Elbflorenz",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "17:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-05",
+          "zeit": "19:30",
+          "heim": "1. VfL Potsdam",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-08",
+          "zeit": "19:30",
+          "heim": "SC DHfK Leipzig",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-09",
+          "zeit": "19:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-09",
+          "zeit": "19:30",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-09",
+          "zeit": "20:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-10",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-10",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-10",
+          "zeit": "19:30",
+          "heim": "TV Emsdetten",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-11",
+          "zeit": "17:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-11",
+          "zeit": "17:00",
+          "heim": "TuS Ferndorf",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-16",
+          "zeit": "19:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-16",
+          "zeit": "19:30",
+          "heim": "GWD Minden",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-16",
+          "zeit": "20:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-17",
+          "zeit": "16:00",
+          "heim": "HC Elbflorenz",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-17",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-17",
+          "zeit": "19:30",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-18",
+          "zeit": "17:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-19",
+          "zeit": "19:30",
+          "heim": "TuSEM Essen",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-23",
+          "zeit": "19:00",
+          "heim": "TuS Ferndorf",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-23",
+          "zeit": "19:30",
+          "heim": "1. VfL Potsdam",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-23",
+          "zeit": "20:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-24",
+          "zeit": "16:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-24",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-24",
+          "zeit": "19:30",
+          "heim": "TV Hüttenberg",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-25",
+          "zeit": "17:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-25",
+          "zeit": "17:00",
+          "heim": "TV Emsdetten",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-26",
+          "zeit": "19:30",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-30",
+          "zeit": "19:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-30",
+          "zeit": "19:30",
+          "heim": "HC Elbflorenz",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "TuSEM Essen",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-31",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-31",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-31",
+          "zeit": "19:30",
+          "heim": "TV Großwallstadt",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-01",
+          "zeit": "17:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-01",
+          "zeit": "17:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-01",
+          "zeit": "17:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "19:30",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "19:30",
+          "heim": "TV Emsdetten",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-15",
+          "zeit": "17:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-15",
+          "zeit": "17:00",
+          "heim": "TV Großwallstadt",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-15",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-20",
+          "zeit": "19:00",
+          "heim": "TuSEM Essen",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-20",
+          "zeit": "19:30",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-20",
+          "zeit": "20:00",
+          "heim": "GWD Minden",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-21",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-21",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-21",
+          "zeit": "19:30",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-22",
+          "zeit": "17:00",
+          "heim": "HC Elbflorenz",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-22",
+          "zeit": "17:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-23",
+          "zeit": "19:30",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-17",
+          "zeit": "19:30",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-27",
+          "zeit": "19:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-27",
+          "zeit": "19:30",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-27",
+          "zeit": "20:00",
+          "heim": "TuS Ferndorf",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-28",
+          "zeit": "19:30",
+          "heim": "HSC 2000 Coburg",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-29",
+          "zeit": "17:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-29",
+          "zeit": "17:00",
+          "heim": "TV Emsdetten",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-29",
+          "zeit": "17:00",
+          "heim": "TV Großwallstadt",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-30",
+          "zeit": "19:30",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-04",
+          "zeit": "19:00",
+          "heim": "GWD Minden",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-04",
+          "zeit": "19:30",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-05",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-05",
+          "zeit": "19:30",
+          "heim": "TuS N-Lübbecke",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "17:00",
+          "heim": "HC Elbflorenz",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "17:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "17:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-10",
+          "zeit": "19:30",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-11",
+          "zeit": "19:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-11",
+          "zeit": "19:30",
+          "heim": "HSC 2000 Coburg",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-11",
+          "zeit": "20:00",
+          "heim": "TV Emsdetten",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-12",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-12",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-12",
+          "zeit": "19:30",
+          "heim": "TuS Ferndorf",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-13",
+          "zeit": "17:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-13",
+          "zeit": "17:00",
+          "heim": "TV Großwallstadt",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "16:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "19:30",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "19:30",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-20",
+          "zeit": "17:00",
+          "heim": "HC Elbflorenz",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-20",
+          "zeit": "17:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-20",
+          "zeit": "17:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-22",
+          "zeit": "19:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-22",
+          "zeit": "19:30",
+          "heim": "TuS Ferndorf",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-22",
+          "zeit": "20:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-23",
+          "zeit": "19:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-23",
+          "zeit": "19:00",
+          "heim": "TV Emsdetten",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-23",
+          "zeit": "19:30",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-23",
+          "zeit": "19:30",
+          "heim": "TV Großwallstadt",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-23",
+          "zeit": "20:00",
+          "heim": "GWD Minden",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-23",
+          "zeit": "20:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-05",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-12",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-19",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-24",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-27",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-05",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-19",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-27",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-02",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-09",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-16",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-16",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-16",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-16",
+          "zeit": "18:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-16",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-16",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-16",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-16",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "TV Hüttenberg",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-23",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-23",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-23",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-23",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-23",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-23",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-23",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-23",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-05-16",
+          "zeit": "",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-04-30",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 31,
+          "datum": "2027-05-14",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "TuS Ferndorf"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 32,
+          "datum": "2027-05-21",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "1. VfL Potsdam",
+          "gast": "SC DHfK Leipzig"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "Dessau-Roßlauer HV",
+          "gast": "HSC 2000 Coburg"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "GWD Minden",
+          "gast": "HC Elbflorenz"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "HSG Nordhorn-Lingen",
+          "gast": "TuS N-Lübbecke"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "TV Emsdetten",
+          "gast": "Die Eulen Ludwigshafen"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "TV Großwallstadt",
+          "gast": "TSV Bayer Dormagen"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "TuS Ferndorf",
+          "gast": "ASV Hamm-Westfalen"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "VfL Eintracht Hagen",
+          "gast": "TV Hüttenberg"
+        },
+        {
+          "spieltag": 33,
+          "datum": "2027-05-28",
+          "zeit": "18:00",
+          "heim": "VfL Lübeck-Schwartau",
+          "gast": "TuSEM Essen"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "ASV Hamm-Westfalen",
+          "gast": "1. VfL Potsdam"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "Die Eulen Ludwigshafen",
+          "gast": "VfL Eintracht Hagen"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "HC Elbflorenz",
+          "gast": "VfL Lübeck-Schwartau"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "HSC 2000 Coburg",
+          "gast": "TV Emsdetten"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "SC DHfK Leipzig",
+          "gast": "HSG Nordhorn-Lingen"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "TSV Bayer Dormagen",
+          "gast": "GWD Minden"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "TV Hüttenberg",
+          "gast": "Dessau-Roßlauer HV"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "TuS N-Lübbecke",
+          "gast": "TV Großwallstadt"
+        },
+        {
+          "spieltag": 34,
+          "datum": "2027-06-05",
+          "zeit": "18:00",
+          "heim": "TuSEM Essen",
+          "gast": "TuS Ferndorf"
         }
       ]
     }
