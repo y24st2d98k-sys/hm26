@@ -91,10 +91,15 @@ func _international(wb: Dictionary, eltern: Node) -> void:
 	var phase: String = str(wb["phase"])
 	karte.add_child(Stil.matt("Phase: %s" % phase.capitalize(), Stil.S_KLEIN))
 	if phase == "gruppe":
-		var gnamen := ["A", "B", "C", "D"]
+		var gnamen: Array = Spielplan.GRUPPEN_NAMEN
+		var je_reihe: int = 4 if (wb["gruppen"] as Array).size() <= 4 else 3
 		var reihe := Stil.hbox(12)
-		karte.add_child(reihe)
 		for gi in range((wb["gruppen"] as Array).size()):
+			# Sechs Gruppen stehen in zwei Reihen zu drei — nebeneinander
+			# wären sie schmaler als ihre Vereinskürzel.
+			if gi % je_reihe == 0:
+				reihe = Stil.hbox(12)
+				karte.add_child(reihe)
 			var gruppe: Array = wb["gruppen"][gi]
 			var gk := Bausteine.karte_in(reihe, "Gruppe %s" % gnamen[gi], true)
 			Stil.karte_wurzel(gk).size_flags_horizontal = Control.SIZE_EXPAND_FILL

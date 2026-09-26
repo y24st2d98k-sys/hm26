@@ -58,6 +58,12 @@ static func _erste_liga(d: Dictionary) -> String:
 		return lid
 	return ""
 
+## Die vergebenen Turniere und ihre Gastgeber.
+const GASTGEBER := {
+	2027: "Deutschland",
+	2028: "Spanien, Portugal, Schweiz",
+}
+
 static func leeres_turnier() -> Dictionary:
 	return {
 		"aktiv": false, "art": "", "name": "", "saison": -1, "phase": "keins",
@@ -76,14 +82,18 @@ static func turnier_planen(d: Dictionary, basis: int) -> void:
 	if not d.has("nationalteams") or (d["nationalteams"] as Array).is_empty():
 		return
 	var saison: int = Welt.saison_index()
-	var europameisterschaft: bool = saison % 2 == 0
 	var jahr: int = int(d["startjahr"]) + saison + 1
+	# Das Turnier liegt im Januar. Europameisterschaften gibt es in geraden
+	# Jahren (2026, 2028, …), Weltmeisterschaften in ungeraden (2027, 2029, …).
+	var europameisterschaft: bool = jahr % 2 == 0
 	var historie: Array = d.get("turnier", {}).get("historie", [])
 	var t := leeres_turnier()
 	t["historie"] = historie
 	t["aktiv"] = true
 	t["art"] = "em" if europameisterschaft else "wm"
 	t["name"] = "%s %d" % ["Europameisterschaft" if europameisterschaft else "Weltmeisterschaft", jahr]
+	if GASTGEBER.has(jahr):
+		t["gastgeber"] = GASTGEBER[jahr]
 	t["saison"] = saison
 	t["phase"] = "vorbereitung"
 	t["basis"] = basis

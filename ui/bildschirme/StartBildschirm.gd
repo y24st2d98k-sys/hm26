@@ -266,6 +266,15 @@ func _baue_vereinswahl() -> void:
 		vorschau_welt = {}
 		_zur_vereinswahl())
 	filterzeile.add_child(welt_haken)
+	var europa_haken := Stil.schalter("")
+	europa_haken.text = "Ganz Europa"
+	europa_haken.button_pressed = not Echtdaten.nur_kernnationen
+	europa_haken.tooltip_text = "Angehakt: fünfzehn Nationen, darunter Ungarn, Portugal, Norwegen, Schweden und Kroatien — der Europapokal mit seinen echten Teilnehmern.\nAbgehakt: nur Deutschland, Dänemark, Frankreich, Spanien und Polen. Die Spieltage rechnen dann etwa doppelt so schnell."
+	europa_haken.toggled.connect(func(an):
+		Echtdaten.nur_kernnationen = not an
+		vorschau_welt = {}
+		_zur_vereinswahl())
+	filterzeile.add_child(europa_haken)
 	var neu_wuerfeln := Stil.knopf("Andere Welt erzeugen")
 	neu_wuerfeln.pressed.connect(func():
 		vorschau_welt = {}

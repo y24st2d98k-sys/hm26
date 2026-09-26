@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "stand": "September 2026",
-  "hinweis": "Vereinsnamen, Ligazugehörigkeit und Ligagrößen entsprechen der Saison 2026/27. Hallennamen, Zuschauerkapazitäten, Gründungsjahre, Vereinsfarben und die Ruf-Werte sind Näherungen und dürfen frei angepasst werden. Alles in dieser Datei ist editierbar; das Spiel erzeugt fehlende Angaben automatisch. Ligen mit \"erzeugt\": true haben keine hinterlegten Vereine — das Spiel erfindet sie, damit Auf- und Abstieg in jeder Nation funktioniert.",
+  "stand": "September 2026 — Ligen 2026/27",
+  "hinweis": "Vereinsnamen, Ligazugehörigkeit und Ligagrößen der Saison 2026/27 sind für Deutschland (1. Liga), Frankreich, Spanien, Dänemark, Polen, Ungarn, Slowenien und Österreich über die Ansetzungen des ersten Spieltags abgeglichen; die übrigen Ligen und die Unterhäuser nach Wissensstand, ungeprüft. Hallennamen, Zuschauerkapazitäten, Gründungsjahre, Vereinsfarben und die Ruf-Werte sind Näherungen und dürfen frei angepasst werden. Ligen mit \"teilweise_echt\" nennen einige echte Vereine; bis \"teams\" ergänzt das Spiel erfundene.",
   "nationen": [
     {
       "id": "de",
@@ -40,6 +40,15 @@
                 "SGF": 68,
                 "FBE": 66,
                 "THE": 58
+              },
+              "trainer": {
+                "vorname": "Bennet",
+                "nachname": "Wiegert",
+                "nation": "de",
+                "seit": 2015
+              },
+              "sponsoren": {
+                "Hallenname": "GETEC"
               }
             },
             {
@@ -63,6 +72,12 @@
                 "SCM": 66,
                 "THW": 60,
                 "THE": 50
+              },
+              "trainer": {
+                "vorname": "Nicolej",
+                "nachname": "Krickau",
+                "nation": "dk",
+                "seit": 2025
               }
             },
             {
@@ -87,6 +102,15 @@
                 "SCM": 80,
                 "FBE": 60,
                 "HSV": 74
+              },
+              "trainer": {
+                "vorname": "Børge",
+                "nachname": "Lund",
+                "nation": "no",
+                "seit": 2026
+              },
+              "sponsoren": {
+                "Hallenname": "Wunderino"
               }
             },
             {
@@ -110,6 +134,12 @@
                 "THW": 92,
                 "SCM": 68,
                 "HSV": 58
+              },
+              "trainer": {
+                "vorname": "Aleš",
+                "nachname": "Pajovič",
+                "nation": "si",
+                "geprueft": false
               }
             },
             {
@@ -132,6 +162,12 @@
               "rivalen": {
                 "HSG": 76,
                 "TSV": 54
+              },
+              "trainer": {
+                "vorname": "Roberto",
+                "nachname": "García Parrondo",
+                "nation": "es",
+                "seit": 2021
               }
             },
             {
@@ -155,7 +191,18 @@
                 "TVB": 72,
                 "FAG": 60,
                 "BBM": 58
-              }
+              },
+              "trainer": {
+                "vorname": "Maik",
+                "nachname": "Machulla",
+                "nation": "de",
+                "seit": 2024,
+                "geprueft": false
+              },
+              "sponsoren": {
+                "Hallenname": "SAP"
+              },
+              "zuschauerschnitt": 8500
             },
             {
               "name": "VfL Gummersbach",
@@ -177,6 +224,15 @@
               "rivalen": {
                 "BHC": 80,
                 "TBV": 70
+              },
+              "trainer": {
+                "vorname": "Guðjón Valur",
+                "nachname": "Sigurðsson",
+                "nation": "is",
+                "seit": 2020
+              },
+              "sponsoren": {
+                "Hallenname": "Schwalbe"
               }
             },
             {
@@ -200,6 +256,15 @@
                 "VfL": 70,
                 "BHC": 56,
                 "TSV": 52
+              },
+              "trainer": {
+                "vorname": "Florian",
+                "nachname": "Kehrmann",
+                "nation": "de",
+                "seit": 2014
+              },
+              "sponsoren": {
+                "Hallenname": "Phoenix Contact"
               }
             },
             {
@@ -222,6 +287,15 @@
               "rivalen": {
                 "MTM": 54,
                 "TBV": 52
+              },
+              "trainer": {
+                "vorname": "Juan Carlos",
+                "nachname": "Pastor",
+                "nation": "es",
+                "seit": 2025
+              },
+              "sponsoren": {
+                "Hallenname": "ZAG"
               }
             },
             {
@@ -244,6 +318,16 @@
               "rivalen": {
                 "THW": 74,
                 "SGF": 58
+              },
+              "trainer": {
+                "vorname": "Torsten",
+                "nachname": "Jansen",
+                "nation": "de",
+                "seit": 2018,
+                "geprueft": false
+              },
+              "sponsoren": {
+                "Hallenname": "Barclays"
               }
             },
             {
@@ -267,6 +351,15 @@
                 "RNL": 60,
                 "TVB": 78,
                 "HCE": 50
+              },
+              "trainer": {
+                "vorname": "Ben",
+                "nachname": "Matschke",
+                "nation": "de",
+                "geprueft": false
+              },
+              "sponsoren": {
+                "Hallenname": "EWS"
               }
             },
             {
@@ -291,6 +384,15 @@
                 "FAG": 78,
                 "BBM": 62,
                 "HBW": 56
+              },
+              "trainer": {
+                "vorname": "Misha",
+                "nachname": "Kaufmann",
+                "nation": "ch",
+                "seit": 2025
+              },
+              "sponsoren": {
+                "Hallenname": "Porsche"
               }
             },
             {
@@ -312,6 +414,15 @@
               },
               "rivalen": {
                 "FAG": 50
+              },
+              "trainer": {
+                "vorname": "Johannes",
+                "nachname": "Sellin",
+                "nation": "de",
+                "geprueft": false
+              },
+              "sponsoren": {
+                "Hallenname": "Nürnberger Versicherung"
               }
             },
             {
@@ -333,6 +444,15 @@
               },
               "rivalen": {
                 "MTM": 76
+              },
+              "trainer": {
+                "vorname": "Rúnar",
+                "nachname": "Sigtryggsson",
+                "nation": "is",
+                "seit": 2025
+              },
+              "sponsoren": {
+                "Hallenname": "Buderus"
               }
             },
             {
@@ -355,6 +475,12 @@
               "rivalen": {
                 "VfL": 80,
                 "TBV": 56
+              },
+              "trainer": {
+                "vorname": "Markus",
+                "nachname": "Pütz",
+                "nation": "de",
+                "seit": 2023
               }
             },
             {
@@ -377,6 +503,12 @@
               "rivalen": {
                 "SCM": 58,
                 "FBE": 50
+              },
+              "trainer": {
+                "vorname": "Sebastian",
+                "nachname": "Hinze",
+                "nation": "de",
+                "geprueft": false
               }
             },
             {
@@ -399,6 +531,14 @@
               "rivalen": {
                 "TVB": 56,
                 "BBM": 60
+              },
+              "trainer": {
+                "vorname": "Matthias",
+                "nachname": "Flohr",
+                "nation": "de"
+              },
+              "sponsoren": {
+                "Hallenname": "Sparkasse Zollernalb"
               }
             },
             {
@@ -422,6 +562,15 @@
                 "TVB": 62,
                 "RNL": 58,
                 "HBW": 60
+              },
+              "trainer": {
+                "vorname": "Hartmut",
+                "nachname": "Mayerhoffer",
+                "nation": "de",
+                "seit": 2026
+              },
+              "sponsoren": {
+                "Hallenname": "EgeTrans"
               }
             }
           ]
@@ -447,6 +596,9 @@
               "ruf": 55,
               "rivalen": {
                 "GWD": 78
+              },
+              "sponsoren": {
+                "Hallenname": "Merkur"
               }
             },
             {
@@ -464,6 +616,9 @@
               "rivalen": {
                 "TUS": 78,
                 "NOL": 54
+              },
+              "sponsoren": {
+                "Hallenname": "Kampa"
               }
             },
             {
@@ -496,6 +651,9 @@
               "ruf": 53,
               "rivalen": {
                 "EMP": 50
+              },
+              "sponsoren": {
+                "Hallenname": "Mittelbrandenburgische Sparkasse"
               }
             },
             {
@@ -511,8 +669,10 @@
               ],
               "ruf": 61,
               "rivalen": {
-                "AUE": 62,
                 "DRH": 58
+              },
+              "sponsoren": {
+                "Hallenname": "Quarterback Immobilien"
               }
             },
             {
@@ -530,22 +690,6 @@
               "rivalen": {
                 "POT": 50,
                 "LUE": 52
-              }
-            },
-            {
-              "name": "EHV Aue",
-              "kurz": "AUE",
-              "ort": "Aue",
-              "gegruendet": 1990,
-              "halle": "Erzgebirgshalle",
-              "kapazitaet": 2400,
-              "farben": [
-                "#7a1f3d",
-                "#ffffff"
-              ],
-              "ruf": 52,
-              "rivalen": {
-                "DHF": 62
               }
             },
             {
@@ -607,9 +751,7 @@
                 "#ffd500"
               ],
               "ruf": 50,
-              "rivalen": {
-                "RIM": 56
-              }
+              "rivalen": {}
             },
             {
               "name": "VfL Lübeck-Schwartau",
@@ -668,8 +810,9 @@
                 "#000000"
               ],
               "ruf": 52,
-              "rivalen": {
-                "RIM": 64
+              "rivalen": {},
+              "sponsoren": {
+                "Hallenname": "HUK-COBURG"
               }
             },
             {
@@ -686,23 +829,9 @@
               "ruf": 50,
               "rivalen": {
                 "ESS": 70
-              }
-            },
-            {
-              "name": "DJK Rimpar Wölfe",
-              "kurz": "RIM",
-              "ort": "Rimpar",
-              "gegruendet": 1948,
-              "halle": "s.Oliver Arena",
-              "kapazitaet": 3140,
-              "farben": [
-                "#009640",
-                "#000000"
-              ],
-              "ruf": 48,
-              "rivalen": {
-                "COB": 64,
-                "TVG": 56
+              },
+              "sponsoren": {
+                "Hallenname": "Maximare"
               }
             },
             {
@@ -720,10 +849,49 @@
               "rivalen": {
                 "ESS": 56
               }
+            },
+            {
+              "name": "TV Emsdetten",
+              "kurz": "EMS",
+              "ort": "Emsdetten",
+              "gegruendet": 1897,
+              "halle": "Emshalle",
+              "kapazitaet": 1600,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 49,
+              "rivalen": {
+                "HAM": 58,
+                "NOL": 52
+              }
+            },
+            {
+              "name": "VfL Eintracht Hagen",
+              "kurz": "HAG",
+              "ort": "Hagen",
+              "gegruendet": 1996,
+              "halle": "Krollmann Arena",
+              "kapazitaet": 1800,
+              "farben": [
+                "#ffd500",
+                "#0057a6"
+              ],
+              "ruf": 53,
+              "rivalen": {
+                "HAM": 62,
+                "FER": 54
+              },
+              "sponsoren": {
+                "Hallenname": "Krollmann"
+              }
             }
           ]
         }
-      ]
+      ],
+      "cl_plaetze": 3,
+      "el_plaetze": 3
     },
     {
       "id": "dk",
@@ -759,6 +927,18 @@
               },
               "rivalen": {
                 "GOG": 74
+              },
+              "sponsoren": {
+                "Hallenname": "Jutlander Bank"
+              },
+              "trainer": {
+                "vorname": "Simon",
+                "nachname": "Dahl",
+                "nation": "dk",
+                "seit": 2024
+              },
+              "stab": {
+                "cotrainer": "Henrik Kronborg"
               }
             },
             {
@@ -780,6 +960,17 @@
               },
               "rivalen": {
                 "AAL": 74
+              },
+              "trainer": {
+                "vorname": "Kasper",
+                "nachname": "Christensen",
+                "nation": "dk"
+              },
+              "stab": {
+                "cotrainer": "Simon Langager"
+              },
+              "sponsoren": {
+                "Hallenname": "Sydbank"
               }
             },
             {
@@ -801,6 +992,9 @@
               },
               "rivalen": {
                 "TTH": 66
+              },
+              "sponsoren": {
+                "Hallenname": "Skjern Bank"
               }
             },
             {
@@ -814,7 +1008,10 @@
                 "#009640",
                 "#ffffff"
               ],
-              "ruf": 75
+              "ruf": 75,
+              "sponsoren": {
+                "Hallenname": "Jysk"
+              }
             },
             {
               "name": "KIF Kolding",
@@ -835,6 +1032,9 @@
               },
               "rivalen": {
                 "FRE": 70
+              },
+              "sponsoren": {
+                "Hallenname": "Sydbank"
               }
             },
             {
@@ -873,6 +1073,9 @@
               "rivalen": {
                 "SKJ": 66,
                 "MTH": 62
+              },
+              "sponsoren": {
+                "Hallenname": "Gråkjær"
               }
             },
             {
@@ -889,6 +1092,9 @@
               "ruf": 67,
               "rivalen": {
                 "TTH": 62
+              },
+              "sponsoren": {
+                "Hallenname": "Jyske Bank"
               }
             },
             {
@@ -955,19 +1161,6 @@
               "ruf": 64
             },
             {
-              "name": "Lemvig-Thyborøn Håndbold",
-              "kurz": "LEM",
-              "ort": "Lemvig",
-              "gegruendet": 2005,
-              "halle": "Lemvig Idrætscenter",
-              "kapazitaet": 1500,
-              "farben": [
-                "#e2001a",
-                "#000000"
-              ],
-              "ruf": 63
-            },
-            {
               "name": "TMS Ringsted",
               "kurz": "TMS",
               "ort": "Ringsted",
@@ -979,8 +1172,21 @@
                 "#0057a6"
               ],
               "ruf": 62
+            },
+            {
+              "name": "Skive fH",
+              "kurz": "SKI",
+              "ort": "Skive",
+              "halle": "Skive Arena",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 62
             }
-          ]
+          ],
+          "playoffs": 8
         },
         {
           "id": "l_dk2",
@@ -988,11 +1194,53 @@
           "kurz": "1DK",
           "stufe": 2,
           "ruf": 52,
-          "vereine": [],
-          "teams": 10,
-          "erzeugt": true
+          "vereine": [
+            {
+              "name": "Lemvig-Thyborøn Håndbold",
+              "kurz": "LEM",
+              "ort": "Lemvig",
+              "halle": "Nordea Arena Lemvig",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 56,
+              "sponsoren": {
+                "Hallenname": "Nordea"
+              }
+            },
+            {
+              "name": "Grindsted GIF Håndbold",
+              "kurz": "GGI",
+              "ort": "Grindsted",
+              "halle": "Grindsted Idrætscenter",
+              "kapazitaet": 1200,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 54
+            },
+            {
+              "name": "HØJ Elite",
+              "kurz": "HOJ",
+              "ort": "Høje-Taastrup",
+              "halle": "Høje-Taastrup Hallerne",
+              "kapazitaet": 1000,
+              "farben": [
+                "#ffd500",
+                "#000000"
+              ],
+              "ruf": 52
+            }
+          ],
+          "teams": 12,
+          "teilweise_echt": true
         }
-      ]
+      ],
+      "cl_plaetze": 2,
+      "el_plaetze": 3
     },
     {
       "id": "fr",
@@ -1004,7 +1252,7 @@
       "ligen": [
         {
           "id": "l_fr1",
-          "name": "Liqui Moly Starligue",
+          "name": "Daikin StarLigue",
           "kurz": "SLG",
           "stufe": 1,
           "ruf": 83,
@@ -1029,6 +1277,11 @@
               "rivalen": {
                 "MHB": 78,
                 "NAN": 66
+              },
+              "trainer": {
+                "vorname": "Stefan",
+                "nachname": "Madsen",
+                "nation": "dk"
               }
             },
             {
@@ -1051,6 +1304,11 @@
               "rivalen": {
                 "PSG": 66,
                 "CES": 60
+              },
+              "trainer": {
+                "vorname": "Grégory",
+                "nachname": "Cojean",
+                "nation": "fr"
               }
             },
             {
@@ -1073,6 +1331,15 @@
               "rivalen": {
                 "PSG": 78,
                 "NIM": 74
+              },
+              "trainer": {
+                "vorname": "Erick",
+                "nachname": "Mathé",
+                "nation": "fr",
+                "seit": 2026
+              },
+              "sponsoren": {
+                "Hallenname": "FDI"
               }
             },
             {
@@ -1094,6 +1361,12 @@
               },
               "rivalen": {
                 "MHB": 74
+              },
+              "trainer": {
+                "vorname": "Guillaume",
+                "nachname": "Saurina",
+                "nation": "fr",
+                "seit": 2026
               }
             },
             {
@@ -1113,9 +1386,7 @@
                 "muster": 7,
                 "symbol": 1
               },
-              "rivalen": {
-                "DIJ": 52
-              }
+              "rivalen": {}
             },
             {
               "name": "Saint-Raphaël Var Handball",
@@ -1131,6 +1402,11 @@
               "ruf": 73,
               "rivalen": {
                 "AIX": 62
+              },
+              "trainer": {
+                "vorname": "Benjamin",
+                "nachname": "Braux",
+                "nation": "fr"
               }
             },
             {
@@ -1167,22 +1443,11 @@
                 "form": 3,
                 "muster": 3,
                 "symbol": 2
-              }
-            },
-            {
-              "name": "Dijon Métropole Handball",
-              "kurz": "DIJ",
-              "ort": "Dijon",
-              "gegruendet": 1966,
-              "halle": "Palais des Sports Jean-Michel Geoffroy",
-              "kapazitaet": 4000,
-              "farben": [
-                "#e2001a",
-                "#ffffff"
-              ],
-              "ruf": 69,
-              "rivalen": {
-                "CHA": 52
+              },
+              "trainer": {
+                "vorname": "Danijel",
+                "nachname": "Anđelković",
+                "nation": "rs"
               }
             },
             {
@@ -1207,35 +1472,6 @@
               }
             },
             {
-              "name": "Istres Provence Handball",
-              "kurz": "IST",
-              "ort": "Istres",
-              "gegruendet": 1968,
-              "halle": "Halle Polyvalente",
-              "kapazitaet": 2500,
-              "farben": [
-                "#009640",
-                "#ffd500"
-              ],
-              "ruf": 68
-            },
-            {
-              "name": "US Créteil Handball",
-              "kurz": "CRE",
-              "ort": "Créteil",
-              "gegruendet": 1961,
-              "halle": "Palais des Sports Robert Oubron",
-              "kapazitaet": 2600,
-              "farben": [
-                "#0057a6",
-                "#e2001a"
-              ],
-              "ruf": 67,
-              "rivalen": {
-                "MAS": 58
-              }
-            },
-            {
               "name": "Sélestat Alsace Handball",
               "kurz": "SEL",
               "ort": "Sélestat",
@@ -1247,22 +1483,6 @@
                 "#ffffff"
               ],
               "ruf": 65
-            },
-            {
-              "name": "Massy Essonne Handball",
-              "kurz": "MAS",
-              "ort": "Massy",
-              "gegruendet": 1968,
-              "halle": "Gymnase Pierre de Coubertin",
-              "kapazitaet": 1800,
-              "farben": [
-                "#0057a6",
-                "#ffd500"
-              ],
-              "ruf": 63,
-              "rivalen": {
-                "CRE": 58
-              }
             },
             {
               "name": "Pays d'Aix Université Club HB",
@@ -1278,6 +1498,12 @@
               "ruf": 68,
               "rivalen": {
                 "SRV": 62
+              },
+              "trainer": {
+                "vorname": "Eduard",
+                "nachname": "Fernández Roura",
+                "nation": "es",
+                "seit": 2026
               }
             },
             {
@@ -1291,21 +1517,175 @@
                 "#009640",
                 "#ffffff"
               ],
-              "ruf": 65
+              "ruf": 65,
+              "trainer": {
+                "vorname": "Thierry",
+                "nachname": "Anti",
+                "nation": "fr",
+                "seit": 2026
+              }
+            },
+            {
+              "name": "USDK Dunkerque",
+              "kurz": "DUN",
+              "ort": "Dunkerque",
+              "gegruendet": 1961,
+              "halle": "Stades de Flandres",
+              "kapazitaet": 2500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 70,
+              "trainer": {
+                "vorname": "Yoann",
+                "nachname": "Delattre",
+                "nation": "fr",
+                "seit": 2026
+              }
+            },
+            {
+              "name": "Tremblay-en-France Handball",
+              "kurz": "TRE",
+              "ort": "Tremblay-en-France",
+              "gegruendet": 1965,
+              "halle": "Palais des Sports de Tremblay",
+              "kapazitaet": 1200,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 64
+            },
+            {
+              "name": "Saran Loiret Handball",
+              "kurz": "SAR",
+              "ort": "Saran",
+              "gegruendet": 1985,
+              "halle": "Halle du Bois Joly",
+              "kapazitaet": 1500,
+              "farben": [
+                "#000000",
+                "#ffd500"
+              ],
+              "ruf": 63,
+              "trainer": {
+                "vorname": "Luís Filipe",
+                "nachname": "Roque Cruz",
+                "nation": "pt"
+              }
+            },
+            {
+              "name": "Caen Handball",
+              "kurz": "CAE",
+              "ort": "Caen",
+              "gegruendet": 1987,
+              "halle": "Palais des Sports de Caen",
+              "kapazitaet": 3000,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 62,
+              "trainer": {
+                "vorname": "Sébastien",
+                "nachname": "Quintallet",
+                "nation": "fr"
+              }
             }
-          ]
+          ],
+          "playoffs": 8
         },
         {
           "id": "l_fr2",
-          "name": "Proligue",
+          "name": "ProLigue",
           "kurz": "PRO",
           "stufe": 2,
           "ruf": 52,
-          "vereine": [],
-          "teams": 10,
-          "erzeugt": true
+          "vereine": [
+            {
+              "name": "Dijon Métropole Handball",
+              "kurz": "DIJ",
+              "ort": "Dijon",
+              "gegruendet": 1985,
+              "halle": "Palais des Sports Jean-Michel Geoffroy",
+              "kapazitaet": 4000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "Istres Provence Handball",
+              "kurz": "IST",
+              "ort": "Istres",
+              "gegruendet": 1966,
+              "halle": "Halle polyvalente d'Istres",
+              "kapazitaet": 2500,
+              "farben": [
+                "#009640",
+                "#ffd500"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "US Ivry Handball",
+              "kurz": "IVR",
+              "ort": "Ivry-sur-Seine",
+              "gegruendet": 1947,
+              "halle": "Gymnase Auguste Delaune",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 59
+            },
+            {
+              "name": "US Créteil Handball",
+              "kurz": "CRT",
+              "ort": "Créteil",
+              "gegruendet": 1964,
+              "halle": "Palais des Sports Robert Oubron",
+              "kapazitaet": 2600,
+              "farben": [
+                "#0057a6",
+                "#e2001a"
+              ],
+              "ruf": 57
+            },
+            {
+              "name": "Massy Essonne Handball",
+              "kurz": "MAS",
+              "ort": "Massy",
+              "halle": "Centre Omnisports Pierre de Coubertin",
+              "kapazitaet": 1800,
+              "farben": [
+                "#0057a6",
+                "#ffd500"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "JS Cherbourg Manche Handball",
+              "kurz": "CHE",
+              "ort": "Cherbourg",
+              "halle": "Complexe Sportif Chantereyne",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 52
+            }
+          ],
+          "teams": 16,
+          "teilweise_echt": true
         }
-      ]
+      ],
+      "cl_plaetze": 3,
+      "el_plaetze": 3
     },
     {
       "id": "es",
@@ -1317,7 +1697,7 @@
       "ligen": [
         {
           "id": "l_es1",
-          "name": "Liga ASOBAL",
+          "name": "Liga NEXUS ENERGÍA ASOBAL",
           "kurz": "ASO",
           "stufe": 1,
           "ruf": 80,
@@ -1342,6 +1722,12 @@
               "rivalen": {
                 "ADE": 70,
                 "GRA": 62
+              },
+              "trainer": {
+                "vorname": "Carlos",
+                "nachname": "Ortega",
+                "nation": "es",
+                "seit": 2021
               }
             },
             {
@@ -1361,8 +1747,11 @@
                 "muster": 6,
                 "symbol": 0
               },
-              "rivalen": {
-                "ANA": 76
+              "rivalen": {},
+              "trainer": {
+                "vorname": "Álex",
+                "nachname": "Mozas",
+                "nation": "es"
               }
             },
             {
@@ -1435,24 +1824,11 @@
                 "#ffd500"
               ],
               "ruf": 68,
-              "rivalen": {
-                "TRB": 66
-              }
-            },
-            {
-              "name": "BM Benidorm",
-              "kurz": "BEN",
-              "ort": "Benidorm",
-              "gegruendet": 1990,
-              "halle": "Palau d'Esports L'Illa",
-              "kapazitaet": 2000,
-              "farben": [
-                "#e2001a",
-                "#0057a6"
-              ],
-              "ruf": 67,
-              "rivalen": {
-                "SAG": 60
+              "rivalen": {},
+              "trainer": {
+                "vorname": "Jacobo",
+                "nachname": "Cuétara",
+                "nation": "es"
               }
             },
             {
@@ -1535,22 +1911,6 @@
               }
             },
             {
-              "name": "Helvetia Anaitasuna",
-              "kurz": "ANA",
-              "ort": "Pamplona",
-              "gegruendet": 1940,
-              "halle": "Anaitasuna",
-              "kapazitaet": 2800,
-              "farben": [
-                "#009640",
-                "#ffffff"
-              ],
-              "ruf": 66,
-              "rivalen": {
-                "IRU": 76
-              }
-            },
-            {
               "name": "Puerto Sagunto",
               "kurz": "SAG",
               "ort": "Sagunto",
@@ -1562,38 +1922,57 @@
                 "#ffffff"
               ],
               "ruf": 63,
-              "rivalen": {
-                "BEN": 60
-              }
+              "rivalen": {}
             },
             {
-              "name": "BM Guadalajara",
-              "kurz": "GUA",
-              "ort": "Guadalajara",
-              "gegruendet": 1985,
-              "halle": "David Santamaría",
-              "kapazitaet": 1500,
+              "name": "BM Caserío Ciudad Real",
+              "kurz": "CRE",
+              "ort": "Ciudad Real",
+              "gegruendet": 2011,
+              "halle": "Quijote Arena",
+              "kapazitaet": 5800,
               "farben": [
-                "#e2001a",
-                "#ffd500"
+                "#ffd500",
+                "#0057a6"
               ],
-              "ruf": 61
+              "ruf": 64
             },
             {
-              "name": "Bathco Torrelavega B",
-              "kurz": "TRB",
-              "ort": "Torrelavega",
-              "gegruendet": 1990,
-              "halle": "La Habana Vieja",
-              "kapazitaet": 1000,
+              "name": "HORNEO BM Alicante",
+              "kurz": "ALI",
+              "ort": "Alicante",
+              "halle": "Pabellón Pitiu Rochel",
+              "kapazitaet": 2500,
               "farben": [
-                "#003da5",
+                "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 59,
-              "rivalen": {
-                "TOR": 66
-              }
+              "ruf": 62
+            },
+            {
+              "name": "REBI Balonmano Cuenca",
+              "kurz": "CUE",
+              "ort": "Cuenca",
+              "gegruendet": 1996,
+              "halle": "Pabellón El Sargal",
+              "kapazitaet": 1700,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 66
+            },
+            {
+              "name": "Cajasol Sevilla BM Proin",
+              "kurz": "SEV",
+              "ort": "Sevilla",
+              "halle": "Pabellón San Pablo",
+              "kapazitaet": 7500,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 60
             }
           ]
         },
@@ -1603,11 +1982,64 @@
           "kurz": "DHP",
           "stufe": 2,
           "ruf": 50,
-          "vereine": [],
-          "teams": 10,
-          "erzeugt": true
+          "vereine": [
+            {
+              "name": "Bada Huesca",
+              "kurz": "HUE",
+              "ort": "Huesca",
+              "gegruendet": 1995,
+              "halle": "Palacio de Deportes de Huesca",
+              "kapazitaet": 5000,
+              "farben": [
+                "#7a1f3d",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "Sanicentro BM Guadalajara",
+              "kurz": "GUA",
+              "ort": "Guadalajara",
+              "halle": "Palacio Multiusos de Guadalajara",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffd500"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "BM Benidorm",
+              "kurz": "BEN",
+              "ort": "Benidorm",
+              "halle": "Palau d'Esports L'Illa de Benidorm",
+              "kapazitaet": 2000,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 54
+            },
+            {
+              "name": "Helvetia Anaitasuna",
+              "kurz": "ANA",
+              "ort": "Pamplona",
+              "gegruendet": 1957,
+              "halle": "Pabellón Anaitasuna",
+              "kapazitaet": 2800,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 54
+            }
+          ],
+          "teams": 12,
+          "teilweise_echt": true
         }
-      ]
+      ],
+      "cl_plaetze": 1,
+      "el_plaetze": 3
     },
     {
       "id": "pl",
@@ -1643,6 +2075,12 @@
               },
               "rivalen": {
                 "PLO": 88
+              },
+              "trainer": {
+                "vorname": "Krzysztof",
+                "nachname": "Lijewski",
+                "nation": "pl",
+                "seit": 2025
               }
             },
             {
@@ -1664,6 +2102,14 @@
               },
               "rivalen": {
                 "KIE": 88
+              },
+              "trainer": {
+                "vorname": "Xavi",
+                "nachname": "Sabaté",
+                "nation": "es"
+              },
+              "sponsoren": {
+                "Hallenname": "Orlen"
               }
             },
             {
@@ -1800,66 +2246,35 @@
               ],
               "ruf": 67,
               "rivalen": {
-                "KWI": 58,
-                "SZC": 60
+                "KWI": 58
               }
             },
             {
-              "name": "Sandra SPA Pogoń Szczecin",
-              "kurz": "SZC",
-              "ort": "Szczecin",
-              "gegruendet": 1948,
-              "halle": "Hala Netto Arena",
-              "kapazitaet": 5000,
-              "farben": [
-                "#0057a6",
-                "#e2001a"
-              ],
-              "ruf": 64,
-              "rivalen": {
-                "GDA": 60
-              }
-            },
-            {
-              "name": "Stal Mielec",
-              "kurz": "MIE",
-              "ort": "Mielec",
-              "gegruendet": 1939,
-              "halle": "Hala MOSiR",
-              "kapazitaet": 1400,
-              "farben": [
-                "#0057a6",
-                "#ffffff"
-              ],
-              "ruf": 62
-            },
-            {
-              "name": "KPR Legionowo",
-              "kurz": "LEG",
-              "ort": "Legionowo",
-              "gegruendet": 1996,
-              "halle": "Arena Legionowo",
-              "kapazitaet": 1500,
+              "name": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+              "kurz": "OST",
+              "ort": "Ostrów Wielkopolski",
+              "halle": "Arena Ostrów",
+              "kapazitaet": 3000,
               "farben": [
                 "#e2001a",
-                "#ffd500"
-              ],
-              "ruf": 61
-            },
-            {
-              "name": "Anilana Łódź",
-              "kurz": "LOD",
-              "ort": "Łódź",
-              "gegruendet": 1948,
-              "halle": "Hala MOSiR",
-              "kapazitaet": 1300,
-              "farben": [
-                "#009640",
                 "#ffffff"
               ],
-              "ruf": 59
+              "ruf": 64
+            },
+            {
+              "name": "Netland MKS Kalisz",
+              "kurz": "KAL",
+              "ort": "Kalisz",
+              "halle": "Arena Kalisz",
+              "kapazitaet": 3000,
+              "farben": [
+                "#ffd500",
+                "#0057a6"
+              ],
+              "ruf": 60
             }
-          ]
+          ],
+          "playoffs": 8
         },
         {
           "id": "l_pl2",
@@ -1867,11 +2282,1950 @@
           "kurz": "1PL",
           "stufe": 2,
           "ruf": 46,
-          "vereine": [],
-          "teams": 10,
-          "erzeugt": true
+          "vereine": [
+            {
+              "name": "Sandra SPA Pogoń Szczecin",
+              "kurz": "SZC",
+              "ort": "Szczecin",
+              "halle": "Netto Arena",
+              "kapazitaet": 5000,
+              "farben": [
+                "#0057a6",
+                "#e2001a"
+              ],
+              "ruf": 52,
+              "sponsoren": {
+                "Hallenname": "Netto"
+              }
+            },
+            {
+              "name": "Stal Mielec",
+              "kurz": "MIE",
+              "ort": "Mielec",
+              "kapazitaet": 1400,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 50
+            },
+            {
+              "name": "KPR Legionowo",
+              "kurz": "LEG",
+              "ort": "Legionowo",
+              "halle": "Arena Legionowo",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffd500"
+              ],
+              "ruf": 49
+            },
+            {
+              "name": "Anilana Łódź",
+              "kurz": "LOD",
+              "ort": "Łódź",
+              "kapazitaet": 1300,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 48
+            }
+          ],
+          "teams": 12,
+          "teilweise_echt": true
         }
-      ]
+      ],
+      "cl_plaetze": 2,
+      "el_plaetze": 2
+    },
+    {
+      "id": "hu",
+      "name": "Ungarn",
+      "ruf": 88,
+      "reichtum": 0.62,
+      "pokal": "Magyar Kupa",
+      "supercup": "Szuperkupa",
+      "cl_plaetze": 2,
+      "el_plaetze": 2,
+      "ligen": [
+        {
+          "id": "l_hu1",
+          "name": "NB I",
+          "kurz": "NBI",
+          "stufe": 1,
+          "ruf": 78,
+          "vereine": [
+            {
+              "name": "ONE Veszprém HC",
+              "kurz": "VES",
+              "ort": "Veszprém",
+              "gegruendet": 1977,
+              "halle": "Veszprém Aréna",
+              "kapazitaet": 5096,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 90,
+              "rivalen": {
+                "SZE": 90
+              },
+              "trainer": {
+                "vorname": "Xavier",
+                "nachname": "Pascual",
+                "nation": "es",
+                "seit": 2024
+              }
+            },
+            {
+              "name": "OTP Bank-Pick Szeged",
+              "kurz": "SZE",
+              "ort": "Szeged",
+              "gegruendet": 1961,
+              "halle": "Pick Aréna",
+              "kapazitaet": 8143,
+              "farben": [
+                "#003da5",
+                "#ffffff"
+              ],
+              "ruf": 85,
+              "rivalen": {
+                "VES": 90
+              },
+              "trainer": {
+                "vorname": "Michael",
+                "nachname": "Apelgren",
+                "nation": "se",
+                "geprueft": false
+              },
+              "sponsoren": {
+                "Hallenname": "Pick"
+              }
+            },
+            {
+              "name": "Grundfos Tatabánya KC",
+              "kurz": "TAT",
+              "ort": "Tatabánya",
+              "gegruendet": 1949,
+              "halle": "Tatabánya Multifunkcionális Sportcsarnok",
+              "kapazitaet": 6200,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 70
+            },
+            {
+              "name": "FTC-Green Collect",
+              "kurz": "FTC",
+              "ort": "Budapest",
+              "gegruendet": 1899,
+              "halle": "Elek Gyula Aréna",
+              "kapazitaet": 2500,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 68,
+              "rivalen": {
+                "PLE": 58
+              }
+            },
+            {
+              "name": "Balatonfüredi KSE",
+              "kurz": "BKS",
+              "ort": "Balatonfüred",
+              "gegruendet": 1990,
+              "halle": "Balatonfüredi Városi Sportcsarnok",
+              "kapazitaet": 712,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 64
+            },
+            {
+              "name": "MOL Tatabánya Csurgói KK",
+              "kurz": "CSU",
+              "ort": "Csurgó",
+              "halle": "Csurgói Sportcsarnok",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffd500"
+              ],
+              "ruf": 62
+            },
+            {
+              "name": "Dabas KC",
+              "kurz": "DAB",
+              "ort": "Dabas",
+              "gegruendet": 1988,
+              "halle": "OBO Aréna",
+              "kapazitaet": 1000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 60,
+              "sponsoren": {
+                "Hallenname": "OBO"
+              }
+            },
+            {
+              "name": "NEKA",
+              "kurz": "NEK",
+              "ort": "Balatonboglár",
+              "gegruendet": 2012,
+              "halle": "NEKA Csarnok",
+              "kapazitaet": 800,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "PLER-Budapest",
+              "kurz": "PLE",
+              "ort": "Budapest",
+              "gegruendet": 1998,
+              "halle": "Pestszentlőrinci Sportcsarnok",
+              "kapazitaet": 1200,
+              "farben": [
+                "#000000",
+                "#ffd500"
+              ],
+              "ruf": 59,
+              "rivalen": {
+                "FTC": 58
+              }
+            },
+            {
+              "name": "Szigetszentmiklósi KSK",
+              "kurz": "SZI",
+              "ort": "Szigetszentmiklós",
+              "kapazitaet": 900,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "Budai Farkasok",
+              "kurz": "BUD",
+              "ort": "Budapest",
+              "kapazitaet": 1000,
+              "farben": [
+                "#000000",
+                "#ffffff"
+              ],
+              "ruf": 57
+            },
+            {
+              "name": "Eger-Eszterházy SzSE",
+              "kurz": "EGE",
+              "ort": "Eger",
+              "halle": "Kemény Ferenc Sportcsarnok",
+              "kapazitaet": 2000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "ETO University HT",
+              "kurz": "ETO",
+              "ort": "Győr",
+              "halle": "Audi Aréna Győr",
+              "kapazitaet": 5500,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 59,
+              "sponsoren": {
+                "Hallenname": "Audi"
+              }
+            },
+            {
+              "name": "Gyöngyösi KK",
+              "kurz": "GYO",
+              "ort": "Gyöngyös",
+              "halle": "Gyöngyösi Városi Sportcsarnok",
+              "kapazitaet": 1200,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 57
+            }
+          ],
+          "playoffs": 4
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "pt",
+      "name": "Portugal",
+      "ruf": 78,
+      "reichtum": 0.55,
+      "pokal": "Taça de Portugal",
+      "supercup": "Supertaça",
+      "cl_plaetze": 2,
+      "el_plaetze": 2,
+      "ligen": [
+        {
+          "id": "l_pt1",
+          "name": "Campeonato Placard Andebol 1",
+          "kurz": "AND1",
+          "stufe": 1,
+          "ruf": 72,
+          "vereine": [
+            {
+              "name": "Sporting CP",
+              "kurz": "SCP",
+              "ort": "Lisboa",
+              "gegruendet": 1906,
+              "halle": "Pavilhão João Rocha",
+              "kapazitaet": 2500,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 82,
+              "rivalen": {
+                "FCP": 88,
+                "SLB": 90
+              },
+              "trainer": {
+                "vorname": "Ricardo",
+                "nachname": "Costa",
+                "nation": "pt"
+              }
+            },
+            {
+              "name": "FC Porto",
+              "kurz": "FCP",
+              "ort": "Porto",
+              "gegruendet": 1893,
+              "halle": "Dragão Arena",
+              "kapazitaet": 2200,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 80,
+              "rivalen": {
+                "SCP": 88,
+                "SLB": 84
+              },
+              "trainer": {
+                "vorname": "Carlos",
+                "nachname": "Martingo",
+                "nation": "pt",
+                "seit": 2026
+              },
+              "stab": {
+                "cotrainer": "Tiago Rocha",
+                "torwarttrainer": "Telmo Ferreira",
+                "athletiktrainer": "Fábio Araújo"
+              }
+            },
+            {
+              "name": "SL Benfica",
+              "kurz": "SLB",
+              "ort": "Lisboa",
+              "gegruendet": 1904,
+              "halle": "Pavilhão Fidelidade",
+              "kapazitaet": 1800,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 76,
+              "rivalen": {
+                "SCP": 90,
+                "FCP": 84
+              },
+              "sponsoren": {
+                "Hallenname": "Fidelidade"
+              }
+            },
+            {
+              "name": "ABC de Braga",
+              "kurz": "ABC",
+              "ort": "Braga",
+              "gegruendet": 1932,
+              "halle": "Pavilhão Flávio Sá Leite",
+              "kapazitaet": 2200,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 68
+            },
+            {
+              "name": "Águas Santas Milaneza",
+              "kurz": "AGS",
+              "ort": "Maia",
+              "halle": "Pavilhão da Associação Atlética de Águas Santas",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#e2001a"
+              ],
+              "ruf": 62
+            },
+            {
+              "name": "CF Os Belenenses",
+              "kurz": "BEL",
+              "ort": "Lisboa",
+              "gegruendet": 1919,
+              "halle": "Pavilhão Acácio Rosa",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 61
+            },
+            {
+              "name": "CS Marítimo",
+              "kurz": "MAR",
+              "ort": "Funchal",
+              "kapazitaet": 2000,
+              "farben": [
+                "#009640",
+                "#e2001a"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "Vitória SC",
+              "kurz": "VSC",
+              "ort": "Guimarães",
+              "gegruendet": 1922,
+              "halle": "Pavilhão Unidade Vimaranense",
+              "kapazitaet": 2000,
+              "farben": [
+                "#000000",
+                "#ffffff"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "Póvoa AC",
+              "kurz": "POV",
+              "ort": "Póvoa de Varzim",
+              "kapazitaet": 1000,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 57
+            },
+            {
+              "name": "AD Avanca",
+              "kurz": "AVA",
+              "ort": "Estarreja",
+              "halle": "Pavilhão Comendador Adelino Dias Costa",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "FC Gaia",
+              "kurz": "GAI",
+              "ort": "Vila Nova de Gaia",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "Arsenal Clube da Devesa",
+              "kurz": "ARS",
+              "ort": "Braga",
+              "kapazitaet": 800,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 55
+            }
+          ]
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "no",
+      "name": "Norwegen",
+      "ruf": 86,
+      "reichtum": 0.95,
+      "pokal": "NM-cupen",
+      "supercup": "Supercupen",
+      "cl_plaetze": 1,
+      "el_plaetze": 2,
+      "ligen": [
+        {
+          "id": "l_no1",
+          "name": "REMA 1000-ligaen",
+          "kurz": "REMA",
+          "stufe": 1,
+          "ruf": 74,
+          "vereine": [
+            {
+              "name": "Kolstad Håndball",
+              "kurz": "KOL",
+              "ort": "Trondheim",
+              "gegruendet": 1972,
+              "halle": "Trondheim Spektrum",
+              "kapazitaet": 3000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 84,
+              "rivalen": {
+                "ELV": 72
+              },
+              "trainer": {
+                "vorname": "Christian",
+                "nachname": "Berge",
+                "nation": "no"
+              }
+            },
+            {
+              "name": "Elverum Håndball",
+              "kurz": "ELV",
+              "ort": "Elverum",
+              "gegruendet": 1934,
+              "halle": "Terningen Arena",
+              "kapazitaet": 2700,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 74,
+              "rivalen": {
+                "KOL": 72
+              },
+              "trainer": {
+                "vorname": "Luka",
+                "nachname": "Panza",
+                "nation": "no",
+                "geprueft": false
+              }
+            },
+            {
+              "name": "Runar Sandefjord",
+              "kurz": "RUN",
+              "ort": "Sandefjord",
+              "gegruendet": 1949,
+              "halle": "Bugårdshallen",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 64
+            },
+            {
+              "name": "Drammen HK",
+              "kurz": "DRA",
+              "ort": "Drammen",
+              "gegruendet": 1966,
+              "halle": "Drammenshallen",
+              "kapazitaet": 3000,
+              "farben": [
+                "#ffd500",
+                "#000000"
+              ],
+              "ruf": 66
+            },
+            {
+              "name": "ØIF Arendal",
+              "kurz": "OIF",
+              "ort": "Arendal",
+              "gegruendet": 1920,
+              "halle": "Sparebanken Sør Amfi",
+              "kapazitaet": 2400,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 66,
+              "sponsoren": {
+                "Hallenname": "Sparebanken Sør"
+              }
+            },
+            {
+              "name": "Nærbø IL",
+              "kurz": "NAE",
+              "ort": "Nærbø",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 62
+            },
+            {
+              "name": "Fjellhammer IL",
+              "kurz": "FJE",
+              "ort": "Lørenskog",
+              "kapazitaet": 1000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "Follo HK",
+              "kurz": "FOL",
+              "ort": "Ski",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "Kristiansand TH",
+              "kurz": "KTH",
+              "ort": "Kristiansand",
+              "kapazitaet": 2000,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 59
+            },
+            {
+              "name": "Bergen Håndball",
+              "kurz": "BER",
+              "ort": "Bergen",
+              "halle": "Framohallen",
+              "kapazitaet": 2000,
+              "farben": [
+                "#0057a6",
+                "#e2001a"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "Bergsøy IL",
+              "kurz": "BGS",
+              "ort": "Herøy",
+              "kapazitaet": 800,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "Sandnes Håndball",
+              "kurz": "SAN",
+              "ort": "Sandnes",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "Viking TIF",
+              "kurz": "VIK",
+              "ort": "Stavanger",
+              "kapazitaet": 1200,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 57
+            }
+          ],
+          "playoffs": 8
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "se",
+      "name": "Schweden",
+      "ruf": 84,
+      "reichtum": 0.9,
+      "pokal": "Svenska cupen",
+      "supercup": "Supercupen",
+      "cl_plaetze": 1,
+      "el_plaetze": 2,
+      "ligen": [
+        {
+          "id": "l_se1",
+          "name": "Handbollsligan",
+          "kurz": "HBL-S",
+          "stufe": 1,
+          "ruf": 72,
+          "vereine": [
+            {
+              "name": "IFK Kristianstad",
+              "kurz": "IFK",
+              "ort": "Kristianstad",
+              "gegruendet": 1899,
+              "halle": "Kristianstad Arena",
+              "kapazitaet": 4700,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 76,
+              "rivalen": {
+                "YIF": 70,
+                "LUG": 62
+              },
+              "trainer": {
+                "vorname": "Björn",
+                "nachname": "Sätherström",
+                "nation": "se",
+                "seit": 2026
+              }
+            },
+            {
+              "name": "IK Sävehof",
+              "kurz": "SAV",
+              "ort": "Partille",
+              "gegruendet": 1970,
+              "halle": "Partille Arena",
+              "kapazitaet": 1600,
+              "farben": [
+                "#000000",
+                "#e2001a"
+              ],
+              "ruf": 76,
+              "rivalen": {
+                "AHK": 70,
+                "ONN": 56
+              }
+            },
+            {
+              "name": "Ystads IF",
+              "kurz": "YIF",
+              "ort": "Ystad",
+              "gegruendet": 1908,
+              "halle": "Ystad Arena",
+              "kapazitaet": 2000,
+              "farben": [
+                "#ffd500",
+                "#000000"
+              ],
+              "ruf": 66,
+              "rivalen": {
+                "IFK": 70
+              }
+            },
+            {
+              "name": "Alingsås HK",
+              "kurz": "AHK",
+              "ort": "Alingsås",
+              "gegruendet": 1959,
+              "halle": "Nolhagahallen",
+              "kapazitaet": 1900,
+              "farben": [
+                "#ffd500",
+                "#000000"
+              ],
+              "ruf": 66,
+              "rivalen": {
+                "SAV": 70
+              }
+            },
+            {
+              "name": "HK Malmö",
+              "kurz": "MAL",
+              "ort": "Malmö",
+              "gegruendet": 1998,
+              "halle": "Baltiska hallen",
+              "kapazitaet": 3000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 66,
+              "rivalen": {
+                "LUG": 68
+              }
+            },
+            {
+              "name": "Hammarby IF",
+              "kurz": "HIF",
+              "ort": "Stockholm",
+              "gegruendet": 1897,
+              "halle": "Eriksdalshallen",
+              "kapazitaet": 1600,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 64
+            },
+            {
+              "name": "Lugi HF",
+              "kurz": "LUG",
+              "ort": "Lund",
+              "gegruendet": 1943,
+              "halle": "Sparbanken Skåne Arena",
+              "kapazitaet": 2400,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 62,
+              "rivalen": {
+                "MAL": 68
+              },
+              "sponsoren": {
+                "Hallenname": "Sparbanken Skåne"
+              }
+            },
+            {
+              "name": "IFK Skövde",
+              "kurz": "SKO",
+              "ort": "Skövde",
+              "gegruendet": 1905,
+              "halle": "Arena Skövde",
+              "kapazitaet": 2000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 64
+            },
+            {
+              "name": "Hallby HK",
+              "kurz": "HAL",
+              "ort": "Jönköping",
+              "halle": "Jönköpings Sporthall",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#e2001a"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "Önnereds HK",
+              "kurz": "ONN",
+              "ort": "Göteborg",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "Amo HK",
+              "kurz": "AMO",
+              "ort": "Alstermo",
+              "halle": "Allhallen",
+              "kapazitaet": 1000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "HK Helsingborg",
+              "kurz": "HEL",
+              "ort": "Helsingborg",
+              "halle": "Helsingborg Arena",
+              "kapazitaet": 2200,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 59
+            },
+            {
+              "name": "Skånela IF",
+              "kurz": "SKA",
+              "ort": "Sigtuna",
+              "kapazitaet": 800,
+              "farben": [
+                "#e2001a",
+                "#ffd500"
+              ],
+              "ruf": 56
+            }
+          ],
+          "playoffs": 8
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "hr",
+      "name": "Kroatien",
+      "ruf": 80,
+      "reichtum": 0.45,
+      "pokal": "Hrvatski kup",
+      "supercup": "Superkup",
+      "cl_plaetze": 1,
+      "el_plaetze": 1,
+      "ligen": [
+        {
+          "id": "l_hr1",
+          "name": "Paket24 Premijer liga",
+          "kurz": "PPL",
+          "stufe": 1,
+          "ruf": 66,
+          "vereine": [
+            {
+              "name": "RK Zagreb",
+              "kurz": "ZAG",
+              "ort": "Zagreb",
+              "gegruendet": 1922,
+              "halle": "Dvorana Sutinska vrela",
+              "kapazitaet": 3500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 80,
+              "rivalen": {
+                "NEX": 72
+              },
+              "trainer": {
+                "vorname": "Hrvoje",
+                "nachname": "Horvat",
+                "nation": "hr",
+                "seit": 2026
+              },
+              "stab": {
+                "cotrainer": "Tonči Valčić",
+                "torwarttrainer": "Arian Jović"
+              }
+            },
+            {
+              "name": "RK Nexe",
+              "kurz": "NEX",
+              "ort": "Našice",
+              "gegruendet": 1959,
+              "halle": "Sportska dvorana Kralj Tomislav",
+              "kapazitaet": 2500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 68,
+              "rivalen": {
+                "ZAG": 72
+              }
+            },
+            {
+              "name": "RK Poreč",
+              "kurz": "POR",
+              "ort": "Poreč",
+              "halle": "Žatika Sport Centar",
+              "kapazitaet": 3000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "RK Rudar",
+              "kurz": "RUD",
+              "ort": "Labin",
+              "kapazitaet": 1000,
+              "farben": [
+                "#000000",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "RK Bjelovar",
+              "kurz": "BJE",
+              "ort": "Bjelovar",
+              "kapazitaet": 2000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 57
+            },
+            {
+              "name": "RK Dugo Selo",
+              "kurz": "DUG",
+              "ort": "Dugo Selo",
+              "kapazitaet": 800,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "RK Bjelin Spačva Vinkovci",
+              "kurz": "VIN",
+              "ort": "Vinkovci",
+              "kapazitaet": 2000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "RK Sesvete",
+              "kurz": "SES",
+              "ort": "Zagreb",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 57
+            },
+            {
+              "name": "RK Dubrava",
+              "kurz": "DUB",
+              "ort": "Zagreb",
+              "kapazitaet": 800,
+              "farben": [
+                "#0057a6",
+                "#ffd500"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "RK Varaždin 1930",
+              "kurz": "VZD",
+              "ort": "Varaždin",
+              "halle": "Arena Varaždin",
+              "kapazitaet": 5200,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "RK Split",
+              "kurz": "SPL",
+              "ort": "Split",
+              "kapazitaet": 3000,
+              "farben": [
+                "#003da5",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "RK Umag",
+              "kurz": "UMA",
+              "ort": "Umag",
+              "kapazitaet": 800,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 54
+            }
+          ]
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "mk",
+      "name": "Nordmazedonien",
+      "ruf": 74,
+      "reichtum": 0.3,
+      "pokal": "Makedonski kup",
+      "supercup": "Superkup",
+      "cl_plaetze": 1,
+      "el_plaetze": 1,
+      "ligen": [
+        {
+          "id": "l_mk1",
+          "name": "Super liga",
+          "kurz": "SL-MK",
+          "stufe": 1,
+          "ruf": 64,
+          "vereine": [
+            {
+              "name": "RK Vardar 1961",
+              "kurz": "VAR",
+              "ort": "Skopje",
+              "gegruendet": 1961,
+              "halle": "Jane Sandanski Arena",
+              "kapazitaet": 6000,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 80,
+              "rivalen": {
+                "PEL": 80,
+                "ALK": 70
+              },
+              "trainer": {
+                "vorname": "Ivan",
+                "nachname": "Čupić",
+                "nation": "hr"
+              }
+            },
+            {
+              "name": "RK Eurofarm Pelister",
+              "kurz": "PEL",
+              "ort": "Bitola",
+              "gegruendet": 1946,
+              "halle": "Sportska sala Boris Trajkovski",
+              "kapazitaet": 4000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 78,
+              "rivalen": {
+                "VAR": 80
+              },
+              "trainer": {
+                "vorname": "Lino",
+                "nachname": "Červar",
+                "nation": "hr"
+              }
+            },
+            {
+              "name": "RK Alkaloid",
+              "kurz": "ALK",
+              "ort": "Skopje",
+              "gegruendet": 2017,
+              "halle": "Sportski centar Kale",
+              "kapazitaet": 2000,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 66,
+              "rivalen": {
+                "VAR": 70
+              },
+              "trainer": {
+                "vorname": "Kiril",
+                "nachname": "Lazarov",
+                "nation": "mk"
+              }
+            },
+            {
+              "name": "RK Butel Skopje",
+              "kurz": "BUT",
+              "ort": "Skopje",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "RK Ohrid",
+              "kurz": "OHR",
+              "ort": "Ohrid",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 54
+            },
+            {
+              "name": "RK Tikveš",
+              "kurz": "TIK",
+              "ort": "Kavadarci",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 54
+            },
+            {
+              "name": "RK Kumanovo",
+              "kurz": "KUM",
+              "ort": "Kumanovo",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#e2001a"
+              ],
+              "ruf": 53
+            },
+            {
+              "name": "RK Struga",
+              "kurz": "STR",
+              "ort": "Struga",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 52
+            }
+          ]
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "si",
+      "name": "Slowenien",
+      "ruf": 78,
+      "reichtum": 0.5,
+      "pokal": "Pokal Slovenije",
+      "supercup": "Superpokal",
+      "cl_plaetze": 0,
+      "el_plaetze": 2,
+      "ligen": [
+        {
+          "id": "l_si1",
+          "name": "Liga NLB",
+          "kurz": "NLB",
+          "stufe": 1,
+          "ruf": 66,
+          "vereine": [
+            {
+              "name": "RK Celje Pivovarna Laško",
+              "kurz": "CEL",
+              "ort": "Celje",
+              "gegruendet": 1951,
+              "halle": "Dvorana Zlatorog",
+              "kapazitaet": 5191,
+              "farben": [
+                "#ffd500",
+                "#0057a6"
+              ],
+              "ruf": 76,
+              "rivalen": {
+                "VEL": 80
+              }
+            },
+            {
+              "name": "RK Gorenje Velenje",
+              "kurz": "VEL",
+              "ort": "Velenje",
+              "gegruendet": 1958,
+              "halle": "Rdeča dvorana",
+              "kapazitaet": 2500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 66,
+              "rivalen": {
+                "CEL": 80
+              }
+            },
+            {
+              "name": "RK Trimo Trebnje",
+              "kurz": "TRB",
+              "ort": "Trebnje",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "RD Riko Ribnica",
+              "kurz": "RIB",
+              "ort": "Ribnica",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 60
+            },
+            {
+              "name": "RK Krka",
+              "kurz": "KRK",
+              "ort": "Novo mesto",
+              "kapazitaet": 2000,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "RD LL Grosist Slovan",
+              "kurz": "SLO",
+              "ort": "Ljubljana",
+              "kapazitaet": 1500,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 57
+            },
+            {
+              "name": "RK Jeruzalem Ormož",
+              "kurz": "ORM",
+              "ort": "Ormož",
+              "kapazitaet": 1000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "RD Urbanscape Loka",
+              "kurz": "LOK",
+              "ort": "Škofja Loka",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "RK Slovenj Gradec 2011",
+              "kurz": "SGR",
+              "ort": "Slovenj Gradec",
+              "kapazitaet": 1500,
+              "farben": [
+                "#ffd500",
+                "#000000"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "RK Škofljica",
+              "kurz": "SKF",
+              "ort": "Škofljica",
+              "kapazitaet": 800,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 53
+            },
+            {
+              "name": "RK Ajdovščina",
+              "kurz": "AJD",
+              "ort": "Ajdovščina",
+              "kapazitaet": 1000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 54
+            },
+            {
+              "name": "RK SVIŠ Ivančna Gorica",
+              "kurz": "IVA",
+              "ort": "Ivančna Gorica",
+              "kapazitaet": 800,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 53
+            }
+          ]
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "ro",
+      "name": "Rumänien",
+      "ruf": 74,
+      "reichtum": 0.45,
+      "pokal": "Cupa României",
+      "supercup": "Supercupa",
+      "cl_plaetze": 1,
+      "el_plaetze": 1,
+      "ligen": [
+        {
+          "id": "l_ro1",
+          "name": "Liga Națională",
+          "kurz": "LN",
+          "stufe": 1,
+          "ruf": 64,
+          "vereine": [
+            {
+              "name": "CS Dinamo București",
+              "kurz": "DIN",
+              "ort": "București",
+              "gegruendet": 1948,
+              "halle": "Sala Polivalentă București",
+              "kapazitaet": 5300,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 78,
+              "rivalen": {
+                "STE": 86,
+                "CSM": 66
+              },
+              "trainer": {
+                "vorname": "Paulo",
+                "nachname": "Pereira",
+                "nation": "pt"
+              }
+            },
+            {
+              "name": "CSM Constanța",
+              "kurz": "CON",
+              "ort": "Constanța",
+              "gegruendet": 2009,
+              "halle": "Sala Sporturilor Constanța",
+              "kapazitaet": 2800,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 64
+            },
+            {
+              "name": "CSA Steaua București",
+              "kurz": "STE",
+              "ort": "București",
+              "gegruendet": 1947,
+              "halle": "Sala Ion Țiriac",
+              "kapazitaet": 2500,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 62,
+              "rivalen": {
+                "DIN": 86
+              }
+            },
+            {
+              "name": "CSM București",
+              "kurz": "CSM",
+              "ort": "București",
+              "gegruendet": 2007,
+              "kapazitaet": 2000,
+              "farben": [
+                "#0057a6",
+                "#e2001a"
+              ],
+              "ruf": 62,
+              "rivalen": {
+                "DIN": 66
+              }
+            },
+            {
+              "name": "CS Minaur Baia Mare",
+              "kurz": "MIN",
+              "ort": "Baia Mare",
+              "gegruendet": 1972,
+              "halle": "Sala Sporturilor Lascăr Pană",
+              "kapazitaet": 2000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 62
+            },
+            {
+              "name": "AHC Potaissa Turda",
+              "kurz": "TUR",
+              "ort": "Turda",
+              "gegruendet": 1996,
+              "halle": "Sala Sporturilor Turda",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 62
+            },
+            {
+              "name": "SCM Politehnica Timișoara",
+              "kurz": "TIM",
+              "ort": "Timișoara",
+              "gegruendet": 1964,
+              "halle": "Sala Constantin Jude",
+              "kapazitaet": 1600,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "ACS HC Buzău 2012",
+              "kurz": "BUZ",
+              "ort": "Buzău",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 57
+            },
+            {
+              "name": "CSM Vaslui",
+              "kurz": "VAS",
+              "ort": "Vaslui",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "CSO Teutonii Ghimbav",
+              "kurz": "GHI",
+              "ort": "Ghimbav",
+              "kapazitaet": 1000,
+              "farben": [
+                "#000000",
+                "#ffffff"
+              ],
+              "ruf": 53
+            },
+            {
+              "name": "CSU Cluj-Napoca",
+              "kurz": "CLU",
+              "ort": "Cluj-Napoca",
+              "halle": "Sala Polivalentă Cluj",
+              "kapazitaet": 2500,
+              "farben": [
+                "#000000",
+                "#ffffff"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "CS Medgidia",
+              "kurz": "MED",
+              "ort": "Medgidia",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 53
+            }
+          ]
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "ch",
+      "name": "Schweiz",
+      "ruf": 72,
+      "reichtum": 1.05,
+      "pokal": "Schweizer Cup",
+      "supercup": "Supercup",
+      "cl_plaetze": 1,
+      "el_plaetze": 1,
+      "ligen": [
+        {
+          "id": "l_ch1",
+          "name": "Quickline Handball League",
+          "kurz": "QHL",
+          "stufe": 1,
+          "ruf": 64,
+          "vereine": [
+            {
+              "name": "Kadetten Schaffhausen",
+              "kurz": "KAD",
+              "ort": "Schaffhausen",
+              "gegruendet": 1954,
+              "halle": "BBC Arena",
+              "kapazitaet": 3300,
+              "farben": [
+                "#ffd500",
+                "#000000"
+              ],
+              "ruf": 72,
+              "rivalen": {
+                "PFA": 72
+              },
+              "sponsoren": {
+                "Hallenname": "BBC"
+              }
+            },
+            {
+              "name": "HC Kriens-Luzern",
+              "kurz": "KRI",
+              "ort": "Kriens",
+              "gegruendet": 1989,
+              "halle": "Pilatus Arena",
+              "kapazitaet": 3500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 66,
+              "trainer": {
+                "vorname": "Andy",
+                "nachname": "Schmid",
+                "nation": "ch",
+                "seit": 2026
+              },
+              "sponsoren": {
+                "Hallenname": "Pilatus"
+              }
+            },
+            {
+              "name": "Pfadi Winterthur",
+              "kurz": "PFA",
+              "ort": "Winterthur",
+              "gegruendet": 1938,
+              "halle": "AXA Arena",
+              "kapazitaet": 2500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 66,
+              "rivalen": {
+                "KAD": 72
+              },
+              "sponsoren": {
+                "Hallenname": "AXA"
+              }
+            },
+            {
+              "name": "BSV Bern",
+              "kurz": "BSB",
+              "ort": "Bern",
+              "gegruendet": 1925,
+              "halle": "Mobiliar Arena",
+              "kapazitaet": 2200,
+              "farben": [
+                "#e2001a",
+                "#000000"
+              ],
+              "ruf": 62,
+              "rivalen": {
+                "WAC": 70
+              },
+              "sponsoren": {
+                "Hallenname": "Mobiliar"
+              }
+            },
+            {
+              "name": "Wacker Thun",
+              "kurz": "WAC",
+              "ort": "Thun",
+              "gegruendet": 1931,
+              "halle": "Lachenhalle",
+              "kapazitaet": 1700,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 60,
+              "rivalen": {
+                "BSB": 70
+              }
+            },
+            {
+              "name": "GC Amicitia Zürich",
+              "kurz": "GCA",
+              "ort": "Zürich",
+              "halle": "Saalsporthalle Zürich",
+              "kapazitaet": 2000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "RTV 1879 Basel",
+              "kurz": "RTV",
+              "ort": "Basel",
+              "halle": "Rankhof",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 55
+            },
+            {
+              "name": "HSC Suhr Aarau",
+              "kurz": "SUH",
+              "ort": "Aarau",
+              "halle": "Schachenhalle Aarau",
+              "kapazitaet": 1500,
+              "farben": [
+                "#ffd500",
+                "#000000"
+              ],
+              "ruf": 57
+            },
+            {
+              "name": "TSV St. Otmar St. Gallen",
+              "kurz": "OTM",
+              "ort": "St. Gallen",
+              "halle": "Kreuzbleiche",
+              "kapazitaet": 2000,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 56
+            },
+            {
+              "name": "TSV Fortitudo Gossau",
+              "kurz": "FOR",
+              "ort": "Gossau",
+              "kapazitaet": 1000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 54
+            }
+          ],
+          "playoffs": 8
+        }
+      ],
+      "zusatz": true
+    },
+    {
+      "id": "at",
+      "name": "Österreich",
+      "ruf": 68,
+      "reichtum": 0.85,
+      "pokal": "ÖHB-Cup",
+      "supercup": "Supercup",
+      "cl_plaetze": 0,
+      "el_plaetze": 1,
+      "ligen": [
+        {
+          "id": "l_at1",
+          "name": "HLA Meisterliga",
+          "kurz": "HLA",
+          "stufe": 1,
+          "ruf": 60,
+          "vereine": [
+            {
+              "name": "ALPLA HC Hard",
+              "kurz": "HAR",
+              "ort": "Hard",
+              "gegruendet": 1978,
+              "halle": "Sporthalle am See",
+              "kapazitaet": 2500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 62,
+              "rivalen": {
+                "BRE": 84
+              }
+            },
+            {
+              "name": "HC FIVERS WAT Margareten",
+              "kurz": "FIV",
+              "ort": "Wien",
+              "gegruendet": 1988,
+              "halle": "Sporthalle Margareten",
+              "kapazitaet": 1200,
+              "farben": [
+                "#ffd500",
+                "#000000"
+              ],
+              "ruf": 62,
+              "rivalen": {
+                "ATZ": 60
+              }
+            },
+            {
+              "name": "Bregenz Handball",
+              "kurz": "BRE",
+              "ort": "Bregenz",
+              "gegruendet": 1996,
+              "halle": "Sporthalle Rieden-Vorkloster",
+              "kapazitaet": 2000,
+              "farben": [
+                "#e2001a",
+                "#0057a6"
+              ],
+              "ruf": 58,
+              "rivalen": {
+                "HAR": 84
+              }
+            },
+            {
+              "name": "FÖRTHOF UHK Krems",
+              "kurz": "KRE",
+              "ort": "Krems",
+              "halle": "Sporthalle Krems",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 58
+            },
+            {
+              "name": "HC LINZ AG",
+              "kurz": "LIN",
+              "ort": "Linz",
+              "halle": "TipsArena Linz",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 56,
+              "sponsoren": {
+                "Hallenname": "Tips"
+              }
+            },
+            {
+              "name": "HSG Holding Graz",
+              "kurz": "GRZ",
+              "ort": "Graz",
+              "kapazitaet": 1500,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 54
+            },
+            {
+              "name": "MADx WAT Atzgersdorf",
+              "kurz": "ATZ",
+              "ort": "Wien",
+              "kapazitaet": 800,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 53,
+              "rivalen": {
+                "FIV": 60
+              }
+            },
+            {
+              "name": "HSG XeNTiS Lipizzanerheimat",
+              "kurz": "LIP",
+              "ort": "Bärnbach",
+              "kapazitaet": 1000,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 52
+            },
+            {
+              "name": "roomz JAGS Vöslau",
+              "kurz": "VOE",
+              "ort": "Bad Vöslau",
+              "kapazitaet": 1000,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 53
+            },
+            {
+              "name": "Sparkasse Schwaz Handball Tirol",
+              "kurz": "SCW",
+              "ort": "Schwaz",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 54
+            },
+            {
+              "name": "BT Füchse",
+              "kurz": "BTF",
+              "ort": "Bruck an der Mur",
+              "kapazitaet": 1000,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 52
+            },
+            {
+              "name": "SC kelag Ferlach",
+              "kurz": "FEL",
+              "ort": "Ferlach",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffffff"
+              ],
+              "ruf": 53
+            }
+          ],
+          "playoffs": 8
+        }
+      ],
+      "zusatz": true
     }
-  ]
+  ],
+  "europapokal": {
+    "saison": "2026/27",
+    "quelle": "EHF-Auslosung 26. Juni 2026 (handball-world, eurohandball.com); nicht alle 24 Teilnehmer bekannt — der Rest wird nach Ruf ergänzt. Partizan Belgrad fehlt, weil Serbien nicht im Spiel ist.",
+    "champions_league": [
+      "Füchse Berlin",
+      "ONE Veszprém HC",
+      "FC Porto",
+      "MT Melsungen",
+      "RK Vardar 1961",
+      "HBC Nantes",
+      "Orlen Wisła Płock",
+      "SC Magdeburg",
+      "Industria Kielce",
+      "Kolstad Håndball",
+      "HC Kriens-Luzern",
+      "Aalborg Håndbold",
+      "FC Barcelona",
+      "Sporting CP",
+      "RK Zagreb",
+      "CS Dinamo București",
+      "GOG",
+      "OTP Bank-Pick Szeged",
+      "IFK Kristianstad",
+      "Paris Saint-Germain Handball",
+      "Montpellier Handball"
+    ],
+    "european_league": []
+  }
 }

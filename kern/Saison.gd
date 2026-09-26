@@ -9,7 +9,9 @@ static func abschluss(d: Dictionary, mein: String) -> void:
 	var auf_ab: Array = []
 	for lid in d["ligen"].keys():
 		var liga: Dictionary = d["ligen"][lid]
-		var tabelle := Spielplan.tabelle_sortiert(d, lid)
+		# In einer Liga mit Play-offs stehen Meister und Finalist vorn, auch
+		# wenn die Hauptrunde anders endete.
+		var tabelle := Playoffs.abschlusstabelle(liga, Spielplan.tabelle_sortiert(d, lid))
 		liga["abschlusstabelle"] = tabelle
 		# Die Abschlusstabelle bleibt über den Saisonwechsel hinaus stehen —
 		# das internationale Startfeld der neuen Saison wird daraus gebildet.

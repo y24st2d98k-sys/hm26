@@ -184,10 +184,17 @@ static func _nationen_aus_datensatz(d: Dictionary) -> void:
 			"supercup_name": str(n.get("supercup", "Supercup")),
 			"meister_historie": [],
 		}
+		# Europapokalplätze, wenn der Datensatz sie kennt; sonst entscheidet
+		# der Ruf der Nation (siehe Spielplan._qualifikanten).
+		for feld in ["cl_plaetze", "el_plaetze"]:
+			if n.has(feld):
+				d["nationen"][nid][feld] = int(n[feld])
 		for l in (n["ligen"] as Array):
 			var lid: String = str(l["id"])
 			var vereine: Array = l.get("vereine", [])
-			var anzahl: int = vereine.size() if not vereine.is_empty() else int(l.get("teams", 12))
+			# Eine Liga kann echte Vereine nennen und trotzdem mehr Mannschaften
+			# haben: dann ergänzt das Spiel erfundene bis "teams".
+			var anzahl: int = maxi(vereine.size(), int(l.get("teams", 0))) if not vereine.is_empty() else int(l.get("teams", 12))
 			d["ligen"][lid] = {
 				"id": lid,
 				"name": str(l["name"]),
@@ -206,6 +213,9 @@ static func _nationen_aus_datensatz(d: Dictionary) -> void:
 				"torschuetzen": {},
 				"datensatz": vereine,
 			}
+			# Meisterschaft über Play-offs (siehe kern/Playoffs.gd).
+			if int(l.get("playoffs", 0)) >= 2:
+				d["ligen"][lid]["playoffs"] = int(l["playoffs"])
 			(d["nationen"][nid]["ligen"] as Array).append(lid)
 		var pid: String = "p_%s" % nid
 		d["pokale"][pid] = {
@@ -991,6 +1001,16 @@ static func _echte_rivalitaeten(d: Dictionary) -> void:
 # ----------------------------------------------------------- Wettbewerbe ---
 
 static func _erzeuge_wettbewerbe(d: Dictionary) -> void:
+	_erzeuge_wettbewerbe_roh(d)
+	# In der echten Welt tragen die Wettbewerbe ihre echten Namen.
+	if bool(d.get("echte_welt", false)):
+		d["international"]["i_krone"]["name"] = "EHF Champions League"
+		d["international"]["i_challenge"]["name"] = "EHF European League"
+		# Seit 2026/27: 24 Teams in sechs Vierergruppen, am Ende ein Final4.
+		d["international"]["i_krone"]["teilnehmer_soll"] = 24
+		d["international"]["i_krone"]["final4"] = true
+
+static func _erzeuge_wettbewerbe_roh(d: Dictionary) -> void:
 	d["international"] = {
 		"i_krone": {
 			"id": "i_krone",

@@ -7,15 +7,330 @@
       "saison": "2026/27",
       "quelle": "HBL GmbH, vorläufige Spielpläne 2026/27",
       "partien": [
-        {"spieltag": 1, "datum": "2026-08-27", "zeit": "19:00", "heim": "THW Kiel", "gast": "TBV Lemgo Lippe"},
-        {"spieltag": 1, "datum": "2026-08-27", "zeit": "20:00", "heim": "Füchse Berlin", "gast": "MT Melsungen"},
-        {"spieltag": 1, "datum": "2026-08-29", "zeit": "", "heim": "SG Flensburg-Handewitt", "gast": "ThSV Eisenach"},
-        {"spieltag": 1, "datum": "2026-08-29", "zeit": "", "heim": "VfL Gummersbach", "gast": "SC Magdeburg"},
-        {"spieltag": 1, "datum": "2026-08-29", "zeit": "", "heim": "TSV Hannover-Burgdorf", "gast": "Rhein-Neckar Löwen"},
-        {"spieltag": 1, "datum": "2026-08-29", "zeit": "", "heim": "Frisch Auf Göppingen", "gast": "HC Erlangen"},
-        {"spieltag": 1, "datum": "2026-08-30", "zeit": "", "heim": "TVB Stuttgart", "gast": "Bergischer HC"},
-        {"spieltag": 1, "datum": "2026-08-30", "zeit": "", "heim": "HSG Wetzlar", "gast": "SG BBM Bietigheim"},
-        {"spieltag": 1, "datum": "2026-08-30", "zeit": "", "heim": "HBW Balingen-Weilstetten", "gast": "Handball Sport Verein Hamburg"}
+        {
+          "spieltag": 1,
+          "datum": "2026-08-27",
+          "zeit": "19:00",
+          "heim": "THW Kiel",
+          "gast": "TBV Lemgo Lippe"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-27",
+          "zeit": "20:00",
+          "heim": "Füchse Berlin",
+          "gast": "MT Melsungen"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "SG Flensburg-Handewitt",
+          "gast": "ThSV Eisenach"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "VfL Gummersbach",
+          "gast": "SC Magdeburg"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "TSV Hannover-Burgdorf",
+          "gast": "Rhein-Neckar Löwen"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "Frisch Auf Göppingen",
+          "gast": "HC Erlangen"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "",
+          "heim": "TVB Stuttgart",
+          "gast": "Bergischer HC"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "",
+          "heim": "HSG Wetzlar",
+          "gast": "SG BBM Bietigheim"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "",
+          "heim": "HBW Balingen-Weilstetten",
+          "gast": "Handball Sport Verein Hamburg"
+        }
+      ]
+    },
+    "Daikin StarLigue": {
+      "saison": "2026/27",
+      "quelle": "LNH, Calendrier 2026-2027 (1re journée, 4.–6. September 2026)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Saran Loiret Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "HBC Nantes"
+        }
+      ]
+    },
+    "NB I": {
+      "saison": "2026/27",
+      "quelle": "Nemzeti Sport, NB I 2026–2027 (1. forduló)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "MOL Tatabánya Csurgói KK"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-06",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "Grundfos Tatabánya KC"
+        }
+      ]
+    },
+    "HLA Meisterliga": {
+      "saison": "2026/27",
+      "quelle": "HLA, Rahmenspielplan 2026/27 (Runde 1)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "Bregenz Handball",
+          "gast": "HC FIVERS WAT Margareten"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "MADx WAT Atzgersdorf",
+          "gast": "HSG XeNTiS Lipizzanerheimat"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "roomz JAGS Vöslau",
+          "gast": "Sparkasse Schwaz Handball Tirol"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "BT Füchse",
+          "gast": "ALPLA HC Hard"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "SC kelag Ferlach",
+          "gast": "HC LINZ AG"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "",
+          "heim": "HSG Holding Graz",
+          "gast": "FÖRTHOF UHK Krems"
+        }
+      ]
+    },
+    "Liga NLB": {
+      "saison": "2026/27",
+      "quelle": "RZS, Liga NLB 2026/27 (1. krog)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Krka",
+          "gast": "RK Gorenje Velenje"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Celje Pivovarna Laško",
+          "gast": "RK SVIŠ Ivančna Gorica"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RD Riko Ribnica",
+          "gast": "RK Trimo Trebnje"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RD Urbanscape Loka",
+          "gast": "RK Jeruzalem Ormož"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Slovenj Gradec 2011",
+          "gast": "RK Škofljica"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Ajdovščina",
+          "gast": "RD LL Grosist Slovan"
+        }
+      ]
+    },
+    "Liga Națională": {
+      "saison": "2026/27",
+      "quelle": "FRH, Liga Națională 2026-2027 (etapa 1)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "CS Medgidia",
+          "gast": "CSU Cluj-Napoca"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "CSM București"
+        }
       ]
     }
   }

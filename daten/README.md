@@ -50,10 +50,19 @@ godot4 --headless res://werkzeuge/Datenbericht.tscn
 | `nationen[].reichtum` | Wirtschaftskraft (1.0 = deutsches Niveau). Skaliert alle Etats. |
 | `ligen[].stufe` | 1 = oberste Spielklasse, 2 = Unterhaus. Auf- und Abstieg läuft zwischen Stufe 1 und 2 derselben Nation. |
 | `ligen[].ruf` | Ansehen der Liga. Bestimmt Medienerlöse und Preisgelder. |
-| `ligen[].teams` | Nur nötig, wenn `vereine` leer ist — dann erfindet das Spiel so viele Vereine. |
+| `ligen[].teams` | Ligagröße. Ist `vereine` leer, erfindet das Spiel so viele Vereine; nennt `vereine` weniger, ergänzt es erfundene bis zu dieser Zahl. |
+| `ligen[].playoffs` | `8` oder `4`: Meister wird, wer die Play-offs gewinnt (Viertel-, Halbfinale, Finale mit Hin- und Rückspiel). Die Hauptrunde endet dann Anfang April. |
+| `ligen[].teilweise_echt` | Nur Kennzeichnung: die Liga nennt einige echte Vereine, der Rest ist erfunden. |
+| `nationen[].cl_plaetze` / `el_plaetze` | Startplätze in EHF Champions League und European League. Ohne Angabe entscheidet der Ruf der Nation. |
 | `ligen[].erzeugt` | Nur Kennzeichnung für den Datenbericht. |
 | `vereine[].ruf` | Ansehen des Vereins (0–100). **Der wichtigste Wert:** er bestimmt Kaderstärke, Etat, Hallenpuls und die Erwartung des Vorstands. |
 | `vereine[].farben` | Zwei Hex-Farben für das prozedural gezeichnete Wappen. |
+| `vereine[].trainer` | Cheftrainer: `{"vorname", "nachname", "nation", "alter", "seit": 2021, "archetyp"}` oder einfach `"Vorname Nachname"`. Er sitzt als Gegnertrainer auf der Bank, bis er entlassen wird. `archetyp` ist einer aus `Gegnertrainer.ARCHETYPEN` (`techniker`, `tempomacher`, `betonmischer`, …); ohne Angabe wird gewürfelt. |
+| `vereine[].stab` | Namen im Trainerstab: `{"cotrainer": "…", "torwarttrainer": "…", "athletiktrainer": "…", "physio": "…", "analyst": "…", "nachwuchs": "…"}`. Die Fähigkeiten würfelt das Spiel. |
+| `vereine[].etat` | Jahresetat in Euro. Verschiebt den Richtwert des Vereins dauerhaft — als Verhältnis, damit Auf- und Abstieg weiter wirken. |
+| `vereine[].sponsoren` | Echte Partner je Platz: `{"Trikotbrust": "…", "Hallenname": "…", "Ausrüster": "…", "Ärmel": "…", "Rückenpartner": "…"}`. Die Summen schätzt das Spiel. |
+| `vereine[].zuschauerschnitt` | Zuschauerschnitt der Vorsaison. Eine volle Halle heißt treue, zufriedene Fans. |
+| `geprueft` | `false` heißt: nach Wissensstand eingetragen, nicht gegen eine Quelle geprüft. Bitte kontrollieren. Gilt auch in `kader.json`. |
 
 Fehlende Felder werden ergänzt: ohne `halle` erfindet das Spiel einen Hallennamen,
 ohne `kapazitaet` leitet es sie aus dem Ruf ab, und so weiter. Zwingend ist nur `name`.
@@ -90,6 +99,16 @@ Der Schlüssel ist der **exakte Vereinsname** aus `ligen.json`.
 | `attribute` | Einzelne Attribute festschreiben, statt sie auswürfeln zu lassen. Siehe unten. |
 | `stammschuetze` | `true` heißt: dieser Spieler wirft die Siebenmeter seines Vereins, solange er auf dem Feld steht. |
 | `bild` | Dateiname des Portraitfotos in `assets/gesichter/` (ohne Endung). Ohne Angabe wird er aus dem Namen abgeleitet — siehe `assets/README.md`. |
+| `geburtsdatum` | `"1994-02-28"` oder `"28.02.1994"`. Geht vor `alter`; der Spieler hat dann an seinem echten Tag Geburtstag. |
+| `hand` | `"L"` oder `"R"`: Wurfhand. **Wirkt:** ein Rechtshänder, der auf Rückraum rechts oder Rechtsaußen umgestellt wird, verliert deutlich an Eignung, ein Linkshänder gewinnt dort. Ohne Angabe würfelt das Spiel nach Position (rechte Seite fast immer links). |
+| `groesse` / `gewicht` | In Zentimetern und Kilogramm. Nur Anzeige. |
+| `zweitpositionen` | Weitere Positionen, z. B. `["RL", "RM"]`. Dort spielt er fast so gut wie auf seiner eigenen. |
+| `vertrag_bis` | Jahr, in dem der Vertrag am 30. Juni endet (`2028` = bis Ende der Saison 2027/28). |
+| `gehalt` | Jahresgehalt brutto in Euro. |
+| `klausel` | Festgeschriebene Ausstiegsklausel in Euro. |
+| `verletzt` | Verletzt zum Start: `{"art": "Kreuzbandriss", "tage": 180}` oder `{"art": "…", "bis": "2027-01-15"}`. |
+| `vorvertrag` | Exakter Name des Vereins, bei dem er für die nächste Saison schon unterschrieben hat. Er wechselt im Sommer ablösefrei. |
+| `kapitaen` | `true`: trägt die Binde. |
 
 ### Einzelne Attribute festschreiben
 
@@ -147,13 +166,24 @@ unter der Stärke des besten echten Spielers, damit sie die Leistungsträger nic
 
 ## Wie genau ist das hier?
 
-* **Verlässlich:** Vereinsnamen, Ligazugehörigkeit und Ligagrößen der Saison 2026/27.
+* **Verlässlich:** Vereinsnamen, Ligazugehörigkeit und Ligagrößen der Saison 2026/27
+  für die Bundesliga, Frankreich, Spanien, Dänemark, Polen, Ungarn, Slowenien,
+  Rumänien und Österreich — abgeglichen über die Ansetzungen des ersten Spieltags.
+  Die Teilnehmer der Champions League 2026/27 (21 von 24) aus der Auslosung.
+  Die DHB-Schiedsrichtergespanne 2026/27.
+* **Nach Wissensstand, ungeprüft:** die Ligen in Portugal, Norwegen, Schweden,
+  Kroatien, Nordmazedonien und der Schweiz, die Unterhäuser außerhalb
+  Deutschlands, die internationalen Gespanne und alle Einträge mit
+  `"geprueft": false`. Was im Einzelnen zu prüfen ist, steht in
+  [`PRUEFLISTE.md`](PRUEFLISTE.md) — neu erzeugen mit `python3 werkzeuge/pruefliste.py`.
 * **Näherung:** Hallennamen, Kapazitäten, Gründungsjahre, Vereinsfarben, alle Ruf-Werte.
 * **Vollständig:** die Kader aller 18 Bundesligisten — 327 Spieler, kein einziger
   ergänzt. Wer im Spiel für einen deutschen Erstligisten auf dem Bogen steht, steht
   dort auch in Wirklichkeit.
-* **Lückenhaft:** alle übrigen Ligen. Dort sind nur einzelne Spieler hinterlegt,
-  den Rest füllt das Spiel auf.
+* **Lückenhaft:** alle übrigen Ligen. Bei den Europapokal-Teilnehmern sind die
+  tragenden Spieler und die Neuzugänge 2026/27 hinterlegt, soweit sie sich
+  belegen ließen; den Rest füllt das Spiel auf. Die 2. Bundesliga hat noch keine
+  echten Spieler.
 * **Schätzwerte, keine Tatsachenbehauptungen:** Alter und Stärke. Das Alter ist zum
   1. September 2026 gerechnet, die Stärke ordnet einen Spieler nur für die
   Simulation ein.
@@ -217,6 +247,19 @@ einer neuen Karriere — eine laufende Saison behält ihren Spielplan, weil ein
 Neuansetzen mitten im Oktober gespielte Partien verwerfen würde.
 
 Geprüft wird das von `werkzeuge/Spielplantest.tscn`.
+
+---
+
+## `schiedsrichter.json` — echte Gespanne
+
+```json
+{"gespanne": [{"a": "Robert Schulze", "b": "Tobias Tönnies", "nation": "de", "erfahrung": 12}]}
+```
+
+Die Namen stehen fest, Strenge, Zweikampflinie, Heimneigung und Konstanz
+würfelt das Spiel — außer sie stehen als Zahl von 5 bis 95 im Eintrag
+(`"strenge": 70`). Ligaspiele bekommen ein Gespann aus dem eigenen Land; wo
+der Datensatz weniger als drei kennt, ergänzt das Spiel erfundene.
 
 ---
 

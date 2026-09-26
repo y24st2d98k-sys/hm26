@@ -552,6 +552,21 @@ func partie_abschliessen(mid: String, sim: Matchsim) -> void:
 ## Prueft nach jedem Spieltag, ob Pokal- oder Europarunden weitergehen.
 func _wettbewerbe_fortschreiben() -> void:
 	Nationalteam.fortschreiben(daten)
+	for meldung in Playoffs.fortschreiben(daten):
+		var e: Dictionary = meldung
+		var liga_name: String = wettbewerb_name(str(e["liga"]))
+		if str(e["text"]) == "Meister":
+			var sieger: String = str((e["teams"] as Array)[0])
+			Medien.artikel(daten, "%s gewinnt die Play-offs" % str(daten["vereine"][sieger]["name"]),
+				"%s ist Meister der %s. Nach der Hauptrunde zählte nur noch das Finale." % [
+					str(daten["vereine"][sieger]["name"]), liga_name], "neutral", "wettbewerb", {})
+			if sieger == mein_verein_id:
+				nachricht({"typ": "wettbewerb", "wichtig": true, "betreff": "Meister der %s!" % liga_name,
+					"text": "Die Play-offs sind gewonnen. Der Titel gehört uns."})
+		elif _eigener_in(e["teams"]):
+			nachricht({"typ": "wettbewerb", "betreff": "%s: %s" % [liga_name,
+				"Play-offs erreicht" if str(e["text"]) == "Die Play-offs beginnen." else Playoffs.rundenname((e["teams"] as Array).size()) + " erreicht"],
+				"text": "Die Paarungen stehen fest: Hin- und Rückspiel, der besser Platzierte hat im Rückspiel Heimrecht."})
 	for pid in daten["pokale"].keys():
 		var pokal: Dictionary = daten["pokale"][pid]
 		if bool(pokal.get("beendet", false)):

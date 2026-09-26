@@ -68,6 +68,8 @@ func _zeichne() -> void:
 	var phasen := {"vorbereitung": "Nominierung steht aus", "gruppe": "Gruppenphase",
 		"ko": "K.-o.-Runde", "beendet": "beendet"}
 	kopf.add_child(Stil.info_zeile("Stand", str(phasen.get(str(t["phase"]), str(t["phase"])))))
+	if str(t.get("gastgeber", "")) != "":
+		kopf.add_child(Stil.info_zeile("Gastgeber", str(t["gastgeber"])))
 	kopf.add_child(Stil.info_zeile("Teilnehmer", str((t["teilnehmer"] as Array).size())))
 	if str(t["phase"]) == "vorbereitung":
 		kopf.add_child(Stil.matt("Die Kader werden kurz vor der Winterpause berufen.", Stil.S_KLEIN))

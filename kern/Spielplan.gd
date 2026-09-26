@@ -78,7 +78,10 @@ static func _plane_liga(d: Dictionary, lid: String, basis: int) -> void:
 	liga["tabelle"] = {}
 	for cid in teams:
 		liga["tabelle"][cid] = leere_tabellenzeile()
-	var termine := _spieltag_termine(runden.size(), basis, int(liga["stufe"]))
+	# Mit Play-offs endet die Hauptrunde früher — der Mai gehört dem Titel.
+	Playoffs.zuruecksetzen(liga)
+	var ende: int = Playoffs.HAUPTRUNDE_ENDE if Playoffs.hat_playoffs(liga) else LIGA_ENDE
+	var termine := _spieltag_termine(runden.size(), basis, int(liga["stufe"]), ende)
 	for r in range(runden.size()):
 		for paar in runden[r]:
 			neues_spiel(d, lid, "liga", r + 1, termine[r], paar[0], paar[1])
@@ -321,11 +324,11 @@ static func _heimkosten(heim: String, gast: String, runde: int,
 ## Verteilt Spieltage auf Wochenenden und laesst die Winterpause aus.
 ## Grosse Ligen (18 Vereine = 34 Spieltage) passen nicht allein auf Wochenenden —
 ## dann werden zusaetzlich Mittwochstermine belegt, also englische Wochen gespielt.
-static func _spieltag_termine(anzahl: int, basis: int, stufe: int) -> Array:
+static func _spieltag_termine(anzahl: int, basis: int, stufe: int, ende: int = LIGA_ENDE) -> Array:
 	var wochenende: Array = []
 	var mittwoch: Array = []
 	var wunsch: int = 5 if stufe == 1 else 6  # Samstag / Sonntag
-	for t in range(LIGA_START, LIGA_ENDE + 1):
+	for t in range(LIGA_START, ende + 1):
 		if t >= WINTERPAUSE_VON and t <= WINTERPAUSE_BIS:
 			continue
 		var wt: int = Kalender.wochentag(t)
@@ -504,8 +507,19 @@ static func _plane_international(d: Dictionary, basis: int) -> void:
 	_plane_gruppenphase(d, krone, basis)
 	_plane_ko_start(d, challenge, basis, challenge["teilnehmer"])
 
+const GRUPPEN_NAMEN := ["A", "B", "C", "D", "E", "F", "G", "H"]
+
 ## Teilnehmer: in der ersten Saison nach Ruf, danach nach Abschlussplatzierung.
+## Steht im Datensatz eine Startliste (ligen.json, "europapokal"), gilt in der
+## ersten Saison sie — dann spielen die Vereine, die wirklich gemeldet sind.
 static func _qualifikanten(d: Dictionary) -> Dictionary:
+	var groesse_krone: int = int(d["international"]["i_krone"].get("teilnehmer_soll", 16))
+	var groesse_challenge: int = int(d["international"]["i_challenge"].get("teilnehmer_soll", 16))
+	var start := _startliste(d)
+	if not start.is_empty():
+		var k: Array = _auf_groesse(d, start["krone"], groesse_krone, start["challenge"])
+		var c: Array = _auf_groesse(d, start["challenge"], groesse_challenge, k)
+		return {"krone": k, "challenge": c}
 	var krone: Array = []
 	var challenge: Array = []
 	for nid in d["nationen"].keys():
@@ -516,23 +530,50 @@ static func _qualifikanten(d: Dictionary) -> Dictionary:
 		if rang.is_empty():
 			rang = (liga["vereine"] as Array).duplicate()
 			rang.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
-		var plaetze_krone: int = 3 if float(nation["ruf"]) >= 85.0 else 2
+		# Startplätze: aus dem Datensatz, sonst nach dem Ruf der Nation. Die
+		# großen Ligen stellen drei, die mittleren zwei, die kleinen einen —
+		# wer gar keinen hat, schickt seinen Meister in die zweite Reihe.
+		var ruf_n: float = float(nation["ruf"])
+		var plaetze_krone: int = int(nation.get("cl_plaetze",
+			3 if ruf_n >= 85.0 else (2 if ruf_n >= 74.0 else (1 if ruf_n >= 62.0 else 0))))
+		var plaetze_challenge: int = int(nation.get("el_plaetze", 3 if ruf_n >= 74.0 else 2))
 		for i in range(mini(plaetze_krone, rang.size())):
 			krone.append(rang[i])
-		for i in range(plaetze_krone, mini(plaetze_krone + 3, rang.size())):
+		for i in range(plaetze_krone, mini(plaetze_krone + plaetze_challenge, rang.size())):
 			challenge.append(rang[i])
 		var pokal: Dictionary = d["pokale"][nation["pokal"]]
 		var ps: String = str(pokal.get("sieger", ""))
 		if ps != "" and not krone.has(ps) and not challenge.has(ps):
 			challenge.append(ps)
-	# Auf 16 auffuellen bzw. kuerzen
-	krone = _auf_groesse(d, krone, 16, challenge)
-	challenge = _auf_groesse(d, challenge, 16, krone)
+	# Auf Sollgroesse auffuellen bzw. kuerzen
+	krone = _auf_groesse(d, krone, groesse_krone, challenge)
+	challenge = _auf_groesse(d, challenge, groesse_challenge, krone)
 	return {"krone": krone, "challenge": challenge}
+
+## Die gemeldeten Teilnehmer der ersten Saison aus dem Datensatz, als IDs.
+static func _startliste(d: Dictionary) -> Dictionary:
+	if not bool(d.get("echte_welt", false)) or Kalender.saison_index(int(d.get("tag", 0))) > 0:
+		return {}
+	var roh: Dictionary = Echtdaten.europapokal()
+	if roh.is_empty():
+		return {}
+	var nach_name := {}
+	for cid in Weltgenerator.clubs(d):
+		nach_name[str(d["vereine"][cid]["name"])] = str(cid)
+	var aus := {"krone": [], "challenge": []}
+	for feld in [["champions_league", "krone"], ["european_league", "challenge"]]:
+		for name in (roh.get(feld[0], []) as Array):
+			var cid: String = str(nach_name.get(str(name), ""))
+			if cid != "" and not (aus["krone"] as Array).has(cid) and not (aus["challenge"] as Array).has(cid):
+				(aus[feld[1]] as Array).append(cid)
+	return aus
 
 static func _auf_groesse(d: Dictionary, liste: Array, groesse: int, tabu: Array) -> Array:
 	var ergebnis: Array = liste.duplicate()
 	if ergebnis.size() > groesse:
+		# Zu viele Anwärter: es bleiben die mit dem größten Ruf, nicht die
+		# Nationen, die zufällig zuerst im Datensatz stehen.
+		ergebnis.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
 		return ergebnis.slice(0, groesse)
 	var kandidaten: Array = []
 	for cid in Weltgenerator.clubs(d):
@@ -552,18 +593,23 @@ static func _auf_groesse(d: Dictionary, liste: Array, groesse: int, tabu: Array)
 static func _plane_gruppenphase(d: Dictionary, wb: Dictionary, basis: int) -> void:
 	var teams: Array = (wb["teilnehmer"] as Array).duplicate()
 	teams.sort_custom(func(a, b): return float(d["vereine"][a]["ruf"]) > float(d["vereine"][b]["ruf"]))
-	var gruppen: Array = [[], [], [], []]
+	# Vierergruppen: 16 Teilnehmer ergeben vier Gruppen, 24 sechs — so spielt
+	# die Champions League seit 2026/27.
+	var anzahl: int = clampi(int(ceil(teams.size() / 4.0)), 1, GRUPPEN_NAMEN.size())
+	var gruppen: Array = []
+	for _i in range(anzahl):
+		gruppen.append([])
 	# Schlangensetzung fuer ausgewogene Gruppen
 	for i in range(teams.size()):
-		var topf: int = int(i / 4.0)
-		var g: int = (i % 4) if topf % 2 == 0 else (3 - (i % 4))
+		var topf: int = int(i / float(anzahl))
+		var g: int = (i % anzahl) if topf % 2 == 0 else (anzahl - 1 - (i % anzahl))
 		gruppen[g].append(teams[i])
 	wb["gruppen"] = gruppen
 	wb["tabelle"] = {}
 	wb["phase"] = "gruppe"
 	wb["runde"] = 0
 	wb["paarungen"] = []
-	var gnamen := ["A", "B", "C", "D"]
+	var gnamen := GRUPPEN_NAMEN
 	for gi in range(gruppen.size()):
 		for cid in gruppen[gi]:
 			wb["tabelle"][cid] = leere_tabellenzeile()
@@ -595,10 +641,15 @@ static func _ko_runde(d: Dictionary, wb: Dictionary, basis: int, teams: Array) -
 	var t2: int = maxi(basis + KO_TERMINE[idx + 1], t1 + 7)
 	var paarungen: Array = []
 	var finale: bool = teams.size() == 2
+	# Die Champions League endet mit einem Final4: Halbfinale und Finale an
+	# einem Wochenende, jeweils ein Spiel.
+	var final4: bool = str(wb.get("id", "")) == "i_krone" and teams.size() == 4 and bool(wb.get("final4", false))
+	if final4:
+		t2 = maxi(basis + KO_TERMINE[KO_TERMINE.size() - 1] - 1, frueheste)
 	for i in range(0, teams.size() - 1, 2):
 		var a: String = teams[i]
 		var b: String = teams[i + 1]
-		if finale:
+		if finale or final4:
 			var f := neues_spiel(d, wb["id"], "international", runde + 1, t2, a, b, {"ko": true})
 			paarungen.append({"hin": "", "rueck": f["id"], "a": a, "b": b})
 		else:
@@ -640,7 +691,7 @@ static func ko_weiter(d: Dictionary, wid: String) -> Array:
 static func gruppen_auswertung(d: Dictionary, wid: String) -> Array:
 	var wb: Dictionary = d["international"][wid]
 	var weiter: Array = []
-	var gnamen := ["A", "B", "C", "D"]
+	var gnamen := GRUPPEN_NAMEN
 	for gi in range(wb["gruppen"].size()):
 		var gruppe: Array = wb["gruppen"][gi]
 		var sortiert: Array = gruppe.duplicate()
@@ -657,10 +708,30 @@ static func gruppen_auswertung(d: Dictionary, wid: String) -> Array:
 		else:
 			zweite.append(weiter[i])
 	var paarung: Array = []
-	var kreuz := [1, 0, 3, 2]
-	for i in range(sieger_liste.size()):
-		paarung.append(sieger_liste[i])
-		paarung.append(zweite[kreuz[i] if i < kreuz.size() and kreuz[i] < zweite.size() else i])
+	if sieger_liste.size() == 4:
+		var kreuz := [1, 0, 3, 2]
+		for i in range(sieger_liste.size()):
+			paarung.append(sieger_liste[i])
+			paarung.append(zweite[kreuz[i] if i < kreuz.size() and kreuz[i] < zweite.size() else i])
+	else:
+		# Mehr als vier Gruppen: ins Viertelfinale kommen alle Gruppensieger
+		# und die besten Zweiten, bis acht beisammen sind. Gesetzt wird nach
+		# der Bilanz — der beste Gruppensieger trifft auf den schwächsten
+		# Nachrücker.
+		var vergleich := func(a, b): return _tabellen_vergleich(wb["tabelle"], a, b)
+		sieger_liste.sort_custom(vergleich)
+		zweite.sort_custom(vergleich)
+		var feld: Array = sieger_liste.duplicate()
+		var i2 := 0
+		while feld.size() < 8 and i2 < zweite.size():
+			feld.append(zweite[i2])
+			i2 += 1
+		while feld.size() > 8:
+			feld.pop_back()
+		var n: int = feld.size()
+		for i3 in range(int(n / 2.0)):
+			paarung.append(feld[i3])
+			paarung.append(feld[n - 1 - i3])
 	wb["phase"] = "ko"
 	wb["runde"] = 0
 	_ko_runde(d, wb, int(wb.get("basis", 0)), paarung)

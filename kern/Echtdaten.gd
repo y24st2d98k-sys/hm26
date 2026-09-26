@@ -55,9 +55,24 @@ static func hinweis() -> String:
 	laden()
 	return str(_ligen.get("hinweis", ""))
 
+## Nur die fünf Kernnationen (Deutschland, Dänemark, Frankreich, Spanien,
+## Polen)? Die übrigen stehen im Datensatz mit "zusatz": true. Sie machen den
+## Europapokal echt, verdoppeln aber die Welt — und damit die Rechenzeit
+## jedes Spieltags. Wer es schneller mag, lässt sie beim Karrierestart weg.
+static var nur_kernnationen: bool = false
+
 static func nationen() -> Array:
 	laden()
-	return _ligen.get("nationen", [])
+	var alle: Array = _ligen.get("nationen", [])
+	if not nur_kernnationen:
+		return alle
+	return alle.filter(func(n): return not bool((n as Dictionary).get("zusatz", false)))
+
+## Die gemeldeten Europapokalteilnehmer der ersten Saison:
+## {"champions_league": [Vereinsnamen], "european_league": [Vereinsnamen]}.
+static func europapokal() -> Dictionary:
+	laden()
+	return _ligen.get("europapokal", {})
 
 ## Echte Spieler eines Vereins aus dem mitgelieferten Datensatz.
 ## Selbst gepflegte Kader liegen darueber — siehe Kaderpflege.kader().

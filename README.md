@@ -39,6 +39,7 @@ godot4 --headless res://werkzeuge/Saatsonde.tscn                 # Wie verschied
 godot4 --headless res://werkzeuge/Realismussonde.tscn           # Kennzahlen gegen die HBL-Wirklichkeit
 godot4 --headless res://werkzeuge/Tabellensonde.tscn            # Staerke, Zufall und Endtabelle
 godot4 --headless res://werkzeuge/Streusonde.tscn               # Woher die Streuung einer Partie kommt
+godot4 --headless res://werkzeuge/Playofftest.tscn              # Eine Saison mit Play-off-Meistern
 ```
 
 Die drei Sonden am Ende messen nicht, ob etwas kaputt ist, sondern ob es sich
@@ -95,11 +96,19 @@ unentdeckt blieben.
 Beim Anlegen einer Karriere entscheidet ein Häkchen, in welcher Welt Sie
 arbeiten:
 
-* **Echte Vereine** (Voreinstellung): fünf echte Ligastrukturen der Saison
-  2026/27 — Handball-Bundesliga und 2. Bundesliga (je 18 Vereine), Herre
-  Håndbold Ligaen, Liqui Moly Starligue, Liga ASOBAL und Orlen Superliga.
-  96 echte Vereine mit Ort, Halle und Vereinsfarben, dazu echte Spieler,
-  soweit im Datensatz hinterlegt.
+* **Echte Vereine** (Voreinstellung): fünfzehn Nationen mit den echten
+  Ligen der Saison 2026/27 — Handball-Bundesliga und 2. Bundesliga (je 18
+  Vereine), Håndboldligaen, Daikin StarLigue, Liga ASOBAL, Orlen Superliga,
+  dazu NB I (Ungarn), Andebol 1 (Portugal), REMA 1000-ligaen (Norwegen),
+  Handbollsligan (Schweden), Premijer liga (Kroatien), Super liga
+  (Nordmazedonien), Liga NLB (Slowenien), Liga Națională (Rumänien), Quickline
+  Handball League (Schweiz) und HLA Meisterliga (Österreich). 229 echte Vereine
+  mit Ort, Halle und Vereinsfarben, echte Cheftrainer bei den Topklubs, echte
+  Schiedsrichtergespanne, dazu echte Spieler, soweit im Datensatz hinterlegt.
+* **Ganz Europa** (Voreinstellung, abschaltbar): ohne Haken bleibt es bei den
+  fünf Kernnationen Deutschland, Dänemark, Frankreich, Spanien und Polen. Die
+  zehn übrigen machen den Europapokal echt, verdoppeln aber die Welt — eine
+  halbe Saison rechnet mit ihnen 7 statt 4 Minuten.
 * **Erfundene Welt**: wie bisher alles prozedural — eigene Vereine, eigene
   Spieler, eigene Namen.
 
@@ -115,8 +124,10 @@ Wie weit die echten Daten reichen, zeigt
 godot4 --headless res://werkzeuge/Datenbericht.tscn
 ```
 
-Aktueller Stand: **96 von 136 Vereinen** echt, **94 echte Spieler** bei zehn
-Vereinen; alle übrigen Kaderplätze sind gefüllt. In der Oberfläche ist das
+Aktueller Stand: **229 von 264 Vereinen** echt, **383 echte Spieler** — alle
+18 Bundesligisten vollständig, bei den Topklubs im Ausland die tragenden
+Spieler; alle übrigen Kaderplätze sind gefüllt. Was nach Wissensstand statt
+nach einer Quelle eingetragen ist, trägt im Datensatz `"geprueft": false`. In der Oberfläche ist das
 nicht zu sehen: hinterlegte und erfundene Spieler stehen ununterschieden
 nebeneinander, werden nach denselben Regeln erzeugt und entwickeln sich
 gleich. Wer wissen will, wie weit der Datensatz reicht, ruft den
@@ -1418,19 +1429,27 @@ herausnehmen.
 
 ## Die Spielwelt
 
-* **5 Nationen, 10 Ligen, 136 Vereine, ~2.700 Spieler.** Jede Nation hat zwei
-  Spielklassen mit echtem Auf- und Abstieg (je zwei Vereine pro Saison).
-  In Deutschland sind beide Ligen echt besetzt, in den übrigen Nationen die
-  oberste; die Unterhäuser dort sind erfunden.
-* **5 nationale Pokale** im K.-o.-System mit Freilosen für die stärksten
+* **15 Nationen, 20 Ligen, 264 Vereine, ~5.000 Spieler.** Die fünf
+  Kernnationen haben zwei Spielklassen mit echtem Auf- und Abstieg (je zwei
+  Vereine pro Saison); in Deutschland sind beide echt besetzt, in den übrigen
+  Kernnationen nennt das Unterhaus die echten Absteiger und ergänzt den Rest.
+  Die zehn weiteren Nationen haben eine Liga.
+* **Play-offs**, wo es sie gibt: in Dänemark, Frankreich, Polen, Ungarn,
+  Schweden, Norwegen, der Schweiz und Österreich ist Meister, wer nach der
+  Hauptrunde die Play-offs gewinnt (Hin- und Rückspiel, der besser Platzierte
+  hat im Rückspiel Heimrecht). Siehe `kern/Playoffs.gd`.
+* **15 nationale Pokale** im K.-o.-System mit Freilosen für die stärksten
   Vereine und Heimrecht für den unterklassigen Verein.
-* **Zwei internationale Wettbewerbe:** die *Kontinentalkrone* (16 Teams, vier
-  Gruppen, dann K.-o. mit Hin- und Rückspiel) und die *Challenge-Trophäe*
-  (reines K.-o.). Qualifikation über die Abschlusstabellen und Pokalsieger.
+* **Zwei internationale Wettbewerbe:** in der echten Welt die *EHF Champions
+  League* (16 Teams, vier Gruppen, dann K.-o. mit Hin- und Rückspiel) und die
+  *EHF European League* (reines K.-o.), in der erfundenen die
+  *Kontinentalkrone* und die *Challenge-Trophäe*. Die Startplätze je Nation
+  stehen im Datensatz (`cl_plaetze`, `el_plaetze`).
 * **Nationale Supercups** zwischen Meister und Pokalsieger.
 * **Nationalmannschaften und ein Winterturnier.** In jeder Winterpause spielen
-  16 Nationen ein Turnier aus — in geraden Saisons eine Europameisterschaft,
-  sonst eine Weltmeisterschaft, mit Gruppenphase und K.-o.-Runde. Die Kader
+  16 Nationen ein Turnier aus — im Januar gerader Jahre eine
+  Europameisterschaft, ungerader Jahre eine Weltmeisterschaft (die WM 2027
+  in Deutschland, die EM 2028 in Spanien, Portugal und der Schweiz), mit Gruppenphase und K.-o.-Runde. Die Kader
   werden aus den besten verfügbaren Spielern der Welt nominiert; wer
   nominiert wird, fehlt dem Verein und kommt mit Belastung zurück. Die
   Turnierpartien laufen durch dieselbe Engine, zählen aber in keine
@@ -1592,7 +1611,7 @@ in eine sehr lange Schleife schickt.
 
 | Säule | Umsetzung |
 |---|---|
-| **1 Liga-Welt** | 5 Nationen / 10 Ligen / 136 Vereine, Auf- und Abstieg, 5 Pokale, 2 Europapokale, Supercups, Nationalmannschaften mit EM und WM, vollständig eigenständige KI |
+| **1 Liga-Welt** | 15 Nationen / 20 Ligen / 264 Vereine, Auf- und Abstieg, Play-offs, 15 Pokale, 2 Europapokale, Supercups, Nationalmannschaften mit EM und WM, vollständig eigenständige KI |
 | **2 Matchsimulation** | Angriffsweise Engine, 4 Deckungen × 5 Angriffsstile, individuelle Spieleranweisungen (5 im Angriff, 4 in der Abwehr), Zeitstrafen mit Unterzahl, 7-gegen-6, Auszeiten, Kabinenansprachen, Kräftehaushalt, Live-Ansicht mit gezeichnetem Feld |
 | **3 Kader** | 29 Attribute, Form, Moral, Fitness, Lastkonto, Verletzungsanfälligkeit, Persönlichkeit, Potenzial, Alterskurve, individuelle Förderprogramme, Rückennummern, Patenschaften, eigene Nachwuchsakademie |
 | **4 Transfer & Scouting** | Aktive Suche mit acht Filtern, zweistufige Verhandlung (Verein, dann Spieler), Gegenangebote, Leihen, Erfolgsprämien im Vertrag, Transferfenster mit Fristmeldungen, Scoutaufträge mit Unschärfe, gestufte Spielvorbereitung |

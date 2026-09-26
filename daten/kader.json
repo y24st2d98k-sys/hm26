@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "stand": "September 2026 — Kader 2026/27",
+  "stand": "September 2026 — Kader 2026/27 (Ausland teilweise, ungeprüft)",
   "hinweis": "Aufgeführt sind die belegten Kader zum genannten Stand. Nummer, Name, Position, Nation und Geburtsjahr stammen aus den Vereins- und Ligaangaben; das Alter ist zum 1. September 2026 gerechnet. Die Stärke ist ein Schätzwert für die Simulation und keine Tatsachenbehauptung — sie ordnet einen Spieler auf einer Skala ein, auf der der Bundesliga-MVP bei 96 und ein Nachwuchsspieler bei etwa 56 steht. Vereine ohne vollständigen Kader werden vom Spiel auf Sollstärke aufgefüllt; erfundene Spieler übernehmen die fehlenden Positionen. Positionen: TW, LA, RL, RM, RR, RA, KM. Nationen als Kürzel wie in Namen.KULTUR_NAME.",
   "kader": {
     "Aalborg Håndbold": [
@@ -21,12 +21,98 @@
         "staerke": 83
       },
       {
-        "vorname": "Lukas",
-        "nachname": "Sandell",
+        "vorname": "Juri",
+        "nachname": "Knorr",
         "position": "RM",
+        "nation": "de",
+        "alter": 26,
+        "staerke": 89,
+        "nummer": 21,
+        "vertrag_bis": 2028
+      },
+      {
+        "vorname": "Thomas",
+        "nachname": "Arnoldsen",
+        "position": "RL",
+        "nation": "dk",
+        "alter": 25,
+        "staerke": 86,
+        "geprueft": false
+      },
+      {
+        "vorname": "Buster",
+        "nachname": "Juul",
+        "position": "LA",
+        "nation": "dk",
+        "alter": 33,
+        "staerke": 79,
+        "geprueft": false
+      },
+      {
+        "vorname": "Kristian",
+        "nachname": "Bjørnsen",
+        "position": "RA",
+        "nation": "no",
+        "alter": 37,
+        "staerke": 77,
+        "hand": "L",
+        "geprueft": false
+      },
+      {
+        "vorname": "Mads",
+        "nachname": "Hoxer",
+        "position": "RR",
+        "nation": "dk",
+        "alter": 27,
+        "staerke": 81,
+        "hand": "L",
+        "geprueft": false
+      },
+      {
+        "vorname": "Fabian",
+        "nachname": "Norsten",
+        "position": "TW",
         "nation": "se",
+        "alter": 30,
+        "staerke": 78,
+        "geprueft": false
+      },
+      {
+        "vorname": "Magnus",
+        "nachname": "Landin",
+        "position": "LA",
+        "nation": "dk",
+        "alter": 31,
+        "staerke": 82,
+        "geprueft": false
+      },
+      {
+        "vorname": "Sander",
+        "nachname": "Sagosen",
+        "position": "RM",
+        "nation": "no",
+        "alter": 31,
+        "staerke": 90,
+        "geprueft": false
+      },
+      {
+        "vorname": "Lukas",
+        "nachname": "Nilsson",
+        "position": "RL",
+        "nation": "se",
+        "alter": 30,
+        "staerke": 83,
+        "geprueft": false
+      },
+      {
+        "vorname": "Patrick",
+        "nachname": "Wiesmach",
+        "position": "RA",
+        "nation": "dk",
         "alter": 29,
-        "staerke": 82
+        "staerke": 79,
+        "hand": "L",
+        "geprueft": false
       }
     ],
     "Bergischer HC": [
@@ -204,14 +290,6 @@
     ],
     "FC Barcelona": [
       {
-        "vorname": "Emil",
-        "nachname": "Nielsen",
-        "position": "TW",
-        "nation": "dk",
-        "alter": 29,
-        "staerke": 92
-      },
-      {
         "vorname": "Aleix",
         "nachname": "Gómez",
         "position": "RA",
@@ -258,6 +336,66 @@
         "nation": "fr",
         "alter": 29,
         "staerke": 92
+      },
+      {
+        "vorname": "Jonathan",
+        "nachname": "Carlsbogård",
+        "position": "RL",
+        "nation": "se",
+        "alter": 30,
+        "staerke": 82,
+        "geprueft": false
+      },
+      {
+        "vorname": "Ian",
+        "nachname": "Barrufet",
+        "position": "LA",
+        "nation": "es",
+        "alter": 22,
+        "staerke": 78,
+        "geprueft": false
+      },
+      {
+        "vorname": "Petar",
+        "nachname": "Cikusa",
+        "position": "RM",
+        "nation": "hr",
+        "alter": 23,
+        "staerke": 82,
+        "geprueft": false
+      },
+      {
+        "vorname": "Ludovic",
+        "nachname": "Fàbregas",
+        "position": "KM",
+        "nation": "fr",
+        "alter": 30,
+        "staerke": 88,
+        "geprueft": false
+      },
+      {
+        "vorname": "Sergey",
+        "nachname": "Hernández",
+        "position": "TW",
+        "nation": "es",
+        "alter": 31,
+        "staerke": 86
+      },
+      {
+        "vorname": "Viktor Gísli",
+        "nachname": "Hallgrímsson",
+        "position": "TW",
+        "nation": "is",
+        "alter": 26,
+        "staerke": 85
+      },
+      {
+        "vorname": "Janus Daði",
+        "nachname": "Smárason",
+        "position": "RM",
+        "nation": "is",
+        "alter": 31,
+        "staerke": 84
       }
     ],
     "Frisch Auf Göppingen": [
@@ -1294,7 +1432,8 @@
         "position": "TW",
         "nation": "rs",
         "alter": 30,
-        "staerke": 87
+        "staerke": 87,
+        "vertrag_bis": 2030
       },
       {
         "vorname": "Arciom",
@@ -1321,12 +1460,79 @@
         "staerke": 80
       },
       {
-        "vorname": "Alex",
-        "nachname": "Dujshebaev",
-        "position": "RR",
-        "nation": "es",
-        "alter": 34,
-        "staerke": 86
+        "vorname": "Nicolas",
+        "nachname": "Tournat",
+        "position": "KM",
+        "nation": "fr",
+        "alter": 32,
+        "staerke": 82,
+        "geprueft": false
+      },
+      {
+        "vorname": "Benoît",
+        "nachname": "Kounkoud",
+        "position": "RA",
+        "nation": "fr",
+        "alter": 29,
+        "staerke": 81,
+        "hand": "L",
+        "geprueft": false
+      },
+      {
+        "vorname": "Arkadiusz",
+        "nachname": "Moryto",
+        "position": "RA",
+        "nation": "pl",
+        "alter": 29,
+        "staerke": 84,
+        "hand": "L",
+        "geprueft": false
+      },
+      {
+        "vorname": "Michał",
+        "nachname": "Olejniczak",
+        "position": "RM",
+        "nation": "pl",
+        "alter": 25,
+        "staerke": 79,
+        "geprueft": false
+      },
+      {
+        "vorname": "Tomasz",
+        "nachname": "Gębala",
+        "position": "KM",
+        "nation": "pl",
+        "alter": 31,
+        "staerke": 79,
+        "geprueft": false
+      },
+      {
+        "vorname": "Luka Lovre",
+        "nachname": "Klarica",
+        "position": "RA",
+        "nation": "hr",
+        "alter": 23,
+        "staerke": 80,
+        "hand": "L",
+        "vertrag_bis": 2030
+      },
+      {
+        "vorname": "Kirył",
+        "nachname": "Rabczyński",
+        "position": "LA",
+        "nation": "by",
+        "alter": 21,
+        "staerke": 72,
+        "vertrag_bis": 2030
+      },
+      {
+        "vorname": "Julien",
+        "nachname": "Bos",
+        "position": "RL",
+        "nation": "fr",
+        "alter": 26,
+        "staerke": 80,
+        "vertrag_bis": 2029
       }
     ],
     "MT Melsungen": [
@@ -1566,12 +1772,21 @@
         "staerke": 86
       },
       {
-        "vorname": "Dainis",
-        "nachname": "Krištopāns",
-        "position": "RR",
-        "nation": "lv",
-        "alter": 34,
-        "staerke": 84
+        "vorname": "Kamil",
+        "nachname": "Syprzak",
+        "position": "KM",
+        "nation": "pl",
+        "alter": 35,
+        "staerke": 85
+      },
+      {
+        "vorname": "Rodrigo",
+        "nachname": "Corrales",
+        "position": "TW",
+        "nation": "es",
+        "alter": 35,
+        "staerke": 86,
+        "vertrag_bis": 2028
       }
     ],
     "Rhein-Neckar Löwen": [
@@ -3212,6 +3427,402 @@
         "nation": "cz",
         "alter": 29,
         "staerke": 76
+      }
+    ],
+    "ONE Veszprém HC": [
+      {
+        "vorname": "Hugo",
+        "nachname": "Descat",
+        "position": "LA",
+        "nation": "fr",
+        "alter": 34,
+        "staerke": 86,
+        "geprueft": false
+      },
+      {
+        "vorname": "Nedim",
+        "nachname": "Remili",
+        "position": "RL",
+        "nation": "fr",
+        "alter": 31,
+        "staerke": 89,
+        "geprueft": false
+      },
+      {
+        "vorname": "Yahia",
+        "nachname": "Omar",
+        "position": "RR",
+        "nation": "eg",
+        "alter": 28,
+        "staerke": 86,
+        "hand": "L",
+        "geprueft": false
+      },
+      {
+        "vorname": "Bjarki Már",
+        "nachname": "Elísson",
+        "position": "LA",
+        "nation": "is",
+        "alter": 36,
+        "staerke": 81,
+        "geprueft": false
+      },
+      {
+        "vorname": "Emil",
+        "nachname": "Nielsen",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 29,
+        "staerke": 92
+      },
+      {
+        "vorname": "Lukas",
+        "nachname": "Jørgensen",
+        "position": "KM",
+        "nation": "dk",
+        "alter": 27,
+        "staerke": 84,
+        "geprueft": false
+      }
+    ],
+    "OTP Bank-Pick Szeged": [
+      {
+        "vorname": "Mario",
+        "nachname": "Šoštarić",
+        "position": "RA",
+        "nation": "hr",
+        "alter": 34,
+        "staerke": 84,
+        "hand": "L",
+        "nummer": 24
+      },
+      {
+        "vorname": "Sebastian",
+        "nachname": "Frimmel",
+        "position": "LA",
+        "nation": "at",
+        "alter": 31,
+        "staerke": 79,
+        "nummer": 25
+      },
+      {
+        "vorname": "Bence",
+        "nachname": "Bánhidi",
+        "position": "KM",
+        "nation": "hu",
+        "alter": 31,
+        "staerke": 86,
+        "nummer": 27
+      },
+      {
+        "vorname": "Tobias",
+        "nachname": "Thulin",
+        "position": "TW",
+        "nation": "se",
+        "alter": 31,
+        "staerke": 82,
+        "geprueft": false
+      },
+      {
+        "nummer": 11,
+        "vorname": "Lukas",
+        "nachname": "Sandell",
+        "position": "RR",
+        "nation": "se",
+        "alter": 29,
+        "staerke": 82,
+        "hand": "L"
+      },
+      {
+        "nummer": 13,
+        "vorname": "Máté",
+        "nachname": "Fazekas",
+        "position": "RM",
+        "nation": "hu",
+        "alter": 26,
+        "staerke": 82
+      },
+      {
+        "nummer": 31,
+        "vorname": "Jérémy",
+        "nachname": "Toto",
+        "position": "RL",
+        "nation": "fr",
+        "alter": 34,
+        "staerke": 79
+      },
+      {
+        "nummer": 34,
+        "vorname": "Lazar",
+        "nachname": "Kukić",
+        "position": "RM",
+        "nation": "rs",
+        "alter": 29,
+        "staerke": 81
+      },
+      {
+        "nummer": 45,
+        "vorname": "Miklós",
+        "nachname": "Rosta",
+        "position": "KM",
+        "nation": "hu",
+        "alter": 27,
+        "staerke": 79
+      },
+      {
+        "nummer": 51,
+        "vorname": "Borut",
+        "nachname": "Mačkovšek",
+        "position": "RL",
+        "nation": "si",
+        "alter": 34,
+        "staerke": 80
+      },
+      {
+        "nummer": 77,
+        "vorname": "Magnus",
+        "nachname": "Abelvik Rød",
+        "position": "RR",
+        "nation": "no",
+        "alter": 29,
+        "staerke": 85,
+        "hand": "L"
+      },
+      {
+        "vorname": "Nikola",
+        "nachname": "Portner",
+        "position": "TW",
+        "nation": "ch",
+        "alter": 33,
+        "staerke": 86,
+        "nummer": 80,
+        "vertrag_bis": 2029
+      }
+    ],
+    "Sporting CP": [
+      {
+        "vorname": "Martim",
+        "nachname": "Costa",
+        "position": "RR",
+        "nation": "pt",
+        "alter": 24,
+        "staerke": 88,
+        "hand": "L",
+        "vorvertrag": "SG Flensburg-Handewitt"
+      },
+      {
+        "vorname": "Francisco",
+        "nachname": "Costa",
+        "position": "RM",
+        "nation": "pt",
+        "alter": 21,
+        "staerke": 86,
+        "vorvertrag": "SG Flensburg-Handewitt"
+      },
+      {
+        "vorname": "Orri Freyr",
+        "nachname": "Þorkelsson",
+        "position": "LA",
+        "nation": "is",
+        "alter": 27,
+        "staerke": 82,
+        "geprueft": false
+      }
+    ],
+    "CS Dinamo București": [
+      {
+        "vorname": "Victor",
+        "nachname": "Iturriza",
+        "position": "KM",
+        "nation": "pt",
+        "alter": 37,
+        "staerke": 78,
+        "geprueft": false
+      }
+    ],
+    "HBC Nantes": [
+      {
+        "vorname": "Imanol",
+        "nachname": "Garciandia",
+        "position": "RR",
+        "nation": "es",
+        "alter": 31,
+        "staerke": 82,
+        "hand": "L",
+        "vertrag_bis": 2029
+      },
+      {
+        "vorname": "Christoffer",
+        "nachname": "Bonde",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 29,
+        "staerke": 80
+      },
+      {
+        "vorname": "Ihor",
+        "nachname": "Turchenko",
+        "position": "RL",
+        "nation": "ua",
+        "alter": 30,
+        "staerke": 80
+      },
+      {
+        "vorname": "Ayoub",
+        "nachname": "Abdi",
+        "position": "RR",
+        "nation": "fr",
+        "alter": 27,
+        "staerke": 81,
+        "hand": "L"
+      }
+    ],
+    "Montpellier Handball": [
+      {
+        "vorname": "Agustín",
+        "nachname": "Casado",
+        "position": "RM",
+        "nation": "es",
+        "alter": 30,
+        "staerke": 84,
+        "geprueft": false
+      },
+      {
+        "vorname": "Pol",
+        "nachname": "Valera",
+        "position": "RM",
+        "nation": "es",
+        "alter": 26,
+        "staerke": 80
+      },
+      {
+        "vorname": "Drevy",
+        "nachname": "Paschal",
+        "position": "RA",
+        "nation": "fr",
+        "alter": 25,
+        "staerke": 80
+      }
+    ],
+    "GOG": [
+      {
+        "vorname": "Kevin",
+        "nachname": "Møller",
+        "position": "TW",
+        "nation": "dk",
+        "alter": 37,
+        "staerke": 82,
+        "geprueft": false
+      },
+      {
+        "vorname": "Manuel",
+        "nachname": "Zehnder",
+        "position": "RM",
+        "nation": "ch",
+        "alter": 27,
+        "staerke": 84,
+        "geprueft": false
+      },
+      {
+        "vorname": "Andreas",
+        "nachname": "Magaard",
+        "position": "RR",
+        "nation": "dk",
+        "alter": 30,
+        "staerke": 80,
+        "hand": "L",
+        "geprueft": false
+      }
+    ],
+    "FC Porto": [
+      {
+        "vorname": "Guilherme",
+        "nachname": "Borges",
+        "position": "KM",
+        "nation": "br",
+        "alter": 27,
+        "staerke": 78,
+        "vertrag_bis": 2028
+      },
+      {
+        "vorname": "Ante",
+        "nachname": "Grbavac",
+        "position": "TW",
+        "nation": "hr",
+        "alter": 26,
+        "staerke": 79
+      }
+    ],
+    "RK Zagreb": [
+      {
+        "vorname": "Urh",
+        "nachname": "Kastelic",
+        "position": "TW",
+        "nation": "si",
+        "alter": 30,
+        "staerke": 83
+      },
+      {
+        "vorname": "Manuel",
+        "nachname": "Štrlek",
+        "position": "LA",
+        "nation": "hr",
+        "alter": 38,
+        "staerke": 75
+      },
+      {
+        "vorname": "Marko",
+        "nachname": "Mamić",
+        "position": "RL",
+        "nation": "hr",
+        "alter": 32,
+        "staerke": 80
+      },
+      {
+        "vorname": "Zlatko",
+        "nachname": "Raužan",
+        "position": "RM",
+        "nation": "hr",
+        "alter": 28,
+        "staerke": 79,
+        "geprueft": false
+      }
+    ],
+    "Orlen Wisła Płock": [
+      {
+        "vorname": "Miljan",
+        "nachname": "Vujović",
+        "position": "TW",
+        "nation": "si",
+        "alter": 26,
+        "staerke": 79
+      }
+    ],
+    "HC Kriens-Luzern": [
+      {
+        "vorname": "Kristian",
+        "nachname": "Pilipović",
+        "position": "TW",
+        "nation": "hr",
+        "alter": 32,
+        "staerke": 79
+      },
+      {
+        "vorname": "Mykola",
+        "nachname": "Bilyk",
+        "position": "RR",
+        "nation": "at",
+        "alter": 30,
+        "staerke": 82,
+        "hand": "L"
+      },
+      {
+        "vorname": "Lukas",
+        "nachname": "Herburger",
+        "position": "KM",
+        "nation": "at",
+        "alter": 32,
+        "staerke": 79
       }
     ]
   }

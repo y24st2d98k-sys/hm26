@@ -350,6 +350,12 @@ static func koerper_uebernehmen(sp: Dictionary, eintrag: Dictionary, startjahr: 
 	var hand: String = str(eintrag.get("hand", "")).to_upper()
 	if hand in ["L", "R"]:
 		sp["hand"] = hand
+	elif eintrag.has("position"):
+		# Ohne Angabe gilt bei echten Spielern die Regel statt des Würfels:
+		# wer rechts spielt, ist Linkshänder, alle anderen Rechtshänder. Das
+		# ist bei den wenigen Ausnahmen falsch, beim Würfeln aber bei jedem
+		# achten Rückraum rechts.
+		sp["hand"] = "L" if str(eintrag["position"]) in ["RR", "RA"] else "R"
 	if int(eintrag.get("groesse", 0)) >= 150:
 		sp["groesse"] = int(eintrag["groesse"])
 	if int(eintrag.get("gewicht", 0)) >= 50:

@@ -64,10 +64,14 @@ func _zeichne() -> void:
 	# Die Tabelle fuellt fuer sich schon eine Bildschirmhoehe. Torjaeger,
 	# Prognose und Meisterhistorie gehoeren daneben, nicht darunter — sonst
 	# scrollt man an achtzehn Zeilen vorbei, um zu sehen, wer trifft.
-	var reiter := Stil.reitergruppe([
+	var reiter_liste: Array = [
 		{"id": "tabelle", "name": "Tabelle"},
 		{"id": "listen", "name": "Torjäger & Prognose"},
-	])
+	]
+	var mit_playoffs: bool = Playoffs.hat_playoffs(liga)
+	if mit_playoffs:
+		reiter_liste.insert(1, {"id": "playoffs", "name": "Play-offs"})
+	var reiter := Stil.reitergruppe(reiter_liste)
 	inhalt.add_child(reiter)
 	var karte := Bausteine.karte_in(reiter.feld("tabelle"), "%s — Spieltag %d von %d" % [
 		str(liga["name"]), int(liga["aktueller_spieltag"]), int(liga["spieltage"])])
@@ -85,7 +89,9 @@ func _zeichne() -> void:
 		# Platzziffer. Eine eingefaerbte Zahl las sich wie eine Wertung des
 		# Vereins; die Kante sagt, was sie meint — hier endet Europa, hier
 		# beginnt der Abstieg.
-		if int(liga["stufe"]) == 1 and i < 3:
+		if mit_playoffs and i < int(liga["playoffs"]):
+			g.setze_zone(i, Stil.LILA)
+		elif int(liga["stufe"]) == 1 and i < 3:
 			g.setze_zone(i, Stil.TUERKIS)
 		elif i < aufstieg:
 			g.setze_zone(i, Stil.GRUEN)
@@ -107,6 +113,9 @@ func _zeichne() -> void:
 		g.add_child(Stil.text("%+d" % diff, Stil.S_KLEIN, Stil.GRUEN if diff > 0 else (Stil.ROT if diff < 0 else Stil.TEXT_MATT)))
 		g.add_child(Stil.text(str(int(z["punkte"])), Stil.S_KLEIN, farbe))
 		g.add_child(Bausteine.formkurve(z["serie"], 5))
+
+	if mit_playoffs:
+		_playoffs_zeichnen(reiter.feld("playoffs"), liga)
 
 	var unten := Stil.hbox(12)
 	reiter.feld("listen").add_child(unten)
@@ -167,6 +176,45 @@ func _zeichne() -> void:
 		for e in h.slice(0, 10):
 			historie.add_child(Stil.info_zeile(Kalender.saison_text(Welt.startjahr(), int(e["saison"])),
 				str(Welt.verein(str(e["verein"])).get("name", ""))))
+
+## Die Play-off-Runden als Liste: je Paarung Hin- und Rückspiel und wer weiter ist.
+func _playoffs_zeichnen(eltern: Control, liga: Dictionary) -> void:
+	var karte := Bausteine.karte_in(eltern, "Play-offs — die besten %d der Hauptrunde" % int(liga["playoffs"]))
+	var po: Dictionary = liga.get("playoff", {})
+	if po.is_empty() or str(po.get("phase", "offen")) == "offen":
+		karte.add_child(Stil.leerzustand("Die Play-offs beginnen nach dem letzten Spieltag der Hauptrunde. Die farbig markierten Plätze sind dabei; der besser Platzierte hat im Rückspiel Heimrecht und kommt bei Torgleichstand weiter."))
+		return
+	if str(po.get("sieger", "")) != "":
+		karte.add_child(Stil.info_zeile("Meister", str(Welt.verein(str(po["sieger"])).get("name", "")), Stil.AKZENT))
+	# Alle Play-off-Partien dieser Liga, nach Runde geordnet.
+	var runden := {}
+	for mid in Welt.daten["spiele"].keys():
+		var m: Dictionary = Welt.daten["spiele"][mid]
+		if str(m["art"]) != "playoff" or str(m["wettbewerb"]) != gewaehlt:
+			continue
+		var r: int = int(m["runde"])
+		if not runden.has(r):
+			runden[r] = []
+		(runden[r] as Array).append(m)
+	var anzahl: int = int(liga["playoffs"])
+	var schluessel: Array = runden.keys()
+	schluessel.sort()
+	for r in schluessel:
+		var teams_runde: int = anzahl
+		for _i in range(int(r) - 1):
+			teams_runde /= 2
+		karte.add_child(Stil.text(Playoffs.rundenname(teams_runde), Stil.S_NORMAL, Stil.TEXT))
+		var spiele: Array = runden[r]
+		spiele.sort_custom(func(a, b): return int(a["tag"]) < int(b["tag"]))
+		for m in spiele:
+			var zeile := Stil.hbox(8)
+			karte.add_child(zeile)
+			zeile.add_child(Stil.matt(Kalender.kurz(int(m["tag"]), Welt.startjahr()), Stil.S_KLEIN))
+			zeile.add_child(Wappen.fuer_verein(str(m["heim"]), 16.0))
+			zeile.add_child(Stil.text(str(Welt.verein(str(m["heim"])).get("name", "")), Stil.S_KLEIN, Stil.TEXT))
+			zeile.add_child(Stil.text("%d:%d" % [int(m["tore_heim"]), int(m["tore_gast"])] if bool(m["gespielt"]) else "–:–", Stil.S_KLEIN, Stil.AKZENT))
+			zeile.add_child(Stil.text(str(Welt.verein(str(m["gast"])).get("name", "")), Stil.S_KLEIN, Stil.TEXT))
+			zeile.add_child(Wappen.fuer_verein(str(m["gast"]), 16.0))
 
 func _hat_unterbau(liga: Dictionary) -> bool:
 	var nation: Dictionary = Welt.daten["nationen"][liga["nation"]]
