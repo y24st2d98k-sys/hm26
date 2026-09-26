@@ -350,7 +350,7 @@ static func verein_fuehren(d: Dictionary, cid: String) -> void:
 	_vertraege_pflegen(d, cid)
 	_gehaltslast_senken(d, cid)
 	_zahlungsverzug(d, cid)
-	kader_auffuellen(d, cid)
+	kader_auffuellen(d, cid, true)
 	if Namen.zufall() < 0.05:
 		Mentoring.automatisch(d, cid)
 	if Namen.zufall() < 0.08:
@@ -664,14 +664,26 @@ static func _zahlungsverzug(d: Dictionary, cid: String) -> void:
 		return
 	Transfermarkt.vertrag_aufloesen(d, wahl, true)
 
-static func kader_auffuellen(d: Dictionary, cid: String) -> void:
+## `auch_mensch` heisst: fuehre den Kader so, wie die Automatik es taete.
+##
+## Normalerweise ist der eigene Kader Sache des Trainers, und die Automatik
+## haelt sich heraus. verein_fuehren ist aber ausdruecklich auch fuer den
+## Verein des Menschen gedacht — die Langzeitsonde misst damit, was ein
+## durchschnittlich kompetenter Manager ueber Jahre erreicht, und ein
+## Urlaubsmodus haette hier seinen Platz. Nur stieg kader_auffuellen genau dort
+## wieder aus, und damit mass die Sonde einen Manager, der nie jemanden
+## verpflichtet: der Verein fiel von Platz 8 auf 16, der Kader von 79,8 auf
+## 77,5 bei einem Ligaschnitt von 79,2, und der Trainer flog nach drei
+## Spielzeiten. Das war kein Befund ueber das Spiel, sondern einer ueber die
+## Messung.
+static func kader_auffuellen(d: Dictionary, cid: String, auch_mensch: bool = false) -> void:
 	var v: Dictionary = d["vereine"][cid]
 	# Eine Nationalmannschaft nominiert, sie verpflichtet nicht: sonst wuerden
 	# ihr vereinslose Spieler zugeschlagen, die danach keinem Verein mehr
 	# gehoeren und aus dem Transfermarkt verschwinden.
 	if bool(v.get("ist_nationalteam", false)):
 		return
-	if bool(v.get("ist_mensch", false)):
+	if bool(v.get("ist_mensch", false)) and not auch_mensch:
 		# Der eigene Kader ist Sache des Trainers — bis er nicht mehr reicht.
 		_notkader_sichern(d, cid)
 		return
