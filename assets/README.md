@@ -1,7 +1,7 @@
 # Eigene Bilder und Klänge
 
-Hallenherz kommt ohne eine einzige Mediendatei aus — alles wird zur Laufzeit
-gezeichnet und synthetisiert. Wer eigene Dateien einsetzen möchte, legt sie
+Hallenherz braucht keine einzige Mediendatei — alles kann zur Laufzeit
+gezeichnet und synthetisiert werden. Wer eigene Dateien einsetzen möchte, legt sie
 hier ab. Das Spiel bevorzugt dann die Datei und fällt auf die eingebaute
 Variante zurück, wo keine liegt. Es muss nichts am Code geändert werden.
 
@@ -29,6 +29,10 @@ einer hellen Fläche hinterlegen.
 
 Für welche Vereine ein Logo fehlt, ist unproblematisch: dort wird weiterhin
 das gezeichnete Wappen aus Vereinsfarben und Kürzel benutzt.
+
+Für 135 Vereine liegen bereits echte Logos bei (aus Wikipedia-Infoboxen,
+Sportradar über sport1.de und den Ligaseiten). Woher jedes einzelne stammt,
+steht in [`WAPPEN_QUELLEN.md`](WAPPEN_QUELLEN.md).
 
 ## Spielergesichter — `assets/gesichter/`
 
