@@ -15152,6 +15152,2566 @@
           "gast": "Élite Val-d'Oise"
         }
       ]
+    },
+    "Elkjøp-ligaen": {
+      "saison": "2026/27",
+      "quelle": "handball.no (Norges Håndballforbund), Terminliste Elkjøp-ligaen menn 2026/2027 (Abruf 26.09.2026)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "17:00",
+          "heim": "Kristiansand TH",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "18:15",
+          "heim": "Bergsøy IL",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "20:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "17:00",
+          "heim": "Elverum Håndball",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "18:00",
+          "heim": "Sandnes Håndball",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-30",
+          "zeit": "19:00",
+          "heim": "ØIF Arendal",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-12-09",
+          "zeit": "18:00",
+          "heim": "Drammen HK",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-02",
+          "zeit": "18:15",
+          "heim": "Kolstad Håndball",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-05",
+          "zeit": "15:15",
+          "heim": "Bergen Håndball",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "16:00",
+          "heim": "Viking TIF",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "17:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "17:00",
+          "heim": "Nærbø IL",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "19:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "16:00",
+          "heim": "Kristiansand TH",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "18:15",
+          "heim": "Bergen Håndball",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-13",
+          "zeit": "16:00",
+          "heim": "Bergsøy IL",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-13",
+          "zeit": "17:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-13",
+          "zeit": "17:30",
+          "heim": "Sandnes Håndball",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-13",
+          "zeit": "18:00",
+          "heim": "Drammen HK",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-12-09",
+          "zeit": "18:30",
+          "heim": "ØIF Arendal",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-19",
+          "zeit": "16:00",
+          "heim": "Follo HK",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-19",
+          "zeit": "18:00",
+          "heim": "Elverum Håndball",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "17:00",
+          "heim": "ØIF Arendal",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "17:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "18:00",
+          "heim": "Sandnes Håndball",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "18:15",
+          "heim": "Viking TIF",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-25",
+          "zeit": "18:00",
+          "heim": "Bergsøy IL",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "16:00",
+          "heim": "Kristiansand TH",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "16:00",
+          "heim": "Kolstad Håndball",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "17:00",
+          "heim": "Nærbø IL",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "17:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "18:00",
+          "heim": "Drammen HK",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "19:00",
+          "heim": "Bergen Håndball",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-02",
+          "zeit": "18:15",
+          "heim": "Elverum Håndball",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "17:00",
+          "heim": "Sandnes Håndball",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "18:00",
+          "heim": "Viking TIF",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "18:00",
+          "heim": "Drammen HK",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "18:30",
+          "heim": "ØIF Arendal",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-13",
+          "zeit": "18:30",
+          "heim": "Nærbø IL",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-14",
+          "zeit": "18:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-14",
+          "zeit": "19:00",
+          "heim": "Kristiansand TH",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "16:30",
+          "heim": "Kolstad Håndball",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "17:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "18:00",
+          "heim": "Bergen Håndball",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-18",
+          "zeit": "16:30",
+          "heim": "Bergsøy IL",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-09-30",
+          "zeit": "20:15",
+          "heim": "Nærbø IL",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-21",
+          "zeit": "18:15",
+          "heim": "Sandefjord Håndball",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "15:15",
+          "heim": "Elverum Håndball",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "16:00",
+          "heim": "Viking TIF",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-25",
+          "zeit": "17:00",
+          "heim": "Sandnes Håndball",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-25",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-25",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "18:15",
+          "heim": "Drammen HK",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-31",
+          "zeit": "17:00",
+          "heim": "Bergen Håndball",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-31",
+          "zeit": "17:00",
+          "heim": "ØIF Arendal",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-01",
+          "zeit": "16:30",
+          "heim": "Bergsøy IL",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-01",
+          "zeit": "17:00",
+          "heim": "Kristiansand TH",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-01",
+          "zeit": "17:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-01",
+          "zeit": "18:00",
+          "heim": "Kolstad Håndball",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "17:30",
+          "heim": "Viking TIF",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-14",
+          "zeit": "17:00",
+          "heim": "Kristiansand TH",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-15",
+          "zeit": "16:00",
+          "heim": "Drammen HK",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-15",
+          "zeit": "17:00",
+          "heim": "ØIF Arendal",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-15",
+          "zeit": "18:00",
+          "heim": "Sandnes Håndball",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-15",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-12-09",
+          "zeit": "18:15",
+          "heim": "Elverum Håndball",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-18",
+          "zeit": "18:15",
+          "heim": "Runar Sandefjord",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-19",
+          "zeit": "18:00",
+          "heim": "Bergen Håndball",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-21",
+          "zeit": "14:30",
+          "heim": "Nærbø IL",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-21",
+          "zeit": "17:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-22",
+          "zeit": "16:00",
+          "heim": "Kolstad Håndball",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-22",
+          "zeit": "18:00",
+          "heim": "Bergsøy IL",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-22",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "18:30",
+          "heim": "Elverum Håndball",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-28",
+          "zeit": "16:00",
+          "heim": "Viking TIF",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-29",
+          "zeit": "15:00",
+          "heim": "Bergsøy IL",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-29",
+          "zeit": "17:00",
+          "heim": "ØIF Arendal",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-29",
+          "zeit": "17:30",
+          "heim": "Sandnes Håndball",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-29",
+          "zeit": "19:15",
+          "heim": "Drammen HK",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-02",
+          "zeit": "19:00",
+          "heim": "Kristiansand TH",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-02",
+          "zeit": "18:00",
+          "heim": "Bergen Håndball",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-05",
+          "zeit": "16:00",
+          "heim": "Follo HK",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-05",
+          "zeit": "18:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-06",
+          "zeit": "15:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-06",
+          "zeit": "18:00",
+          "heim": "Nærbø IL",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-06",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2027-04-07",
+          "zeit": "18:15",
+          "heim": "Kolstad Håndball",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "18:15",
+          "heim": "Bergen Håndball",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-12",
+          "zeit": "17:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-12",
+          "zeit": "20:00",
+          "heim": "Kolstad Håndball",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-13",
+          "zeit": "16:00",
+          "heim": "Viking TIF",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-13",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-13",
+          "zeit": "18:00",
+          "heim": "Nærbø IL",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-13",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-17",
+          "zeit": "18:15",
+          "heim": "Runar Sandefjord",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-19",
+          "zeit": "15:00",
+          "heim": "Kristiansand TH",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-19",
+          "zeit": "15:00",
+          "heim": "ØIF Arendal",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-19",
+          "zeit": "16:00",
+          "heim": "Bergsøy IL",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-19",
+          "zeit": "16:15",
+          "heim": "Elverum Håndball",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-19",
+          "zeit": "17:00",
+          "heim": "Sandnes Håndball",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-19",
+          "zeit": "18:00",
+          "heim": "Drammen HK",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-02",
+          "zeit": "19:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-03",
+          "zeit": "17:00",
+          "heim": "Viking TIF",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-03",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-03",
+          "zeit": "18:00",
+          "heim": "Elverum Håndball",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-03",
+          "zeit": "18:00",
+          "heim": "Nærbø IL",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-03",
+          "zeit": "18:00",
+          "heim": "Kolstad Håndball",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-03",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-06",
+          "zeit": "15:00",
+          "heim": "Kolstad Håndball",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-06",
+          "zeit": "16:00",
+          "heim": "Drammen HK",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-07",
+          "zeit": "15:00",
+          "heim": "Bergsøy IL",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-07",
+          "zeit": "17:00",
+          "heim": "Kristiansand TH",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-07",
+          "zeit": "17:00",
+          "heim": "ØIF Arendal",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-07",
+          "zeit": "17:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-07",
+          "zeit": "18:00",
+          "heim": "Bergen Håndball",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-13",
+          "zeit": "15:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-13",
+          "zeit": "17:00",
+          "heim": "Nærbø IL",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-14",
+          "zeit": "15:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-14",
+          "zeit": "16:00",
+          "heim": "Viking TIF",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-14",
+          "zeit": "16:00",
+          "heim": "Follo HK",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-14",
+          "zeit": "17:00",
+          "heim": "Elverum Håndball",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-14",
+          "zeit": "18:00",
+          "heim": "Sandnes Håndball",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "16:00",
+          "heim": "Kolstad Håndball",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "17:00",
+          "heim": "Bergen Håndball",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "17:00",
+          "heim": "Kristiansand TH",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-21",
+          "zeit": "15:00",
+          "heim": "Bergsøy IL",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-21",
+          "zeit": "17:00",
+          "heim": "Nærbø IL",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-21",
+          "zeit": "17:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-21",
+          "zeit": "18:00",
+          "heim": "Drammen HK",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-27",
+          "zeit": "15:00",
+          "heim": "Elverum Håndball",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-28",
+          "zeit": "17:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-28",
+          "zeit": "17:00",
+          "heim": "ØIF Arendal",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-28",
+          "zeit": "18:00",
+          "heim": "Viking TIF",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-28",
+          "zeit": "18:00",
+          "heim": "Sandnes Håndball",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-28",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-28",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-03",
+          "zeit": "17:30",
+          "heim": "Bergen Håndball",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-03",
+          "zeit": "18:00",
+          "heim": "Bergsøy IL",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-03",
+          "zeit": "18:00",
+          "heim": "Nærbø IL",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-03",
+          "zeit": "18:00",
+          "heim": "Kolstad Håndball",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-03",
+          "zeit": "18:30",
+          "heim": "Runar Sandefjord",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-03",
+          "zeit": "19:00",
+          "heim": "Kristiansand TH",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-04",
+          "zeit": "18:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-06",
+          "zeit": "16:00",
+          "heim": "Viking TIF",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-07",
+          "zeit": "16:00",
+          "heim": "ØIF Arendal",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-07",
+          "zeit": "17:00",
+          "heim": "Elverum Håndball",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-07",
+          "zeit": "18:00",
+          "heim": "Drammen HK",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-07",
+          "zeit": "18:00",
+          "heim": "Sandnes Håndball",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-07",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-07",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-17",
+          "zeit": "18:00",
+          "heim": "Kolstad Håndball",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-17",
+          "zeit": "18:30",
+          "heim": "Nærbø IL",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-17",
+          "zeit": "18:30",
+          "heim": "Runar Sandefjord",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-20",
+          "zeit": "17:00",
+          "heim": "Bergen Håndball",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-20",
+          "zeit": "17:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-21",
+          "zeit": "15:00",
+          "heim": "Bergsøy IL",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-21",
+          "zeit": "18:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-31",
+          "zeit": "17:30",
+          "heim": "Viking TIF",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-31",
+          "zeit": "18:00",
+          "heim": "Drammen HK",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-31",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-31",
+          "zeit": "18:00",
+          "heim": "Kristiansand TH",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-31",
+          "zeit": "18:30",
+          "heim": "Sandnes Håndball",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-31",
+          "zeit": "18:30",
+          "heim": "Elverum Håndball",
+          "gast": "Sandefjord Håndball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-31",
+          "zeit": "18:30",
+          "heim": "ØIF Arendal",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-03",
+          "zeit": "15:00",
+          "heim": "Nærbø IL",
+          "gast": "ØIF Arendal"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-03",
+          "zeit": "18:00",
+          "heim": "Bergen Håndball",
+          "gast": "Bergsøy IL"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "15:00",
+          "heim": "Fjellhammer IL",
+          "gast": "Elverum Håndball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "17:00",
+          "heim": "Sandefjord Håndball",
+          "gast": "Sandnes Håndball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "17:00",
+          "heim": "Runar Sandefjord",
+          "gast": "Kristiansand TH"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "18:00",
+          "heim": "Follo HK",
+          "gast": "Viking TIF"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "18:15",
+          "heim": "Kolstad Håndball",
+          "gast": "Drammen HK"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2026-12-06",
+          "zeit": "16:00",
+          "heim": "Kristiansand TH",
+          "gast": "Kolstad Håndball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-07",
+          "zeit": "18:15",
+          "heim": "Viking TIF",
+          "gast": "Bergen Håndball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-07",
+          "zeit": "18:15",
+          "heim": "Drammen HK",
+          "gast": "Nærbø IL"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-07",
+          "zeit": "18:15",
+          "heim": "Bergsøy IL",
+          "gast": "Runar Sandefjord"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-07",
+          "zeit": "18:15",
+          "heim": "Sandnes Håndball",
+          "gast": "Fjellhammer IL"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-07",
+          "zeit": "18:15",
+          "heim": "Elverum Håndball",
+          "gast": "Follo HK"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-07",
+          "zeit": "18:15",
+          "heim": "ØIF Arendal",
+          "gast": "Sandefjord Håndball"
+        }
+      ]
+    },
+    "Handbollsligan": {
+      "saison": "2026/27",
+      "quelle": "handbollsligan.se, Spelschema Herr 2026/27 (Abruf 26.09.2026); die schon gespielten Paarungen ergeben sich als Rest der Doppelrunde, Spieltage aus der zeitlichen Reihenfolge",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "HF Karlskrona",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "IF Hallby HK",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "IFK Kristianstad",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "OV Helsingborg HK",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "Skånela IF",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ystads IF",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "Önnereds HK",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 2,
+          "datum": "",
+          "zeit": "",
+          "heim": "IFK Skövde",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-26",
+          "zeit": "16:00",
+          "heim": "HK Malmö",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-26",
+          "zeit": "17:00",
+          "heim": "Hammarby IF",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-26",
+          "zeit": "17:00",
+          "heim": "Amo HK",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-27",
+          "zeit": "16:00",
+          "heim": "IFK Kristianstad",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-10-25",
+          "zeit": "16:30",
+          "heim": "Skånela IF",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-11-01",
+          "zeit": "17:00",
+          "heim": "Lugi HF",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-28",
+          "zeit": "20:00",
+          "heim": "Lugi HF",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-10-02",
+          "zeit": "19:00",
+          "heim": "HF Karlskrona",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-10-02",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-10-03",
+          "zeit": "15:00",
+          "heim": "Ystads IF",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-10-03",
+          "zeit": "16:00",
+          "heim": "Önnereds HK",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-10-26",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-11-24",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-01",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "17:30",
+          "heim": "IF Hallby HK",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-04",
+          "zeit": "17:00",
+          "heim": "Alingsås HK",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-09",
+          "zeit": "19:00",
+          "heim": "HK Malmö",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-16",
+          "zeit": "19:00",
+          "heim": "Önnereds HK",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-20",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-12-04",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-09",
+          "zeit": "19:00",
+          "heim": "Skånela IF",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-09",
+          "zeit": "19:00",
+          "heim": "Lugi HF",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-10",
+          "zeit": "17:00",
+          "heim": "IF Hallby HK",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-11",
+          "zeit": "16:00",
+          "heim": "IFK Kristianstad",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-11",
+          "zeit": "17:30",
+          "heim": "Hammarby IF",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-11-01",
+          "zeit": "16:15",
+          "heim": "HK Malmö",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-11-11",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-15",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-16",
+          "zeit": "19:00",
+          "heim": "Alingsås HK",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-16",
+          "zeit": "19:00",
+          "heim": "Amo HK",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-16",
+          "zeit": "19:00",
+          "heim": "Ystads IF",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-19",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-28",
+          "zeit": "20:00",
+          "heim": "Önnereds HK",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-31",
+          "zeit": "18:00",
+          "heim": "HF Karlskrona",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:15",
+          "heim": "HF Karlskrona",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-21",
+          "zeit": "19:00",
+          "heim": "Hammarby IF",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-21",
+          "zeit": "19:00",
+          "heim": "IF Hallby HK",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-22",
+          "zeit": "19:00",
+          "heim": "Önnereds HK",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-25",
+          "zeit": "16:15",
+          "heim": "Amo HK",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-29",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-12-04",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-21",
+          "zeit": "19:00",
+          "heim": "HK Malmö",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-22",
+          "zeit": "18:30",
+          "heim": "Skånela IF",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-25",
+          "zeit": "14:00",
+          "heim": "Ystads IF",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-25",
+          "zeit": "17:30",
+          "heim": "Alingsås HK",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-28",
+          "zeit": "19:45",
+          "heim": "IK Sävehof",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-11-20",
+          "zeit": "19:00",
+          "heim": "IF Hallby HK",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2027-02-03",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-25",
+          "zeit": "16:00",
+          "heim": "HF Karlskrona",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-25",
+          "zeit": "17:00",
+          "heim": "Lugi HF",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-28",
+          "zeit": "19:00",
+          "heim": "Hammarby IF",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-29",
+          "zeit": "19:00",
+          "heim": "Ystads IF",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-29",
+          "zeit": "19:00",
+          "heim": "Alingsås HK",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-21",
+          "zeit": "17:00",
+          "heim": "Önnereds HK",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-12-13",
+          "zeit": "16:15",
+          "heim": "Amo HK",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-01",
+          "zeit": "15:00",
+          "heim": "Skånela IF",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-01",
+          "zeit": "16:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-01",
+          "zeit": "16:15",
+          "heim": "Amo HK",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-11",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-11",
+          "zeit": "19:00",
+          "heim": "IF Hallby HK",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-11",
+          "zeit": "19:00",
+          "heim": "Hammarby IF",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-14",
+          "zeit": "14:00",
+          "heim": "HF Karlskrona",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-11",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-11",
+          "zeit": "19:00",
+          "heim": "Ystads IF",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-11",
+          "zeit": "20:00",
+          "heim": "Önnereds HK",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "17:00",
+          "heim": "Alingsås HK",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-27",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-12-11",
+          "zeit": "19:00",
+          "heim": "IF Hallby HK",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-12-26",
+          "zeit": "15:00",
+          "heim": "Lugi HF",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-14",
+          "zeit": "16:00",
+          "heim": "Lugi HF",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-14",
+          "zeit": "17:00",
+          "heim": "Amo HK",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-14",
+          "zeit": "18:30",
+          "heim": "Skånela IF",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-15",
+          "zeit": "16:00",
+          "heim": "IFK Skövde",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-15",
+          "zeit": "16:15",
+          "heim": "HK Malmö",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-19",
+          "zeit": "19:00",
+          "heim": "Ystads IF",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-20",
+          "zeit": "16:00",
+          "heim": "HF Karlskrona",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-19",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-20",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-20",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-21",
+          "zeit": "17:00",
+          "heim": "Hammarby IF",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-27",
+          "zeit": "19:00",
+          "heim": "Skånela IF",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-20",
+          "zeit": "16:00",
+          "heim": "IFK Skövde",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "Alingsås HK",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-25",
+          "zeit": "19:00",
+          "heim": "HF Karlskrona",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-29",
+          "zeit": "16:15",
+          "heim": "HK Malmö",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-29",
+          "zeit": "16:15",
+          "heim": "Amo HK",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-29",
+          "zeit": "17:00",
+          "heim": "Lugi HF",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-29",
+          "zeit": "17:00",
+          "heim": "Alingsås HK",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-26",
+          "zeit": "17:00",
+          "heim": "IF Hallby HK",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-26",
+          "zeit": "17:00",
+          "heim": "Hammarby IF",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-01",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-05",
+          "zeit": "16:00",
+          "heim": "Önnereds HK",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-05",
+          "zeit": "17:00",
+          "heim": "Hammarby IF",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-07",
+          "zeit": "19:00",
+          "heim": "Ystads IF",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-07",
+          "zeit": "19:00",
+          "heim": "IF Hallby HK",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-08",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-08",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-10",
+          "zeit": "19:00",
+          "heim": "Skånela IF",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-11",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-12",
+          "zeit": "16:00",
+          "heim": "Lugi HF",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-13",
+          "zeit": "16:15",
+          "heim": "HK Malmö",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-13",
+          "zeit": "17:00",
+          "heim": "Alingsås HK",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-26",
+          "zeit": "17:00",
+          "heim": "Amo HK",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "Önnereds HK",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "IF Hallby HK",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "Amo HK",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "Hammarby IF",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-17",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-20",
+          "zeit": "16:15",
+          "heim": "HK Malmö",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-20",
+          "zeit": "16:30",
+          "heim": "Skånela IF",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-20",
+          "zeit": "17:00",
+          "heim": "Alingsås HK",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-20",
+          "zeit": "17:00",
+          "heim": "Lugi HF",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-21",
+          "zeit": "19:00",
+          "heim": "Ystads IF",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-19",
+          "zeit": "19:00",
+          "heim": "Önnereds HK",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-23",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-26",
+          "zeit": "13:15",
+          "heim": "IK Sävehof",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-27",
+          "zeit": "16:00",
+          "heim": "Önnereds HK",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-27",
+          "zeit": "16:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-29",
+          "zeit": "19:00",
+          "heim": "Skånela IF",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-29",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-03",
+          "zeit": "19:00",
+          "heim": "HF Karlskrona",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "17:00",
+          "heim": "IF Hallby HK",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-30",
+          "zeit": "19:00",
+          "heim": "Alingsås HK",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-30",
+          "zeit": "19:00",
+          "heim": "HF Karlskrona",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-30",
+          "zeit": "19:00",
+          "heim": "Ystads IF",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-30",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-30",
+          "zeit": "19:00",
+          "heim": "HK Malmö",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-03",
+          "zeit": "19:00",
+          "heim": "Amo HK",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-06",
+          "zeit": "15:00",
+          "heim": "Skånela IF",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-03",
+          "zeit": "18:00",
+          "heim": "IK Sävehof",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-03",
+          "zeit": "19:00",
+          "heim": "Lugi HF",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-03",
+          "zeit": "19:00",
+          "heim": "Hammarby IF",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-04",
+          "zeit": "19:00",
+          "heim": "Önnereds HK",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-06",
+          "zeit": "16:00",
+          "heim": "IFK Kristianstad",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-18",
+          "zeit": "19:00",
+          "heim": "Amo HK",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-06",
+          "zeit": "15:00",
+          "heim": "Skånela IF",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-06",
+          "zeit": "17:00",
+          "heim": "Hammarby IF",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-06",
+          "zeit": "17:30",
+          "heim": "IF Hallby HK",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-07",
+          "zeit": "14:00",
+          "heim": "Ystads IF",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-19",
+          "zeit": "19:00",
+          "heim": "HK Malmö",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-02",
+          "zeit": "19:00",
+          "heim": "Amo HK",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-06",
+          "zeit": "16:00",
+          "heim": "HF Karlskrona",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-07",
+          "zeit": "17:00",
+          "heim": "Alingsås HK",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-07",
+          "zeit": "18:00",
+          "heim": "HK Malmö",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "HF Karlskrona",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-02",
+          "zeit": "19:00",
+          "heim": "Lugi HF",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-06",
+          "zeit": "15:00",
+          "heim": "Ystads IF",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "Hammarby IF",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "Lugi HF",
+          "gast": "IFK Kristianstad"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-02-19",
+          "zeit": "19:00",
+          "heim": "Ystads IF",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-02",
+          "zeit": "19:00",
+          "heim": "Alingsås HK",
+          "gast": "HF Karlskrona"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-02",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "OV Helsingborg HK"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-02",
+          "zeit": "19:00",
+          "heim": "HK Malmö",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-03",
+          "zeit": "19:00",
+          "heim": "Hammarby IF",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-02-13",
+          "zeit": "17:00",
+          "heim": "Amo HK",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-02-18",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "Lugi HF"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-02-24",
+          "zeit": "19:00",
+          "heim": "HF Karlskrona",
+          "gast": "IF Hallby HK"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-03",
+          "zeit": "19:00",
+          "heim": "IFK Skövde",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-05",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "HK Malmö"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "IK Sävehof",
+          "gast": "Önnereds HK"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "Alingsås HK",
+          "gast": "Skånela IF"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-02-19",
+          "zeit": "19:00",
+          "heim": "IFK Kristianstad",
+          "gast": "IK Sävehof"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-02-19",
+          "zeit": "19:00",
+          "heim": "Skånela IF",
+          "gast": "IFK Skövde"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-05",
+          "zeit": "19:00",
+          "heim": "OV Helsingborg HK",
+          "gast": "Hammarby IF"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-06",
+          "zeit": "16:00",
+          "heim": "Önnereds HK",
+          "gast": "Amo HK"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-07",
+          "zeit": "15:00",
+          "heim": "IF Hallby HK",
+          "gast": "Alingsås HK"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "HK Malmö",
+          "gast": "Ystads IF"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-18",
+          "zeit": "19:00",
+          "heim": "Lugi HF",
+          "gast": "HF Karlskrona"
+        }
+      ]
     }
   }
 }
