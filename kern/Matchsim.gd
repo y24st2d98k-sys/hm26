@@ -520,6 +520,43 @@ const WURF_EMPFINDLICHKEIT := 0.0072
 ## elf — mit ihm sind es siebenundfuenfzig und zwoelfeinhalb. In der
 ## Bundesliga holt der Meister zwischen achtundfuenfzig und
 ## vierundsechzig Punkten von achtundsechzig.
+## Zweimal gemessen und zweimal wieder zurueckgenommen — die Zahlen stehen
+## hier, damit der naechste Versuch nicht bei null anfaengt.
+##
+## werkzeuge/Tabellensonde.gd nennt zwei Kennzahlen, die nicht stimmen: ein
+## Staerkepunkt bringt 0,650 Tore (Ziel 0,85 bis 0,95) und der Zufall je Partie
+## liegt bei 6,01 (Ziel 5,0 bis 5,5). Zu wenig Koennen, zu viel Zufall — und
+## daran haengt, wie viel die Arbeit am Kader ueberhaupt zaehlt.
+##
+## Erster Versuch, Gewicht vom verrauschten Kanal (WURF_EMPFINDLICHKEIT, haengt
+## am einzelnen Wurf) auf diesen sauberen zu schieben: 0,0072 auf 0,0056 und
+## 0,0036 auf 0,0052, WURF_AUSGLEICH von 17,8 auf 22,9 nachgezogen. Ergebnis
+## 0,694 und 5,82 — beide besser, aber die Paradenquote fiel auf 0,27 unter ihr
+## Ziel und die Tore je Partie stiegen um eins. Zwei Aenderungen auf einmal,
+## eine davon mit Nebenwirkung.
+##
+## Zweiter Versuch, nur dieser Wert auf 0,0052: Ertrag je Staerkepunkt 0,761,
+## Zufall unveraendert 5,95, Streuung der Punkte 12,54 auf 13,74 und der Meister
+## von 57,1 auf 57,9 — die drei Kennzahlen, die weit vom Ziel lagen, ruecken
+## naeher. Der Preis steht daneben: die Kantersiege steigen von 19,2 auf 21,0
+## Prozent und die engen Partien fallen von 36,8 auf 33,0 — zwei Werte, die
+## vorher auf ihrem Ziel lagen. Mehr Koennen im Ergebnis heisst zwangslaeufig
+## groessere Abstaende in ungleichen Paarungen; das ist keine Nebenwirkung,
+## sondern dieselbe Sache von der anderen Seite.
+##
+## Deshalb bleibt es bei 0,0036. Es ist kein klarer Gewinn, und wo es keinen
+## gibt, bleibt die Einstellung stehen.
+##
+## Was dabei herauskam und wichtiger ist als der Wert selbst: die andere
+## Kennzahl ist ueberhaupt nicht erreichbar. Bei achtundvierzig Wuerfen je
+## Mannschaft und einundsechzig Prozent Trefferquote streut allein der
+## Wurfzufall die Tordifferenz um 4,78 Tore — die Streusonde misst unabhaengig
+## davon 4,75. Vom Ziel 5,25 bleiben damit 2,17 Tore fuer alles andere, heute
+## sind es 3,64. Zeitstrafen, Tempogegenstoesse, Siebenmeter, Hallenpuls und
+## Schlussphase muessten zusammen vierzig Prozent ihrer Streuung und
+## vierundsechzig Prozent ihrer Varianz hergeben. Das ist keine Kalibrierung
+## mehr, sondern eine Entscheidung darueber, wie viel Dramatik eine Partie
+## haben soll.
 const STAERKE_AM_WURF := 0.0036
 const STAERKE_GRENZE := 40.0
 
