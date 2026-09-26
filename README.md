@@ -253,11 +253,15 @@ das Vereinskürzel oder ein Symbol, dazu Rand, Innenkante und Schattierung.
 Die echten Vereine bekommen ihre **tatsächlichen Vereinsfarben** und ihr
 **Kürzel**; Form und Teilung stehen für die bekannten Vereine im Datensatz und
 ergeben sich sonst aus einer Prüfsumme des Vereinsnamens — dasselbe Wappen also
-in jeder Karriere. Damit ist jeder Verein auf einen Blick zu erkennen, ohne dass
-eine fremde Grafik im Projekt liegt: eingebundene Original-Logos wären Bilddateien
-und damit sowohl gegen die Bauvorgabe „keine externen Assets" als auch gegen
-fremde Markenrechte. Wer eigene Wappenrezepte will, ändert in `daten/ligen.json`
+in jeder Karriere. Wer eigene Wappenrezepte will, ändert in `daten/ligen.json`
 beim Verein einfach `"wappen": {"form": …, "muster": …, "symbol": …}`.
+
+Für den privaten Gebrauch liegen in `assets/wappen/` zusätzlich die **echten
+Logos von 135 Vereinen** (Herkunft je Datei in `assets/WAPPEN_QUELLEN.md`). Liegt
+dort ein Logo, zeigt das Spiel es statt des gezeichneten Wappens; die Farben aus
+dem Datensatz bleiben für Trikots und Akzente zuständig. Die Logos sind Marken
+der Vereine — wer das Spiel weitergibt, löscht den Ordner vorher, das Spiel
+fällt dann von selbst auf die gezeichneten Wappen zurück.
 
 ---
 
