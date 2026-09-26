@@ -305,8 +305,26 @@ func _finanzen(d: Dictionary) -> void:
 			_fehler("%s hat eine ungültige Kasse" % str(v["name"]))
 		elif kasse < -2000000.0:
 			pleite.append("%s (%s)" % [str(v["name"]), Stil.geld(kasse)])
+			_pleite_erklaeren(d, str(cid))
 	if not pleite.is_empty():
 		_fehler("%d Vereine tief im Minus: %s" % [pleite.size(), ", ".join(pleite.slice(0, 5))])
+
+## Woher das Minus kommt: ohne diese Zeilen sagt der Fehler nur, dass etwas
+## schiefging, nicht was — und ein Lauf dauert eine Viertelstunde.
+func _pleite_erklaeren(d: Dictionary, cid: String) -> void:
+	var v: Dictionary = d["vereine"][cid]
+	var gehaelter: float = (Finanzen.spielergehaelter(d, cid) + Finanzen.personalgehaelter(d, cid)) * 52.0
+	_log("    %s: Ruf %.0f, Liga %s, Etat %s, Gehälter %s/Jahr (Budget %s/Jahr), Kader %d, Restschuld %s" % [
+		str(v["name"]), float(v["ruf"]), str(d["ligen"].get(str(v["liga"]), {}).get("name", "?")),
+		Stil.geld(float(v["jahresetat"])), Stil.geld(gehaelter), Stil.geld(float(v["gehaltsbudget"]) * 52.0),
+		(v["kader"] as Array).size(), Stil.geld(Darlehen.restschuld(d, cid))])
+	var posten: Array = []
+	var fin: Dictionary = (v.get("saison", {}) as Dictionary).get("finanzen", {})
+	for k in fin.keys():
+		posten.append("%s %s" % [str(k), Stil.geld(float(fin[k]))])
+	_log("      laufende Saison: %s" % ", ".join(posten))
+	for e in (v.get("chronik", {}).get("saisons", []) as Array).slice(-2):
+		_log("      Vorsaison: %s" % str(e).substr(0, 220))
 
 ## Jede Liga spielt eine vollständige Doppelrunde.
 func _spielplan(d: Dictionary) -> void:
