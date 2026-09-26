@@ -171,7 +171,7 @@
           "datum": "2026-09-05",
           "zeit": "",
           "heim": "Eger-Eszterházy SzSE",
-          "gast": "MOL Tatabánya Csurgói KK"
+          "gast": "Csurgói KK"
         },
         {
           "spieltag": 1,
@@ -185,7 +185,7 @@
           "datum": "2026-09-06",
           "zeit": "",
           "heim": "Gyöngyösi KK",
-          "gast": "Grundfos Tatabánya KC"
+          "gast": "MOL Tatabánya KC"
         }
       ]
     },
@@ -282,54 +282,6 @@
           "zeit": "",
           "heim": "RK Ajdovščina",
           "gast": "RD LL Grosist Slovan"
-        }
-      ]
-    },
-    "Liga Națională": {
-      "saison": "2026/27",
-      "quelle": "FRH, Liga Națională 2026-2027 (etapa 1)",
-      "partien": [
-        {
-          "spieltag": 1,
-          "datum": "2026-09-04",
-          "zeit": "",
-          "heim": "CS Dinamo București",
-          "gast": "CSM Constanța"
-        },
-        {
-          "spieltag": 1,
-          "datum": "2026-09-04",
-          "zeit": "",
-          "heim": "CSM Vaslui",
-          "gast": "SCM Politehnica Timișoara"
-        },
-        {
-          "spieltag": 1,
-          "datum": "2026-09-04",
-          "zeit": "",
-          "heim": "CSO Teutonii Ghimbav",
-          "gast": "CS Minaur Baia Mare"
-        },
-        {
-          "spieltag": 1,
-          "datum": "2026-09-04",
-          "zeit": "",
-          "heim": "ACS HC Buzău 2012",
-          "gast": "AHC Potaissa Turda"
-        },
-        {
-          "spieltag": 1,
-          "datum": "2026-09-04",
-          "zeit": "",
-          "heim": "CS Medgidia",
-          "gast": "CSU Cluj-Napoca"
-        },
-        {
-          "spieltag": 1,
-          "datum": "2026-09-04",
-          "zeit": "",
-          "heim": "CSA Steaua București",
-          "gast": "CSM București"
         }
       ]
     }

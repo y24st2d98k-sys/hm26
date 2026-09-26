@@ -1,7 +1,7 @@
 {
   "version": 1,
   "stand": "September 2026 — Ligen 2026/27",
-  "hinweis": "Vereinsnamen, Ligazugehörigkeit und Ligagrößen der Saison 2026/27 sind für Deutschland (1. Liga), Frankreich, Spanien, Dänemark, Polen, Ungarn, Slowenien und Österreich über die Ansetzungen des ersten Spieltags abgeglichen; die übrigen Ligen und die Unterhäuser nach Wissensstand, ungeprüft. Hallennamen, Zuschauerkapazitäten, Gründungsjahre, Vereinsfarben und die Ruf-Werte sind Näherungen und dürfen frei angepasst werden. Ligen mit \"teilweise_echt\" nennen einige echte Vereine; bis \"teams\" ergänzt das Spiel erfundene.",
+  "hinweis": "Die Zusammensetzung aller ersten Ligen und der 2. Bundesliga 2026/27 ist im September 2026 gegen Quellen geprüft (Feld \"quelle\" je Liga): Wikipedia-Saisonartikel, Verbands- und Ligaseiten, Presseberichte zum ersten Spieltag. Kroatien spielt in Wirklichkeit in zwei Achtergruppen, im Spiel als eine 16er-Liga. Die Unterhäuser außerhalb Deutschlands sind nach Wissensstand, ungeprüft. Hallennamen, Zuschauerkapazitäten, Gründungsjahre, Vereinsfarben und die Ruf-Werte sind Näherungen und dürfen frei angepasst werden. Ligen mit \"teilweise_echt\" nennen einige echte Vereine; bis \"teams\" ergänzt das Spiel erfundene.",
   "nationen": [
     {
       "id": "de",
@@ -573,7 +573,8 @@
                 "Hallenname": "EgeTrans"
               }
             }
-          ]
+          ],
+          "quelle": "de.wikipedia.org: Handball-Bundesliga 2026/27"
         },
         {
           "id": "l_de2",
@@ -649,9 +650,7 @@
                 "#e2001a"
               ],
               "ruf": 53,
-              "rivalen": {
-                "EMP": 50
-              },
+              "rivalen": {},
               "sponsoren": {
                 "Hallenname": "Mittelbrandenburgische Sparkasse"
               }
@@ -676,23 +675,6 @@
               }
             },
             {
-              "name": "HC Empor Rostock",
-              "kurz": "EMP",
-              "ort": "Rostock",
-              "gegruendet": 1954,
-              "halle": "Stadthalle Rostock",
-              "kapazitaet": 4800,
-              "farben": [
-                "#0057a6",
-                "#ffffff"
-              ],
-              "ruf": 54,
-              "rivalen": {
-                "POT": 50,
-                "LUE": 52
-              }
-            },
-            {
               "name": "TuSEM Essen",
               "kurz": "ESS",
               "ort": "Essen",
@@ -709,19 +691,6 @@
                 "FER": 56,
                 "DOR": 58
               }
-            },
-            {
-              "name": "HSG Konstanz",
-              "kurz": "KON",
-              "ort": "Konstanz",
-              "gegruendet": 1996,
-              "halle": "Schänzle-Sporthalle",
-              "kapazitaet": 2100,
-              "farben": [
-                "#ffd500",
-                "#0057a6"
-              ],
-              "ruf": 51
             },
             {
               "name": "Dessau-Roßlauer HV",
@@ -765,9 +734,7 @@
                 "#ffffff"
               ],
               "ruf": 50,
-              "rivalen": {
-                "EMP": 52
-              }
+              "rivalen": {}
             },
             {
               "name": "Die Eulen Ludwigshafen",
@@ -886,8 +853,28 @@
               "sponsoren": {
                 "Hallenname": "Krollmann"
               }
+            },
+            {
+              "name": "HC Elbflorenz",
+              "kurz": "ELB",
+              "ort": "Dresden",
+              "gegruendet": 2006,
+              "halle": "BallsportARENA Dresden",
+              "kapazitaet": 3000,
+              "ruf": 53,
+              "rivalen": {
+                "DHF": 60
+              }
+            },
+            {
+              "name": "TV Hüttenberg",
+              "kurz": "HUT",
+              "ort": "Hüttenberg",
+              "halle": "Sporthalle Hüttenberg",
+              "ruf": 50
             }
-          ]
+          ],
+          "quelle": "de.wikipedia.org: 2. Handball-Bundesliga 2026/27 (Stand 20.09.2026)"
         }
       ],
       "cl_plaetze": 3,
@@ -1186,7 +1173,8 @@
               "ruf": 62
             }
           ],
-          "playoffs": 8
+          "playoffs": 8,
+          "quelle": "da.wikipedia.org Håndboldligaen 2025-26; TV 2, 10.05.2026 (KIF Kolding steigt auf, HØJ ab)"
         },
         {
           "id": "l_dk2",
@@ -1594,7 +1582,8 @@
               }
             }
           ],
-          "playoffs": 8
+          "playoffs": 8,
+          "quelle": "fr.wikipedia.org: Championnat de France masculin de handball 2026-2027"
         },
         {
           "id": "l_fr2",
@@ -1974,7 +1963,8 @@
               ],
               "ruf": 60
             }
-          ]
+          ],
+          "quelle": "en.wikipedia.org: 2026–27 Liga ASOBAL"
         },
         {
           "id": "l_es2",
@@ -2113,61 +2103,6 @@
               }
             },
             {
-              "name": "Zagłębie Lubin",
-              "kurz": "LUB",
-              "ort": "Lubin",
-              "gegruendet": 1946,
-              "halle": "RCS Lubin",
-              "kapazitaet": 3000,
-              "farben": [
-                "#009640",
-                "#ffffff"
-              ],
-              "ruf": 71,
-              "wappen": {
-                "form": 0,
-                "muster": 7,
-                "symbol": 4
-              },
-              "rivalen": {
-                "ZAB": 62
-              }
-            },
-            {
-              "name": "Górnik Zabrze",
-              "kurz": "ZAB",
-              "ort": "Zabrze",
-              "gegruendet": 1948,
-              "halle": "Arena Zabrze",
-              "kapazitaet": 2000,
-              "farben": [
-                "#0057a6",
-                "#ffd500"
-              ],
-              "ruf": 68,
-              "rivalen": {
-                "LUB": 62
-              }
-            },
-            {
-              "name": "Azoty-Puławy",
-              "kurz": "PUL",
-              "ort": "Puławy",
-              "gegruendet": 1959,
-              "halle": "Hala MOSiR",
-              "kapazitaet": 2200,
-              "farben": [
-                "#009640",
-                "#ffffff"
-              ],
-              "ruf": 69,
-              "wappen": {
-                "form": 4,
-                "muster": 8,
-                "symbol": 6
-              }
-            },
-            {
               "name": "Piotrkowianin Piotrków Trybunalski",
               "kurz": "PIO",
               "ort": "Piotrków Trybunalski",
@@ -2272,9 +2207,39 @@
                 "#0057a6"
               ],
               "ruf": 60
+            },
+            {
+              "name": "Handball Stal Mielec",
+              "kurz": "MIE",
+              "ort": "Mielec",
+              "kapazitaet": 1400,
+              "farben": [
+                "#0057a6",
+                "#ffffff"
+              ],
+              "ruf": 50
+            },
+            {
+              "name": "Zepter KPR Legionowo",
+              "kurz": "LEG",
+              "ort": "Legionowo",
+              "halle": "Arena Legionowo",
+              "kapazitaet": 1500,
+              "farben": [
+                "#e2001a",
+                "#ffd500"
+              ],
+              "ruf": 49
+            },
+            {
+              "name": "Śląsk Wrocław",
+              "kurz": "SLA",
+              "ort": "Wrocław",
+              "ruf": 52
             }
           ],
-          "playoffs": 8
+          "playoffs": 8,
+          "quelle": "pl.wikipedia.org: Superliga polska w piłce ręcznej mężczyzn (2026/2027); orlen-superliga.pl/tabela"
         },
         {
           "id": "l_pl2",
@@ -2299,29 +2264,6 @@
               }
             },
             {
-              "name": "Stal Mielec",
-              "kurz": "MIE",
-              "ort": "Mielec",
-              "kapazitaet": 1400,
-              "farben": [
-                "#0057a6",
-                "#ffffff"
-              ],
-              "ruf": 50
-            },
-            {
-              "name": "KPR Legionowo",
-              "kurz": "LEG",
-              "ort": "Legionowo",
-              "halle": "Arena Legionowo",
-              "kapazitaet": 1500,
-              "farben": [
-                "#e2001a",
-                "#ffd500"
-              ],
-              "ruf": 49
-            },
-            {
               "name": "Anilana Łódź",
               "kurz": "LOD",
               "ort": "Łódź",
@@ -2331,6 +2273,45 @@
                 "#ffffff"
               ],
               "ruf": 48
+            },
+            {
+              "name": "Zagłębie Lubin",
+              "kurz": "LUB",
+              "ort": "Lubin",
+              "gegruendet": 1946,
+              "halle": "RCS Lubin",
+              "kapazitaet": 3000,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 71,
+              "wappen": {
+                "form": 0,
+                "muster": 7,
+                "symbol": 4
+              },
+              "rivalen": {
+                "ZAB": 62
+              }
+            },
+            {
+              "name": "KS LOTTO-Puławy",
+              "kurz": "PUL",
+              "ort": "Puławy",
+              "gegruendet": 1959,
+              "halle": "Hala MOSiR",
+              "kapazitaet": 2200,
+              "farben": [
+                "#009640",
+                "#ffffff"
+              ],
+              "ruf": 69,
+              "wappen": {
+                "form": 4,
+                "muster": 8,
+                "symbol": 6
+              }
             }
           ],
           "teams": 12,
@@ -2405,7 +2386,7 @@
               }
             },
             {
-              "name": "Grundfos Tatabánya KC",
+              "name": "MOL Tatabánya KC",
               "kurz": "TAT",
               "ort": "Tatabánya",
               "gegruendet": 1949,
@@ -2447,7 +2428,7 @@
               "ruf": 64
             },
             {
-              "name": "MOL Tatabánya Csurgói KK",
+              "name": "Csurgói KK",
               "kurz": "CSU",
               "ort": "Csurgó",
               "halle": "Csurgói Sportcsarnok",
@@ -2565,7 +2546,8 @@
               "ruf": 57
             }
           ],
-          "playoffs": 4
+          "playoffs": 4,
+          "quelle": "hu.wikipedia.org 2025–2026-os NB I (Absteiger Komló, Budakalász); nemzetisport.hu (Aufsteiger Dabas, Eger)"
         }
       ],
       "zusatz": true
@@ -2743,28 +2725,19 @@
               "ruf": 58
             },
             {
-              "name": "FC Gaia",
-              "kurz": "GAI",
-              "ort": "Vila Nova de Gaia",
-              "kapazitaet": 1000,
-              "farben": [
-                "#0057a6",
-                "#ffffff"
-              ],
-              "ruf": 56
+              "name": "Ginásio Clube de Santo Tirso",
+              "kurz": "GST",
+              "ort": "Santo Tirso",
+              "ruf": 55
             },
             {
-              "name": "Arsenal Clube da Devesa",
-              "kurz": "ARS",
-              "ort": "Braga",
-              "kapazitaet": 800,
-              "farben": [
-                "#e2001a",
-                "#ffffff"
-              ],
+              "name": "AD Carvalhos",
+              "kurz": "CAR",
+              "ort": "Vila Nova de Gaia",
               "ruf": 55
             }
-          ]
+          ],
+          "quelle": "Diário de Aveiro, 17.07.2026: Campeonatos da 1.ª Divisão de andebol com novo formato competitivo"
         }
       ],
       "zusatz": true
@@ -2781,8 +2754,8 @@
       "ligen": [
         {
           "id": "l_no1",
-          "name": "REMA 1000-ligaen",
-          "kurz": "REMA",
+          "name": "Elkjøp-ligaen",
+          "kurz": "ELK",
           "stufe": 1,
           "ruf": 74,
           "vereine": [
@@ -2959,9 +2932,17 @@
                 "#ffffff"
               ],
               "ruf": 57
+            },
+            {
+              "name": "Sandefjord TIF",
+              "kurz": "SAF",
+              "ort": "Sandefjord",
+              "halle": "Jotunhallen",
+              "ruf": 57
             }
           ],
-          "playoffs": 8
+          "playoffs": 8,
+          "quelle": "no.wikipedia.org: Eliteserien i håndball for menn 2026/27 (erste Saison als Elkjøp-ligaen)"
         }
       ],
       "zusatz": true
@@ -3117,7 +3098,7 @@
               "ruf": 64
             },
             {
-              "name": "Hallby HK",
+              "name": "IF Hallby HK",
               "kurz": "HAL",
               "ort": "Jönköping",
               "halle": "Jönköpings Sporthall",
@@ -3152,7 +3133,7 @@
               "ruf": 58
             },
             {
-              "name": "HK Helsingborg",
+              "name": "OV Helsingborg HK",
               "kurz": "HEL",
               "ort": "Helsingborg",
               "halle": "Helsingborg Arena",
@@ -3173,9 +3154,17 @@
                 "#ffd500"
               ],
               "ruf": 56
+            },
+            {
+              "name": "HF Karlskrona",
+              "kurz": "KAR",
+              "ort": "Karlskrona",
+              "halle": "Brinova Arena Karlskrona",
+              "ruf": 60
             }
           ],
-          "playoffs": 8
+          "playoffs": 8,
+          "quelle": "sv.wikipedia.org: Handbollsligan för herrar 2026/2027"
         }
       ],
       "zusatz": true
@@ -3307,51 +3296,55 @@
               "ruf": 57
             },
             {
-              "name": "RK Dubrava",
-              "kurz": "DUB",
-              "ort": "Zagreb",
-              "kapazitaet": 800,
-              "farben": [
-                "#0057a6",
-                "#ffd500"
-              ],
-              "ruf": 55
+              "name": "RK Ardiaei",
+              "kurz": "ARD",
+              "ort": "Solin",
+              "ruf": 52
             },
             {
-              "name": "RK Varaždin 1930",
-              "kurz": "VZD",
-              "ort": "Varaždin",
-              "halle": "Arena Varaždin",
-              "kapazitaet": 5200,
-              "farben": [
-                "#e2001a",
-                "#ffffff"
-              ],
-              "ruf": 56
+              "name": "RK Gorica",
+              "kurz": "GOR",
+              "ort": "Velika Gorica",
+              "ruf": 58
             },
             {
-              "name": "RK Split",
-              "kurz": "SPL",
-              "ort": "Split",
-              "kapazitaet": 3000,
-              "farben": [
-                "#003da5",
-                "#ffffff"
-              ],
-              "ruf": 56
+              "name": "RK Trogir",
+              "kurz": "TRO",
+              "ort": "Trogir",
+              "ruf": 53
             },
             {
-              "name": "RK Umag",
-              "kurz": "UMA",
-              "ort": "Umag",
-              "kapazitaet": 800,
-              "farben": [
-                "#0057a6",
-                "#ffffff"
-              ],
+              "name": "RK Čakovec",
+              "kurz": "CAK",
+              "ort": "Čakovec",
+              "ruf": 53
+            },
+            {
+              "name": "RK Karlovac",
+              "kurz": "KRL",
+              "ort": "Karlovac",
+              "ruf": 53
+            },
+            {
+              "name": "RK Sisak",
+              "kurz": "SIS",
+              "ort": "Sisak",
+              "ruf": 52
+            },
+            {
+              "name": "RK Osijek",
+              "kurz": "OSI",
+              "ort": "Osijek",
+              "ruf": 53
+            },
+            {
+              "name": "RK Metković",
+              "kurz": "MET",
+              "ort": "Metković",
               "ruf": 54
             }
-          ]
+          ],
+          "quelle": "handballinsider.com, 16.07.2026: Počinje nova sezona Paket24 Premijer lige (Liga A und Liga B mit je acht Klubs; im Spiel als eine Liga)"
         }
       ],
       "zusatz": true
@@ -3491,8 +3484,33 @@
                 "#ffffff"
               ],
               "ruf": 52
+            },
+            {
+              "name": "RK Eurofarm Pelister 2",
+              "kurz": "PE2",
+              "ort": "Bitola",
+              "ruf": 50
+            },
+            {
+              "name": "RK Mladost Bogdanci",
+              "kurz": "MLA",
+              "ort": "Bogdanci",
+              "ruf": 50
+            },
+            {
+              "name": "RK Multi Essence",
+              "kurz": "MUL",
+              "ort": "Skopje",
+              "ruf": 50
+            },
+            {
+              "name": "RK Prilep 2010",
+              "kurz": "PRI",
+              "ort": "Prilep",
+              "ruf": 51
             }
-          ]
+          ],
+          "quelle": "mk.wikipedia.org: Македонска ракометна супер лига (мажи), Екипи 2026/27; 24rakomet.mk, 04.09.2026 (1. коло)"
         }
       ],
       "zusatz": true
@@ -3656,7 +3674,8 @@
               ],
               "ruf": 53
             }
-          ]
+          ],
+          "quelle": "en.wikipedia.org: Slovenian First League of Handball (Clubs 2026–27)"
         }
       ],
       "zusatz": true
@@ -3817,7 +3836,7 @@
               "ruf": 53
             },
             {
-              "name": "CSU Cluj-Napoca",
+              "name": "CS Universitatea Cluj",
               "kurz": "CLU",
               "ort": "Cluj-Napoca",
               "halle": "Sala Polivalentă Cluj",
@@ -3829,17 +3848,14 @@
               "ruf": 55
             },
             {
-              "name": "CS Medgidia",
-              "kurz": "MED",
-              "ort": "Medgidia",
-              "kapazitaet": 1000,
-              "farben": [
-                "#0057a6",
-                "#ffffff"
-              ],
-              "ruf": 53
+              "name": "CSU din Suceava",
+              "kurz": "SUC",
+              "ort": "Suceava",
+              "halle": "Sala Sporturilor Suceava",
+              "ruf": 58
             }
-          ]
+          ],
+          "quelle": "ro.wikipedia.org: Liga Națională de handbal masculin 2026-2027"
         }
       ],
       "zusatz": true
@@ -4005,18 +4021,15 @@
               "ruf": 56
             },
             {
-              "name": "TSV Fortitudo Gossau",
-              "kurz": "FOR",
-              "ort": "Gossau",
-              "kapazitaet": 1000,
-              "farben": [
-                "#e2001a",
-                "#ffffff"
-              ],
-              "ruf": 54
+              "name": "Handball Stäfa",
+              "kurz": "STA",
+              "ort": "Stäfa",
+              "halle": "Halle für Alle Frohberg",
+              "ruf": 58
             }
           ],
-          "playoffs": 8
+          "playoffs": 8,
+          "quelle": "handball.ch: Quickline Handball League 2026/27, Vereinsliste"
         }
       ],
       "zusatz": true
@@ -4194,7 +4207,8 @@
               "ruf": 53
             }
           ],
-          "playoffs": 8
+          "playoffs": 8,
+          "quelle": "de.wikipedia.org: Österreichische Handballmeisterschaft (Männer) 2026/27"
         }
       ],
       "zusatz": true
