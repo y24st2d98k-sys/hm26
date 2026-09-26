@@ -2523,10 +2523,82 @@
                 "#ffffff"
               ],
               "ruf": 54
+            },
+            {
+              "name": "Fundación Agustinos Alicante",
+              "kurz": "AGU",
+              "ort": "Alicante",
+              "ruf": 50
+            },
+            {
+              "name": "Sinfín Santander",
+              "kurz": "SIN",
+              "ort": "Santander",
+              "ruf": 50
+            },
+            {
+              "name": "Trasmapi Eivissa",
+              "kurz": "EIV",
+              "ort": "Eivissa",
+              "ruf": 50
+            },
+            {
+              "name": "Amenabar Zarautz ZKE",
+              "kurz": "ZKE",
+              "ort": "Zarautz",
+              "ruf": 50
+            },
+            {
+              "name": "UBU San Pablo Burgos",
+              "kurz": "BUR",
+              "ort": "Burgos",
+              "ruf": 50
+            },
+            {
+              "name": "Contazara Zaragoza",
+              "kurz": "ZGZ",
+              "ort": "Zaragoza",
+              "ruf": 50
+            },
+            {
+              "name": "Barça Atlètic",
+              "kurz": "BAT",
+              "ort": "Barcelona",
+              "ruf": 50
+            },
+            {
+              "name": "Dólmenes Antequera",
+              "kurz": "ANT",
+              "ort": "Antequera",
+              "ruf": 50
+            },
+            {
+              "name": "OAR Coruña",
+              "kurz": "COR",
+              "ort": "A Coruña",
+              "ruf": 50
+            },
+            {
+              "name": "Base Oviedo",
+              "kurz": "OVI",
+              "ort": "Oviedo",
+              "ruf": 50
+            },
+            {
+              "name": "Club Cisne Los Sauces",
+              "kurz": "CIS",
+              "ort": "Pontevedra",
+              "ruf": 50
+            },
+            {
+              "name": "Caja Rural de Zamora",
+              "kurz": "ZAM",
+              "ort": "Zamora",
+              "ruf": 50
             }
           ],
-          "teams": 12,
-          "teilweise_echt": true
+          "teams": 16,
+          "quelle": "RFEBM, 25.06.2026: „División de Honor Plata Masculina ya tiene calendario“ (16 Vereine, 1. Spieltag)"
         }
       ],
       "cl_plaetze": 1,
@@ -2764,7 +2836,7 @@
         },
         {
           "id": "l_pl2",
-          "name": "I liga",
+          "name": "Liga Centralna",
           "kurz": "1PL",
           "stufe": 2,
           "ruf": 46,
@@ -2783,17 +2855,6 @@
               "sponsoren": {
                 "Hallenname": "Netto"
               }
-            },
-            {
-              "name": "Anilana Łódź",
-              "kurz": "LOD",
-              "ort": "Łódź",
-              "kapazitaet": 1300,
-              "farben": [
-                "#009640",
-                "#ffffff"
-              ],
-              "ruf": 48
             },
             {
               "name": "Zagłębie Lubin",
@@ -2817,26 +2878,80 @@
               }
             },
             {
-              "name": "KS LOTTO-Puławy",
-              "kurz": "PUL",
-              "ort": "Puławy",
-              "gegruendet": 1959,
-              "halle": "Hala MOSiR",
-              "kapazitaet": 2200,
-              "farben": [
-                "#009640",
-                "#ffffff"
-              ],
-              "ruf": 69,
-              "wappen": {
-                "form": 4,
-                "muster": 8,
-                "symbol": 6
-              }
+              "name": "AZS AGH Kraków",
+              "kurz": "AGH",
+              "ort": "Kraków",
+              "ruf": 46
+            },
+            {
+              "name": "MKS Nielba Wągrowiec",
+              "kurz": "NIE",
+              "ort": "Wągrowiec",
+              "ruf": 46
+            },
+            {
+              "name": "Aurum Gorzów",
+              "kurz": "GOZ",
+              "ort": "Gorzów Wielkopolski",
+              "ruf": 46
+            },
+            {
+              "name": "Energa Gwardia Koszalin",
+              "kurz": "KOS",
+              "ort": "Koszalin",
+              "ruf": 46
+            },
+            {
+              "name": "AKPR AZS AWF Biała Podlaska",
+              "kurz": "BPO",
+              "ort": "Biała Podlaska",
+              "ruf": 46
+            },
+            {
+              "name": "SPR Purina Kąty Wrocławskie",
+              "kurz": "KAT",
+              "ort": "Kąty Wrocławskie",
+              "ruf": 46
+            },
+            {
+              "name": "OX System KPR Żukowo",
+              "kurz": "ZUK",
+              "ort": "Żukowo",
+              "ruf": 46
+            },
+            {
+              "name": "Siódemka Miedź Legnica",
+              "kurz": "LGN",
+              "ort": "Legnica",
+              "ruf": 46
+            },
+            {
+              "name": "Enea WKS Grunwald Poznań",
+              "kurz": "GRU",
+              "ort": "Poznań",
+              "ruf": 46
+            },
+            {
+              "name": "SMS ZPRP Kielce",
+              "kurz": "SZK",
+              "ort": "Kielce",
+              "ruf": 46
+            },
+            {
+              "name": "Jurand Ciechanów",
+              "kurz": "JUR",
+              "ort": "Ciechanów",
+              "ruf": 46
+            },
+            {
+              "name": "KPR Padwa Zamość",
+              "kurz": "PAD",
+              "ort": "Zamość",
+              "ruf": 46
             }
           ],
-          "teams": 12,
-          "teilweise_echt": true
+          "teams": 14,
+          "quelle": "rozgrywki.zprp.pl, Liga Centralna Mężczyzn 2026/2027, Tabela zasadnicza (Abruf 26.09.2026)"
         }
       ],
       "cl_plaetze": 2,

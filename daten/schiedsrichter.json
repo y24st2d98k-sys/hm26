@@ -1,245 +1,461 @@
 {
- "version": 1,
- "stand": "September 2026",
- "quelle": "DHB-Schiedsrichterkader 2026/27 (Elite und Elite-Anschluss, laut dhb.de/handball-world); internationale Gespanne aus dem EHF-Kader nach Wissensstand, ungeprüft (\"geprueft\": false).",
- "hinweis": "Namen stehen fest, Strenge, Zweikampflinie, Heimneigung und Konstanz würfelt das Spiel, sofern sie hier nicht als Zahl 5–95 stehen. Ligaspiele bekommen ein Gespann aus dem eigenen Land, wenn es mindestens drei davon gibt.",
- "gespanne": [
-  {
-   "a": "Fabian Baumgart",
-   "b": "Philipp Dinges",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Leonard Bona",
-   "b": "Malte Frank",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Marvin Cesnik",
-   "b": "Jonas Konrad",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Steven Heine",
-   "b": "Sascha Standke",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Lucas Hellbusch",
-   "b": "Darnel Jansen",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Marcus Hurst",
-   "b": "Mirko Krag",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Sophia Janz",
-   "b": "Rosana Sug",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Markus Kauth",
-   "b": "André Kolb",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Thomas Kern",
-   "b": "Thorsten Kuschel",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Julian Köppl",
-   "b": "Denis Regner",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Tanja Kuttler",
-   "b": "Maike Merz",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Jannik Otto",
-   "b": "Raphael Piper",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Robert Schulze",
-   "b": "Tobias Tönnies",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Suresh Thiyagarajah",
-   "b": "Ramesh Thiyagarajah",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Christian vom Dorff",
-   "b": "Fabian vom Dorff",
-   "nation": "de",
-   "kader": "Elite",
-   "erfahrung": 12
-  },
-  {
-   "a": "Lukas Müller",
-   "b": "Robert Müller",
-   "nation": "de",
-   "kader": "Elite-Anschluss",
-   "erfahrung": 6
-  },
-  {
-   "a": "Marvin Völkening",
-   "b": "Jonas Zollitsch",
-   "nation": "de",
-   "kader": "Elite-Anschluss",
-   "erfahrung": 6
-  },
-  {
-   "a": "Fabian Friedel",
-   "b": "Rick Herrmann",
-   "nation": "de",
-   "kader": "Elite-Anschluss",
-   "erfahrung": 6
-  },
-  {
-   "a": "Konrad Gimmler",
-   "b": "Jannik Rips",
-   "nation": "de",
-   "kader": "Elite-Anschluss",
-   "erfahrung": 6
-  },
-  {
-   "a": "Martin Gjeding",
-   "b": "Mads Hansen",
-   "nation": "dk",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Karim Gasmi",
-   "b": "Raouf Gasmi",
-   "nation": "fr",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Charlotte Bonaventura",
-   "b": "Julie Bonaventura",
-   "nation": "fr",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Andreu Marín",
-   "b": "Ignacio García",
-   "nation": "es",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Óscar Raluy",
-   "b": "Ángel Sabroso",
-   "nation": "es",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Bartosz Leszczyński",
-   "b": "Marcin Piechota",
-   "nation": "pl",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Bojan Lah",
-   "b": "David Sok",
-   "nation": "si",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Matija Gubica",
-   "b": "Boris Milošević",
-   "nation": "hr",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Gjorgji Nachevski",
-   "b": "Slave Nikolov",
-   "nation": "mk",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Ivan Pavićević",
-   "b": "Miloš Ražnatović",
-   "nation": "me",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Mirza Kurtagic",
-   "b": "Mattias Wetterwik",
-   "nation": "se",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Ádám Bíró",
-   "b": "Olivér Kiss",
-   "nation": "hu",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  },
-  {
-   "a": "Duarte Santos",
-   "b": "Ricardo Fonseca",
-   "nation": "pt",
-   "kader": "EHF",
-   "erfahrung": 14,
-   "geprueft": false
-  }
- ]
+  "version": 1,
+  "stand": "September 2026",
+  "quelle": "DHB-Schiedsrichterkader 2026/27; Frankreich, Spanien, Polen aus den Ansetzungen 2026/27 (FFHandball, asobal.es, orlen-superliga.pl); übrige internationale Gespanne aus dem EHF-Kader nach Wissensstand, ungeprüft (\"geprueft\": false).",
+  "hinweis": "Namen stehen fest, Strenge, Zweikampflinie, Heimneigung und Konstanz würfelt das Spiel, sofern sie hier nicht als Zahl 5–95 stehen. Ligaspiele bekommen ein Gespann aus dem eigenen Land, wenn es mindestens drei davon gibt.",
+  "gespanne": [
+    {
+      "a": "Fabian Baumgart",
+      "b": "Philipp Dinges",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Leonard Bona",
+      "b": "Malte Frank",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Marvin Cesnik",
+      "b": "Jonas Konrad",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Steven Heine",
+      "b": "Sascha Standke",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Lucas Hellbusch",
+      "b": "Darnel Jansen",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Marcus Hurst",
+      "b": "Mirko Krag",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Sophia Janz",
+      "b": "Rosana Sug",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Markus Kauth",
+      "b": "André Kolb",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Thomas Kern",
+      "b": "Thorsten Kuschel",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Julian Köppl",
+      "b": "Denis Regner",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Tanja Kuttler",
+      "b": "Maike Merz",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Jannik Otto",
+      "b": "Raphael Piper",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Robert Schulze",
+      "b": "Tobias Tönnies",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Suresh Thiyagarajah",
+      "b": "Ramesh Thiyagarajah",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Christian vom Dorff",
+      "b": "Fabian vom Dorff",
+      "nation": "de",
+      "kader": "Elite",
+      "erfahrung": 12
+    },
+    {
+      "a": "Lukas Müller",
+      "b": "Robert Müller",
+      "nation": "de",
+      "kader": "Elite-Anschluss",
+      "erfahrung": 6
+    },
+    {
+      "a": "Marvin Völkening",
+      "b": "Jonas Zollitsch",
+      "nation": "de",
+      "kader": "Elite-Anschluss",
+      "erfahrung": 6
+    },
+    {
+      "a": "Fabian Friedel",
+      "b": "Rick Herrmann",
+      "nation": "de",
+      "kader": "Elite-Anschluss",
+      "erfahrung": 6
+    },
+    {
+      "a": "Konrad Gimmler",
+      "b": "Jannik Rips",
+      "nation": "de",
+      "kader": "Elite-Anschluss",
+      "erfahrung": 6
+    },
+    {
+      "a": "Martin Gjeding",
+      "b": "Mads Hansen",
+      "nation": "dk",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Karim Gasmi",
+      "b": "Raouf Gasmi",
+      "nation": "fr",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "quelle": "FFHandball, Daikin StarLigue 2026/27"
+    },
+    {
+      "a": "Charlotte Bonaventura",
+      "b": "Julie Bonaventura",
+      "nation": "fr",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Andreu Marín",
+      "b": "Ignacio García",
+      "nation": "es",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Óscar Raluy",
+      "b": "Ángel Sabroso",
+      "nation": "es",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Bartosz Leszczyński",
+      "b": "Marcin Piechota",
+      "nation": "pl",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Bojan Lah",
+      "b": "David Sok",
+      "nation": "si",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Matija Gubica",
+      "b": "Boris Milošević",
+      "nation": "hr",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Gjorgji Nachevski",
+      "b": "Slave Nikolov",
+      "nation": "mk",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Ivan Pavićević",
+      "b": "Miloš Ražnatović",
+      "nation": "me",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Mirza Kurtagic",
+      "b": "Mattias Wetterwik",
+      "nation": "se",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Ádám Bíró",
+      "b": "Olivér Kiss",
+      "nation": "hu",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Duarte Santos",
+      "b": "Ricardo Fonseca",
+      "nation": "pt",
+      "kader": "EHF",
+      "erfahrung": 14,
+      "geprueft": false
+    },
+    {
+      "a": "Said Bounouara",
+      "b": "Stevann Pichon",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "David Christmann",
+      "b": "Thomas Iltis",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "Damien Bondon",
+      "b": "Hugo Marty",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "Sylvain Artes",
+      "b": "Julien Mursch",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "Rafik Heddid",
+      "b": "Morgan Picot",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "Mathilde Cournil",
+      "b": "Loriane Lamour",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "Titouan Picard",
+      "b": "Pierre Vauchez",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "Mourad Bounouara",
+      "b": "Khalid Sami",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "Ahmed Belabbes",
+      "b": "Lahouari Rahim",
+      "nation": "fr",
+      "quelle": "FFHandball, Daikin StarLigue 2026/27 (Ansetzungen Spieltag 1–4)"
+    },
+    {
+      "a": "Alberto Murillo Castro",
+      "b": "Pablo García Sánchez",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Alejandro Hoz Fernández",
+      "b": "Axel Riloba Pereda",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "José Manuel Iniesta Castillo",
+      "b": "Roland Sánchez Bordetas",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Yon Bustamante López",
+      "b": "Javier Álvarez Mata",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Javier Ariño Sáiz",
+      "b": "Pablo San Emeterio de la Fuente",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Luís Ignacio Colmenero Guillén",
+      "b": "Cristian Da Silva Barbadaes",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Daniel Toro Ponce",
+      "b": "Albert Pérez Acedo",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Jordi Ausás Busquets",
+      "b": "Miquel Florenza Virgili",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Eder Gómez Eguiluz",
+      "b": "Mikel Gayoso Jiménez",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Andrés Rosendo López",
+      "b": "Lorena García Gil",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Antonio Javier García Del Salto",
+      "b": "Ernesto Ruiz Vergara",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Andrés Rosendo López",
+      "b": "Ernesto Ruiz Vergara",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Antonio Javier García Del Salto",
+      "b": "Lorena García Gil",
+      "nation": "es",
+      "quelle": "asobal.es, Calendario 2026/27 (Spieltag 1–3)"
+    },
+    {
+      "a": "Dominik Korda",
+      "b": "Marek Strzelczyk",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Tomasz Łacny",
+      "b": "Tomasz Okos",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Wojciech Bloch",
+      "b": "Michał Solecki",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Filip Fahner",
+      "b": "Łukasz Kubis",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Sylwia Bartkowiak",
+      "b": "Weronika Łakomy",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Michał Orzech",
+      "b": "Robert Orzech",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Paweł Klimkowicz",
+      "b": "Mateusz Stonoga",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Sebastian Pelc",
+      "b": "Jakub Pretzlaf",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Miłosz Lubecki",
+      "b": "Mateusz Pieczonka",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Michał Fabryczny",
+      "b": "Jakub Rawicki",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Adrian Dymitruk",
+      "b": "Wojciech Kasznia",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Korneliusz Habierski",
+      "b": "Grzegorz Skrobak",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Kamil Dąbrowski",
+      "b": "Paweł Staniek",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    },
+    {
+      "a": "Jakub Jerlecki",
+      "b": "Maciej Łabuń",
+      "nation": "pl",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/27 (Sędziowie)"
+    }
+  ]
 }

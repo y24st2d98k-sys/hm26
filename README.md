@@ -99,11 +99,11 @@ arbeiten:
 * **Echte Vereine** (Voreinstellung): fünfzehn Nationen mit den echten
   Ligen der Saison 2026/27 — Handball-Bundesliga und 2. Bundesliga (je 18
   Vereine), Håndboldligaen und 1. division, Daikin StarLigue und ProLigue,
-  Liga ASOBAL, Orlen Superliga, dazu NB I (Ungarn), Andebol 1 (Portugal),
+  Liga ASOBAL und División de Honor Plata, Orlen Superliga und Liga Centralna, dazu NB I (Ungarn), Andebol 1 (Portugal),
   Elkjøp-ligaen (Norwegen), Handbollsligan (Schweden), Premijer liga
   (Kroatien, 16 Vereine), Super liga (Nordmazedonien), Liga NLB (Slowenien),
   Liga Națională (Rumänien), Quickline Handball League (Schweiz) und HLA
-  Meisterliga (Österreich). 260 echte Vereine, Cheftrainer bei 142 davon,
+  Meisterliga (Österreich). 282 echte Vereine, Cheftrainer bei 142 davon,
   echte Schiedsrichtergespanne, echte Kader und die echten Spielpläne.
 * **Ganz Europa** (Voreinstellung, abschaltbar): ohne Haken bleibt es bei den
   fünf Kernnationen Deutschland, Dänemark, Frankreich, Spanien und Polen. Die
@@ -124,7 +124,7 @@ Wie weit die echten Daten reichen, zeigt
 godot4 --headless res://werkzeuge/Datenbericht.tscn
 ```
 
-Aktueller Stand (26. September 2026): **260 echte Vereine**, davon **155 mit
+Aktueller Stand (26. September 2026): **282 echte Vereine**, davon **155 mit
 echtem Kader** und zusammen **2811 echten Spielern** — alle 36 Vereine der
 beiden Bundesligen, Frankreich (StarLigue und ProLigue), Spanien und Polen
 komplett, dazu die Europapokal-Teilnehmer und viele weitere Vereine. Die

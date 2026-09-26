@@ -6,8 +6,8 @@ Prüfen im Datensatz `geprueft` löschen und das Skript neu laufen lassen.
 
 ## Ligen ohne vollständigen Spielplan
 
-- División de Honor Plata (Spanien): 0 von 132 Partien
-- I liga (Polen): 0 von 132 Partien
+- División de Honor Plata (Spanien): 8 von 240 Partien
+- Liga Centralna (Polen): 0 von 182 Partien
 - Campeonato Placard Andebol 1 (Portugal): 6 von 132 Partien
 - Paket24 Premijer liga (Kroatien): 8 von 240 Partien
 - Super liga (Nordmazedonien): 6 von 132 Partien
@@ -18,8 +18,8 @@ Prüfen im Datensatz `geprueft` löschen und das Skript neu laufen lassen.
 ## Vereine ohne echte Spieler
 
 - **1. division:** HØJ Elite, AGF Håndbold, Aarhus Håndbold, Elitesport Vendsyssel, HC Midtjylland, Køge Håndbold, Norddjurs Håndbold, Odder Håndbold, Rækker Mølle Håndbold, Stoholm IF, TM Tønder Håndbold, Team Sydhavsøerne
-- **División de Honor Plata:** Bada Huesca, Sanicentro BM Guadalajara, BM Benidorm, Helvetia Anaitasuna
-- **I liga:** Sandra SPA Pogoń Szczecin, Anilana Łódź, Zagłębie Lubin, KS LOTTO-Puławy
+- **División de Honor Plata:** Bada Huesca, Sanicentro BM Guadalajara, BM Benidorm, Helvetia Anaitasuna, Fundación Agustinos Alicante, Sinfín Santander, Trasmapi Eivissa, Amenabar Zarautz ZKE, UBU San Pablo Burgos, Contazara Zaragoza, Barça Atlètic, Dólmenes Antequera, OAR Coruña, Base Oviedo, Club Cisne Los Sauces, Caja Rural de Zamora
+- **Liga Centralna:** Sandra SPA Pogoń Szczecin, Zagłębie Lubin, AZS AGH Kraków, MKS Nielba Wągrowiec, Aurum Gorzów, Energa Gwardia Koszalin, AKPR AZS AWF Biała Podlaska, SPR Purina Kąty Wrocławskie, OX System KPR Żukowo, Siódemka Miedź Legnica, Enea WKS Grunwald Poznań, SMS ZPRP Kielce, Jurand Ciechanów, KPR Padwa Zamość
 - **NB I:** FTC-Green Collect, Dabas KC, NEKA
 - **Campeonato Placard Andebol 1:** ABC de Braga, Águas Santas Milaneza, CF Os Belenenses, CS Marítimo, Vitória SC, Póvoa AC, AD Avanca, Ginásio Clube de Santo Tirso, AD Carvalhos
 - **Elkjøp-ligaen:** Drammen HK, Nærbø IL, Fjellhammer IL, Kristiansand TH, Bergen Håndball, Bergsøy IL, Sandnes Håndball, Viking TIF, Sandefjord Håndball
@@ -53,7 +53,6 @@ Ohne Eintrag erfindet das Spiel einen.
 ## Ungeprüfte Schiedsrichter
 
 - Martin Gjeding / Mads Hansen (dk)
-- Karim Gasmi / Raouf Gasmi (fr)
 - Charlotte Bonaventura / Julie Bonaventura (fr)
 - Andreu Marín / Ignacio García (es)
 - Óscar Raluy / Ángel Sabroso (es)
@@ -79,7 +78,7 @@ Das Spiel liest sie, der Datensatz hat sie aber (fast) nirgends:
 - `verletzt`: 0 von 2811 Spielern
 - `kapitaen`: 0 von 2811 Spielern
 - `zweitpositionen`: 74 von 2811 Spielern
-- `vereine[].etat`: 0 von 260 Vereinen
-- `vereine[].sponsoren`: 42 von 260 Vereinen
-- `vereine[].zuschauerschnitt`: 1 von 260 Vereinen
-- `vereine[].stab`: 4 von 260 Vereinen
+- `vereine[].etat`: 0 von 282 Vereinen
+- `vereine[].sponsoren`: 42 von 282 Vereinen
+- `vereine[].zuschauerschnitt`: 1 von 282 Vereinen
+- `vereine[].stab`: 4 von 282 Vereinen

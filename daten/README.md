@@ -170,7 +170,7 @@ Stand 26. September 2026. Jede Liga und jeder Verein nennt seine Quelle im Feld
 `quelle` (Liga: Zusammensetzung; Verein: Kader und Trainer).
 
 * **Verlässlich, gegen Quellen geprüft:** die Zusammensetzung aller ersten Ligen
-  und der Unterhäuser in Deutschland, Dänemark und Frankreich (Saisonartikel,
+  und der Unterhäuser in Deutschland, Dänemark, Frankreich, Spanien (División de Honor Plata) und Polen (Liga Centralna) (Saisonartikel,
   Verbands- und Ligaseiten, Presseberichte zum ersten Spieltag). Die Teilnehmer
   der Champions League und European League aus der tatsächlichen Gruppenphase.
   Die DHB-Schiedsrichtergespanne.
@@ -186,7 +186,7 @@ Stand 26. September 2026. Jede Liga und jeder Verein nennt seine Quelle im Feld
   Schweden. Wo eine Quelle keine Spieltagnummern nennt (Dänemark, Schweden),
   sind die Runden aus der zeitlichen Reihenfolge gebildet. Für Österreich,
   Slowenien, Portugal, Kroatien und Nordmazedonien ist der erste Spieltag
-  hinterlegt; den Rest ergänzt das Spiel.
+  hinterlegt, ebenso für die División de Honor Plata; den Rest ergänzt das Spiel.
 * **Schätzwerte, keine Tatsachenbehauptungen:** die Stärke. Sie ordnet einen
   Spieler nach Vereinsniveau (Ruf), Länderspielen, Alter und — wo die laufende
   Saison schon Statistik hergibt (Dänemark, Norwegen, Ungarn) — seiner Torquote

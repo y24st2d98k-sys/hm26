@@ -17870,6 +17870,68 @@
           "gast": "RK Eurofarm Pelister"
         }
       ]
+    },
+    "División de Honor Plata": {
+      "saison": "2026/27",
+      "quelle": "RFEBM, 25.06.2026 (Auslosung, 1. Spieltag am 27. September); weitere Spieltage ergänzt das Spiel",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-27",
+          "zeit": "",
+          "heim": "Fundación Agustinos Alicante",
+          "gast": "BM Benidorm"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-27",
+          "zeit": "",
+          "heim": "Sinfín Santander",
+          "gast": "Trasmapi Eivissa"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-27",
+          "zeit": "",
+          "heim": "Amenabar Zarautz ZKE",
+          "gast": "UBU San Pablo Burgos"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-27",
+          "zeit": "",
+          "heim": "Contazara Zaragoza",
+          "gast": "Sanicentro BM Guadalajara"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-27",
+          "zeit": "",
+          "heim": "Helvetia Anaitasuna",
+          "gast": "Barça Atlètic"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-27",
+          "zeit": "",
+          "heim": "Dólmenes Antequera",
+          "gast": "OAR Coruña"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-27",
+          "zeit": "",
+          "heim": "Base Oviedo",
+          "gast": "Club Cisne Los Sauces"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-27",
+          "zeit": "",
+          "heim": "Caja Rural de Zamora",
+          "gast": "Bada Huesca"
+        }
+      ]
     }
   }
 }
