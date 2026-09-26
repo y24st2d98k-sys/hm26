@@ -3233,8 +3233,11 @@
         "nachname": "Oberosler",
         "position": "TW",
         "nation": "at",
+        "geburtsdatum": "2002-09-05",
         "alter": 23,
-        "staerke": 68
+        "groesse": 196,
+        "staerke": 68,
+        "vertrag_bis": 2027
       },
       {
         "nummer": 94,
@@ -3245,7 +3248,8 @@
         "geburtsdatum": "1994-02-07",
         "alter": 32,
         "groesse": 191,
-        "staerke": 76
+        "staerke": 76,
+        "vertrag_bis": 2028
       },
       {
         "nummer": 3,
@@ -3253,8 +3257,11 @@
         "nachname": "da Rocha Viana",
         "position": "LA",
         "nation": "pt",
+        "geburtsdatum": "2002-07-26",
         "alter": 24,
-        "staerke": 70
+        "groesse": 190,
+        "staerke": 70,
+        "vertrag_bis": 2028
       },
       {
         "nummer": 6,
@@ -3262,8 +3269,11 @@
         "nachname": "Servos",
         "position": "RL",
         "nation": "de",
+        "geburtsdatum": "2006-07-02",
         "alter": 20,
-        "staerke": 58
+        "groesse": 193,
+        "staerke": 58,
+        "vertrag_bis": 2028
       },
       {
         "nummer": 7,
@@ -3297,8 +3307,11 @@
         "nachname": "Püttmann",
         "position": "RA",
         "nation": "de",
+        "geburtsdatum": "2007-06-06",
         "alter": 19,
-        "staerke": 55
+        "groesse": 185,
+        "staerke": 55,
+        "vertrag_bis": 2027
       },
       {
         "nummer": 10,
@@ -3344,8 +3357,11 @@
         "nachname": "Hilding",
         "position": "RM",
         "nation": "se",
+        "geburtsdatum": "2000-03-27",
         "alter": 26,
-        "staerke": 74
+        "groesse": 190,
+        "staerke": 74,
+        "vertrag_bis": 2028
       },
       {
         "nummer": 18,
@@ -3395,7 +3411,8 @@
         "alter": 26,
         "hand": "R",
         "groesse": 195,
-        "staerke": 73
+        "staerke": 73,
+        "vertrag_bis": 2028
       },
       {
         "nummer": 46,
@@ -5836,6 +5853,269 @@
         "vertrag_bis": 2028
       }
     ],
+    "Die Eulen Ludwigshafen": [
+      {
+        "nummer": 16,
+        "vorname": "Philipp",
+        "nachname": "Wenning",
+        "position": "TW",
+        "nation": "de",
+        "groesse": 187,
+        "staerke": 59
+      },
+      {
+        "nummer": 32,
+        "vorname": "Janis",
+        "nachname": "Boieck",
+        "position": "TW",
+        "nation": "de",
+        "geburtsdatum": "1998-06-17",
+        "alter": 28,
+        "groesse": 190,
+        "staerke": 59,
+        "vertrag_bis": 2028
+      },
+      {
+        "nummer": 36,
+        "vorname": "Paweł",
+        "nachname": "Krawczyk",
+        "position": "TW",
+        "nation": "pl",
+        "geburtsdatum": "2005-07-06",
+        "alter": 21,
+        "groesse": 195,
+        "staerke": 55,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 4,
+        "vorname": "Nicolas",
+        "nachname": "Waldvogel",
+        "position": "RL",
+        "nation": "ch",
+        "geburtsdatum": "2003-01-07",
+        "alter": 23,
+        "groesse": 187,
+        "staerke": 58
+      },
+      {
+        "nummer": 5,
+        "vorname": "Matteo",
+        "nachname": "Menges",
+        "position": "RM",
+        "nation": "de",
+        "geburtsdatum": "2004-07-19",
+        "alter": 22,
+        "groesse": 184,
+        "staerke": 57,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 7,
+        "vorname": "Mihailo",
+        "nachname": "Ilic",
+        "position": "RL",
+        "nation": "de",
+        "geburtsdatum": "2002-07-01",
+        "alter": 24,
+        "groesse": 196,
+        "staerke": 59,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 8,
+        "vorname": "Lennart",
+        "nachname": "de Hooge",
+        "position": "RL",
+        "nation": "de",
+        "geburtsdatum": "2007-10-26",
+        "alter": 18,
+        "groesse": 185,
+        "staerke": 50,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 9,
+        "vorname": "Marc-Robin",
+        "nachname": "Eisel",
+        "position": "RM",
+        "nation": "de",
+        "geburtsdatum": "1999-06-06",
+        "alter": 27,
+        "groesse": 186,
+        "staerke": 59,
+        "vertrag_bis": 2028
+      },
+      {
+        "nummer": 10,
+        "vorname": "Vincent",
+        "nachname": "Bülow",
+        "position": "RM",
+        "nation": "de",
+        "geburtsdatum": "1995-08-10",
+        "alter": 31,
+        "groesse": 178,
+        "staerke": 59,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 13,
+        "vorname": "René",
+        "nachname": "Zobel",
+        "position": "RR",
+        "nation": "de",
+        "geburtsdatum": "1995-11-19",
+        "alter": 30,
+        "groesse": 197,
+        "staerke": 59
+      },
+      {
+        "nummer": 14,
+        "vorname": "Phileas",
+        "nachname": "Daniel",
+        "position": "RL",
+        "nation": "de",
+        "geburtsdatum": "2006-02-13",
+        "alter": 20,
+        "groesse": 190,
+        "staerke": 54,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 15,
+        "vorname": "Frederik",
+        "nachname": "Zepp",
+        "position": "RM",
+        "nation": "de",
+        "geburtsdatum": "2007-01-14",
+        "alter": 19,
+        "groesse": 190,
+        "staerke": 52,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 19,
+        "vorname": "Tilo",
+        "nachname": "Müller",
+        "position": "RR",
+        "nation": "de",
+        "geburtsdatum": "2007-10-20",
+        "alter": 18,
+        "groesse": 173,
+        "staerke": 50,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 20,
+        "vorname": "Alexander",
+        "nachname": "Falk",
+        "position": "RA",
+        "nation": "de",
+        "geburtsdatum": "1997-10-30",
+        "alter": 28,
+        "groesse": 189,
+        "staerke": 59,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 22,
+        "vorname": "Kian",
+        "nachname": "Schwarzer",
+        "position": "LA",
+        "nation": "de",
+        "geburtsdatum": "1999-03-01",
+        "alter": 27,
+        "hand": "R",
+        "groesse": 181,
+        "staerke": 59,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 23,
+        "vorname": "Lars",
+        "nachname": "Röller",
+        "position": "KM",
+        "nation": "de",
+        "geburtsdatum": "1999-01-24",
+        "alter": 27,
+        "hand": "R",
+        "groesse": 204,
+        "staerke": 59,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 24,
+        "vorname": "Theo",
+        "nachname": "Straub",
+        "position": "RA",
+        "nation": "de",
+        "geburtsdatum": "2004-11-07",
+        "alter": 21,
+        "hand": "L",
+        "groesse": 191,
+        "staerke": 57,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 29,
+        "vorname": "Friedrich",
+        "nachname": "Schmitt",
+        "position": "RL",
+        "nation": "de",
+        "geburtsdatum": "2004-10-03",
+        "alter": 21,
+        "groesse": 207,
+        "staerke": 55,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 32,
+        "vorname": "Sebastian",
+        "nachname": "Bösing",
+        "position": "KM",
+        "nation": "de",
+        "geburtsdatum": "1994-10-06",
+        "alter": 31,
+        "groesse": 194,
+        "staerke": 59
+      },
+      {
+        "nummer": 37,
+        "vorname": "Finn-Lukas",
+        "nachname": "Leun",
+        "position": "RR",
+        "nation": "de",
+        "geburtsdatum": "2003-02-11",
+        "alter": 23,
+        "groesse": 188,
+        "staerke": 58,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 53,
+        "vorname": "Bruno",
+        "nachname": "Eickhoff",
+        "position": "KM",
+        "nation": "de",
+        "geburtsdatum": "2003-12-29",
+        "alter": 22,
+        "groesse": 198,
+        "staerke": 57,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 99,
+        "vorname": "Monty",
+        "nachname": "Kleinsteuber",
+        "position": "LA",
+        "nation": "de",
+        "geburtsdatum": "2006-11-27",
+        "alter": 19,
+        "groesse": 196,
+        "staerke": 52,
+        "vertrag_bis": 2028
+      }
+    ],
     "TSV Bayer Dormagen": [
       {
         "nummer": 16,
@@ -6244,6 +6524,206 @@
         "groesse": 193,
         "staerke": 60,
         "vertrag_bis": 2028
+      }
+    ],
+    "ASV Hamm-Westfalen": [
+      {
+        "nummer": 80,
+        "vorname": "Ivan",
+        "nachname": "Budalić",
+        "position": "TW",
+        "nation": "hr",
+        "geburtsdatum": "1997-09-27",
+        "alter": 28,
+        "staerke": 60
+      },
+      {
+        "nummer": 86,
+        "vorname": "Marcos",
+        "nachname": "Vinicios Colodeti",
+        "position": "TW",
+        "nation": "br",
+        "geburtsdatum": "1996-01-09",
+        "alter": 30,
+        "staerke": 60
+      },
+      {
+        "nummer": 3,
+        "vorname": "Fabian",
+        "nachname": "Huesmann",
+        "position": "LA",
+        "nation": "de",
+        "geburtsdatum": "1993-06-11",
+        "alter": 33,
+        "hand": "R",
+        "groesse": 193,
+        "staerke": 59,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 4,
+        "vorname": "Carl",
+        "nachname": "Gabrielsson",
+        "position": "RA",
+        "nation": "se",
+        "geburtsdatum": "2000-05-10",
+        "alter": 26,
+        "staerke": 60
+      },
+      {
+        "nummer": 5,
+        "vorname": "Ádám",
+        "nachname": "Horváth-Garaba",
+        "position": "RL",
+        "nation": "hu",
+        "geburtsdatum": "2007-12-07",
+        "alter": 18,
+        "staerke": 51
+      },
+      {
+        "nummer": 8,
+        "vorname": "Bram",
+        "nachname": "van de Vreede",
+        "position": "RL",
+        "nation": "de",
+        "geburtsdatum": "2007-04-16",
+        "alter": 19,
+        "staerke": 53
+      },
+      {
+        "nummer": 10,
+        "vorname": "Kaspar",
+        "nachname": "Böttcher",
+        "position": "RA",
+        "nation": "de",
+        "geburtsdatum": "2005-01-22",
+        "alter": 21,
+        "staerke": 56
+      },
+      {
+        "nummer": 13,
+        "vorname": "Ole",
+        "nachname": "Machner",
+        "position": "LA",
+        "nation": "de",
+        "geburtsdatum": "2002-12-27",
+        "alter": 23,
+        "staerke": 59
+      },
+      {
+        "nummer": 14,
+        "vorname": "Vincent",
+        "nachname": "Kreiselmaier",
+        "position": "RL",
+        "nation": "lu",
+        "geburtsdatum": "2006-02-12",
+        "alter": 20,
+        "staerke": 55
+      },
+      {
+        "nummer": 19,
+        "vorname": "Benedikt",
+        "nachname": "Kühn",
+        "position": "RM",
+        "nation": "de",
+        "geburtsdatum": "2004-10-05",
+        "alter": 21,
+        "staerke": 56
+      },
+      {
+        "nummer": 21,
+        "vorname": "Benjamin",
+        "nachname": "Glenn Edwards",
+        "position": "RM",
+        "nation": "hu",
+        "geburtsdatum": "2006-09-01",
+        "alter": 20,
+        "staerke": 55
+      },
+      {
+        "nummer": 22,
+        "vorname": "Niklas",
+        "nachname": "Mühlhauser",
+        "position": "RM",
+        "nation": "de",
+        "geburtsdatum": "2005-05-05",
+        "alter": 21,
+        "staerke": 56
+      },
+      {
+        "nummer": 25,
+        "vorname": "Sigurt",
+        "nachname": "Leth Klinge",
+        "position": "RM",
+        "nation": "dk",
+        "geburtsdatum": "2002-09-20",
+        "alter": 23,
+        "staerke": 59
+      },
+      {
+        "nummer": 26,
+        "vorname": "Lucas",
+        "nachname": "Firnhaber",
+        "position": "RR",
+        "nation": "de",
+        "geburtsdatum": "1997-04-23",
+        "alter": 29,
+        "hand": "L",
+        "groesse": 200,
+        "staerke": 60
+      },
+      {
+        "nummer": 28,
+        "vorname": "Andreas",
+        "nachname": "Bornemann",
+        "position": "RR",
+        "nation": "de",
+        "geburtsdatum": "1994-01-31",
+        "alter": 32,
+        "staerke": 59
+      },
+      {
+        "nummer": 32,
+        "vorname": "Pawel",
+        "nachname": "Krawczyk",
+        "position": "RM",
+        "nation": "pl",
+        "geburtsdatum": "2003-07-10",
+        "alter": 23,
+        "staerke": 59
+      },
+      {
+        "nummer": 35,
+        "vorname": "Max",
+        "nachname": "Öhler",
+        "position": "RM",
+        "nation": "de",
+        "geburtsdatum": "2001-04-18",
+        "alter": 25,
+        "hand": "R",
+        "groesse": 184,
+        "staerke": 60,
+        "vertrag_bis": 2028
+      },
+      {
+        "nummer": 43,
+        "vorname": "Jann",
+        "nachname": "Keno Jacobs",
+        "position": "KM",
+        "nation": "de",
+        "geburtsdatum": "2002-03-27",
+        "alter": 24,
+        "staerke": 60
+      },
+      {
+        "nummer": 44,
+        "vorname": "Alexander",
+        "nachname": "Coßmann",
+        "position": "KM",
+        "nation": "de",
+        "geburtsdatum": "2001-04-08",
+        "alter": 25,
+        "staerke": 60
       }
     ],
     "TuS Ferndorf": [
@@ -7347,7 +7827,8 @@
         "hand": "L",
         "groesse": 193,
         "staerke": 74,
-        "vertrag_bis": 2028
+        "vertrag_bis": 2028,
+        "stammschuetze": true
       },
       {
         "nummer": 11,
@@ -7595,7 +8076,8 @@
         "hand": "R",
         "groesse": 190,
         "staerke": 84,
-        "vertrag_bis": 2028
+        "vertrag_bis": 2028,
+        "stammschuetze": true
       },
       {
         "nummer": 79,
@@ -7696,7 +8178,8 @@
         "nachname": "Sejer Kristensen",
         "position": "LA",
         "nation": "dk",
-        "staerke": 74
+        "staerke": 74,
+        "stammschuetze": true
       },
       {
         "nummer": 20,
@@ -7866,7 +8349,8 @@
         "hand": "R",
         "groesse": 196,
         "staerke": 74,
-        "vertrag_bis": 2028
+        "vertrag_bis": 2028,
+        "stammschuetze": true
       },
       {
         "nummer": 4,
@@ -8055,7 +8539,8 @@
         "nachname": "Larsson",
         "position": "LA",
         "nation": "dk",
-        "staerke": 72
+        "staerke": 72,
+        "stammschuetze": true
       },
       {
         "nummer": 23,
@@ -8216,7 +8701,8 @@
         "nachname": "Andersson Moberg",
         "position": "RM",
         "nation": "se",
-        "staerke": 70
+        "staerke": 70,
+        "stammschuetze": true
       },
       {
         "nummer": 91,
@@ -8274,7 +8760,8 @@
         "alter": 35,
         "hand": "R",
         "groesse": 185,
-        "staerke": 76
+        "staerke": 76,
+        "stammschuetze": true
       },
       {
         "nummer": 14,
@@ -8442,7 +8929,8 @@
         "alter": 30,
         "hand": "R",
         "groesse": 182,
-        "staerke": 77
+        "staerke": 77,
+        "stammschuetze": true
       },
       {
         "nummer": 21,
@@ -8621,7 +9109,8 @@
         "nachname": "Cieslak",
         "position": "LA",
         "nation": "dk",
-        "staerke": 70
+        "staerke": 70,
+        "stammschuetze": true
       },
       {
         "nummer": 26,
@@ -8737,6 +9226,146 @@
         "position": "RR",
         "nation": "dk",
         "staerke": 70
+      }
+    ],
+    "SønderjyskE": [
+      {
+        "nummer": 1,
+        "vorname": "Matthias",
+        "nachname": "Rex Dorgelo",
+        "position": "TW",
+        "nation": "nl",
+        "geburtsdatum": "2002-10-31",
+        "alter": 23,
+        "groesse": 200,
+        "staerke": 70
+      },
+      {
+        "nummer": 5,
+        "vorname": "Viktor",
+        "nachname": "Bergholt",
+        "position": "LA",
+        "nation": "dk",
+        "staerke": 72,
+        "stammschuetze": true
+      },
+      {
+        "nummer": 43,
+        "vorname": "Emil",
+        "nachname": "La Cour",
+        "position": "LA",
+        "nation": "dk",
+        "staerke": 69
+      },
+      {
+        "nummer": 33,
+        "vorname": "Ebbe",
+        "nachname": "Stankiewicz",
+        "position": "RA",
+        "nation": "no",
+        "staerke": 69
+      },
+      {
+        "nummer": 2,
+        "vorname": "Tobias",
+        "nachname": "Gregers Schmidt",
+        "position": "KM",
+        "nation": "dk",
+        "staerke": 69
+      },
+      {
+        "nummer": 18,
+        "vorname": "Morten",
+        "nachname": "Bjørnshauge",
+        "position": "KM",
+        "nation": "dk",
+        "staerke": 69
+      },
+      {
+        "nummer": 9,
+        "vorname": "Nicolai",
+        "nachname": "Skytte",
+        "position": "RL",
+        "nation": "dk",
+        "staerke": 69
+      },
+      {
+        "nummer": 6,
+        "vorname": "Jesper",
+        "nachname": "Konradsson",
+        "position": "RM",
+        "nation": "se",
+        "geburtsdatum": "1994-06-04",
+        "alter": 32,
+        "hand": "R",
+        "groesse": 184,
+        "staerke": 73,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 29,
+        "vorname": "Magnus",
+        "nachname": "Fredriksen",
+        "position": "RM",
+        "nation": "no",
+        "geburtsdatum": "1997-05-24",
+        "alter": 29,
+        "hand": "R",
+        "groesse": 188,
+        "staerke": 74
+      },
+      {
+        "nummer": 24,
+        "vorname": "Sebastian",
+        "nachname": "Augustinussen",
+        "position": "RR",
+        "nation": "dk",
+        "geburtsdatum": "1996-05-06",
+        "alter": 30,
+        "hand": "L",
+        "groesse": 192,
+        "staerke": 69,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 48,
+        "vorname": "Gabriel",
+        "nachname": "Setterblom",
+        "position": "RR",
+        "nation": "no",
+        "geburtsdatum": "1997-11-22",
+        "alter": 28,
+        "hand": "L",
+        "groesse": 194,
+        "staerke": 72
+      },
+      {
+        "vorname": "Thorsten",
+        "nachname": "Fries",
+        "position": "TW",
+        "nation": "dk",
+        "staerke": 69
+      },
+      {
+        "vorname": "Reinier",
+        "nachname": "Taboada",
+        "position": "RL",
+        "nation": "nl",
+        "staerke": 70
+      },
+      {
+        "vorname": "Rasmus",
+        "nachname": "Madsen",
+        "position": "RR",
+        "nation": "dk",
+        "staerke": 71
+      },
+      {
+        "vorname": "Kasper",
+        "nachname": "Teglgaard Pedersen",
+        "position": "KM",
+        "nation": "dk",
+        "staerke": 69
       }
     ],
     "Nordsjælland Håndbold": [
@@ -8863,7 +9492,8 @@
         "nachname": "Campbell",
         "position": "RM",
         "nation": "dk",
-        "staerke": 67
+        "staerke": 67,
+        "stammschuetze": true
       },
       {
         "nummer": 4,
@@ -8921,7 +9551,8 @@
         "nachname": "Wolf",
         "position": "LA",
         "nation": "dk",
-        "staerke": 66
+        "staerke": 66,
+        "stammschuetze": true
       },
       {
         "nummer": 11,
@@ -9072,7 +9703,8 @@
         "nachname": "Bangshøi",
         "position": "LA",
         "nation": "dk",
-        "staerke": 66
+        "staerke": 66,
+        "stammschuetze": true
       },
       {
         "nummer": 11,
@@ -10252,6 +10884,7 @@
         "nation": "es",
         "geburtsdatum": "1993-05-06",
         "alter": 33,
+        "hand": "R",
         "groesse": 193,
         "gewicht": 99,
         "staerke": 71
@@ -20830,17 +21463,13 @@
         "nummer": 29,
         "vorname": "Marek",
         "nachname": "Szpera",
-        "position": "RM",
+        "position": "RR",
         "nation": "pl",
         "geburtsdatum": "1987-09-09",
         "alter": 38,
         "groesse": 191,
         "gewicht": 90,
-        "staerke": 67,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 67
       },
       {
         "nummer": 5,
@@ -20852,43 +21481,31 @@
         "alter": 31,
         "groesse": 193,
         "gewicht": 97,
-        "staerke": 67,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 67
       },
       {
         "nummer": 8,
         "vorname": "Robert",
         "nachname": "Kamyszek",
-        "position": "RM",
+        "position": "RL",
         "nation": "pl",
         "geburtsdatum": "1995-09-12",
         "alter": 30,
         "groesse": 200,
         "gewicht": 95,
-        "staerke": 67,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 67
       },
       {
         "nummer": 68,
         "vorname": "Ksawery",
         "nachname": "Gajek",
-        "position": "RM",
+        "position": "RL",
         "nation": "pl",
         "geburtsdatum": "1997-06-07",
         "alter": 29,
         "groesse": 196,
         "gewicht": 100,
-        "staerke": 67,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 67
       },
       {
         "nummer": 72,
@@ -20926,17 +21543,13 @@
         "nummer": 23,
         "vorname": "Dzmitry",
         "nachname": "Smolikau",
-        "position": "RM",
+        "position": "RR",
         "nation": "by",
         "geburtsdatum": "1994-06-11",
         "alter": 32,
         "groesse": 184,
         "gewicht": 87,
-        "staerke": 66,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 66
       },
       {
         "nummer": 17,
@@ -20948,11 +21561,7 @@
         "alter": 27,
         "groesse": 180,
         "gewicht": 82,
-        "staerke": 67,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 67
       },
       {
         "nummer": 13,
@@ -20964,11 +21573,7 @@
         "alter": 25,
         "groesse": 197,
         "gewicht": 95,
-        "staerke": 67,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 67
       },
       {
         "nummer": 43,
@@ -21014,7 +21619,7 @@
         "nummer": 55,
         "vorname": "Patryk",
         "nachname": "Krok",
-        "position": "LA",
+        "position": "RA",
         "nation": "pl",
         "geburtsdatum": "2002-03-05",
         "alter": 24,
@@ -21026,7 +21631,7 @@
         "nummer": 11,
         "vorname": "Dawid",
         "nachname": "Frankowski",
-        "position": "RA",
+        "position": "LA",
         "nation": "pl",
         "geburtsdatum": "2006-08-08",
         "alter": 20,
@@ -21367,17 +21972,13 @@
         "nummer": 8,
         "vorname": "Przemysław",
         "nachname": "Mrozowicz",
-        "position": "RM",
+        "position": "RL",
         "nation": "pl",
         "geburtsdatum": "1996-09-03",
         "alter": 29,
         "groesse": 196,
         "gewicht": 99,
-        "staerke": 59,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 59
       },
       {
         "nummer": 18,
@@ -21389,11 +21990,7 @@
         "alter": 34,
         "groesse": 188,
         "gewicht": 81,
-        "staerke": 57,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 57
       },
       {
         "nummer": 15,
@@ -21405,49 +22002,37 @@
         "alter": 21,
         "groesse": 181,
         "gewicht": 80,
-        "staerke": 55,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 55
       },
       {
         "nummer": 5,
         "vorname": "Rotem",
         "nachname": "Segal",
-        "position": "RM",
+        "position": "RR",
         "nation": "il",
         "geburtsdatum": "1999-06-29",
         "alter": 27,
         "groesse": 191,
         "gewicht": 95,
-        "staerke": 59,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 59
       },
       {
         "nummer": 37,
         "vorname": "Marcin",
         "nachname": "Głuszczenko",
-        "position": "RM",
+        "position": "RL",
         "nation": "pl",
         "geburtsdatum": "2002-07-25",
         "alter": 24,
         "groesse": 192,
         "gewicht": 89,
-        "staerke": 59,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 59
       },
       {
         "nummer": 25,
         "vorname": "Filip",
         "nachname": "Stefani",
-        "position": "LA",
+        "position": "RA",
         "nation": "pl",
         "geburtsdatum": "2000-06-04",
         "alter": 26,
@@ -21459,7 +22044,7 @@
         "nummer": 28,
         "vorname": "Jakub",
         "nachname": "Sikora",
-        "position": "RA",
+        "position": "LA",
         "nation": "pl",
         "geburtsdatum": "2003-05-03",
         "alter": 23,
@@ -21866,17 +22451,13 @@
         "nummer": 2,
         "vorname": "Jakub",
         "nachname": "Przybylski",
-        "position": "RM",
+        "position": "RR",
         "nation": "pl",
         "geburtsdatum": "2000-07-02",
         "alter": 26,
         "groesse": 180,
         "gewicht": 73,
-        "staerke": 61,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 61
       },
       {
         "nummer": 9,
@@ -21896,17 +22477,13 @@
         "nummer": 8,
         "vorname": "Wojciech",
         "nachname": "Granowski",
-        "position": "RM",
+        "position": "RL",
         "nation": "pl",
         "geburtsdatum": "2005-02-03",
         "alter": 21,
         "groesse": 196,
         "gewicht": 92,
-        "staerke": 57,
-        "zweitpositionen": [
-          "RL",
-          "RR"
-        ]
+        "staerke": 57
       },
       {
         "nummer": 4,
@@ -21968,7 +22545,7 @@
         "nummer": 17,
         "vorname": "Mateusz",
         "nachname": "Góralski",
-        "position": "LA",
+        "position": "RA",
         "nation": "pl",
         "geburtsdatum": "1994-01-17",
         "alter": 32,
@@ -21980,7 +22557,7 @@
         "nummer": 95,
         "vorname": "Marek",
         "nachname": "Marciniak",
-        "position": "RA",
+        "position": "LA",
         "nation": "pl",
         "geburtsdatum": "1995-09-21",
         "alter": 30,
@@ -22320,7 +22897,8 @@
         "hand": "L",
         "groesse": 185,
         "staerke": 82,
-        "vertrag_bis": 2030
+        "vertrag_bis": 2030,
+        "stammschuetze": true
       }
     ],
     "OTP Bank-Pick Szeged": [
@@ -22394,7 +22972,8 @@
         "alter": 33,
         "hand": "L",
         "groesse": 193,
-        "staerke": 84
+        "staerke": 84,
+        "stammschuetze": true
       },
       {
         "nummer": 93,
@@ -22699,7 +23278,8 @@
         "geburtsdatum": "1999-09-06",
         "alter": 26,
         "groesse": 190,
-        "staerke": 70
+        "staerke": 70,
+        "stammschuetze": true
       },
       {
         "nummer": 24,
@@ -22765,6 +23345,186 @@
         "staerke": 76
       }
     ],
+    "Balatonfüredi KSE": [
+      {
+        "nummer": 16,
+        "vorname": "Ádám",
+        "nachname": "Füstös",
+        "position": "TW",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 61,
+        "vorname": "Benedek",
+        "nachname": "Erdei",
+        "position": "TW",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 4,
+        "vorname": "Bence",
+        "nachname": "Kovács",
+        "position": "LA",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 7,
+        "vorname": "Bendegúz",
+        "nachname": "Bóka",
+        "position": "LA",
+        "nation": "hu",
+        "geburtsdatum": "1993-10-02",
+        "alter": 32,
+        "hand": "R",
+        "groesse": 195,
+        "staerke": 75
+      },
+      {
+        "nummer": 47,
+        "vorname": "Péter",
+        "nachname": "Hornyák",
+        "position": "RA",
+        "nation": "hu",
+        "geburtsdatum": "1995-10-04",
+        "alter": 30,
+        "hand": "L",
+        "groesse": 178,
+        "staerke": 75,
+        "stammschuetze": true
+      },
+      {
+        "nummer": 50,
+        "vorname": "Csongor",
+        "nachname": "Urbán-Patocskai",
+        "position": "RA",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 20,
+        "vorname": "Mátyás",
+        "nachname": "Simotics",
+        "position": "KM",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 22,
+        "vorname": "Máté",
+        "nachname": "Klucsik",
+        "position": "KM",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 24,
+        "vorname": "Gellért",
+        "nachname": "Fekete",
+        "position": "KM",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 55,
+        "vorname": "Gábor",
+        "nachname": "Garajszki",
+        "position": "KM",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 78,
+        "vorname": "Axel",
+        "nachname": "Tóth",
+        "position": "KM",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 10,
+        "vorname": "Balázs",
+        "nachname": "Németh",
+        "position": "RM",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 13,
+        "vorname": "Noel",
+        "nachname": "Tóth",
+        "position": "RM",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 5,
+        "vorname": "Stevan",
+        "nachname": "Sretenović",
+        "position": "RL",
+        "nation": "rs",
+        "geburtsdatum": "1995-09-25",
+        "alter": 30,
+        "hand": "R",
+        "groesse": 201,
+        "staerke": 67
+      },
+      {
+        "nummer": 6,
+        "vorname": "Márton",
+        "nachname": "Varga",
+        "position": "RL",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 77,
+        "vorname": "Levente",
+        "nachname": "Zsolt Szabó",
+        "position": "RL",
+        "nation": "hu",
+        "staerke": 67
+      },
+      {
+        "nummer": 8,
+        "vorname": "Tim",
+        "nachname": "Rozman",
+        "position": "RR",
+        "nation": "si",
+        "staerke": 70
+      },
+      {
+        "nummer": 15,
+        "vorname": "Bálint",
+        "nachname": "Fekete",
+        "position": "RR",
+        "nation": "hu",
+        "geburtsdatum": "1995-06-27",
+        "alter": 31,
+        "groesse": 194,
+        "staerke": 72
+      },
+      {
+        "vorname": "Veljko",
+        "nachname": "Popović",
+        "position": "RM",
+        "nation": "rs",
+        "geburtsdatum": "2000-02-18",
+        "alter": 26,
+        "hand": "R",
+        "groesse": 190,
+        "staerke": 69
+      },
+      {
+        "vorname": "János",
+        "nachname": "Podoba",
+        "position": "TW",
+        "nation": "hu",
+        "staerke": 67
+      }
+    ],
     "Csurgói KK": [
       {
         "nummer": 32,
@@ -22804,7 +23564,8 @@
         "nachname": "Milovanović",
         "position": "LA",
         "nation": "rs",
-        "staerke": 66
+        "staerke": 66,
+        "stammschuetze": true
       },
       {
         "nummer": 42,
@@ -23086,7 +23847,8 @@
         "geburtsdatum": "1998-12-05",
         "alter": 27,
         "groesse": 183,
-        "staerke": 66
+        "staerke": 66,
+        "stammschuetze": true
       },
       {
         "nummer": 51,
@@ -23178,7 +23940,8 @@
         "nachname": "Lakosy",
         "position": "RA",
         "nation": "hu",
-        "staerke": 63
+        "staerke": 63,
+        "stammschuetze": true
       },
       {
         "vorname": "Martin",
@@ -23262,6 +24025,180 @@
         "staerke": 63
       }
     ],
+    "Budai Farkasok": [
+      {
+        "nummer": 1,
+        "vorname": "Tibor",
+        "nachname": "Balogh",
+        "position": "TW",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 61,
+        "vorname": "Norman",
+        "nachname": "Tóth",
+        "position": "TW",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 67,
+        "vorname": "Marián",
+        "nachname": "Žernovič",
+        "position": "TW",
+        "nation": "sk",
+        "staerke": 63
+      },
+      {
+        "nummer": 5,
+        "vorname": "Khaled",
+        "nachname": "Essam",
+        "position": "LA",
+        "nation": "eg",
+        "staerke": 63
+      },
+      {
+        "nummer": 23,
+        "vorname": "Balázs",
+        "nachname": "Pintér",
+        "position": "LA",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 28,
+        "vorname": "Hunor",
+        "nachname": "Csengeri",
+        "position": "RA",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 71,
+        "vorname": "Ákos",
+        "nachname": "Hutvágner",
+        "position": "RA",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 3,
+        "vorname": "László",
+        "nachname": "Szeitl",
+        "position": "KM",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 33,
+        "vorname": "Marino",
+        "nachname": "Marić",
+        "position": "KM",
+        "nation": "hr",
+        "geburtsdatum": "1990-06-01",
+        "alter": 36,
+        "hand": "R",
+        "groesse": 196,
+        "staerke": 66
+      },
+      {
+        "nummer": 7,
+        "vorname": "Ádám",
+        "nachname": "Juhász",
+        "position": "RM",
+        "nation": "hu",
+        "geburtsdatum": "1996-06-06",
+        "alter": 30,
+        "hand": "R",
+        "groesse": 189,
+        "staerke": 68
+      },
+      {
+        "nummer": 30,
+        "vorname": "Mátyás",
+        "nachname": "Kristóf",
+        "position": "RM",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 18,
+        "vorname": "Zsombor",
+        "nachname": "Bene",
+        "position": "RL",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 81,
+        "vorname": "Ákos",
+        "nachname": "Bendicsek",
+        "position": "RL",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 92,
+        "vorname": "Gellért",
+        "nachname": "Draskovics",
+        "position": "RL",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 8,
+        "vorname": "Marko",
+        "nachname": "Panić",
+        "position": "RR",
+        "nation": "ba",
+        "geburtsdatum": "1991-03-10",
+        "alter": 35,
+        "groesse": 197,
+        "staerke": 66
+      },
+      {
+        "nummer": 11,
+        "vorname": "Dávid",
+        "nachname": "Horváth",
+        "position": "RR",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "vorname": "Benjámin",
+        "nachname": "Sinkovits",
+        "position": "RR",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "vorname": "Herman",
+        "nachname": "Josefsson",
+        "position": "KM",
+        "nation": "se",
+        "staerke": 63
+      },
+      {
+        "vorname": "Viktor",
+        "nachname": "Melnicsuk",
+        "position": "RM",
+        "nation": "hu",
+        "geburtsdatum": "2001-08-31",
+        "alter": 25,
+        "hand": "R",
+        "groesse": 188,
+        "staerke": 63,
+        "vertrag_bis": 2028
+      },
+      {
+        "vorname": "Viktor",
+        "nachname": "Prainer",
+        "position": "RL",
+        "nation": "hu",
+        "staerke": 66
+      }
+    ],
     "Eger-Eszterházy SzSE": [
       {
         "nummer": 12,
@@ -23309,7 +24246,8 @@
         "nachname": "Katona",
         "position": "LA",
         "nation": "hu",
-        "staerke": 63
+        "staerke": 63,
+        "stammschuetze": true
       },
       {
         "nummer": 6,
@@ -23471,7 +24409,8 @@
         "alter": 24,
         "hand": "R",
         "groesse": 187,
-        "staerke": 69
+        "staerke": 69,
+        "stammschuetze": true
       },
       {
         "nummer": 10,
@@ -23635,33 +24574,344 @@
         "staerke": 64
       }
     ],
+    "Gyöngyösi KK": [
+      {
+        "nummer": 1,
+        "vorname": "Barnabás",
+        "nachname": "Marczika",
+        "position": "TW",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 25,
+        "vorname": "Alen",
+        "nachname": "Skledar",
+        "position": "TW",
+        "nation": "si",
+        "staerke": 63
+      },
+      {
+        "nummer": 33,
+        "vorname": "Olivér",
+        "nachname": "Edwards",
+        "position": "LA",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 45,
+        "vorname": "Bercel",
+        "nachname": "Gyallai",
+        "position": "LA",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 9,
+        "vorname": "Levente",
+        "nachname": "Zakhar",
+        "position": "RA",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 11,
+        "vorname": "Olivér",
+        "nachname": "Jaros",
+        "position": "RA",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 34,
+        "vorname": "Bálint",
+        "nachname": "Végh",
+        "position": "RA",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 4,
+        "vorname": "Villads",
+        "nachname": "Raahauge Jensen",
+        "position": "KM",
+        "nation": "dk",
+        "staerke": 63
+      },
+      {
+        "nummer": 17,
+        "vorname": "Gellért",
+        "nachname": "Ásványi",
+        "position": "KM",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 57,
+        "vorname": "Norbert",
+        "nachname": "Jóga",
+        "position": "KM",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 8,
+        "vorname": "Dávid",
+        "nachname": "Ubornyák",
+        "position": "RM",
+        "nation": "hu",
+        "geburtsdatum": "1998-09-08",
+        "alter": 27,
+        "groesse": 186,
+        "staerke": 67
+      },
+      {
+        "nummer": 14,
+        "vorname": "Balázs",
+        "nachname": "Szöllősi",
+        "position": "RM",
+        "nation": "hu",
+        "geburtsdatum": "1992-10-24",
+        "alter": 33,
+        "groesse": 193,
+        "staerke": 67
+      },
+      {
+        "nummer": 30,
+        "vorname": "István",
+        "nachname": "Mátés",
+        "position": "RM",
+        "nation": "hu",
+        "staerke": 66,
+        "stammschuetze": true
+      },
+      {
+        "nummer": 55,
+        "vorname": "Martin",
+        "nachname": "Gráf",
+        "position": "RM",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 13,
+        "vorname": "Zalán",
+        "nachname": "Lang",
+        "position": "RL",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 71,
+        "vorname": "Marcell",
+        "nachname": "Bihari",
+        "position": "RL",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "nummer": 61,
+        "vorname": "Milan",
+        "nachname": "Golubović",
+        "position": "RR",
+        "nation": "rs",
+        "geburtsdatum": "2000-09-21",
+        "alter": 25,
+        "hand": "L",
+        "groesse": 190,
+        "staerke": 63
+      },
+      {
+        "nummer": 77,
+        "vorname": "Kristóf",
+        "nachname": "Járó",
+        "position": "RR",
+        "nation": "hu",
+        "staerke": 63
+      },
+      {
+        "vorname": "Krisztián",
+        "nachname": "Mikler",
+        "position": "TW",
+        "nation": "hu",
+        "staerke": 63
+      }
+    ],
     "Sporting CP": [
       {
+        "nummer": 20,
+        "vorname": "André",
+        "nachname": "Kristensen",
+        "position": "TW",
+        "nation": "no",
+        "geburtsdatum": "2000-03-15",
+        "alter": 26,
+        "groesse": 192,
+        "staerke": 80
+      },
+      {
+        "nummer": 92,
+        "vorname": "Mohamed",
+        "nachname": "Aly",
+        "position": "TW",
+        "nation": "eg",
+        "staerke": 77
+      },
+      {
+        "nummer": 99,
+        "vorname": "Santiago",
+        "nachname": "Póvoas",
+        "position": "TW",
+        "nation": "pt",
+        "staerke": 77
+      },
+      {
+        "nummer": 17,
+        "vorname": "Orri",
+        "nachname": "Freyr Þorkelsson",
+        "position": "LA",
+        "nation": "is",
+        "geburtsdatum": "1999-06-25",
+        "alter": 27,
+        "hand": "R",
+        "groesse": 184,
+        "staerke": 82
+      },
+      {
+        "nummer": 22,
+        "vorname": "Diogo",
+        "nachname": "Branquinho",
+        "position": "LA",
+        "nation": "pt",
+        "geburtsdatum": "1994-07-25",
+        "alter": 32,
+        "hand": "R",
+        "groesse": 185,
+        "staerke": 85
+      },
+      {
+        "nummer": 5,
+        "vorname": "Carlos",
+        "nachname": "Álvarez",
+        "position": "RA",
+        "nation": "es",
+        "staerke": 77
+      },
+      {
+        "nummer": 19,
+        "vorname": "Mamadou",
+        "nachname": "Gassama",
+        "position": "RA",
+        "nation": "es",
+        "geburtsdatum": "1993-10-28",
+        "alter": 32,
+        "groesse": 190,
+        "staerke": 76
+      },
+      {
+        "nummer": 2,
+        "vorname": "Edy",
+        "nachname": "Silva",
+        "position": "KM",
+        "nation": "br",
+        "staerke": 77
+      },
+      {
+        "nummer": 44,
+        "vorname": "Christian",
+        "nachname": "Moga",
+        "position": "KM",
+        "nation": "pt",
+        "staerke": 77
+      },
+      {
+        "nummer": 93,
+        "vorname": "Víctor",
+        "nachname": "Romero",
+        "position": "KM",
+        "nation": "es",
+        "staerke": 77
+      },
+      {
+        "nummer": 13,
+        "vorname": "Salvador",
+        "nachname": "Salvador",
+        "position": "RL",
+        "nation": "pt",
+        "geburtsdatum": "2001-07-29",
+        "alter": 25,
+        "hand": "R",
+        "groesse": 197,
+        "staerke": 84,
+        "vertrag_bis": 2030
+      },
+      {
+        "nummer": 79,
         "vorname": "Martim",
+        "nachname": "Costa",
+        "position": "RL",
+        "nation": "pt",
+        "geburtsdatum": "2002-09-27",
+        "alter": 23,
+        "hand": "L",
+        "groesse": 188,
+        "staerke": 88,
+        "vertrag_bis": 2030,
+        "vorvertrag": "SG Flensburg-Handewitt"
+      },
+      {
+        "nummer": 7,
+        "vorname": "Natan",
+        "nachname": "Suárez",
+        "position": "RM",
+        "nation": "es",
+        "staerke": 77
+      },
+      {
+        "nummer": 8,
+        "vorname": "Jan",
+        "nachname": "Gurri",
+        "position": "RM",
+        "nation": "pt",
+        "staerke": 77
+      },
+      {
+        "nummer": 26,
+        "vorname": "Filipe",
+        "nachname": "Monteiro",
+        "position": "RM",
+        "nation": "pt",
+        "staerke": 77
+      },
+      {
+        "nummer": 3,
+        "vorname": "Emil",
+        "nachname": "Berlin",
+        "position": "RR",
+        "nation": "se",
+        "staerke": 77
+      },
+      {
+        "nummer": 6,
+        "vorname": "Francisco",
         "nachname": "Costa",
         "position": "RR",
         "nation": "pt",
-        "alter": 24,
-        "hand": "L",
-        "staerke": 88,
-        "vorvertrag": "SG Flensburg-Handewitt"
-      },
-      {
-        "vorname": "Francisco",
-        "nachname": "Costa",
-        "position": "RM",
-        "nation": "pt",
+        "geburtsdatum": "2005-02-16",
         "alter": 21,
+        "hand": "L",
+        "groesse": 189,
         "staerke": 86,
+        "vertrag_bis": 2030,
         "vorvertrag": "SG Flensburg-Handewitt"
       },
       {
-        "vorname": "Orri Freyr",
-        "nachname": "Þorkelsson",
-        "position": "LA",
-        "nation": "is",
-        "alter": 27,
-        "staerke": 82
+        "vorname": "Christian",
+        "nachname": "Manojlović",
+        "position": "RL",
+        "nation": "it",
+        "staerke": 77
       }
     ],
     "FC Porto": [
@@ -23831,6 +25081,734 @@
         "staerke": 80
       }
     ],
+    "SL Benfica": [
+      {
+        "nummer": 65,
+        "vorname": "Bernardo",
+        "nachname": "Almeida",
+        "position": "TW",
+        "nation": "pt",
+        "staerke": 74
+      },
+      {
+        "nummer": 2,
+        "vorname": "Miguel",
+        "nachname": "Sánchez-Migallón",
+        "position": "LA",
+        "nation": "es",
+        "geburtsdatum": "1995-02-08",
+        "alter": 31,
+        "hand": "R",
+        "groesse": 200,
+        "staerke": 81
+      },
+      {
+        "nummer": 7,
+        "vorname": "Stiven",
+        "nachname": "Valencia",
+        "position": "LA",
+        "nation": "is",
+        "geburtsdatum": "2000-10-27",
+        "alter": 25,
+        "groesse": 182,
+        "staerke": 76
+      },
+      {
+        "nummer": 4,
+        "vorname": "Christopher",
+        "nachname": "Hedberg",
+        "position": "RA",
+        "nation": "se",
+        "staerke": 74
+      },
+      {
+        "nummer": 55,
+        "vorname": "Mikita",
+        "nachname": "Vailupau",
+        "position": "RA",
+        "nation": "by",
+        "geburtsdatum": "1995-07-30",
+        "alter": 31,
+        "hand": "L",
+        "groesse": 186,
+        "staerke": 79,
+        "vertrag_bis": 2028
+      },
+      {
+        "nummer": 20,
+        "vorname": "Fábio",
+        "nachname": "Silva",
+        "position": "KM",
+        "nation": "pt",
+        "staerke": 74
+      },
+      {
+        "nummer": 21,
+        "vorname": "Aldo",
+        "nachname": "Pagliotta",
+        "position": "KM",
+        "nation": "es",
+        "staerke": 74
+      },
+      {
+        "nummer": 22,
+        "vorname": "Alexis",
+        "nachname": "Borges",
+        "position": "KM",
+        "nation": "pt",
+        "geburtsdatum": "1991-10-06",
+        "alter": 34,
+        "hand": "R",
+        "groesse": 196,
+        "staerke": 79,
+        "vertrag_bis": 2028
+      },
+      {
+        "nummer": 99,
+        "vorname": "Javier",
+        "nachname": "Rodríguez Moreno",
+        "position": "KM",
+        "nation": "es",
+        "geburtsdatum": "2002-07-22",
+        "alter": 24,
+        "hand": "R",
+        "groesse": 200,
+        "staerke": 79
+      },
+      {
+        "nummer": 6,
+        "vorname": "Miguel",
+        "nachname": "Mendes",
+        "position": "RL",
+        "nation": "pt",
+        "staerke": 74
+      },
+      {
+        "nummer": 15,
+        "vorname": "Alejandro",
+        "nachname": "Barbeito",
+        "position": "RM",
+        "nation": "es",
+        "staerke": 74
+      },
+      {
+        "nummer": 23,
+        "vorname": "El",
+        "nachname": "Korchi",
+        "position": "RM",
+        "nation": "es",
+        "staerke": 74
+      },
+      {
+        "nummer": 24,
+        "vorname": "Ander",
+        "nachname": "Izquierdo",
+        "position": "RM",
+        "nation": "es",
+        "staerke": 74
+      },
+      {
+        "nummer": 10,
+        "vorname": "Kristian",
+        "nachname": "Olsen",
+        "position": "RR",
+        "nation": "dk",
+        "staerke": 74
+      },
+      {
+        "nummer": 11,
+        "vorname": "Belone",
+        "nachname": "Moreira",
+        "position": "RR",
+        "nation": "pt",
+        "geburtsdatum": "1990-06-01",
+        "alter": 36,
+        "groesse": 180,
+        "staerke": 73
+      },
+      {
+        "vorname": "Tobias",
+        "nachname": "Thulin",
+        "position": "TW",
+        "nation": "se",
+        "geburtsdatum": "1995-07-05",
+        "alter": 31,
+        "groesse": 198,
+        "staerke": 81
+      },
+      {
+        "vorname": "Sindre",
+        "nachname": "Heldal",
+        "position": "LA",
+        "nation": "no",
+        "staerke": 74
+      },
+      {
+        "vorname": "Aurélien",
+        "nachname": "Padolus",
+        "position": "RL",
+        "nation": "fr",
+        "staerke": 74
+      },
+      {
+        "vorname": "William",
+        "nachname": "Bogojevic",
+        "position": "RL",
+        "nation": "se",
+        "staerke": 74
+      }
+    ],
+    "Kolstad Håndball": [
+      {
+        "nummer": 16,
+        "vorname": "Nicolai",
+        "nachname": "Neupart",
+        "position": "TW",
+        "nation": "dk",
+        "geburtsdatum": "1994-11-03",
+        "alter": 31,
+        "staerke": 78
+      },
+      {
+        "nummer": 7,
+        "vorname": "Adrian",
+        "nachname": "Aalberg",
+        "position": "LA",
+        "nation": "no",
+        "geburtsdatum": "1992-12-22",
+        "alter": 33,
+        "staerke": 79
+      },
+      {
+        "nummer": 17,
+        "vorname": "Magnus",
+        "nachname": "Stølefjell",
+        "position": "LA",
+        "nation": "no",
+        "geburtsdatum": "2003-05-01",
+        "alter": 23,
+        "staerke": 77
+      },
+      {
+        "nummer": 72,
+        "vorname": "Erlend",
+        "nachname": "Johnsen",
+        "position": "RA",
+        "nation": "no",
+        "geburtsdatum": "2003-02-13",
+        "alter": 23,
+        "staerke": 77
+      },
+      {
+        "nummer": 6,
+        "vorname": "Adam",
+        "nachname": "Blanche",
+        "position": "KM",
+        "nation": "se",
+        "geburtsdatum": "2000-10-18",
+        "alter": 25,
+        "staerke": 78
+      },
+      {
+        "nummer": 14,
+        "vorname": "Magnus",
+        "nachname": "Gullerud",
+        "position": "KM",
+        "nation": "no",
+        "geburtsdatum": "1991-11-13",
+        "alter": 34,
+        "hand": "R",
+        "groesse": 194,
+        "staerke": 85
+      },
+      {
+        "nummer": 4,
+        "vorname": "Vetle",
+        "nachname": "Eck Aga",
+        "position": "RL",
+        "nation": "no",
+        "geburtsdatum": "1993-10-04",
+        "alter": 32,
+        "hand": "R",
+        "groesse": 193,
+        "staerke": 84
+      },
+      {
+        "nummer": 22,
+        "vorname": "Simon",
+        "nachname": "Jeppsson",
+        "position": "RL",
+        "nation": "se",
+        "geburtsdatum": "1995-07-15",
+        "alter": 31,
+        "hand": "R",
+        "groesse": 203,
+        "staerke": 88,
+        "vertrag_bis": 2027
+      },
+      {
+        "nummer": 23,
+        "vorname": "Gøran",
+        "nachname": "Johannessen",
+        "position": "RL",
+        "nation": "no",
+        "geburtsdatum": "1994-04-26",
+        "alter": 32,
+        "hand": "R",
+        "groesse": 193,
+        "staerke": 86
+      },
+      {
+        "nummer": 21,
+        "vorname": "Leon",
+        "nachname": "Owrenn Bronken",
+        "position": "RM",
+        "nation": "no",
+        "geburtsdatum": "2006-05-13",
+        "alter": 20,
+        "staerke": 73
+      },
+      {
+        "nummer": 2,
+        "vorname": "Sondre",
+        "nachname": "Mikal Solheim",
+        "position": "RR",
+        "nation": "no",
+        "geburtsdatum": "2002-04-02",
+        "alter": 24,
+        "staerke": 78
+      },
+      {
+        "nummer": 3,
+        "vorname": "Emre",
+        "nachname": "Christoffer Berge",
+        "position": "RR",
+        "nation": "no",
+        "geburtsdatum": "2005-10-24",
+        "alter": 20,
+        "staerke": 73
+      },
+      {
+        "vorname": "Mishels",
+        "nachname": "Liaba",
+        "position": "RL",
+        "nation": "no",
+        "geburtsdatum": "1995-09-13",
+        "alter": 30,
+        "staerke": 78
+      },
+      {
+        "vorname": "Vemund",
+        "nachname": "Norheim Ask",
+        "position": "RL",
+        "nation": "no",
+        "geburtsdatum": "2006-01-11",
+        "alter": 20,
+        "staerke": 73
+      },
+      {
+        "vorname": "Sondre",
+        "nachname": "Orheim",
+        "position": "TW",
+        "nation": "no",
+        "staerke": 78
+      },
+      {
+        "vorname": "Vetle",
+        "nachname": "Mellemstrand Bore",
+        "position": "RL",
+        "nation": "no",
+        "geburtsdatum": "2007-06-10",
+        "alter": 19,
+        "staerke": 71,
+        "stammschuetze": true
+      },
+      {
+        "vorname": "Mikkel",
+        "nachname": "Vestli",
+        "position": "KM",
+        "nation": "no",
+        "geburtsdatum": "2003-09-15",
+        "alter": 22,
+        "staerke": 77
+      }
+    ],
+    "Elverum Håndball": [
+      {
+        "nummer": 1,
+        "vorname": "Rickard",
+        "nachname": "Frisk",
+        "position": "TW",
+        "nation": "se",
+        "staerke": 73
+      },
+      {
+        "nummer": 12,
+        "vorname": "Marius",
+        "nachname": "Bakkedal-Andersen",
+        "position": "TW",
+        "nation": "no",
+        "staerke": 73
+      },
+      {
+        "nummer": 24,
+        "vorname": "Vegard",
+        "nachname": "Bakken Øien",
+        "position": "TW",
+        "nation": "no",
+        "geburtsdatum": "1994-07-08",
+        "alter": 32,
+        "staerke": 72
+      },
+      {
+        "nummer": 5,
+        "vorname": "Anders",
+        "nachname": "Agger Pedersen",
+        "position": "KM",
+        "nation": "dk",
+        "staerke": 73
+      },
+      {
+        "nummer": 13,
+        "vorname": "Tryggvi",
+        "nachname": "Thórisson",
+        "position": "KM",
+        "nation": "is",
+        "geburtsdatum": "2002-06-18",
+        "alter": 24,
+        "staerke": 73
+      },
+      {
+        "nummer": 19,
+        "vorname": "Oscar",
+        "nachname": "Theodor Uliana Starck",
+        "position": "KM",
+        "nation": "se",
+        "geburtsdatum": "2004-06-19",
+        "alter": 22,
+        "staerke": 71
+      },
+      {
+        "nummer": 20,
+        "vorname": "Sondre",
+        "nachname": "Gjerdalen",
+        "position": "KM",
+        "nation": "no",
+        "geburtsdatum": "1999-08-30",
+        "alter": 27,
+        "staerke": 73
+      },
+      {
+        "nummer": 32,
+        "vorname": "Viljar",
+        "nachname": "August Wathne Guttormsen",
+        "position": "KM",
+        "nation": "no",
+        "staerke": 73
+      },
+      {
+        "nummer": 17,
+        "vorname": "Erik",
+        "nachname": "Thorsteinsen Toft",
+        "position": "RL",
+        "nation": "no",
+        "geburtsdatum": "1992-11-14",
+        "alter": 33,
+        "hand": "R",
+        "groesse": 192,
+        "staerke": 77
+      },
+      {
+        "nummer": 4,
+        "vorname": "Mario",
+        "nachname": "Matic",
+        "position": "RM",
+        "nation": "no",
+        "geburtsdatum": "1994-07-23",
+        "alter": 32,
+        "groesse": 191,
+        "staerke": 77
+      },
+      {
+        "nummer": 11,
+        "vorname": "Mikkel",
+        "nachname": "Solheim",
+        "position": "RM",
+        "nation": "no",
+        "geburtsdatum": "2005-03-19",
+        "alter": 21,
+        "staerke": 69
+      },
+      {
+        "nummer": 30,
+        "vorname": "Einar",
+        "nachname": "Johansen",
+        "position": "RM",
+        "nation": "no",
+        "geburtsdatum": "2008-02-25",
+        "alter": 18,
+        "staerke": 64
+      },
+      {
+        "nummer": 31,
+        "vorname": "Albert",
+        "nachname": "Myreng Elverhøy",
+        "position": "RR",
+        "nation": "no",
+        "staerke": 73
+      },
+      {
+        "nummer": 45,
+        "vorname": "Benjamin",
+        "nachname": "Berg",
+        "position": "RR",
+        "nation": "no",
+        "geburtsdatum": "2003-03-16",
+        "alter": 23,
+        "staerke": 73
+      },
+      {
+        "vorname": "Henrik",
+        "nachname": "Ibsen",
+        "position": "TW",
+        "nation": "no",
+        "geburtsdatum": "2004-03-16",
+        "alter": 22,
+        "staerke": 71
+      },
+      {
+        "vorname": "Frederik",
+        "nachname": "Emil Pedersen",
+        "position": "RM",
+        "nation": "dk",
+        "geburtsdatum": "2005-08-25",
+        "alter": 21,
+        "staerke": 71
+      },
+      {
+        "vorname": "Valdis",
+        "nachname": "Kalniņš",
+        "position": "RR",
+        "nation": "lv",
+        "geburtsdatum": "2007-09-20",
+        "alter": 18,
+        "staerke": 67
+      },
+      {
+        "vorname": "Amara",
+        "nachname": "Karamoko",
+        "position": "KM",
+        "nation": "fr",
+        "geburtsdatum": "2005-07-05",
+        "alter": 21,
+        "staerke": 69
+      }
+    ],
+    "Runar Sandefjord": [
+      {
+        "nummer": 1,
+        "vorname": "Mats",
+        "nachname": "Bjørnstad",
+        "position": "TW",
+        "nation": "no",
+        "geburtsdatum": "1999-04-01",
+        "alter": 27,
+        "staerke": 67
+      },
+      {
+        "nummer": 25,
+        "vorname": "Oliver",
+        "nachname": "Klavenes",
+        "position": "TW",
+        "nation": "no",
+        "staerke": 67
+      },
+      {
+        "nummer": 47,
+        "vorname": "Viktor",
+        "nachname": "Tofthøj Warrer",
+        "position": "TW",
+        "nation": "dk",
+        "geburtsdatum": "2001-11-10",
+        "alter": 24,
+        "staerke": 67
+      },
+      {
+        "nummer": 8,
+        "vorname": "Preben",
+        "nachname": "Gram",
+        "position": "LA",
+        "nation": "no",
+        "geburtsdatum": "2004-09-04",
+        "alter": 21,
+        "staerke": 63
+      },
+      {
+        "nummer": 14,
+        "vorname": "Even",
+        "nachname": "Haugli",
+        "position": "LA",
+        "nation": "no",
+        "geburtsdatum": "2004-12-15",
+        "alter": 21,
+        "staerke": 66
+      },
+      {
+        "nummer": 13,
+        "vorname": "Kasper",
+        "nachname": "Bjanes Iversen",
+        "position": "RA",
+        "nation": "no",
+        "geburtsdatum": "2004-05-12",
+        "alter": 22,
+        "staerke": 65
+      },
+      {
+        "nummer": 20,
+        "vorname": "Adam",
+        "nachname": "Tenvik Bergli",
+        "position": "RA",
+        "nation": "no",
+        "geburtsdatum": "2003-11-19",
+        "alter": 22,
+        "staerke": 65,
+        "stammschuetze": true
+      },
+      {
+        "nummer": 5,
+        "vorname": "Håkon",
+        "nachname": "Økern",
+        "position": "KM",
+        "nation": "no",
+        "staerke": 67
+      },
+      {
+        "nummer": 23,
+        "vorname": "Sander",
+        "nachname": "Rogne Myklebust",
+        "position": "KM",
+        "nation": "no",
+        "staerke": 67
+      },
+      {
+        "nummer": 55,
+        "vorname": "Alexander",
+        "nachname": "Løke Gautestad",
+        "position": "KM",
+        "nation": "no",
+        "geburtsdatum": "2007-08-13",
+        "alter": 19,
+        "groesse": 197,
+        "staerke": 62
+      },
+      {
+        "nummer": 2,
+        "vorname": "Daniel",
+        "nachname": "Blomgren",
+        "position": "RL",
+        "nation": "se",
+        "geburtsdatum": "1997-06-23",
+        "alter": 29,
+        "staerke": 67
+      },
+      {
+        "nummer": 7,
+        "vorname": "Lars",
+        "nachname": "Eivind Gurrich",
+        "position": "RL",
+        "nation": "no",
+        "staerke": 67
+      },
+      {
+        "nummer": 21,
+        "vorname": "Magnus",
+        "nachname": "Aasvestad",
+        "position": "RL",
+        "nation": "no",
+        "staerke": 67
+      },
+      {
+        "nummer": 22,
+        "vorname": "Tobias",
+        "nachname": "Rivesjö",
+        "position": "RL",
+        "nation": "se",
+        "geburtsdatum": "1989-10-21",
+        "alter": 36,
+        "hand": "R",
+        "groesse": 196,
+        "staerke": 63
+      },
+      {
+        "nummer": 29,
+        "vorname": "Thomas",
+        "nachname": "Boilesen",
+        "position": "RL",
+        "nation": "no",
+        "geburtsdatum": "1998-11-11",
+        "alter": 27,
+        "staerke": 67
+      },
+      {
+        "nummer": 10,
+        "vorname": "Herman",
+        "nachname": "Solberg",
+        "position": "RM",
+        "nation": "no",
+        "geburtsdatum": "2006-08-31",
+        "alter": 20,
+        "staerke": 62
+      },
+      {
+        "nummer": 17,
+        "vorname": "Emil",
+        "nachname": "Hofstad Eriksen",
+        "position": "RM",
+        "nation": "no",
+        "geburtsdatum": "2007-09-06",
+        "alter": 18,
+        "staerke": 58
+      },
+      {
+        "nummer": 18,
+        "vorname": "Ola",
+        "nachname": "Viskum",
+        "position": "RM",
+        "nation": "no",
+        "staerke": 67
+      },
+      {
+        "nummer": 33,
+        "vorname": "Tord",
+        "nachname": "Lea Knutsen",
+        "position": "RM",
+        "nation": "no",
+        "staerke": 67
+      },
+      {
+        "nummer": 9,
+        "vorname": "Christoffer",
+        "nachname": "Rambo",
+        "position": "RR",
+        "nation": "no",
+        "geburtsdatum": "1989-11-18",
+        "alter": 36,
+        "hand": "L",
+        "groesse": 198,
+        "staerke": 67,
+        "vertrag_bis": 2028
+      },
+      {
+        "nummer": 19,
+        "vorname": "Christian",
+        "nachname": "Seierstad",
+        "position": "RR",
+        "nation": "no",
+        "geburtsdatum": "2006-10-21",
+        "alter": 19,
+        "staerke": 60
+      }
+    ],
     "ØIF Arendal": [
       {
         "nummer": 1,
@@ -23838,6 +25816,8 @@
         "nachname": "Jurisic",
         "position": "TW",
         "nation": "no",
+        "geburtsdatum": "1995-09-06",
+        "alter": 30,
         "staerke": 68
       },
       {
@@ -23846,6 +25826,8 @@
         "nachname": "Jonson Tryggestad",
         "position": "TW",
         "nation": "no",
+        "geburtsdatum": "2003-10-20",
+        "alter": 22,
         "staerke": 68
       },
       {
@@ -23854,6 +25836,8 @@
         "nachname": "Venemyr",
         "position": "TW",
         "nation": "no",
+        "geburtsdatum": "2006-11-30",
+        "alter": 19,
         "staerke": 68
       },
       {
@@ -23870,6 +25854,8 @@
         "nachname": "Kristian Langerød-Nilsen",
         "position": "LA",
         "nation": "no",
+        "geburtsdatum": "2006-03-28",
+        "alter": 20,
         "staerke": 68
       },
       {
@@ -23878,6 +25864,8 @@
         "nachname": "Løvlie Simonsen",
         "position": "LA",
         "nation": "no",
+        "geburtsdatum": "2004-03-31",
+        "alter": 22,
         "staerke": 68
       },
       {
@@ -23886,6 +25874,8 @@
         "nachname": "Swan",
         "position": "LA",
         "nation": "no",
+        "geburtsdatum": "2000-09-19",
+        "alter": 25,
         "staerke": 68
       },
       {
@@ -23894,6 +25884,8 @@
         "nachname": "Sørensen Nordahl",
         "position": "RA",
         "nation": "no",
+        "geburtsdatum": "2008-02-19",
+        "alter": 18,
         "staerke": 68
       },
       {
@@ -23902,7 +25894,10 @@
         "nachname": "Vlastos",
         "position": "RA",
         "nation": "dk",
-        "staerke": 68
+        "geburtsdatum": "2000-09-24",
+        "alter": 25,
+        "staerke": 68,
+        "stammschuetze": true
       },
       {
         "nummer": 81,
@@ -23918,6 +25913,8 @@
         "nachname": "Aunsbjerg Lyngsø",
         "position": "KM",
         "nation": "dk",
+        "geburtsdatum": "2004-08-24",
+        "alter": 22,
         "staerke": 68
       },
       {
@@ -23926,6 +25923,8 @@
         "nachname": "Chalhoub",
         "position": "KM",
         "nation": "no",
+        "geburtsdatum": "2006-02-28",
+        "alter": 20,
         "staerke": 68
       },
       {
@@ -23934,6 +25933,8 @@
         "nachname": "Hesslekrans",
         "position": "KM",
         "nation": "se",
+        "geburtsdatum": "2000-06-01",
+        "alter": 26,
         "staerke": 68
       }
     ],
@@ -25781,6 +27782,159 @@
         "staerke": 75
       }
     ],
+    "CS Minaur Baia Mare": [
+      {
+        "nummer": 12,
+        "vorname": "Sîncu",
+        "nachname": "Cristian",
+        "position": "TW",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 16,
+        "vorname": "Sergiu",
+        "nachname": "Makaria",
+        "position": "TW",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 15,
+        "vorname": "Milan",
+        "nachname": "Kotrč",
+        "position": "LA",
+        "nation": "cz",
+        "geburtsdatum": "1988-05-23",
+        "alter": 38,
+        "hand": "R",
+        "groesse": 190,
+        "staerke": 67
+      },
+      {
+        "nummer": 52,
+        "vorname": "Lucas",
+        "nachname": "Sabou",
+        "position": "LA",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 9,
+        "vorname": "David",
+        "nachname": "Pavlov",
+        "position": "RA",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 5,
+        "vorname": "David",
+        "nachname": "Moldovan",
+        "position": "RA",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 3,
+        "vorname": "Robert",
+        "nachname": "Nagy",
+        "position": "KM",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 98,
+        "vorname": "Mohamed",
+        "nachname": "Aly ismail Zeinelabedin",
+        "position": "KM",
+        "nation": "eg",
+        "staerke": 66
+      },
+      {
+        "nummer": 6,
+        "vorname": "Tudor",
+        "nachname": "Botea",
+        "position": "RL",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 51,
+        "vorname": "Viorel",
+        "nachname": "Fotache",
+        "position": "RL",
+        "nation": "ro",
+        "geburtsdatum": "1989-05-15",
+        "alter": 37,
+        "hand": "R",
+        "groesse": 196,
+        "staerke": 63
+      },
+      {
+        "nummer": 7,
+        "vorname": "Mario",
+        "nachname": "Racolța",
+        "position": "RM",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 35,
+        "vorname": "Erik",
+        "nachname": "Pop",
+        "position": "RM",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "nummer": 4,
+        "vorname": "Cosmin",
+        "nachname": "Stanciu",
+        "position": "RR",
+        "nation": "ro",
+        "staerke": 66
+      },
+      {
+        "vorname": "Edin",
+        "nachname": "Klis",
+        "position": "RL",
+        "nation": "ba",
+        "staerke": 66
+      },
+      {
+        "vorname": "Mamadou",
+        "nachname": "Diocou",
+        "position": "RA",
+        "nation": "ro",
+        "geburtsdatum": "2000-03-10",
+        "alter": 26,
+        "hand": "L",
+        "groesse": 182,
+        "staerke": 71
+      },
+      {
+        "vorname": "Hugo",
+        "nachname": "Forsberg",
+        "position": "RM",
+        "nation": "se",
+        "staerke": 66
+      },
+      {
+        "vorname": "Kristian",
+        "nachname": "Turmo Lornstad",
+        "position": "KM",
+        "nation": "no",
+        "staerke": 66
+      },
+      {
+        "vorname": "Barna",
+        "nachname": "Buzogány",
+        "position": "TW",
+        "nation": "ro",
+        "staerke": 66
+      }
+    ],
     "HC Kriens-Luzern": [
       {
         "vorname": "Kristian",
@@ -26127,6 +28281,218 @@
         "geburtsdatum": "2005-09-06",
         "alter": 20,
         "staerke": 62
+      }
+    ],
+    "HSC Suhr Aarau": [
+      {
+        "nummer": 1,
+        "vorname": "Nikola",
+        "nachname": "Perić",
+        "position": "TW",
+        "nation": "rs",
+        "staerke": 63
+      },
+      {
+        "nummer": 12,
+        "vorname": "Ivan",
+        "nachname": "Herceg",
+        "position": "TW",
+        "nation": "hr",
+        "staerke": 63
+      },
+      {
+        "nummer": 16,
+        "vorname": "Carlos",
+        "nachname": "Caforio",
+        "position": "TW",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 94,
+        "vorname": "Dragan",
+        "nachname": "Marjanac",
+        "position": "TW",
+        "nation": "rs",
+        "geburtsdatum": "1985-02-26",
+        "alter": 41,
+        "hand": "R",
+        "groesse": 192,
+        "staerke": 59
+      },
+      {
+        "nummer": 5,
+        "vorname": "Finn",
+        "nachname": "Kreuzer",
+        "position": "LA",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 23,
+        "vorname": "Julius",
+        "nachname": "Völkin",
+        "position": "LA",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 13,
+        "vorname": "Cédric",
+        "nachname": "Läber",
+        "position": "RA",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 20,
+        "vorname": "Thomas",
+        "nachname": "Bieri",
+        "position": "RA",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 25,
+        "vorname": "Martin",
+        "nachname": "Popovski",
+        "position": "RA",
+        "nation": "mk",
+        "geburtsdatum": "1994-08-26",
+        "alter": 32,
+        "groesse": 177,
+        "staerke": 65
+      },
+      {
+        "nummer": 6,
+        "vorname": "Oskar",
+        "nachname": "Witczak",
+        "position": "KM",
+        "nation": "pl",
+        "staerke": 63
+      },
+      {
+        "nummer": 17,
+        "vorname": "Seya",
+        "nachname": "Grau",
+        "position": "KM",
+        "nation": "ch",
+        "geburtsdatum": "2003-12-26",
+        "alter": 22,
+        "staerke": 61
+      },
+      {
+        "nummer": 18,
+        "vorname": "Filip",
+        "nachname": "Stojanoski",
+        "position": "KM",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 21,
+        "vorname": "Timon",
+        "nachname": "Gnehm",
+        "position": "KM",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 7,
+        "vorname": "David",
+        "nachname": "Knezević",
+        "position": "RL",
+        "nation": "de",
+        "staerke": 63
+      },
+      {
+        "nummer": 11,
+        "vorname": "Marijan",
+        "nachname": "Marić",
+        "position": "RL",
+        "nation": "hr",
+        "staerke": 63
+      },
+      {
+        "nummer": 4,
+        "vorname": "Robin",
+        "nachname": "Köchli",
+        "position": "RM",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 8,
+        "vorname": "Colin",
+        "nachname": "Müller",
+        "position": "RM",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 10,
+        "vorname": "Luc",
+        "nachname": "Honegger",
+        "position": "RM",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 24,
+        "vorname": "Nico",
+        "nachname": "Dubi",
+        "position": "RM",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 9,
+        "vorname": "João",
+        "nachname": "Ferraz",
+        "position": "RR",
+        "nation": "pt",
+        "geburtsdatum": "1990-01-08",
+        "alter": 36,
+        "hand": "L",
+        "groesse": 198,
+        "staerke": 66
+      },
+      {
+        "nummer": 15,
+        "vorname": "Thierry",
+        "nachname": "Dumont",
+        "position": "RR",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "nummer": 19,
+        "vorname": "Raphael",
+        "nachname": "Rohr",
+        "position": "RR",
+        "nation": "ch",
+        "staerke": 63
+      },
+      {
+        "vorname": "Timothy",
+        "nachname": "Reichmuth",
+        "position": "LA",
+        "nation": "ch",
+        "geburtsdatum": "1998-11-09",
+        "alter": 27,
+        "hand": "R",
+        "groesse": 179,
+        "staerke": 63
+      },
+      {
+        "vorname": "Jannis",
+        "nachname": "Scheidiger",
+        "position": "TW",
+        "nation": "ch",
+        "geburtsdatum": "2002-08-08",
+        "alter": 24,
+        "groesse": 193,
+        "staerke": 66
       }
     ],
     "ALPLA HC Hard": [
@@ -27002,6 +29368,354 @@
         "hand": "L",
         "groesse": 184,
         "staerke": 60
+      }
+    ],
+    "roomz JAGS Vöslau": [
+      {
+        "nummer": 1,
+        "vorname": "Thomas",
+        "nachname": "Bauer",
+        "position": "TW",
+        "nation": "at",
+        "geburtsdatum": "1986-01-24",
+        "alter": 40,
+        "hand": "R",
+        "groesse": 189,
+        "staerke": 63
+      },
+      {
+        "nummer": 16,
+        "vorname": "Lucas",
+        "nachname": "Binder",
+        "position": "TW",
+        "nation": "at",
+        "staerke": 60
+      },
+      {
+        "nummer": 42,
+        "vorname": "Boris",
+        "nachname": "Ilov",
+        "position": "TW",
+        "nation": "at",
+        "staerke": 60
+      },
+      {
+        "nummer": 61,
+        "vorname": "Florian",
+        "nachname": "Kaiper",
+        "position": "TW",
+        "nation": "at",
+        "geburtsdatum": "1995-05-26",
+        "alter": 31,
+        "hand": "R",
+        "groesse": 186,
+        "staerke": 64
+      },
+      {
+        "nummer": 10,
+        "vorname": "Julian",
+        "nachname": "Riedner",
+        "position": "LA",
+        "nation": "at",
+        "staerke": 60
+      },
+      {
+        "nummer": 53,
+        "vorname": "Dominik",
+        "nachname": "Dömötör",
+        "position": "LA",
+        "nation": "hu",
+        "staerke": 60
+      },
+      {
+        "nummer": 68,
+        "vorname": "Fabian",
+        "nachname": "Schartel",
+        "position": "LA",
+        "nation": "at",
+        "geburtsdatum": "1996-10-03",
+        "alter": 29,
+        "hand": "R",
+        "groesse": 183,
+        "staerke": 60
+      },
+      {
+        "nummer": 4,
+        "vorname": "Roger",
+        "nachname": "Giner",
+        "position": "RA",
+        "nation": "es",
+        "staerke": 60
+      },
+      {
+        "nummer": 15,
+        "vorname": "Florian",
+        "nachname": "Fritz",
+        "position": "RA",
+        "nation": "at",
+        "staerke": 60
+      },
+      {
+        "nummer": 75,
+        "vorname": "Marijan",
+        "nachname": "Rojnica",
+        "position": "RA",
+        "nation": "at",
+        "geburtsdatum": "2000-05-30",
+        "alter": 26,
+        "hand": "L",
+        "groesse": 176,
+        "staerke": 60
+      },
+      {
+        "nummer": 55,
+        "vorname": "Eduardo",
+        "nachname": "Mendonça",
+        "position": "KM",
+        "nation": "pt",
+        "staerke": 60
+      },
+      {
+        "nummer": 84,
+        "vorname": "Jonas",
+        "nachname": "Dell",
+        "position": "KM",
+        "nation": "de",
+        "staerke": 60
+      },
+      {
+        "nummer": 59,
+        "vorname": "John",
+        "nachname": "Baxter",
+        "position": "RL",
+        "nation": "at",
+        "staerke": 60
+      },
+      {
+        "nummer": 66,
+        "vorname": "Moritz",
+        "nachname": "Doblhoff-Dier",
+        "position": "RL",
+        "nation": "at",
+        "staerke": 60
+      },
+      {
+        "nummer": 77,
+        "vorname": "Victor",
+        "nachname": "Pelechenko",
+        "position": "RL",
+        "nation": "fr",
+        "staerke": 60
+      },
+      {
+        "nummer": 5,
+        "vorname": "Lukas",
+        "nachname": "Nikolic",
+        "position": "RM",
+        "nation": "at",
+        "geburtsdatum": "2001-04-09",
+        "alter": 25,
+        "hand": "R",
+        "groesse": 188,
+        "staerke": 60
+      },
+      {
+        "nummer": 9,
+        "vorname": "Leonardo",
+        "nachname": "Abrahão",
+        "position": "RM",
+        "nation": "br",
+        "geburtsdatum": "1996-09-09",
+        "alter": 29,
+        "hand": "R",
+        "groesse": 180,
+        "staerke": 60
+      },
+      {
+        "nummer": 34,
+        "vorname": "Moritz",
+        "nachname": "Bachmann",
+        "position": "RM",
+        "nation": "at",
+        "geburtsdatum": "2000-05-28",
+        "alter": 26,
+        "hand": "R",
+        "groesse": 180,
+        "staerke": 60
+      },
+      {
+        "nummer": 11,
+        "vorname": "Raphael",
+        "nachname": "Muck",
+        "position": "RR",
+        "nation": "at",
+        "staerke": 60
+      },
+      {
+        "nummer": 14,
+        "vorname": "Emil",
+        "nachname": "Scheicher",
+        "position": "RR",
+        "nation": "at",
+        "staerke": 60
+      },
+      {
+        "nummer": 17,
+        "vorname": "Mateo",
+        "nachname": "Dika",
+        "position": "RR",
+        "nation": "hr",
+        "staerke": 60
+      },
+      {
+        "vorname": "Chrysanthos",
+        "nachname": "Tsanaxidis",
+        "position": "KM",
+        "nation": "gr",
+        "staerke": 60
+      },
+      {
+        "vorname": "Joan",
+        "nachname": "Amigó Boada",
+        "position": "RL",
+        "nation": "at",
+        "staerke": 60
+      }
+    ],
+    "Sparkasse Schwaz Handball Tirol": [
+      {
+        "nummer": 12,
+        "vorname": "Tobias",
+        "nachname": "Alber",
+        "position": "TW",
+        "nation": "at",
+        "staerke": 61
+      },
+      {
+        "nummer": 52,
+        "vorname": "Boris",
+        "nachname": "Tanic",
+        "position": "TW",
+        "nation": "at",
+        "geburtsdatum": "1996-06-22",
+        "alter": 30,
+        "hand": "L",
+        "groesse": 190,
+        "staerke": 61
+      },
+      {
+        "nummer": 47,
+        "vorname": "Benjamin",
+        "nachname": "Erhard",
+        "position": "LA",
+        "nation": "at",
+        "staerke": 61
+      },
+      {
+        "nummer": 77,
+        "vorname": "Lukas",
+        "nachname": "Prader",
+        "position": "LA",
+        "nation": "at",
+        "staerke": 61
+      },
+      {
+        "nummer": 17,
+        "vorname": "Filip",
+        "nachname": "Perić",
+        "position": "RA",
+        "nation": "hr",
+        "geburtsdatum": "1996-10-18",
+        "alter": 29,
+        "hand": "L",
+        "groesse": 180,
+        "staerke": 61
+      },
+      {
+        "nummer": 21,
+        "vorname": "Philipp",
+        "nachname": "Jochimsen",
+        "position": "RA",
+        "nation": "de",
+        "staerke": 61
+      },
+      {
+        "nummer": 6,
+        "vorname": "Emanuel",
+        "nachname": "Petrusic",
+        "position": "KM",
+        "nation": "at",
+        "geburtsdatum": "2001-06-26",
+        "alter": 25,
+        "hand": "R",
+        "groesse": 193,
+        "staerke": 62
+      },
+      {
+        "nummer": 97,
+        "vorname": "Samuel",
+        "nachname": "Kofler",
+        "position": "KM",
+        "nation": "at",
+        "geburtsdatum": "1997-05-19",
+        "alter": 29,
+        "hand": "R",
+        "groesse": 188,
+        "staerke": 61
+      },
+      {
+        "nummer": 5,
+        "vorname": "Jelte",
+        "nachname": "Hiemstra",
+        "position": "RL",
+        "nation": "nl",
+        "staerke": 61
+      },
+      {
+        "nummer": 19,
+        "vorname": "Petar",
+        "nachname": "Medić",
+        "position": "RL",
+        "nation": "hr",
+        "geburtsdatum": "1996-06-12",
+        "alter": 30,
+        "hand": "R",
+        "groesse": 196,
+        "staerke": 61
+      },
+      {
+        "nummer": 26,
+        "vorname": "Michael",
+        "nachname": "Miskovez",
+        "position": "RL",
+        "nation": "at",
+        "geburtsdatum": "1997-08-29",
+        "alter": 29,
+        "hand": "R",
+        "groesse": 199,
+        "staerke": 66
+      },
+      {
+        "nummer": 35,
+        "vorname": "Thomas",
+        "nachname": "Wagner",
+        "position": "RM",
+        "nation": "at",
+        "staerke": 61
+      },
+      {
+        "vorname": "Robin",
+        "nachname": "Leunissen",
+        "position": "RL",
+        "nation": "nl",
+        "staerke": 61
+      },
+      {
+        "vorname": "Jonas",
+        "nachname": "Riecke",
+        "position": "RR",
+        "nation": "de",
+        "staerke": 61
       }
     ],
     "BT Füchse": [
