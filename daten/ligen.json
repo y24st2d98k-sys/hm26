@@ -49,7 +49,8 @@
               },
               "sponsoren": {
                 "Hallenname": "GETEC"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: SC Magdeburg (Handball) (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "Füchse Berlin",
@@ -78,7 +79,8 @@
                 "nachname": "Krickau",
                 "nation": "dk",
                 "seit": 2025
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: Füchse Berlin (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "THW Kiel",
@@ -111,7 +113,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Wunderino"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: THW Kiel (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "SG Flensburg-Handewitt",
@@ -138,9 +141,9 @@
               "trainer": {
                 "vorname": "Aleš",
                 "nachname": "Pajovič",
-                "nation": "si",
-                "geprueft": false
-              }
+                "nation": "si"
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: SG Flensburg-Handewitt (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "MT Melsungen",
@@ -168,7 +171,8 @@
                 "nachname": "García Parrondo",
                 "nation": "es",
                 "seit": 2021
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: MT Melsungen (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "Rhein-Neckar Löwen",
@@ -202,7 +206,8 @@
               "sponsoren": {
                 "Hallenname": "SAP"
               },
-              "zuschauerschnitt": 8500
+              "zuschauerschnitt": 8500,
+              "quelle": "Kader: geprüft (September 2026)"
             },
             {
               "name": "VfL Gummersbach",
@@ -233,7 +238,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Schwalbe"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: en.wikipedia.org: VfL Gummersbach (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "TBV Lemgo Lippe",
@@ -265,7 +271,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Phoenix Contact"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: TBV Lemgo (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "TSV Hannover-Burgdorf",
@@ -296,7 +303,8 @@
               },
               "sponsoren": {
                 "Hallenname": "ZAG"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: TSV Hannover-Burgdorf (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "Handball Sport Verein Hamburg",
@@ -323,12 +331,12 @@
                 "vorname": "Torsten",
                 "nachname": "Jansen",
                 "nation": "de",
-                "seit": 2018,
-                "geprueft": false
+                "seit": 2018
               },
               "sponsoren": {
                 "Hallenname": "Barclays"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: Handball Club Hamburg (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "Frisch Auf Göppingen",
@@ -355,12 +363,12 @@
               "trainer": {
                 "vorname": "Ben",
                 "nachname": "Matschke",
-                "nation": "de",
-                "geprueft": false
+                "nation": "de"
               },
               "sponsoren": {
                 "Hallenname": "EWS"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: Frisch Auf Göppingen (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "TVB Stuttgart",
@@ -393,7 +401,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Porsche"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026)"
             },
             {
               "name": "HC Erlangen",
@@ -418,12 +427,12 @@
               "trainer": {
                 "vorname": "Johannes",
                 "nachname": "Sellin",
-                "nation": "de",
-                "geprueft": false
+                "nation": "de"
               },
               "sponsoren": {
                 "Hallenname": "Nürnberger Versicherung"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: HC Erlangen (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "HSG Wetzlar",
@@ -453,7 +462,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Buderus"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: HSG Wetzlar (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "Bergischer HC",
@@ -481,7 +491,8 @@
                 "nachname": "Pütz",
                 "nation": "de",
                 "seit": 2023
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026)"
             },
             {
               "name": "ThSV Eisenach",
@@ -509,7 +520,8 @@
                 "nachname": "Hinze",
                 "nation": "de",
                 "geprueft": false
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026)"
             },
             {
               "name": "HBW Balingen-Weilstetten",
@@ -539,7 +551,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Sparkasse Zollernalb"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: HBW Balingen-Weilstetten (Kader 2026/27)"
             },
             {
               "name": "SG BBM Bietigheim",
@@ -571,7 +584,8 @@
               },
               "sponsoren": {
                 "Hallenname": "EgeTrans"
-              }
+              },
+              "quelle": "Kader: geprüft (September 2026); Trainer: de.wikipedia.org: SG BBM Bietigheim (Infobox, Artikel mit Kader 2026/27)"
             }
           ],
           "quelle": "de.wikipedia.org: Handball-Bundesliga 2026/27"
@@ -600,6 +614,11 @@
               },
               "sponsoren": {
                 "Hallenname": "Merkur"
+              },
+              "quelle": "Kader: de.wikipedia.org: TuS N-Lübbecke (Kader des TuS N-Lübbecke 2026/27); Trainer: de.wikipedia.org: TuS N-Lübbecke (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Davor",
+                "nachname": "Dominiković"
               }
             },
             {
@@ -620,6 +639,11 @@
               },
               "sponsoren": {
                 "Hallenname": "Kampa"
+              },
+              "quelle": "Kader: de.wikipedia.org: GWD Minden (Aktueller Kader der Saison 2026/27); Trainer: de.wikipedia.org: GWD Minden (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Aaron",
+                "nachname": "Ziercke"
               }
             },
             {
@@ -636,6 +660,11 @@
               "ruf": 54,
               "rivalen": {
                 "GWD": 54
+              },
+              "quelle": "Kader: de.wikipedia.org: HSG Nordhorn-Lingen (Kader Saison 2026/27); Trainer: de.wikipedia.org: HSG Nordhorn-Lingen (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Mark",
+                "nachname": "Bult"
               }
             },
             {
@@ -653,6 +682,11 @@
               "rivalen": {},
               "sponsoren": {
                 "Hallenname": "Mittelbrandenburgische Sparkasse"
+              },
+              "quelle": "Kader: de.wikipedia.org: 1. VfL Potsdam (Kader Saison 2026/27); Trainer: de.wikipedia.org: 1. VfL Potsdam (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Emir",
+                "nachname": "Kurtagic"
               }
             },
             {
@@ -672,6 +706,12 @@
               },
               "sponsoren": {
                 "Hallenname": "Quarterback Immobilien"
+              },
+              "quelle": "Kader: de.wikipedia.org: SC DHfK Leipzig Handball (Kader der Saison 2026/27); Trainer: de.wikipedia.org: SC DHfK Leipzig Handball (Kader 2026/27)",
+              "trainer": {
+                "vorname": "Frank",
+                "nachname": "Carstens",
+                "nation": "de"
               }
             },
             {
@@ -690,6 +730,11 @@
                 "HAM": 70,
                 "FER": 56,
                 "DOR": 58
+              },
+              "quelle": "Kader: de.wikipedia.org: TUSEM Essen (Kader Saison 2026/27); Trainer: de.wikipedia.org: TUSEM Essen (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Kenji",
+                "nachname": "Hövels"
               }
             },
             {
@@ -706,6 +751,12 @@
               "ruf": 50,
               "rivalen": {
                 "DHF": 58
+              },
+              "quelle": "Kader: de.wikipedia.org: Dessau-Roßlauer HV (Kader 2026/27); Trainer: de.wikipedia.org: Dessau-Roßlauer HV (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Vanja",
+                "nachname": "Radić",
+                "nation": "ba"
               }
             },
             {
@@ -734,7 +785,12 @@
                 "#ffffff"
               ],
               "ruf": 50,
-              "rivalen": {}
+              "rivalen": {},
+              "quelle": "Kader: de.wikipedia.org: VfL Lübeck-Schwartau (Kader für die Saison 2026/27); Trainer: de.wikipedia.org: VfL Lübeck-Schwartau (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "David",
+                "nachname": "Röhrig"
+              }
             },
             {
               "name": "Die Eulen Ludwigshafen",
@@ -763,6 +819,12 @@
               "ruf": 48,
               "rivalen": {
                 "ESS": 58
+              },
+              "quelle": "Kader: de.wikipedia.org: TSV Bayer Dormagen (Kader 2026/27); Trainer: de.wikipedia.org: TSV Bayer Dormagen (Kader 2026/27)",
+              "trainer": {
+                "vorname": "Julian",
+                "nachname": "Bauer",
+                "nation": "de"
               }
             },
             {
@@ -780,6 +842,11 @@
               "rivalen": {},
               "sponsoren": {
                 "Hallenname": "HUK-COBURG"
+              },
+              "quelle": "Kader: de.wikipedia.org: HSC 2000 Coburg (Kader Saison 2026/27); Trainer: de.wikipedia.org: HSC 2000 Coburg (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Anel",
+                "nachname": "Mahmutefendic"
               }
             },
             {
@@ -815,6 +882,11 @@
               "ruf": 47,
               "rivalen": {
                 "ESS": 56
+              },
+              "quelle": "Kader: de.wikipedia.org: TuS Ferndorf (Kader der Saison 2026/27); Trainer: de.wikipedia.org: TuS Ferndorf (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Ceven",
+                "nachname": "Klatt"
               }
             },
             {
@@ -832,6 +904,11 @@
               "rivalen": {
                 "HAM": 58,
                 "NOL": 52
+              },
+              "quelle": "Kader: de.wikipedia.org: TV Emsdetten (Der Kader der Saison 2026/27); Trainer: de.wikipedia.org: TV Emsdetten (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Lennart",
+                "nachname": "Lingener"
               }
             },
             {
@@ -852,6 +929,11 @@
               },
               "sponsoren": {
                 "Hallenname": "Krollmann"
+              },
+              "quelle": "Kader: de.wikipedia.org: VfL Eintracht Hagen (Kader 2026/27); Trainer: de.wikipedia.org: VfL Eintracht Hagen (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Pavel",
+                "nachname": "Prokopec"
               }
             },
             {
@@ -864,6 +946,11 @@
               "ruf": 53,
               "rivalen": {
                 "DHF": 60
+              },
+              "quelle": "Kader: de.wikipedia.org: HC Elbflorenz (Kader Saison 2026/27); Trainer: de.wikipedia.org: HC Elbflorenz (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "André",
+                "nachname": "Haber"
               }
             },
             {
@@ -871,7 +958,8 @@
               "kurz": "HUT",
               "ort": "Hüttenberg",
               "halle": "Sporthalle Hüttenberg",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: en.wikipedia.org: TV Hüttenberg (Team)"
             }
           ],
           "quelle": "de.wikipedia.org: 2. Handball-Bundesliga 2026/27 (Stand 20.09.2026)"
@@ -926,7 +1014,8 @@
               },
               "stab": {
                 "cotrainer": "Henrik Kronborg"
-              }
+              },
+              "quelle": "Kader: de.wikipedia.org: Aalborg Håndbold (Kader 2026/27); Trainer: de.wikipedia.org: Aalborg Håndbold (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "GOG",
@@ -950,7 +1039,7 @@
               },
               "trainer": {
                 "vorname": "Kasper",
-                "nachname": "Christensen",
+                "nachname": "Kristensen",
                 "nation": "dk"
               },
               "stab": {
@@ -958,7 +1047,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Sydbank"
-              }
+              },
+              "quelle": "Kader: en.wikipedia.org: GOG Håndbold (Team); Trainer: en.wikipedia.org: GOG Håndbold (Technical staff 2026–27)"
             },
             {
               "name": "Skjern Håndbold",
@@ -982,6 +1072,11 @@
               },
               "sponsoren": {
                 "Hallenname": "Skjern Bank"
+              },
+              "quelle": "Kader: en.wikipedia.org: Skjern Håndbold (Team); Trainer: en.wikipedia.org: Skjern Håndbold (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Oscar",
+                "nachname": "Carlén"
               }
             },
             {
@@ -998,6 +1093,12 @@
               "ruf": 75,
               "sponsoren": {
                 "Hallenname": "Jysk"
+              },
+              "quelle": "Kader: en.wikipedia.org: Bjerringbro-Silkeborg Håndbold (Team); Trainer: en.wikipedia.org: Bjerringbro-Silkeborg Håndbold (Technical staff 2026–27)",
+              "trainer": {
+                "vorname": "Simon",
+                "nachname": "Sørensen",
+                "nation": "dk"
               }
             },
             {
@@ -1022,6 +1123,11 @@
               },
               "sponsoren": {
                 "Hallenname": "Sydbank"
+              },
+              "quelle": "Kader: de.wikipedia.org: KIF Kolding (Kader 2026/27); Trainer: de.wikipedia.org: KIF Kolding (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Anders",
+                "nachname": "Eggert"
               }
             },
             {
@@ -1038,6 +1144,11 @@
               "ruf": 70,
               "rivalen": {
                 "KIF": 70
+              },
+              "quelle": "Kader: en.wikipedia.org: Fredericia HK (Current squad); Trainer: en.wikipedia.org: Fredericia HK (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Jesper",
+                "nachname": "Houmark"
               }
             },
             {
@@ -1082,6 +1193,11 @@
               },
               "sponsoren": {
                 "Hallenname": "Jyske Bank"
+              },
+              "quelle": "Kader: en.wikipedia.org: Mors-Thy Håndbold (Team); Trainer: en.wikipedia.org: Mors-Thy Håndbold (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Toni",
+                "nachname": "Johansson"
               }
             },
             {
@@ -1098,6 +1214,11 @@
               "ruf": 69,
               "rivalen": {
                 "SJE": 58
+              },
+              "quelle": "Kader: en.wikipedia.org: Ribe-Esbjerg HH (Current squad); Trainer: en.wikipedia.org: Ribe-Esbjerg HH (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Anders",
+                "nachname": "Thomsen"
               }
             },
             {
@@ -1111,7 +1232,12 @@
                 "#ffffff",
                 "#0057a6"
               ],
-              "ruf": 70
+              "ruf": 70,
+              "quelle": "Kader: en.wikipedia.org: Skanderborg AGF Håndbold (Current squad); Trainer: en.wikipedia.org: Skanderborg AGF Håndbold (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Nick",
+                "nachname": "Rasmussen"
+              }
             },
             {
               "name": "SønderjyskE",
@@ -1145,7 +1271,12 @@
                 "#009640",
                 "#ffffff"
               ],
-              "ruf": 64
+              "ruf": 64,
+              "quelle": "Kader: en.wikipedia.org: Nordsjælland Håndbold (Current squad); Trainer: en.wikipedia.org: Nordsjælland Håndbold (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Laurids",
+                "nachname": "Søgaard"
+              }
             },
             {
               "name": "TMS Ringsted",
@@ -1158,7 +1289,8 @@
                 "#ffd500",
                 "#0057a6"
               ],
-              "ruf": 62
+              "ruf": 62,
+              "quelle": "Kader: en.wikipedia.org: TMS Ringsted (Current squad)"
             },
             {
               "name": "Skive fH",
@@ -1170,7 +1302,12 @@
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 62
+              "ruf": 62,
+              "quelle": "Kader: en.wikipedia.org: Skive fH (Current squad); Trainer: en.wikipedia.org: Skive fH (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Arne",
+                "nachname": "Damgaard"
+              }
             }
           ],
           "playoffs": 8,
@@ -1196,6 +1333,11 @@
               "ruf": 56,
               "sponsoren": {
                 "Hallenname": "Nordea"
+              },
+              "quelle": "Kader: en.wikipedia.org: Lemvig-Thyborøn Håndbold (Team); Trainer: en.wikipedia.org: Lemvig-Thyborøn Håndbold (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Dennis",
+                "nachname": "Bo Jensen"
               }
             },
             {
@@ -1316,8 +1458,8 @@
               "kurz": "PSG",
               "ort": "Paris",
               "gegruendet": 1941,
-              "halle": "Halle Georges Carpentier",
-              "kapazitaet": 4000,
+              "halle": "Stade Pierre de Coubertin",
+              "kapazitaet": 3344,
               "farben": [
                 "#003da5",
                 "#e2001a"
@@ -1336,7 +1478,8 @@
                 "vorname": "Stefan",
                 "nachname": "Madsen",
                 "nation": "dk"
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "HBC Nantes",
@@ -1344,7 +1487,7 @@
               "ort": "Nantes",
               "gegruendet": 1953,
               "halle": "H Arena",
-              "kapazitaet": 10000,
+              "kapazitaet": 5902,
               "farben": [
                 "#ffd500",
                 "#000000"
@@ -1363,7 +1506,8 @@
                 "vorname": "Grégory",
                 "nachname": "Cojean",
                 "nation": "fr"
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "Montpellier Handball",
@@ -1371,7 +1515,7 @@
               "ort": "Montpellier",
               "gegruendet": 1982,
               "halle": "FDI Stadium",
-              "kapazitaet": 8200,
+              "kapazitaet": 2505,
               "farben": [
                 "#0057a6",
                 "#ffffff"
@@ -1394,15 +1538,16 @@
               },
               "sponsoren": {
                 "Hallenname": "FDI"
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "USAM Nîmes Gard",
               "kurz": "NIM",
               "ort": "Nîmes",
               "gegruendet": 1965,
-              "halle": "Parnasse",
-              "kapazitaet": 3200,
+              "halle": "Le Parnasse",
+              "kapazitaet": 3333,
               "farben": [
                 "#e2001a",
                 "#ffffff"
@@ -1421,15 +1566,16 @@
                 "nachname": "Saurina",
                 "nation": "fr",
                 "seit": 2026
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "Chambéry Savoie Mont Blanc",
               "kurz": "CHA",
               "ort": "Chambéry",
               "gegruendet": 1948,
-              "halle": "Le Phare",
-              "kapazitaet": 4200,
+              "halle": "Le Phare Grand Chambéry",
+              "kapazitaet": 4400,
               "farben": [
                 "#0057a6",
                 "#ffd500"
@@ -1440,15 +1586,20 @@
                 "muster": 7,
                 "symbol": 1
               },
-              "rivalen": {}
+              "rivalen": {},
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Asier",
+                "nachname": "Antonio"
+              }
             },
             {
               "name": "Saint-Raphaël Var Handball",
               "kurz": "SRV",
               "ort": "Saint-Raphaël",
               "gegruendet": 1966,
-              "halle": "Palais des Sports",
-              "kapazitaet": 2800,
+              "halle": "Palais des sports J-F. Krakowski",
+              "kapazitaet": 2413,
               "farben": [
                 "#009640",
                 "#ffffff"
@@ -1461,15 +1612,16 @@
                 "vorname": "Benjamin",
                 "nachname": "Braux",
                 "nation": "fr"
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "Limoges Handball",
               "kurz": "LIM",
               "ort": "Limoges",
               "gegruendet": 1990,
-              "halle": "Palais des Sports Beaublanc",
-              "kapazitaet": 5000,
+              "halle": "Palais des sports de Beaublanc",
+              "kapazitaet": 4000,
               "farben": [
                 "#e2001a",
                 "#000000"
@@ -1479,6 +1631,11 @@
                 "form": 5,
                 "muster": 1,
                 "symbol": 6
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Alberto",
+                "nachname": "Entrerrios"
               }
             },
             {
@@ -1486,8 +1643,8 @@
               "kurz": "TOU",
               "ort": "Toulouse",
               "gegruendet": 1966,
-              "halle": "Palais des Sports André Brouat",
-              "kapazitaet": 3500,
+              "halle": "Palais des Sports A. Brouat",
+              "kapazitaet": 3800,
               "farben": [
                 "#7a1f3d",
                 "#ffffff"
@@ -1500,9 +1657,9 @@
               },
               "trainer": {
                 "vorname": "Danijel",
-                "nachname": "Anđelković",
-                "nation": "rs"
-              }
+                "nachname": "Andjelkovic"
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "Cesson-Rennes Métropole HB",
@@ -1523,6 +1680,11 @@
               },
               "rivalen": {
                 "NAN": 60
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Sébastien",
+                "nachname": "Leriche"
               }
             },
             {
@@ -1531,12 +1693,17 @@
               "ort": "Sélestat",
               "gegruendet": 1967,
               "halle": "Centre Sportif Intercommunal",
-              "kapazitaet": 2000,
+              "kapazitaet": 2300,
               "farben": [
                 "#e2001a",
                 "#ffffff"
               ],
-              "ruf": 65
+              "ruf": 65,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Laurent",
+                "nachname": "Busselier"
+              }
             },
             {
               "name": "Pays d'Aix Université Club HB",
@@ -1544,7 +1711,7 @@
               "ort": "Aix-en-Provence",
               "gegruendet": 1966,
               "halle": "Arena du Pays d'Aix",
-              "kapazitaet": 3500,
+              "kapazitaet": 6000,
               "farben": [
                 "#ffd500",
                 "#000000"
@@ -1555,18 +1722,17 @@
               },
               "trainer": {
                 "vorname": "Eduard",
-                "nachname": "Fernández Roura",
-                "nation": "es",
-                "seit": 2026
-              }
+                "nachname": "Fernandez Roura"
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "C'Chartres Métropole Handball",
               "kurz": "CHM",
               "ort": "Chartres",
               "gegruendet": 1961,
-              "halle": "Halle Jean Cochet",
-              "kapazitaet": 1700,
+              "halle": "Le Colisée",
+              "kapazitaet": 3951,
               "farben": [
                 "#009640",
                 "#ffffff"
@@ -1577,7 +1743,8 @@
                 "nachname": "Anti",
                 "nation": "fr",
                 "seit": 2026
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "USDK Dunkerque",
@@ -1585,7 +1752,7 @@
               "ort": "Dunkerque",
               "gegruendet": 1961,
               "halle": "Stades de Flandres",
-              "kapazitaet": 2500,
+              "kapazitaet": 2175,
               "farben": [
                 "#0057a6",
                 "#ffffff"
@@ -1596,28 +1763,34 @@
                 "nachname": "Delattre",
                 "nation": "fr",
                 "seit": 2026
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "Tremblay-en-France Handball",
               "kurz": "TRE",
               "ort": "Tremblay-en-France",
               "gegruendet": 1965,
-              "halle": "Palais des Sports de Tremblay",
-              "kapazitaet": 1200,
+              "halle": "Palais des Sports",
+              "kapazitaet": 1050,
               "farben": [
                 "#e2001a",
                 "#0057a6"
               ],
-              "ruf": 64
+              "ruf": 64,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Cherif",
+                "nachname": "Hamani"
+              }
             },
             {
               "name": "Saran Loiret Handball",
               "kurz": "SAR",
               "ort": "Saran",
               "gegruendet": 1985,
-              "halle": "Halle du Bois Joly",
-              "kapazitaet": 1500,
+              "halle": "Palais des Sports Jean Ros",
+              "kapazitaet": 2800,
               "farben": [
                 "#000000",
                 "#ffd500"
@@ -1627,15 +1800,16 @@
                 "vorname": "Luís Filipe",
                 "nachname": "Roque Cruz",
                 "nation": "pt"
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             },
             {
               "name": "Caen Handball",
               "kurz": "CAE",
               "ort": "Caen",
               "gegruendet": 1987,
-              "halle": "Palais des Sports de Caen",
-              "kapazitaet": 3000,
+              "halle": "Palais des sports Caen La Mer",
+              "kapazitaet": 3700,
               "farben": [
                 "#e2001a",
                 "#0057a6"
@@ -1645,7 +1819,8 @@
                 "vorname": "Sébastien",
                 "nachname": "Quintallet",
                 "nation": "fr"
-              }
+              },
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (Daikin StarLigue); Trainer: lnh.fr, Effectif 2026/27"
             }
           ],
           "playoffs": 8,
@@ -1663,26 +1838,36 @@
               "kurz": "DIJ",
               "ort": "Dijon",
               "gegruendet": 1985,
-              "halle": "Palais des Sports Jean-Michel Geoffroy",
-              "kapazitaet": 4000,
+              "halle": "Palais des sports Jean-Michel Geoffroy",
+              "kapazitaet": 3295,
               "farben": [
                 "#e2001a",
                 "#ffffff"
               ],
-              "ruf": 60
+              "ruf": 60,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Medhi",
+                "nachname": "Ighirri"
+              }
             },
             {
               "name": "Istres Provence Handball",
               "kurz": "IST",
               "ort": "Istres",
               "gegruendet": 1966,
-              "halle": "Halle polyvalente d'Istres",
-              "kapazitaet": 2500,
+              "halle": "Halle Polyvalente",
+              "kapazitaet": 1400,
               "farben": [
                 "#009640",
                 "#ffd500"
               ],
-              "ruf": 60
+              "ruf": 60,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Bastien",
+                "nachname": "Cismondo"
+              }
             },
             {
               "name": "US Ivry Handball",
@@ -1690,109 +1875,199 @@
               "ort": "Ivry-sur-Seine",
               "gegruendet": 1947,
               "halle": "Gymnase Auguste Delaune",
-              "kapazitaet": 1500,
+              "kapazitaet": 1100,
               "farben": [
                 "#e2001a",
                 "#000000"
               ],
-              "ruf": 59
+              "ruf": 59,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Arnaud",
+                "nachname": "Calbry"
+              }
             },
             {
               "name": "US Créteil Handball",
               "kurz": "CRT",
               "ort": "Créteil",
               "gegruendet": 1964,
-              "halle": "Palais des Sports Robert Oubron",
-              "kapazitaet": 2600,
+              "halle": "Palais des Sports ROBERT OUBRON",
+              "kapazitaet": 2239,
               "farben": [
                 "#0057a6",
                 "#e2001a"
               ],
-              "ruf": 57
+              "ruf": 57,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Dragan",
+                "nachname": "Mihailovic"
+              }
             },
             {
               "name": "Massy Essonne Handball",
               "kurz": "MAS",
               "ort": "Massy",
               "halle": "Centre Omnisports Pierre de Coubertin",
-              "kapazitaet": 1800,
+              "kapazitaet": 598,
               "farben": [
                 "#0057a6",
                 "#ffd500"
               ],
-              "ruf": 55
+              "ruf": 55,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Remi",
+                "nachname": "Samson"
+              }
             },
             {
               "name": "JS Cherbourg Manche Handball",
               "kurz": "CHE",
               "ort": "Cherbourg",
-              "halle": "Complexe Sportif Chantereyne",
-              "kapazitaet": 1500,
+              "halle": "Salle Jean Jaurès",
+              "kapazitaet": 1951,
               "farben": [
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 52
+              "ruf": 52,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Franck",
+                "nachname": "Maurice"
+              }
             },
             {
               "name": "Billère Handball Pau Pyrénées",
               "kurz": "BIL",
               "ort": "Billère",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Dan Rares",
+                "nachname": "Fortuneanu"
+              },
+              "halle": "Sporting d'Este",
+              "kapazitaet": 1099
             },
             {
               "name": "Draguignan Var Handball",
               "kurz": "DRG",
               "ort": "Draguignan",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Daouda",
+                "nachname": "Karaboue"
+              },
+              "halle": "CARBONEL",
+              "kapazitaet": 1260
             },
             {
               "name": "Élite Val-d'Oise",
               "kurz": "EVO",
               "ort": "Cergy",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Patrice",
+                "nachname": "Annonay"
+              },
+              "halle": "Athletica - Salle Luc Abalo",
+              "kapazitaet": 1050
             },
             {
               "name": "Frontignan Thau Handball",
               "kurz": "FRT",
               "ort": "Frontignan",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Ulrich",
+                "nachname": "Chaduteaud"
+              },
+              "halle": "Salle des Sports Henri Ferrari",
+              "kapazitaet": 704
             },
             {
               "name": "Grand Besançon Doubs Handball",
               "kurz": "BES",
               "ort": "Besançon",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Christophe",
+                "nachname": "Viennet"
+              },
+              "halle": "Palais des sports G.Yalouz",
+              "kapazitaet": 3000
             },
             {
               "name": "HBC Cournon d'Auvergne",
               "kurz": "COU",
               "ort": "Cournon-d'Auvergne",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Guillaume",
+                "nachname": "Dupin"
+              },
+              "halle": "Maison des Sports",
+              "kapazitaet": 4655
             },
             {
               "name": "Pontault-Combault Handball",
               "kurz": "PCH",
               "ort": "Pontault-Combault",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Safwann",
+                "nachname": "Khoudar"
+              },
+              "halle": "Espace Roger-Boisrame",
+              "kapazitaet": 1250
             },
             {
               "name": "Sarrebourg Moselle Sud Handball",
               "kurz": "SMS",
               "ort": "Sarrebourg",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Ibrahima",
+                "nachname": "Diaw"
+              },
+              "halle": "Centre sportif Pierre de Coubertin",
+              "kapazitaet": 538
             },
             {
               "name": "US Saintes Handball",
               "kurz": "SAI",
               "ort": "Saintes",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Sylvain",
+                "nachname": "Kieffer"
+              },
+              "halle": "Grand Coudret",
+              "kapazitaet": 1700
             },
             {
               "name": "Valence Handball",
               "kurz": "VLC",
               "ort": "Valence",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: lnh.fr, Effectif 2026/27 (ProLigue); Trainer: lnh.fr, Effectif 2026/27",
+              "trainer": {
+                "vorname": "Guillaume",
+                "nachname": "Crepain"
+              },
+              "halle": "Palais des Sports Pierre-Mendes",
+              "kapazitaet": 1800
             }
           ],
           "teams": 16,
@@ -1823,7 +2098,7 @@
               "ort": "Barcelona",
               "gegruendet": 1942,
               "halle": "Palau Blaugrana",
-              "kapazitaet": 7585,
+              "kapazitaet": 7234,
               "farben": [
                 "#004d98",
                 "#a50044"
@@ -1843,15 +2118,16 @@
                 "nachname": "Ortega",
                 "nation": "es",
                 "seit": 2021
-              }
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27"
             },
             {
               "name": "Bidasoa Irún",
               "kurz": "IRU",
               "ort": "Irún",
               "gegruendet": 1965,
-              "halle": "Artaleku",
-              "kapazitaet": 2500,
+              "halle": "Pabellón Artaleku",
+              "kapazitaet": 2000,
               "farben": [
                 "#ffd500",
                 "#000000"
@@ -1867,15 +2143,16 @@
                 "vorname": "Álex",
                 "nachname": "Mozas",
                 "nation": "es"
-              }
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27"
             },
             {
               "name": "Ademar León",
               "kurz": "ADE",
               "ort": "León",
               "gegruendet": 1956,
-              "halle": "Palacio de los Deportes",
-              "kapazitaet": 5000,
+              "halle": "Palacio Municipal de los Deportes Urbano González Escapa",
+              "kapazitaet": 6000,
               "farben": [
                 "#009640",
                 "#ffffff"
@@ -1888,6 +2165,11 @@
               },
               "rivalen": {
                 "BAR": 70
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Luis",
+                "nachname": "Puertas Castrillo"
               }
             },
             {
@@ -1895,8 +2177,8 @@
               "kurz": "GRA",
               "ort": "Granollers",
               "gegruendet": 1944,
-              "halle": "Palau d'Esports",
-              "kapazitaet": 5500,
+              "halle": "Palau d’Esports de Granollers",
+              "kapazitaet": 6000,
               "farben": [
                 "#0057a6",
                 "#ffffff"
@@ -1904,6 +2186,11 @@
               "ruf": 73,
               "rivalen": {
                 "BAR": 62
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Antonio",
+                "nachname": "Rama García"
               }
             },
             {
@@ -1911,8 +2198,8 @@
               "kurz": "LOG",
               "ort": "Logroño",
               "gegruendet": 1989,
-              "halle": "Palacio de los Deportes",
-              "kapazitaet": 3500,
+              "halle": "Palacio de los Deportes de la Rioja",
+              "kapazitaet": 3809,
               "farben": [
                 "#e2001a",
                 "#ffffff"
@@ -1925,6 +2212,11 @@
               },
               "rivalen": {
                 "VAL": 56
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Miguel",
+                "nachname": "Ángel Velasco Encinas"
               }
             },
             {
@@ -1932,8 +2224,8 @@
               "kurz": "TOR",
               "ort": "Torrelavega",
               "gegruendet": 1977,
-              "halle": "Vicente Trueba",
-              "kapazitaet": 2200,
+              "halle": "Pabellón Municipal Vicente Trueba",
+              "kapazitaet": 2000,
               "farben": [
                 "#003da5",
                 "#ffd500"
@@ -1942,17 +2234,17 @@
               "rivalen": {},
               "trainer": {
                 "vorname": "Jacobo",
-                "nachname": "Cuétara",
-                "nation": "es"
-              }
+                "nachname": "Cuetara Larrea"
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27"
             },
             {
               "name": "Recoletas Atlético Valladolid",
               "kurz": "VAL",
               "ort": "Valladolid",
               "gegruendet": 1953,
-              "halle": "Polideportivo Huerta del Rey",
-              "kapazitaet": 5000,
+              "halle": "Polideportivo Huerta Del Rey",
+              "kapazitaet": 3550,
               "farben": [
                 "#7a1f3d",
                 "#ffffff"
@@ -1965,6 +2257,11 @@
               },
               "rivalen": {
                 "LOG": 56
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "David",
+                "nachname": "Pisonero Nieto"
               }
             },
             {
@@ -1972,21 +2269,26 @@
               "kurz": "PGE",
               "ort": "Puente Genil",
               "gegruendet": 1980,
-              "halle": "Alcalde Miguel Salas",
-              "kapazitaet": 1800,
+              "halle": "Pabellón Municipal Alcalde Miguel Salas",
+              "kapazitaet": 900,
               "farben": [
                 "#009640",
                 "#ffffff"
               ],
-              "ruf": 66
+              "ruf": 66,
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Antonio",
+                "nachname": "Malla Perez"
+              }
             },
             {
               "name": "BM Nava",
               "kurz": "NAV",
               "ort": "Nava",
               "gegruendet": 1985,
-              "halle": "El Sotón",
-              "kapazitaet": 1200,
+              "halle": "Pabellón Municipal",
+              "kapazitaet": 900,
               "farben": [
                 "#0057a6",
                 "#e2001a"
@@ -1994,6 +2296,11 @@
               "ruf": 62,
               "rivalen": {
                 "ARA": 54
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Carlos",
+                "nachname": "Villagrán Marugán"
               }
             },
             {
@@ -2001,21 +2308,26 @@
               "kurz": "CAN",
               "ort": "Cangas",
               "gegruendet": 1976,
-              "halle": "O Gatañal",
-              "kapazitaet": 1500,
+              "halle": "Pabellón Municipal O Gatañal",
+              "kapazitaet": 2500,
               "farben": [
                 "#e2001a",
                 "#000000"
               ],
-              "ruf": 64
+              "ruf": 64,
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Enrique",
+                "nachname": "Domínguez Munaiz"
+              }
             },
             {
               "name": "Villa de Aranda",
               "kurz": "ARA",
               "ort": "Aranda de Duero",
               "gegruendet": 1975,
-              "halle": "Príncipe de Asturias",
-              "kapazitaet": 1400,
+              "halle": "Pabellón Santiago Manguan",
+              "kapazitaet": 2800,
               "farben": [
                 "#ffd500",
                 "#0057a6"
@@ -2023,6 +2335,11 @@
               "ruf": 61,
               "rivalen": {
                 "NAV": 54
+              },
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Francisco",
+                "nachname": "Javier Marquez Villarejo Benavides"
               }
             },
             {
@@ -2030,64 +2347,89 @@
               "kurz": "SAG",
               "ort": "Sagunto",
               "gegruendet": 1974,
-              "halle": "Pabellón Municipal",
-              "kapazitaet": 1600,
+              "halle": "Pabellón Polideportivo Port de Sagunt",
+              "kapazitaet": 2169,
               "farben": [
                 "#0057a6",
                 "#ffffff"
               ],
               "ruf": 63,
-              "rivalen": {}
+              "rivalen": {},
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Sergio",
+                "nachname": "Mallo"
+              }
             },
             {
               "name": "BM Caserío Ciudad Real",
               "kurz": "CRE",
               "ort": "Ciudad Real",
               "gegruendet": 2011,
-              "halle": "Quijote Arena",
-              "kapazitaet": 5800,
+              "halle": "Pabellón Quijote Arena",
+              "kapazitaet": 5500,
               "farben": [
                 "#ffd500",
                 "#0057a6"
               ],
-              "ruf": 64
+              "ruf": 64,
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Santiago",
+                "nachname": "Urdiales Márquez"
+              }
             },
             {
               "name": "HORNEO BM Alicante",
               "kurz": "ALI",
               "ort": "Alicante",
-              "halle": "Pabellón Pitiu Rochel",
-              "kapazitaet": 2500,
+              "halle": "Pabellón Municipal Central Pitiu Rochel",
+              "kapazitaet": 1780,
               "farben": [
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 62
+              "ruf": 62,
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Roi",
+                "nachname": "Sánchez Santabárbara"
+              }
             },
             {
               "name": "REBI Balonmano Cuenca",
               "kurz": "CUE",
               "ort": "Cuenca",
               "gegruendet": 1996,
-              "halle": "Pabellón El Sargal",
-              "kapazitaet": 1700,
+              "halle": "Pabellón Polideportivo Municipal “El Sargal”",
+              "kapazitaet": 2000,
               "farben": [
                 "#e2001a",
                 "#ffffff"
               ],
-              "ruf": 66
+              "ruf": 66,
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Lidio",
+                "nachname": "Jiménez Carrascosa"
+              }
             },
             {
               "name": "Cajasol Sevilla BM Proin",
               "kurz": "SEV",
               "ort": "Sevilla",
-              "halle": "Pabellón San Pablo",
-              "kapazitaet": 7500,
+              "halle": "Centro Deportivo Amate",
+              "kapazitaet": 2000,
               "farben": [
                 "#009640",
                 "#ffffff"
               ],
-              "ruf": 60
+              "ruf": 60,
+              "quelle": "Kader: asobal.es, Plantilla 2026/27; Trainer: asobal.es, Equipos 2026/27",
+              "trainer": {
+                "vorname": "Antonio",
+                "nachname": "García Robledo"
+              }
             }
           ],
           "quelle": "en.wikipedia.org: 2026–27 Liga ASOBAL"
@@ -2197,7 +2539,8 @@
                 "nachname": "Lijewski",
                 "nation": "pl",
                 "seit": 2025
-              }
+              },
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore); Trainer: de.wikipedia.org: KS Kielce (Kader 2026/27)"
             },
             {
               "name": "Orlen Wisła Płock",
@@ -2226,7 +2569,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Orlen"
-              }
+              },
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore); Trainer: en.wikipedia.org: Wisła Płock (handball) (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "Piotrkowianin Piotrków Trybunalski",
@@ -2239,7 +2583,8 @@
                 "#e2001a",
                 "#ffffff"
               ],
-              "ruf": 65
+              "ruf": 65,
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "Chrobry Głogów",
@@ -2255,7 +2600,8 @@
               "ruf": 66,
               "rivalen": {
                 "OPO": 54
-              }
+              },
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "Gwardia Opole",
@@ -2271,7 +2617,8 @@
               "ruf": 66,
               "rivalen": {
                 "GLO": 54
-              }
+              },
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "MMTS Kwidzyn",
@@ -2292,7 +2639,8 @@
               },
               "rivalen": {
                 "GDA": 58
-              }
+              },
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "Energa Wybrzeże Gdańsk",
@@ -2308,7 +2656,8 @@
               "ruf": 67,
               "rivalen": {
                 "KWI": 58
-              }
+              },
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "Rebud KPR Ostrovia Ostrów Wielkopolski",
@@ -2320,7 +2669,8 @@
                 "#e2001a",
                 "#ffffff"
               ],
-              "ruf": 64
+              "ruf": 64,
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "Netland MKS Kalisz",
@@ -2332,7 +2682,8 @@
                 "#ffd500",
                 "#0057a6"
               ],
-              "ruf": 60
+              "ruf": 60,
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "Handball Stal Mielec",
@@ -2343,7 +2694,8 @@
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "Zepter KPR Legionowo",
@@ -2355,13 +2707,15 @@
                 "#e2001a",
                 "#ffd500"
               ],
-              "ruf": 49
+              "ruf": 49,
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             },
             {
               "name": "Śląsk Wrocław",
               "kurz": "SLA",
               "ort": "Wrocław",
-              "ruf": 52
+              "ruf": 52,
+              "quelle": "Kader: orlen-superliga.pl, Kadra 2026/27 (Statscore)"
             }
           ],
           "playoffs": 8,
@@ -2484,7 +2838,8 @@
                 "nachname": "Pascual",
                 "nation": "es",
                 "seit": 2024
-              }
+              },
+              "quelle": "Kader: de.wikipedia.org: KC Veszprém (Kader 2026/27); Trainer: de.wikipedia.org: KC Veszprém (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "OTP Bank-Pick Szeged",
@@ -2504,12 +2859,12 @@
               "trainer": {
                 "vorname": "Michael",
                 "nachname": "Apelgren",
-                "nation": "se",
-                "geprueft": false
+                "nation": "se"
               },
               "sponsoren": {
                 "Hallenname": "Pick"
-              }
+              },
+              "quelle": "Kader: en.wikipedia.org: SC Pick Szeged (Team); Trainer: en.wikipedia.org: SC Pick Szeged (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "MOL Tatabánya KC",
@@ -2522,7 +2877,12 @@
                 "#009640",
                 "#ffffff"
               ],
-              "ruf": 70
+              "ruf": 70,
+              "quelle": "Kader: en.wikipedia.org: Tatabánya KC (Team); Trainer: en.wikipedia.org: Tatabánya KC (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Edmond",
+                "nachname": "Tóth"
+              }
             },
             {
               "name": "FTC-Green Collect",
@@ -2563,7 +2923,12 @@
                 "#0057a6",
                 "#ffd500"
               ],
-              "ruf": 62
+              "ruf": 62,
+              "quelle": "Kader: en.wikipedia.org: Csurgói KK (Team); Trainer: en.wikipedia.org: Csurgói KK (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Alem",
+                "nachname": "Toskić"
+              }
             },
             {
               "name": "Dabas KC",
@@ -2608,6 +2973,11 @@
               "ruf": 59,
               "rivalen": {
                 "FTC": 58
+              },
+              "quelle": "Kader: en.wikipedia.org: PLER KC (Team); Trainer: en.wikipedia.org: PLER KC (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Sándor",
+                "nachname": "Lepsényi"
               }
             },
             {
@@ -2619,7 +2989,12 @@
                 "#e2001a",
                 "#000000"
               ],
-              "ruf": 58
+              "ruf": 58,
+              "quelle": "Kader: en.wikipedia.org: Szigetszentmiklósi KSK (Team); Trainer: en.wikipedia.org: Szigetszentmiklósi KSK (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Bálint",
+                "nachname": "Kilvinger"
+              }
             },
             {
               "name": "Budai Farkasok",
@@ -2642,7 +3017,12 @@
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 58
+              "ruf": 58,
+              "quelle": "Kader: en.wikipedia.org: Eger-Eszterházy SzSE (Team); Trainer: en.wikipedia.org: Eger-Eszterházy SzSE (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "József",
+                "nachname": "Padla"
+              }
             },
             {
               "name": "ETO University HT",
@@ -2657,6 +3037,11 @@
               "ruf": 59,
               "sponsoren": {
                 "Hallenname": "Audi"
+              },
+              "quelle": "Kader: en.wikipedia.org: ETO-SZESE Győr FKC (Team); Trainer: en.wikipedia.org: ETO-SZESE Győr FKC (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Zsolt",
+                "nachname": "Kopornyik"
               }
             },
             {
@@ -2734,16 +3119,15 @@
                 "SLB": 84
               },
               "trainer": {
-                "vorname": "Carlos",
-                "nachname": "Martingo",
-                "nation": "pt",
-                "seit": 2026
+                "vorname": "Magnus",
+                "nachname": "Andersson"
               },
               "stab": {
                 "cotrainer": "Tiago Rocha",
                 "torwarttrainer": "Telmo Ferreira",
                 "athletiktrainer": "Fábio Araújo"
-              }
+              },
+              "quelle": "Kader: en.wikipedia.org: FC Porto (handball) (Team); Trainer: en.wikipedia.org: FC Porto (handball) (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "SL Benfica",
@@ -2968,6 +3352,11 @@
               "ruf": 66,
               "sponsoren": {
                 "Hallenname": "Sparebanken Sør"
+              },
+              "quelle": "Kader: en.wikipedia.org: ØIF Arendal (Team); Trainer: en.wikipedia.org: ØIF Arendal (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Josip",
+                "nachname": "Vidovic"
               }
             },
             {
@@ -3001,7 +3390,12 @@
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 58
+              "ruf": 58,
+              "quelle": "Kader: en.wikipedia.org: Follo HK (Current squad); Trainer: en.wikipedia.org: Follo HK (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Thomas",
+                "nachname": "Engen"
+              }
             },
             {
               "name": "Kristiansand TH",
@@ -3336,7 +3730,8 @@
               "stab": {
                 "cotrainer": "Tonči Valčić",
                 "torwarttrainer": "Arian Jović"
-              }
+              },
+              "quelle": "Kader: en.wikipedia.org: RK Zagreb (Current squad)"
             },
             {
               "name": "RK Nexe",
@@ -3512,7 +3907,8 @@
                 "vorname": "Ivan",
                 "nachname": "Čupić",
                 "nation": "hr"
-              }
+              },
+              "quelle": "Kader: en.wikipedia.org: RK Vardar (Team); Trainer: en.wikipedia.org: RK Vardar (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "RK Eurofarm Pelister",
@@ -3533,7 +3929,8 @@
                 "vorname": "Lino",
                 "nachname": "Červar",
                 "nation": "hr"
-              }
+              },
+              "quelle": "Kader: en.wikipedia.org: RK Eurofarm Pelister (Team); Trainer: en.wikipedia.org: RK Eurofarm Pelister (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "RK Alkaloid",
@@ -3554,7 +3951,8 @@
                 "vorname": "Kiril",
                 "nachname": "Lazarov",
                 "nation": "mk"
-              }
+              },
+              "quelle": "Kader: en.wikipedia.org: RK Alkaloid (Current squad); Trainer: en.wikipedia.org: RK Alkaloid (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "RK Butel Skopje",
@@ -3576,7 +3974,12 @@
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 54
+              "ruf": 54,
+              "quelle": "Kader: en.wikipedia.org: GRK Ohrid (Team); Trainer: en.wikipedia.org: GRK Ohrid (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Boris",
+                "nachname": "Rojević"
+              }
             },
             {
               "name": "RK Tikveš",
@@ -3621,7 +4024,8 @@
               "name": "RK Mladost Bogdanci",
               "kurz": "MLA",
               "ort": "Bogdanci",
-              "ruf": 50
+              "ruf": 50,
+              "quelle": "Kader: en.wikipedia.org: RK Mladost (Current Squad)"
             },
             {
               "name": "RK Multi Essence",
@@ -3633,7 +4037,12 @@
               "name": "RK Prilep 2010",
               "kurz": "PRI",
               "ort": "Prilep",
-              "ruf": 51
+              "ruf": 51,
+              "quelle": "Kader: en.wikipedia.org: RK Prilep 2010 (Team); Trainer: en.wikipedia.org: RK Prilep 2010 (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Naum",
+                "nachname": "Taneski"
+              }
             }
           ],
           "quelle": "mk.wikipedia.org: Македонска ракометна супер лига (мажи), Екипи 2026/27; 24rakomet.mk, 04.09.2026 (1. коло)"
@@ -3672,6 +4081,11 @@
               "ruf": 76,
               "rivalen": {
                 "VEL": 80
+              },
+              "quelle": "Kader: en.wikipedia.org: RK Celje (Team); Trainer: en.wikipedia.org: RK Celje (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Klemen",
+                "nachname": "Luzar"
               }
             },
             {
@@ -3843,7 +4257,8 @@
                 "vorname": "Paulo",
                 "nachname": "Pereira",
                 "nation": "pt"
-              }
+              },
+              "quelle": "Kader: en.wikipedia.org: CS Dinamo București (men's handball) (Team); Trainer: en.wikipedia.org: CS Dinamo București (men's handball) (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "CSM Constanța",
@@ -4020,7 +4435,13 @@
               },
               "sponsoren": {
                 "Hallenname": "BBC"
-              }
+              },
+              "trainer": {
+                "vorname": "Jonas",
+                "nachname": "Wille",
+                "nation": "no"
+              },
+              "quelle": "Trainer: de.wikipedia.org: Kadetten Schaffhausen (Kader 2026/27)"
             },
             {
               "name": "HC Kriens-Luzern",
@@ -4042,7 +4463,8 @@
               },
               "sponsoren": {
                 "Hallenname": "Pilatus"
-              }
+              },
+              "quelle": "Trainer: de.wikipedia.org: HC Kriens-Luzern (Infobox, Artikel mit Kader 2026/27)"
             },
             {
               "name": "Pfadi Winterthur",
@@ -4080,6 +4502,11 @@
               },
               "sponsoren": {
                 "Hallenname": "Mobiliar"
+              },
+              "quelle": "Kader: de.wikipedia.org: BSV Bern (Kader für die Saison 2026/27); Trainer: de.wikipedia.org: BSV Bern (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "David",
+                "nachname": "Staudenmann"
               }
             },
             {
@@ -4108,7 +4535,8 @@
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 58
+              "ruf": 58,
+              "quelle": "Kader: de.wikipedia.org: GC Amicitia Zürich (Kader für die Saison 2026/27)"
             },
             {
               "name": "RTV 1879 Basel",
@@ -4191,6 +4619,12 @@
               "ruf": 62,
               "rivalen": {
                 "BRE": 84
+              },
+              "quelle": "Kader: de.wikipedia.org: Alpla HC Hard (Kader 2026/27); Trainer: de.wikipedia.org: Alpla HC Hard (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Spyros",
+                "nachname": "Balomenos",
+                "nation": "gr"
               }
             },
             {
@@ -4207,6 +4641,12 @@
               "ruf": 62,
               "rivalen": {
                 "ATZ": 60
+              },
+              "quelle": "Kader: de.wikipedia.org: Fivers WAT Margareten (HLA-Kader 2026/27); Trainer: de.wikipedia.org: Fivers WAT Margareten (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Peter",
+                "nachname": "Eckl",
+                "nation": "at"
               }
             },
             {
@@ -4223,6 +4663,12 @@
               "ruf": 58,
               "rivalen": {
                 "HAR": 84
+              },
+              "quelle": "Kader: de.wikipedia.org: Bregenz Handball (Kader 2026/27); Trainer: de.wikipedia.org: Bregenz Handball (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Julian",
+                "nachname": "Rauch",
+                "nation": "at"
               }
             },
             {
@@ -4250,6 +4696,12 @@
               "ruf": 56,
               "sponsoren": {
                 "Hallenname": "Tips"
+              },
+              "quelle": "Kader: de.wikipedia.org: HC Linz AG (Kader 2026/27); Trainer: de.wikipedia.org: HC Linz AG (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Milan",
+                "nachname": "Vunjak",
+                "nation": "si"
               }
             },
             {
@@ -4261,7 +4713,8 @@
                 "#0057a6",
                 "#ffffff"
               ],
-              "ruf": 54
+              "ruf": 54,
+              "quelle": "Kader: de.wikipedia.org: HSG Graz (Kader 2026/27)"
             },
             {
               "name": "MADx WAT Atzgersdorf",
@@ -4319,7 +4772,13 @@
                 "#e2001a",
                 "#ffffff"
               ],
-              "ruf": 52
+              "ruf": 52,
+              "quelle": "Kader: de.wikipedia.org: BT Füchse (HLA-Kader 2026/27); Trainer: de.wikipedia.org: BT Füchse (Infobox, Artikel mit Kader 2026/27)",
+              "trainer": {
+                "vorname": "Benjamin",
+                "nachname": "Teraš",
+                "nation": "si"
+              }
             },
             {
               "name": "SC kelag Ferlach",
@@ -4330,7 +4789,8 @@
                 "#e2001a",
                 "#ffffff"
               ],
-              "ruf": 53
+              "ruf": 53,
+              "quelle": "Kader: de.wikipedia.org: SC Ferlach (== HLA-Meisterliga Kader 2026/27 ==)"
             }
           ],
           "playoffs": 8,
