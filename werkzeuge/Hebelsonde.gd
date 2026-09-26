@@ -64,6 +64,10 @@ func _ready() -> void:
 		_goldregel(n)
 		get_tree().quit()
 		return
+	if nur == "wette":
+		_wette(n)
+		get_tree().quit()
+		return
 	_log("%-26s %10s %10s %10s %10s" % ["Hebel", "schlechtest", "beste", "Spanne", "Urteil"])
 
 	_wahl("Deckung", n, "abwehr", ["6-0", "5-1", "3-2-1", "4-2"])
@@ -423,3 +427,97 @@ func _goldregel(n: int) -> void:
 	else:
 		_log("%d von %d Hebeln haben eine Antwort, die immer stimmt. Die gehören repariert." % [
 			goldene, hebel.size()])
+
+
+## Risiko und Härte: Falle oder Wette?
+##
+## Die Tabelle oben misst jeden Hebel in Toren, und in Toren gemessen ist beim
+## Risiko wie bei der Härte der niedrigste Wert der beste — Spanne 1,85 und
+## 1,73 bei 800 Paarungen, beides deutlich über der Auflösungsgrenze von 0,70.
+## Damit wäre die Sache entschieden: zwei Regler, deren Optimum am Anschlag
+## liegt, also zwei Fallen.
+##
+## Nur ist der Mittelwert für diese zwei Regler das falsche Maß. Wer als
+## Außenseiter nach Kiel fährt, will nicht die Tordifferenz verbessern, er will
+## Punkte; und wenn man ohnehin mit sechs Toren Rückstand verliert, ist eine
+## Wette, die einen im Mittel sieben verlieren lässt, aber jede achte Partie
+## gewinnt, die bessere Wahl. Der Trainer maximiert Siegwahrscheinlichkeit,
+## nicht Erwartungswert.
+##
+## Deshalb hier vier Zahlen statt einer: Mittel, Streuung, Siegquote und wie oft
+## es eng blieb. Erst zusammen sagen sie, ob ein Regler eine Wette ist.
+func _wette(n: int) -> void:
+	var stark := ""
+	var schwach := ""
+	var bester := -1.0
+	var schlechtester := 999.0
+	for c in (d["ligen"]["l_de1"]["vereine"] as Array):
+		var w: float = _kaderwert(str(c))
+		if w > bester:
+			bester = w
+			stark = str(c)
+		if w < schlechtester:
+			schlechtester = w
+			schwach = str(c)
+	if stark == "" or schwach == "" or stark == schwach:
+		return
+	_log("")
+	_log("=== Risiko und Härte: Falle oder Wette? (%d Paarungen je Feld) ===" % n)
+	_log("")
+	_log("Nicht der Mittelwert entscheidet, sondern die Siegquote. Ein Regler, der")
+	_log("im Mittel kostet und trotzdem häufiger gewinnt, ist eine Wette.")
+	for lage in [
+			{"name": "Außenseiter zu Hause", "heim": schwach, "gast": stark},
+			{"name": "Favorit zu Hause", "heim": stark, "gast": schwach}]:
+		heim = str(lage["heim"])
+		gast = str(lage["gast"])
+		var m0: Dictionary = d["spiele"][paarung]
+		m0["heim"] = heim
+		m0["gast"] = gast
+		_log("")
+		_log("— %s: %s gegen %s —" % [str(lage["name"]),
+			str(d["vereine"][heim]["name"]), str(d["vereine"][gast]["name"])])
+		for h in [{"name": "Risiko", "feld": "risiko"}, {"name": "Härte", "feld": "haerte"}]:
+			_log("   %-8s %8s %10s %10s %10s %10s" % [str(h["name"]), "Wert",
+				"Mittel", "Streuung", "Siegquote", "eng (<=2)"])
+			var siegquoten: Array = []
+			for w2 in [20, 45, 70, 90]:
+				d["vereine"][heim]["taktik"] = Weltgenerator.standard_taktik()
+				_vertrautheit_gleich(heim)
+				var abst: Array = []
+				for i in range(n):
+					d["vereine"][heim]["taktik"][str(h["feld"])] = int(w2)
+					abst.append(_partie(810001 + i * 17))
+				var mittel := 0.0
+				for a in abst:
+					mittel += float(a)
+				mittel /= float(abst.size())
+				var varianz := 0.0
+				var siege := 0
+				var eng := 0
+				for a2 in abst:
+					varianz += pow(float(a2) - mittel, 2.0)
+					if float(a2) > 0.0:
+						siege += 1
+					if absf(float(a2)) <= 2.0:
+						eng += 1
+				varianz /= maxf(float(abst.size() - 1), 1.0)
+				var sq: float = float(siege) / float(abst.size()) * 100.0
+				siegquoten.append(sq)
+				_log("   %-8s %8d %10.2f %10.2f %9.1f%% %9.1f%%" % ["", w2, mittel,
+					sqrt(varianz), sq, float(eng) / float(abst.size()) * 100.0])
+			# Der Standardfehler einer Quote aus n Partien liegt bei
+			# sqrt(p(1-p)/n); bei p um 0,2 und n=400 sind das 2,0 Prozentpunkte.
+			# Zwei Quoten unterscheiden sich erst ab dem Doppelten verlässlich.
+			var schwelle: float = 2.0 * sqrt(0.2 * 0.8 / float(n)) * 100.0 * 1.41
+			var hoch: float = float(siegquoten[3])
+			var tief: float = float(siegquoten[0])
+			var urteil := "kein Unterschied in der Siegquote"
+			if hoch - tief > schwelle:
+				urteil = "hoher Wert gewinnt öfter — eine Wette"
+			elif tief - hoch > schwelle:
+				urteil = "niedriger Wert gewinnt öfter — in dieser Lage eine Falle"
+			_log("   → %s (Auflösung %.1f Punkte)" % [urteil, schwelle])
+	_log("")
+	_log("Ein Regler, der beim Außenseiter als Wette und beim Favoriten als Falle")
+	_log("erscheint, ist genau richtig gebaut: dann entscheidet die Lage.")

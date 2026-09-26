@@ -279,6 +279,28 @@ const VERWARNUNG := [
 	"Gelbe Karte: %s hat zu hart zugepackt.",
 ]
 
+## Die dritte Zeitstrafe. Ein Platzhalter: der Spieler.
+const ROT_DRITTE := [
+	"Dritte Zeitstrafe: %s muss mit Rot vom Feld.",
+	"Das war die dritte für %s — Rote Karte, der Abend ist vorbei.",
+	"%s bekommt die dritte Zeitstrafe und damit Rot.",
+	"Dritte Hinausstellung, Rote Karte: %s geht duschen.",
+	"Für %s ist Schluss: dritte Zeitstrafe, Rot.",
+	"Die Schiedsrichter zeigen %s nach der dritten Strafe die Rote Karte.",
+]
+
+## Die direkte Disqualifikation ohne drei Strafen. Ein Platzhalter: der Spieler.
+const ROT_DIREKT := [
+	"Rote Karte für %s — das war eine Nummer zu hart.",
+	"Direkt Rot: %s trifft den Gegenspieler mit vollem Risiko.",
+	"Die Schiedsrichter beraten kurz und zeigen %s die Rote Karte.",
+	"Disqualifikation für %s. Ein Foul, bei dem es hätte weh tun können.",
+	"%s reißt den Gegenspieler im Sprung herunter — Rote Karte, keine Diskussion.",
+	"Kein Zweifel bei den Unparteiischen: %s sieht Rot.",
+	"Rot für %s, und in der Halle wird es für einen Moment still.",
+	"%s geht viel zu weit. Die Schiedsrichter schicken ihn vom Feld.",
+]
+
 ## Zwei Platzhalter in fester Reihenfolge: Verein, dann der Schuetze.
 const SIEBENMETER := [
 	"Siebenmeter für %s — %s legt sich den Ball zurecht.",

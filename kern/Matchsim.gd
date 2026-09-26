@@ -1801,12 +1801,64 @@ const VERWARNUNGEN_MAX := 3
 ## In Wirklichkeit steht davor die Verwarnung — und sie ist nicht unbegrenzt.
 ## Hat eine Mannschaft ihre drei Gelben gesehen, geht jedes weitere Foul
 ## denselben Weg wie vorher: direkt auf die Strafbank.
+## Wie oft ein geahndetes Vergehen gleich die Disqualifikation ist.
+##
+## Dieser Weg fehlte: eine Rote Karte gab es nur als dritte Zeitstrafe desselben
+## Spielers. Damit kam die Simulation gemessen mit der Realismussonde auf 0,03
+## Disqualifikationen je Partie, und in der Bundesliga ist es rund jede zehnte.
+## Der Unterschied ist genau das, was im Handball direkt gepfiffen wird: das
+## Foul, bei dem die Gesundheit des Gegners auf dem Spiel stand. Dafuer braucht
+## niemand zwei Vorstrafen.
+##
+## Und es ist die Kehrseite, die dem Haerteregler bisher fehlte. Wer seine
+## Abwehr auf 90 stellt, kauft Ballgewinne und Druck — dass er dafuer einmal im
+## Jahr mit sieben Feldspielern weiterspielt, gehoert dazu. Genau so soll ein
+## Regler sein: die hohe Einstellung kann auch richtig weh tun.
+const ROT_QUOTE := 0.0055
+## Je Haertepunkt ueber 45. Ueber die Spanne von 20 bis 90 verdreifacht sich
+## damit die Wahrscheinlichkeit einer Disqualifikation.
+const ROT_JE_HAERTE := 0.00016
+
+## Die progressive Bestrafung des Handballs.
+##
+## Sie fehlte ganz: jedes geahndete Vergehen fuehrte sofort zu zwei Minuten.
+## In Wirklichkeit steht davor die Verwarnung — und sie ist nicht unbegrenzt.
+## Hat eine Mannschaft ihre drei Gelben gesehen, geht jedes weitere Foul
+## denselben Weg wie vorher: direkt auf die Strafbank. Ganz oben steht die
+## Disqualifikation, und die kennt keine Vorstufe.
 func _ahnden(v: Dictionary, a: Dictionary) -> void:
+	var haerte: float = clampf(float(v["taktik"]["haerte"]), 0.0, 100.0)
+	if rng.randf() < clampf(ROT_QUOTE + (haerte - 45.0) * ROT_JE_HAERTE, 0.0005, 0.030):
+		_disqualifikation(v, a)
+		return
 	var gelb: int = int(v["stats"].get("verwarnungen", 0))
 	if gelb < VERWARNUNGEN_MAX and rng.randf() < 0.62:
 		_verwarnung(v)
 		return
 	_zeitstrafe(v, a)
+
+## Rot ohne Vorstufe.
+##
+## Der Spieler ist fuer den Rest der Partie weg, die Mannschaft spielt zwei
+## Minuten in Unterzahl — deshalb der leere Eintrag in `gesperrt`: die Zeit
+## laeuft, aber es kommt niemand zurueck.
+func _disqualifikation(v: Dictionary, a: Dictionary) -> void:
+	var suender := _foulender_spieler(v)
+	if suender == "":
+		return
+	var zst: Dictionary = v["zustand"][suender]
+	if bool(zst.get("rot", false)):
+		return
+	zst["rot"] = true
+	zst["bewertung"] -= 1.6
+	_bewertung_dampfen(zst)
+	v["stats"]["rote"] += 1
+	_vom_platz_nehmen(v, suender)
+	(v["gesperrt"] as Array).append({"sid": "", "bis": zeit + 120.0})
+	_warteschlange.append(_ereignis("rot", _seite(v), suender,
+		Textbank.satz(Textbank.ROT_DIREKT, rng,
+			Spielerfabrik.kurz_name(daten["spieler"][suender]))))
+	_puls_aendern(a, 6.0 if a["ist_heim"] else -3.0)
 
 func _verwarnung(v: Dictionary) -> void:
 	var suender := _foulender_spieler(v)
@@ -1868,7 +1920,8 @@ func _zeitstrafe(v: Dictionary, a: Dictionary) -> void:
 		v["stats"]["rote"] += 1
 		_vom_platz_nehmen(v, suender)
 		(v["gesperrt"] as Array).append({"sid": "", "bis": zeit + 120.0})
-		_warteschlange.append(_ereignis("rot", _seite(v), suender, "Dritte Zeitstrafe: %s muss mit Rot vom Feld!" % Spielerfabrik.kurz_name(sp)))
+		_warteschlange.append(_ereignis("rot", _seite(v), suender,
+			Textbank.satz(Textbank.ROT_DRITTE, rng, Spielerfabrik.kurz_name(sp))))
 	else:
 		(v["gesperrt"] as Array).append({"sid": suender, "bis": zeit + 120.0})
 		_vom_platz_nehmen(v, suender)
