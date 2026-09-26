@@ -2215,7 +2215,7 @@
     },
     "NB I": {
       "saison": "2026/27",
-      "quelle": "Nemzeti Sport, NB I 2026–2027 (1. forduló)",
+      "quelle": "Nemzeti Sport, „Férfi kézilabda NB I, 2026–2027“ (Menetrend, Abruf 26.09.2026). Wo die Quelle beide Spiele einer Paarung beim selben Gastgeber ansetzt (Heimrechttausch), steht das spätere mit getauschtem Heimrecht: 16. Runde FTC-Green Collect–ONE Veszprém HC, 18. Runde ONE Veszprém HC–Eger-Eszterházy SzSE, 19. Runde ONE Veszprém HC–PLER-Budapest",
       "partien": [
         {
           "spieltag": 1,
@@ -2265,6 +2265,1231 @@
           "zeit": "",
           "heim": "Gyöngyösi KK",
           "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-13",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-27",
+          "zeit": "18:00",
+          "heim": "ETO University HT",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-19",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-19",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-20",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-20",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-02",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "17:00",
+          "heim": "Csurgói KK",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "Balatonfüredi KSE",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "NEKA",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "Dabas KC",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-06",
+          "zeit": "17:00",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-09",
+          "zeit": "18:00",
+          "heim": "PLER-Budapest",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-09",
+          "zeit": "18:00",
+          "heim": "ETO University HT",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-09",
+          "zeit": "18:00",
+          "heim": "ONE Veszprém HC",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-10",
+          "zeit": "18:00",
+          "heim": "Gyöngyösi KK",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-10",
+          "zeit": "18:00",
+          "heim": "Budai Farkasok",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-10",
+          "zeit": "18:00",
+          "heim": "MOL Tatabánya KC",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-16",
+          "zeit": "18:00",
+          "heim": "FTC-Green Collect",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-16",
+          "zeit": "18:00",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-17",
+          "zeit": "17:00",
+          "heim": "Csurgói KK",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-17",
+          "zeit": "18:00",
+          "heim": "Dabas KC",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-17",
+          "zeit": "18:00",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-18",
+          "zeit": "18:00",
+          "heim": "NEKA",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-18",
+          "zeit": "18:00",
+          "heim": "ONE Veszprém HC",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-21",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-25",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-02",
+          "zeit": "18:00",
+          "heim": "FTC-Green Collect",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-31",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-31",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-31",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-31",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-31",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-31",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-13",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-13",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-15",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-09-01",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-18",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-11",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-11",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-13",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-09-28",
+          "zeit": "18:00",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-05",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-05",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-07",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-12",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-12",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-26",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-03-05",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-03-05",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-17",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-17",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-18",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-19",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-26",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-26",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-04-04",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-16",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-04-25",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-04-30",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-04-30",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-04-30",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-05-01",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-05-01",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-05-01",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "ETO University HT"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-05-02",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "ETO University HT",
+          "gast": "Gyöngyösi KK"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "OTP Bank-Pick Szeged",
+          "gast": "Budai Farkasok"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "MOL Tatabánya KC",
+          "gast": "PLER-Budapest"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "Balatonfüredi KSE",
+          "gast": "Eger-Eszterházy SzSE"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "Szigetszentmiklósi KSK",
+          "gast": "ONE Veszprém HC"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "Csurgói KK",
+          "gast": "FTC-Green Collect"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "NEKA",
+          "gast": "Dabas KC"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-05-23",
+          "zeit": "",
+          "heim": "Gyöngyösi KK",
+          "gast": "OTP Bank-Pick Szeged"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-05-23",
+          "zeit": "",
+          "heim": "FTC-Green Collect",
+          "gast": "NEKA"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-05-23",
+          "zeit": "",
+          "heim": "ONE Veszprém HC",
+          "gast": "Csurgói KK"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-05-23",
+          "zeit": "",
+          "heim": "Eger-Eszterházy SzSE",
+          "gast": "Szigetszentmiklósi KSK"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-05-23",
+          "zeit": "",
+          "heim": "PLER-Budapest",
+          "gast": "Balatonfüredi KSE"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-05-23",
+          "zeit": "",
+          "heim": "Budai Farkasok",
+          "gast": "MOL Tatabánya KC"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-05-23",
+          "zeit": "",
+          "heim": "Dabas KC",
+          "gast": "ETO University HT"
         }
       ]
     },
@@ -4509,6 +5734,5182 @@
           "zeit": "18:00",
           "heim": "TuSEM Essen",
           "gast": "TuS Ferndorf"
+        }
+      ]
+    },
+    "Orlen Superliga": {
+      "saison": "2026/27",
+      "quelle": "orlen-superliga.pl, Terminarz 2026/2027 (Statscore-Daten, Abruf 26.09.2026)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "18:00",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "15:00",
+          "heim": "Chrobry Głogów",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "18:00",
+          "heim": "Gwardia Opole",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "20:15",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-06",
+          "zeit": "15:00",
+          "heim": "Śląsk Wrocław",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-06",
+          "zeit": "18:00",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-09",
+          "zeit": "18:00",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "15:00",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "18:00",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-13",
+          "zeit": "15:00",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-13",
+          "zeit": "18:00",
+          "heim": "Śląsk Wrocław",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-14",
+          "zeit": "17:00",
+          "heim": "Handball Stal Mielec",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-19",
+          "zeit": "15:00",
+          "heim": "Chrobry Głogów",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-19",
+          "zeit": "18:00",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-20",
+          "zeit": "18:00",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-21",
+          "zeit": "18:00",
+          "heim": "Gwardia Opole",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-21",
+          "zeit": "18:00",
+          "heim": "Industria Kielce",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-23",
+          "zeit": "20:15",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "15:00",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "Chrobry Głogów",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "20:15",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-27",
+          "zeit": "15:00",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-27",
+          "zeit": "18:00",
+          "heim": "Śląsk Wrocław",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-28",
+          "zeit": "18:00",
+          "heim": "Handball Stal Mielec",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "18:00",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-03",
+          "zeit": "15:00",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-03",
+          "zeit": "18:00",
+          "heim": "Gwardia Opole",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-03",
+          "zeit": "20:15",
+          "heim": "Industria Kielce",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-04",
+          "zeit": "15:00",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-04",
+          "zeit": "18:00",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "18:00",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-10",
+          "zeit": "15:00",
+          "heim": "Handball Stal Mielec",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-10",
+          "zeit": "18:00",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-11",
+          "zeit": "15:00",
+          "heim": "Chrobry Głogów",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-12",
+          "zeit": "18:00",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-12",
+          "zeit": "18:00",
+          "heim": "Śląsk Wrocław",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-09-30",
+          "zeit": "18:00",
+          "heim": "Industria Kielce",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "18:00",
+          "heim": "Gwardia Opole",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-18",
+          "zeit": "15:00",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-19",
+          "zeit": "18:00",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Handball Stal Mielec",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Śląsk Wrocław",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Chrobry Głogów",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "Gwardia Opole",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "Industria Kielce",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "Śląsk Wrocław",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "Chrobry Głogów",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "Gwardia Opole",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Industria Kielce",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "Handball Stal Mielec",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "Handball Stal Mielec",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "Orlen Wisła Płock",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "Industria Kielce",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Industria Kielce",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Netland MKS Kalisz",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Gwardia Opole",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-12",
+          "zeit": "",
+          "heim": "Chrobry Głogów",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "Śląsk Wrocław",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "Handball Stal Mielec",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "Industria Kielce",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "Gwardia Opole",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-02-06",
+          "zeit": "",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Chrobry Głogów",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Śląsk Wrocław",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Handball Stal Mielec",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Industria Kielce",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "Gwardia Opole",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "Chrobry Głogów",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "Śląsk Wrocław",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "Handball Stal Mielec",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Handball Stal Mielec"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Industria Kielce",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Gwardia Opole",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Chrobry Głogów",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Śląsk Wrocław",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "Handball Stal Mielec",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "Handball Stal Mielec",
+          "gast": "Piotrkowianin Piotrków Trybunalski"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "Zepter KPR Legionowo",
+          "gast": "Śląsk Wrocław"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "Rebud KPR Ostrovia Ostrów Wielkopolski",
+          "gast": "Chrobry Głogów"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "MMTS Kwidzyn",
+          "gast": "Energa Wybrzeże Gdańsk"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "Industria Kielce",
+          "gast": "Gwardia Opole"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "Netland MKS Kalisz",
+          "gast": "Orlen Wisła Płock"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Piotrkowianin Piotrków Trybunalski",
+          "gast": "Netland MKS Kalisz"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Orlen Wisła Płock",
+          "gast": "Industria Kielce"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Gwardia Opole",
+          "gast": "MMTS Kwidzyn"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Energa Wybrzeże Gdańsk",
+          "gast": "Rebud KPR Ostrovia Ostrów Wielkopolski"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Chrobry Głogów",
+          "gast": "Zepter KPR Legionowo"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "Śląsk Wrocław",
+          "gast": "Handball Stal Mielec"
+        }
+      ]
+    },
+    "Liga NEXUS ENERGÍA ASOBAL": {
+      "saison": "2026/27",
+      "quelle": "asobal.es, Calendario Liga NEXUS ENERGÍA ASOBAL 2026/27 (Abruf 26.09.2026); Termine ab dem Spieltag, für den noch keine Ansetzung veröffentlicht ist, offen",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-11",
+          "zeit": "19:00",
+          "heim": "BM Logroño La Rioja",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-11",
+          "zeit": "19:00",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "17:00",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "18:00",
+          "heim": "Bidasoa Irún",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "19:00",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "20:30",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-13",
+          "zeit": "12:00",
+          "heim": "Puerto Sagunto",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-13",
+          "zeit": "18:30",
+          "heim": "Villa de Aranda",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-18",
+          "zeit": "19:00",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-19",
+          "zeit": "17:00",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-19",
+          "zeit": "17:30",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-19",
+          "zeit": "18:00",
+          "heim": "Puerto Sagunto",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-19",
+          "zeit": "19:00",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-20",
+          "zeit": "12:30",
+          "heim": "Ademar León",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-20",
+          "zeit": "12:30",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-20",
+          "zeit": "17:00",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-25",
+          "zeit": "19:00",
+          "heim": "Ademar León",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-26",
+          "zeit": "16:00",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-26",
+          "zeit": "17:00",
+          "heim": "BM Nava",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-26",
+          "zeit": "19:00",
+          "heim": "Villa de Aranda",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-26",
+          "zeit": "19:00",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-26",
+          "zeit": "20:30",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-27",
+          "zeit": "12:00",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 3,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-02",
+          "zeit": "19:00",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "17:30",
+          "heim": "Fraikin BM Granollers",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "17:30",
+          "heim": "FC Barcelona",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "18:00",
+          "heim": "BM Nava",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "19:00",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "20:00",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "20:30",
+          "heim": "Bidasoa Irún",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 5,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 5,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 5,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 5,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 5,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 5,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 5,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 5,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 6,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 6,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 6,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 6,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 6,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 6,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 6,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 6,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 7,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 7,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 7,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 7,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 7,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 7,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 7,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 7,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 8,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 8,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 8,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 8,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 8,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 8,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 8,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 8,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "BM Caserío Ciudad Real"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "BM Logroño La Rioja"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "Recoletas Atlético Valladolid"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Villa de Aranda",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "REBI Balonmano Cuenca",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bidasoa Irún",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Bathco BM Torrelavega",
+          "gast": "Fraikin BM Granollers"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Cajasol Sevilla BM Proin"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ademar León",
+          "gast": "FC Barcelona"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Caserío Ciudad Real",
+          "gast": "Ángel Ximénez Puente Genil"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "HORNEO BM Alicante",
+          "gast": "BM Nava"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frigoríficos Morrazo Cangas",
+          "gast": "Puerto Sagunto"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "FC Barcelona",
+          "gast": "Bathco BM Torrelavega"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Logroño La Rioja",
+          "gast": "HORNEO BM Alicante"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fraikin BM Granollers",
+          "gast": "Villa de Aranda"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Recoletas Atlético Valladolid",
+          "gast": "Bidasoa Irún"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Ángel Ximénez Puente Genil",
+          "gast": "REBI Balonmano Cuenca"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "BM Nava",
+          "gast": "Frigoríficos Morrazo Cangas"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cajasol Sevilla BM Proin",
+          "gast": "Ademar León"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Puerto Sagunto",
+          "gast": "BM Caserío Ciudad Real"
+        }
+      ]
+    },
+    "Herre Håndbold Ligaen": {
+      "saison": "2026/27",
+      "quelle": "tophaandbold.dk, Kampprogram 2026/2027 (Abruf 26.09.2026); Spieltage aus der zeitlichen Reihenfolge gebildet",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-08-25",
+          "zeit": "20:00",
+          "heim": "GOG",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-26",
+          "zeit": "18:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-26",
+          "zeit": "19:00",
+          "heim": "KIF Kolding",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-26",
+          "zeit": "19:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-26",
+          "zeit": "19:00",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-26",
+          "zeit": "19:30",
+          "heim": "SønderjyskE",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-27",
+          "zeit": "20:00",
+          "heim": "TTH Holstebro",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-08-29",
+          "zeit": "15:00",
+          "heim": "TMS Ringsted",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-08-29",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-08-30",
+          "zeit": "15:00",
+          "heim": "Fredericia HK",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-08-30",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-08-30",
+          "zeit": "18:30",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-08-30",
+          "zeit": "18:30",
+          "heim": "Aalborg Håndbold",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-08-30",
+          "zeit": "19:00",
+          "heim": "Skive fH",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-02",
+          "zeit": "18:30",
+          "heim": "Skjern Håndbold",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-02",
+          "zeit": "19:00",
+          "heim": "Skive fH",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-02",
+          "zeit": "19:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-02",
+          "zeit": "19:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-02",
+          "zeit": "19:00",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-03",
+          "zeit": "19:30",
+          "heim": "SønderjyskE",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-03",
+          "zeit": "20:00",
+          "heim": "GOG",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-05",
+          "zeit": "15:00",
+          "heim": "TMS Ringsted",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-05",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-05",
+          "zeit": "16:00",
+          "heim": "Skjern Håndbold",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-06",
+          "zeit": "15:00",
+          "heim": "KIF Kolding",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-06",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-07",
+          "zeit": "18:00",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-08",
+          "zeit": "19:00",
+          "heim": "TTH Holstebro",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-11",
+          "zeit": "19:00",
+          "heim": "Fredericia HK",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-11",
+          "zeit": "19:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-12",
+          "zeit": "15:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-12",
+          "zeit": "16:00",
+          "heim": "TTH Holstebro",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-12",
+          "zeit": "18:00",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-13",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-13",
+          "zeit": "16:00",
+          "heim": "SønderjyskE",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-15",
+          "zeit": "20:00",
+          "heim": "Skive fH",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-16",
+          "zeit": "20:00",
+          "heim": "KIF Kolding",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-17",
+          "zeit": "20:00",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-19",
+          "zeit": "15:00",
+          "heim": "TMS Ringsted",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-19",
+          "zeit": "16:00",
+          "heim": "GOG",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-20",
+          "zeit": "14:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-09-20",
+          "zeit": "20:00",
+          "heim": "Skjern Håndbold",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-09-25",
+          "zeit": "18:30",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-09-25",
+          "zeit": "19:00",
+          "heim": "TTH Holstebro",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-09-26",
+          "zeit": "15:00",
+          "heim": "TMS Ringsted",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-09-26",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-09-27",
+          "zeit": "15:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-09-28",
+          "zeit": "18:30",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-09-28",
+          "zeit": "19:00",
+          "heim": "Fredericia HK",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-02",
+          "zeit": "19:00",
+          "heim": "SønderjyskE",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-02",
+          "zeit": "19:30",
+          "heim": "Skive fH",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-03",
+          "zeit": "15:00",
+          "heim": "Fredericia HK",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-03",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-03",
+          "zeit": "16:00",
+          "heim": "GOG",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-03",
+          "zeit": "16:00",
+          "heim": "KIF Kolding",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-03",
+          "zeit": "18:00",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-09",
+          "zeit": "19:00",
+          "heim": "TTH Holstebro",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-10",
+          "zeit": "14:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-10",
+          "zeit": "15:00",
+          "heim": "TMS Ringsted",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-10",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-10",
+          "zeit": "16:00",
+          "heim": "Skjern Håndbold",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-11",
+          "zeit": "15:00",
+          "heim": "Skive fH",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-11",
+          "zeit": "20:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-17",
+          "zeit": "15:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-17",
+          "zeit": "16:00",
+          "heim": "SønderjyskE",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-18",
+          "zeit": "14:30",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-18",
+          "zeit": "16:00",
+          "heim": "GOG",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-18",
+          "zeit": "18:00",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-18",
+          "zeit": "19:00",
+          "heim": "Fredericia HK",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-18",
+          "zeit": "20:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-21",
+          "zeit": "20:00",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-22",
+          "zeit": "19:30",
+          "heim": "SønderjyskE",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-22",
+          "zeit": "20:00",
+          "heim": "KIF Kolding",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-24",
+          "zeit": "15:00",
+          "heim": "Skive fH",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-24",
+          "zeit": "16:00",
+          "heim": "Skjern Håndbold",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-25",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-10-25",
+          "zeit": "18:00",
+          "heim": "TMS Ringsted",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-10-30",
+          "zeit": "18:30",
+          "heim": "Skjern Håndbold",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-10-30",
+          "zeit": "18:30",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-01",
+          "zeit": "15:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-01",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-01",
+          "zeit": "18:00",
+          "heim": "TTH Holstebro",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-01",
+          "zeit": "19:00",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-01",
+          "zeit": "20:00",
+          "heim": "Fredericia HK",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-13",
+          "zeit": "19:00",
+          "heim": "TTH Holstebro",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-14",
+          "zeit": "16:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-14",
+          "zeit": "16:00",
+          "heim": "KIF Kolding",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-14",
+          "zeit": "18:00",
+          "heim": "GOG",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-14",
+          "zeit": "19:00",
+          "heim": "SønderjyskE",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-15",
+          "zeit": "15:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-16",
+          "zeit": "19:00",
+          "heim": "Fredericia HK",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-19",
+          "zeit": "20:00",
+          "heim": "TMS Ringsted",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-20",
+          "zeit": "20:00",
+          "heim": "KIF Kolding",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-21",
+          "zeit": "14:00",
+          "heim": "Skive fH",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-21",
+          "zeit": "14:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-21",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-22",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-11-22",
+          "zeit": "20:00",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-11-25",
+          "zeit": "20:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-11-26",
+          "zeit": "18:30",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-11-27",
+          "zeit": "18:30",
+          "heim": "Skjern Håndbold",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-11-27",
+          "zeit": "18:30",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-11-29",
+          "zeit": "16:00",
+          "heim": "GOG",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-11-29",
+          "zeit": "18:00",
+          "heim": "SønderjyskE",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-11-29",
+          "zeit": "20:00",
+          "heim": "Fredericia HK",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-03",
+          "zeit": "19:00",
+          "heim": "Fredericia HK",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-04",
+          "zeit": "19:00",
+          "heim": "KIF Kolding",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-05",
+          "zeit": "14:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-05",
+          "zeit": "16:00",
+          "heim": "TMS Ringsted",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-05",
+          "zeit": "19:00",
+          "heim": "SønderjyskE",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-06",
+          "zeit": "16:00",
+          "heim": "GOG",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-07",
+          "zeit": "19:00",
+          "heim": "TTH Holstebro",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-10",
+          "zeit": "18:30",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-10",
+          "zeit": "19:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-11",
+          "zeit": "19:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-12",
+          "zeit": "16:00",
+          "heim": "TTH Holstebro",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-12",
+          "zeit": "16:00",
+          "heim": "KIF Kolding",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-13",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2026-12-13",
+          "zeit": "19:00",
+          "heim": "Skive fH",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-16",
+          "zeit": "18:30",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-16",
+          "zeit": "18:30",
+          "heim": "Skjern Håndbold",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-16",
+          "zeit": "18:30",
+          "heim": "Fredericia HK",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "GOG",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "TMS Ringsted",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-16",
+          "zeit": "19:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2026-12-16",
+          "zeit": "19:30",
+          "heim": "SønderjyskE",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-19",
+          "zeit": "14:00",
+          "heim": "KIF Kolding",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-19",
+          "zeit": "14:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-19",
+          "zeit": "15:00",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-19",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-19",
+          "zeit": "16:00",
+          "heim": "TTH Holstebro",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-19",
+          "zeit": "16:00",
+          "heim": "Skive fH",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2026-12-19",
+          "zeit": "16:00",
+          "heim": "Skjern Håndbold",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-22",
+          "zeit": "18:30",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-22",
+          "zeit": "18:30",
+          "heim": "SønderjyskE",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-22",
+          "zeit": "19:00",
+          "heim": "GOG",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-22",
+          "zeit": "19:00",
+          "heim": "KIF Kolding",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-22",
+          "zeit": "19:00",
+          "heim": "TMS Ringsted",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-22",
+          "zeit": "19:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2026-12-22",
+          "zeit": "20:30",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-05",
+          "zeit": "19:00",
+          "heim": "TMS Ringsted",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-06",
+          "zeit": "15:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-06",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-06",
+          "zeit": "16:00",
+          "heim": "Fredericia HK",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-08",
+          "zeit": "18:30",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-08",
+          "zeit": "18:30",
+          "heim": "Skjern Håndbold",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-02-08",
+          "zeit": "19:00",
+          "heim": "TTH Holstebro",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "Fredericia HK",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "SønderjyskE",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-13",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-13",
+          "zeit": "16:00",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-13",
+          "zeit": "16:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-14",
+          "zeit": "14:00",
+          "heim": "Skive fH",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-02-14",
+          "zeit": "16:00",
+          "heim": "GOG",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-25",
+          "zeit": "18:00",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-25",
+          "zeit": "18:30",
+          "heim": "Skjern Håndbold",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-25",
+          "zeit": "19:00",
+          "heim": "TTH Holstebro",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-25",
+          "zeit": "19:00",
+          "heim": "Skive fH",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-27",
+          "zeit": "16:00",
+          "heim": "TMS Ringsted",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-28",
+          "zeit": "15:00",
+          "heim": "KIF Kolding",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-02-28",
+          "zeit": "16:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-03",
+          "zeit": "19:30",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "Skive fH"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-05",
+          "zeit": "18:30",
+          "heim": "Skjern Håndbold",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-06",
+          "zeit": "15:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-06",
+          "zeit": "16:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-06",
+          "zeit": "16:00",
+          "heim": "SønderjyskE",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-06",
+          "zeit": "16:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "GOG"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-07",
+          "zeit": "19:00",
+          "heim": "KIF Kolding",
+          "gast": "SAH - Skanderborg AGF"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-16",
+          "zeit": "18:30",
+          "heim": "Bjerringbro-Silkeborg",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "SAH - Skanderborg AGF",
+          "gast": "Nordsjælland Håndbold"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "GOG",
+          "gast": "TMS Ringsted"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "TTH Holstebro",
+          "gast": "Aalborg Håndbold"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "Skive fH",
+          "gast": "Skjern Håndbold"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-17",
+          "zeit": "19:00",
+          "heim": "Fredericia HK",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-03-17",
+          "zeit": "19:30",
+          "heim": "Mors-Thy Håndbold",
+          "gast": "Ribe-Esbjerg HH"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-20",
+          "zeit": "16:00",
+          "heim": "Aalborg Håndbold",
+          "gast": "Bjerringbro-Silkeborg"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-20",
+          "zeit": "16:00",
+          "heim": "Skjern Håndbold",
+          "gast": "Fredericia HK"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-20",
+          "zeit": "16:00",
+          "heim": "Ribe-Esbjerg HH",
+          "gast": "TTH Holstebro"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-20",
+          "zeit": "16:00",
+          "heim": "GOG",
+          "gast": "SønderjyskE"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-20",
+          "zeit": "16:00",
+          "heim": "Skive fH",
+          "gast": "KIF Kolding"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-20",
+          "zeit": "16:00",
+          "heim": "Nordsjælland Håndbold",
+          "gast": "Mors-Thy Håndbold"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-03-20",
+          "zeit": "16:00",
+          "heim": "TMS Ringsted",
+          "gast": "SAH - Skanderborg AGF"
+        }
+      ]
+    },
+    "1. division": {
+      "saison": "2026/27",
+      "quelle": "tophaandbold.dk, Kampprogram 2026/2027 (Abruf 26.09.2026); Spieltage aus der zeitlichen Reihenfolge gebildet",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "13:00",
+          "heim": "AGF Håndbold",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "13:30",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "14:00",
+          "heim": "HC Midtjylland",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "14:00",
+          "heim": "Stoholm IF",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "14:30",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "16:15",
+          "heim": "HØJ Elite",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "16:30",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-03",
+          "zeit": "19:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-04",
+          "zeit": "19:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-04",
+          "zeit": "19:00",
+          "heim": "Køge Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-04",
+          "zeit": "19:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-05",
+          "zeit": "14:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-06",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-10",
+          "zeit": "17:45",
+          "heim": "HØJ Elite",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-11",
+          "zeit": "19:00",
+          "heim": "HC Midtjylland",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-11",
+          "zeit": "19:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "14:00",
+          "heim": "Stoholm IF",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "14:00",
+          "heim": "AGF Håndbold",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-12",
+          "zeit": "14:30",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-13",
+          "zeit": "15:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-18",
+          "zeit": "19:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-18",
+          "zeit": "19:00",
+          "heim": "Køge Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-19",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-19",
+          "zeit": "15:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-19",
+          "zeit": "16:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-20",
+          "zeit": "16:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-25",
+          "zeit": "19:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "14:00",
+          "heim": "HC Midtjylland",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "14:00",
+          "heim": "Stoholm IF",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "15:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-26",
+          "zeit": "17:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "14:00",
+          "heim": "AGF Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-09-27",
+          "zeit": "16:00",
+          "heim": "HØJ Elite",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-02",
+          "zeit": "19:00",
+          "heim": "Køge Håndbold",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-02",
+          "zeit": "19:00",
+          "heim": "Odder Håndbold",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-02",
+          "zeit": "19:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-02",
+          "zeit": "19:30",
+          "heim": "TM Tønder Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-03",
+          "zeit": "14:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-03",
+          "zeit": "14:30",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-04",
+          "zeit": "15:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-09",
+          "zeit": "19:00",
+          "heim": "Odder Håndbold",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-10",
+          "zeit": "14:00",
+          "heim": "HC Midtjylland",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-10",
+          "zeit": "15:15",
+          "heim": "AGF Håndbold",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-10",
+          "zeit": "16:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-10",
+          "zeit": "18:30",
+          "heim": "HØJ Elite",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-11",
+          "zeit": "14:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-11",
+          "zeit": "15:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-16",
+          "zeit": "19:30",
+          "heim": "Stoholm IF",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-17",
+          "zeit": "15:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-17",
+          "zeit": "15:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-17",
+          "zeit": "16:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-18",
+          "zeit": "14:00",
+          "heim": "Køge Håndbold",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-18",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-18",
+          "zeit": "16:00",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-23",
+          "zeit": "19:00",
+          "heim": "HØJ Elite",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-23",
+          "zeit": "19:00",
+          "heim": "Køge Håndbold",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-24",
+          "zeit": "13:30",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-24",
+          "zeit": "14:00",
+          "heim": "HC Midtjylland",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-24",
+          "zeit": "14:00",
+          "heim": "AGF Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-24",
+          "zeit": "17:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-25",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-30",
+          "zeit": "19:30",
+          "heim": "Stoholm IF",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-30",
+          "zeit": "19:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-31",
+          "zeit": "14:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-10-31",
+          "zeit": "15:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-01",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-01",
+          "zeit": "16:00",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-12",
+          "zeit": "19:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-12",
+          "zeit": "19:30",
+          "heim": "HC Midtjylland",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "14:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-14",
+          "zeit": "16:00",
+          "heim": "HØJ Elite",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-15",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-15",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-15",
+          "zeit": "16:00",
+          "heim": "Køge Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-20",
+          "zeit": "19:30",
+          "heim": "Stoholm IF",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-20",
+          "zeit": "20:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-21",
+          "zeit": "14:00",
+          "heim": "AGF Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-21",
+          "zeit": "14:30",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-21",
+          "zeit": "15:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-21",
+          "zeit": "16:00",
+          "heim": "HØJ Elite",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-21",
+          "zeit": "16:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-25",
+          "zeit": "19:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-27",
+          "zeit": "19:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-28",
+          "zeit": "14:00",
+          "heim": "HC Midtjylland",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-29",
+          "zeit": "14:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-29",
+          "zeit": "14:00",
+          "heim": "Køge Håndbold",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-29",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-11-29",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-05",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-05",
+          "zeit": "15:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-05",
+          "zeit": "16:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "14:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "14:00",
+          "heim": "Køge Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "17:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-06",
+          "zeit": "17:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-11",
+          "zeit": "19:00",
+          "heim": "HC Midtjylland",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-11",
+          "zeit": "19:30",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-11",
+          "zeit": "20:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-12",
+          "zeit": "14:00",
+          "heim": "Stoholm IF",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-12",
+          "zeit": "14:00",
+          "heim": "AGF Håndbold",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-12",
+          "zeit": "15:00",
+          "heim": "HØJ Elite",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-13",
+          "zeit": "16:00",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-18",
+          "zeit": "19:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-18",
+          "zeit": "19:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "14:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "14:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-19",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-20",
+          "zeit": "14:00",
+          "heim": "Køge Håndbold",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-20",
+          "zeit": "17:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-05",
+          "zeit": "19:00",
+          "heim": "HØJ Elite",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-06",
+          "zeit": "14:00",
+          "heim": "HC Midtjylland",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-06",
+          "zeit": "14:00",
+          "heim": "Stoholm IF",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-06",
+          "zeit": "14:30",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-06",
+          "zeit": "15:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-06",
+          "zeit": "16:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-07",
+          "zeit": "13:00",
+          "heim": "AGF Håndbold",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-12",
+          "zeit": "19:00",
+          "heim": "Køge Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-12",
+          "zeit": "19:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-13",
+          "zeit": "14:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-13",
+          "zeit": "14:30",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-13",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-13",
+          "zeit": "16:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-14",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-19",
+          "zeit": "19:30",
+          "heim": "HC Midtjylland",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-19",
+          "zeit": "19:30",
+          "heim": "Stoholm IF",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "14:00",
+          "heim": "AGF Håndbold",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "14:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "15:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "16:00",
+          "heim": "HØJ Elite",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-20",
+          "zeit": "16:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-26",
+          "zeit": "19:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-27",
+          "zeit": "14:00",
+          "heim": "Stoholm IF",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-27",
+          "zeit": "14:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-27",
+          "zeit": "14:30",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-27",
+          "zeit": "15:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-28",
+          "zeit": "14:00",
+          "heim": "Køge Håndbold",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-28",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-06",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-06",
+          "zeit": "16:00",
+          "heim": "HØJ Elite",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-07",
+          "zeit": "14:00",
+          "heim": "HC Midtjylland",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-07",
+          "zeit": "14:00",
+          "heim": "AGF Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-07",
+          "zeit": "14:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-07",
+          "zeit": "15:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-07",
+          "zeit": "17:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-19",
+          "zeit": "19:30",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-19",
+          "zeit": "19:30",
+          "heim": "Stoholm IF",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-19",
+          "zeit": "19:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-20",
+          "zeit": "14:30",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-20",
+          "zeit": "15:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-20",
+          "zeit": "15:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-21",
+          "zeit": "16:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-24",
+          "zeit": "18:45",
+          "heim": "AGF Håndbold",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-24",
+          "zeit": "19:00",
+          "heim": "HØJ Elite",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-24",
+          "zeit": "19:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-24",
+          "zeit": "19:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-24",
+          "zeit": "19:00",
+          "heim": "Køge Håndbold",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-24",
+          "zeit": "19:00",
+          "heim": "Odder Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-24",
+          "zeit": "19:30",
+          "heim": "HC Midtjylland",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-27",
+          "zeit": "17:00",
+          "heim": "AGF Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-28",
+          "zeit": "15:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-28",
+          "zeit": "16:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-28",
+          "zeit": "16:00",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-29",
+          "zeit": "15:00",
+          "heim": "Stoholm IF",
+          "gast": "Aarhus Håndbold"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-29",
+          "zeit": "16:00",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-30",
+          "zeit": "19:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-03",
+          "zeit": "14:00",
+          "heim": "HC Midtjylland",
+          "gast": "AGF Håndbold"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-03",
+          "zeit": "15:00",
+          "heim": "Odder Håndbold",
+          "gast": "Grindsted GIF Håndbold"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-03",
+          "zeit": "15:30",
+          "heim": "Lemvig-Thyborøn Håndbold",
+          "gast": "HØJ Elite"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "14:00",
+          "heim": "Rækker Mølle Håndbold",
+          "gast": "Stoholm IF"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "14:00",
+          "heim": "Køge Håndbold",
+          "gast": "Norddjurs Håndbold"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "15:00",
+          "heim": "TM Tønder Håndbold",
+          "gast": "Elitesport Vendsyssel"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-04",
+          "zeit": "16:00",
+          "heim": "Aarhus Håndbold",
+          "gast": "Team Sydhavsøerne"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-10",
+          "zeit": "15:00",
+          "heim": "HØJ Elite",
+          "gast": "HC Midtjylland"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-10",
+          "zeit": "15:00",
+          "heim": "Elitesport Vendsyssel",
+          "gast": "Lemvig-Thyborøn Håndbold"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-10",
+          "zeit": "15:00",
+          "heim": "Norddjurs Håndbold",
+          "gast": "TM Tønder Håndbold"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-10",
+          "zeit": "15:00",
+          "heim": "Team Sydhavsøerne",
+          "gast": "Rækker Mølle Håndbold"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-10",
+          "zeit": "15:00",
+          "heim": "Stoholm IF",
+          "gast": "Odder Håndbold"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-10",
+          "zeit": "15:00",
+          "heim": "Grindsted GIF Håndbold",
+          "gast": "Køge Håndbold"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-10",
+          "zeit": "15:00",
+          "heim": "AGF Håndbold",
+          "gast": "Aarhus Håndbold"
         }
       ]
     }

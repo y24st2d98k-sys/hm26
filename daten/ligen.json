@@ -1221,10 +1221,76 @@
                 "#000000"
               ],
               "ruf": 52
+            },
+            {
+              "name": "AGF Håndbold",
+              "kurz": "AGF",
+              "ort": "Aarhus",
+              "ruf": 50
+            },
+            {
+              "name": "Aarhus Håndbold",
+              "kurz": "AAR",
+              "ort": "Aarhus",
+              "ruf": 50
+            },
+            {
+              "name": "Elitesport Vendsyssel",
+              "kurz": "ELI",
+              "ort": "Hjørring",
+              "ruf": 50
+            },
+            {
+              "name": "HC Midtjylland",
+              "kurz": "HCM",
+              "ort": "Herning",
+              "ruf": 50
+            },
+            {
+              "name": "Køge Håndbold",
+              "kurz": "KOE",
+              "ort": "Køge",
+              "ruf": 50
+            },
+            {
+              "name": "Norddjurs Håndbold",
+              "kurz": "NDJ",
+              "ort": "Grenaa",
+              "ruf": 50
+            },
+            {
+              "name": "Odder Håndbold",
+              "kurz": "ODD",
+              "ort": "Odder",
+              "ruf": 50
+            },
+            {
+              "name": "Rækker Mølle Håndbold",
+              "kurz": "RMH",
+              "ort": "Skjern",
+              "ruf": 50
+            },
+            {
+              "name": "Stoholm IF",
+              "kurz": "STO",
+              "ort": "Stoholm",
+              "ruf": 50
+            },
+            {
+              "name": "TM Tønder Håndbold",
+              "kurz": "TON",
+              "ort": "Tønder",
+              "ruf": 50
+            },
+            {
+              "name": "Team Sydhavsøerne",
+              "kurz": "SYD",
+              "ort": "Nykøbing Falster",
+              "ruf": 50
             }
           ],
-          "teams": 12,
-          "teilweise_echt": true
+          "teams": 14,
+          "quelle": "tophaandbold.dk, Kampprogram 1. division herrer 2026/2027"
         }
       ],
       "cl_plaetze": 2,
