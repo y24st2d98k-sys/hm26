@@ -130,9 +130,59 @@ func _ready() -> void:
 			float(z["von"]), float(z["bis"]),
 			"passt" if ok else ("ZU NIEDRIG" if wert < float(z["von"]) else "ZU HOCH"),
 			str(z["quelle"])])
+	_tiefrot(d)
+
 	_log("")
 	_log("%d von %d Kennzahlen liegen im Rahmen." % [ZIELE.size() - fehler, ZIELE.size()])
 	get_tree().quit()
+
+## Wer tief im Minus steht — und warum.
+##
+## Die Prüfung meldet seit dem Umbau der Wirtschaft zwei Vereine unter minus
+## zwei Millionen, immer dieselben, und nennt nur Name und Betrag. Damit ist
+## nicht zu sehen, ob der Etat zu hoch angesetzt war, die Gehaltslast nicht
+## gesenkt wurde oder die Einnahmen einfach nicht reichen. Hier stehen alle
+## Zahlen nebeneinander, und zwar über alle Ligen: der zweite Fall der Prüfung
+## war ein dänischer Verein, und die Tabellen oben sehen nur die Bundesliga.
+func _tiefrot(d: Dictionary) -> void:
+	var liste: Array = []
+	for cid in Weltgenerator.clubs(d):
+		var v: Dictionary = d["vereine"][str(cid)]
+		if float(v.get("kasse", 0.0)) >= 0.0:
+			continue
+		liste.append({
+			"name": str(v.get("name", str(cid))),
+			"liga": str((d["ligen"] as Dictionary).get(str(v.get("liga", "")), {}).get("kurz", "?")),
+			"kasse": float(v["kasse"]),
+			"etat": float(v.get("jahresetat", 0.0)),
+			"budget": float(v.get("gehaltsbudget", 0.0)),
+			"last": Finanzen.gehaltsauslastung(d, str(cid)),
+			"umsatz": float(v.get("umsatz_vorjahr", 0.0)),
+			"gehalt": Finanzen.spielergehaelter(d, str(cid)) + Finanzen.personalgehaelter(d, str(cid)),
+			"ruf": float(v.get("ruf", 0.0)),
+			"kader": (v.get("kader", []) as Array).size(),
+		})
+	liste.sort_custom(func(a, b): return float((a as Dictionary)["kasse"]) < float((b as Dictionary)["kasse"]))
+	_log("")
+	_log("=== Wer im Minus steht (alle Ligen, die zehn tiefsten) ===")
+	_log("")
+	if liste.is_empty():
+		_log("Kein Verein im Minus.")
+		return
+	_log("%-22s %5s %9s %8s %8s %8s %8s %6s %6s" % ["Verein", "Liga", "Kasse Mio",
+		"Etat", "Umsatz", "Gehalt/J", "Last %", "Ruf", "Kader"])
+	for e in liste.slice(0, 10):
+		var r: Dictionary = e
+		_log("%-22s %5s %9.2f %8.2f %8.2f %8.2f %8.0f %6.0f %6d" % [
+			str(r["name"]).left(22), str(r["liga"]),
+			float(r["kasse"]) / 1.0e6, float(r["etat"]) / 1.0e6,
+			float(r["umsatz"]) / 1.0e6, float(r["gehalt"]) * 52.0 / 1.0e6,
+			float(r["last"]), float(r["ruf"]), int(r["kader"])])
+	_log("")
+	_log("Gehalt/J ist die heutige Wochenlast auf ein Jahr gerechnet, Last der")
+	_log("Anteil am Gehaltsbudget. Liegt die Last unter hundert und die Kasse")
+	_log("trotzdem tief im Minus, war nicht das Gehalt das Problem, sondern der")
+	_log("Etat oder die Einnahmen.")
 
 func _erste_liga(d: Dictionary) -> String:
 	for l in (d["ligen"] as Dictionary).keys():
