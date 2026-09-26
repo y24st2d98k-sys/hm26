@@ -8,6 +8,10 @@ extends RefCounted
 ## Jahresetat, an dem sich das volle Marktgehalt bemisst.
 const LOHN_REFERENZ := 8000000.0
 
+## Wie viele Buchungszeilen ein Verein mitfuehrt.
+const LOG_EIGEN := 200
+const LOG_FREMD := 12
+
 const AUSBAU_STUFEN := {
 	"halle": {"name": "Hallenausbau", "beschreibung": "Mehr Plätze, mehr Eintrittsgeld und mehr Hallenpuls."},
 	"trainingszentrum": {"name": "Trainingszentrum", "beschreibung": "Schnellere Entwicklung aller Spieler."},
@@ -85,8 +89,18 @@ static func buchen(d: Dictionary, cid: String, betrag: float, grund: String, kat
 		jahr[kategorie] = float(jahr.get(kategorie, 0.0)) + betrag
 	var buchungen: Array = v["finanz_log"]
 	buchungen.push_front({"tag": int(d["tag"]), "betrag": betrag, "grund": grund, "kategorie": kategorie})
-	if buchungen.size() > 200:
-		buchungen.resize(200)
+	# Zweihundert Zeilen fuer den eigenen Verein, zwoelf fuer alle anderen.
+	#
+	# Das Buchungsprotokoll steht genau an einer Stelle auf dem Bildschirm: im
+	# Finanzbildschirm des eigenen Vereins. Trotzdem fuehrten alle
+	# hundertsechsundfuenfzig Vereine der Welt zweihundert Zeilen mit, und
+	# gemessen mit werkzeuge/Speichersonde.gd waren das fast zwanzig Kilobyte
+	# je Verein und knapp drei Megabyte im Spielstand — elf Prozent von allem,
+	# und niemand liest davon eine Zeile. Ein kurzer Rest bleibt, damit ein
+	# Vereinswechsel des Trainers nicht vor einem leeren Konto steht.
+	var deckel: int = LOG_EIGEN if str(cid) == Welt.mein_verein_id else LOG_FREMD
+	if buchungen.size() > deckel:
+		buchungen.resize(deckel)
 
 ## Eintrittsgelder und Preisgelder nach einer Partie.
 static func spieltag_abrechnen(d: Dictionary, m: Dictionary) -> void:

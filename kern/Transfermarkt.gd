@@ -1174,6 +1174,46 @@ static func schmerzgrenze_schaetzen(d: Dictionary, angebots_id: String) -> float
 			ablösevorstellung(d, sid) * (1.15 + clampf(luecke / 20.0, 0.0, 0.55)))
 	return 0.0
 
+## Wie unscharf die Einschaetzung bei der schlechtesten und der besten
+## Analyseabteilung ist.
+const SCHMERZ_UNSCHARF_MIN := 0.10
+const SCHMERZ_UNSCHARF_MAX := 0.38
+
+## Was der Kaeufer voraussichtlich noch zahlen wuerde — als Spanne.
+##
+## schmerzgrenze_schaetzen rechnet die Zahl schon aus und stand trotzdem seit
+## jeher ungenutzt im Code: sie war "als Orientierung fuer die Oberflaeche"
+## geschrieben und nie angeschlossen. Sie dort hinzuschreiben, waere aber das
+## Ende des Verhandelns — wer die Schmerzgrenze auf den Euro kennt, fordert
+## genau sie und bekommt immer das Letzte heraus.
+##
+## Eine Spanne ist eine Auskunft und keine Loesung. Wie eng sie ist, haengt
+## daran, was der Verein sich an Analyse leistet; und sie steht fest, solange
+## das Angebot steht, statt bei jedem Neuzeichnen zu wackeln.
+static func schmerzgrenze_spanne(d: Dictionary, angebots_id: String) -> Dictionary:
+	var mitte: float = schmerzgrenze_schaetzen(d, angebots_id)
+	if mitte <= 0.0:
+		return {}
+	var stufe: float = 1.0
+	var mein: String = Welt.mein_verein_id
+	if mein != "" and d["vereine"].has(mein):
+		stufe = float((d["vereine"][mein]["infrastruktur"] as Dictionary).get("analyse", 1))
+	var breite: float = lerpf(SCHMERZ_UNSCHARF_MAX, SCHMERZ_UNSCHARF_MIN,
+		clampf((stufe - 1.0) / 9.0, 0.0, 1.0))
+	# Ein fester Versatz je Angebot: die Schaetzung liegt daneben, aber immer
+	# gleich daneben. Sonst waere sie durch mehrmaliges Hinsehen zu mitteln.
+	var versatz: float = (float(hash(angebots_id) % 1000) / 1000.0 - 0.5) * breite
+	mitte *= 1.0 + versatz
+	return {"von": mitte * (1.0 - breite), "bis": mitte * (1.0 + breite)}
+
+## Dieselbe Spanne als Satz fuer die Oberflaeche.
+static func schmerzgrenze_text(d: Dictionary, angebots_id: String) -> String:
+	var sp: Dictionary = schmerzgrenze_spanne(d, angebots_id)
+	if sp.is_empty():
+		return ""
+	return "Unsere Analyse schätzt: bis etwa %s bis %s würde er gehen." % [
+		Stil.geld(float(sp["von"])), Stil.geld(float(sp["bis"]))]
+
 ## Die drei Nachforderungen, die zu einem Angebot passen.
 ##
 ## Benannte Stufen statt eines Schiebereglers: eine Forderung ist eine

@@ -31,7 +31,47 @@ func _ready() -> void:
 			Welt.wochenrhythmus(Welt.tag())
 			Welt.saison_pruefen(Welt.tag())
 	_bericht("Nach 140 Tagen")
+	_zeiten_messen(Welt.daten)
 	get_tree().quit()
+
+## Wo die Zeit beim Speichern und Laden hingeht.
+##
+## Die Groesse allein sagt nicht, woran man drehen muss. Ein kleinerer
+## Spielstand hilft nur, wenn das Serialisieren die Zeit frisst; ein anderes
+## Packverfahren nur, wenn es das Packen tut. Gemessen war bisher nur, dass
+## Speichern gut eine Sekunde dauert.
+func _zeiten_messen(d: Dictionary) -> void:
+	_log("")
+	_log("=== Wo die Zeit hingeht (Mittel aus 3 Laeufen) ===")
+	_log("")
+	var t0 := Time.get_ticks_usec()
+	var roh: PackedByteArray = PackedByteArray()
+	for i in range(3):
+		roh = var_to_bytes(d)
+	_log("Serialisieren: %8.1f ms   (%.2f MB roh)" % [
+		float(Time.get_ticks_usec() - t0) / 3000.0, float(roh.size()) / 1048576.0])
+	_log("")
+	_log("%-14s %10s %10s %10s" % ["Packen", "Packen ms", "Lesen ms", "Datei MB"])
+	var verfahren := {
+		"ohne Packen": -1,
+		"ZSTD": FileAccess.COMPRESSION_ZSTD,
+		"Deflate": FileAccess.COMPRESSION_DEFLATE,
+		"FastLZ": FileAccess.COMPRESSION_FASTLZ,
+		"Gzip": FileAccess.COMPRESSION_GZIP,
+	}
+	for name in verfahren.keys():
+		var art: int = int(verfahren[name])
+		var gepackt: PackedByteArray = roh
+		var t1 := Time.get_ticks_usec()
+		for i in range(3):
+			gepackt = roh if art < 0 else roh.compress(art)
+		var packen: float = float(Time.get_ticks_usec() - t1) / 3000.0
+		var t2 := Time.get_ticks_usec()
+		for i in range(3):
+			bytes_to_var(gepackt if art < 0 else gepackt.decompress(roh.size(), art))
+		_log("%-14s %10.1f %10.1f %10.2f" % [str(name), packen,
+			float(Time.get_ticks_usec() - t2) / 3000.0,
+			float(gepackt.size()) / 1048576.0])
 
 func _bericht(titel: String) -> void:
 	var d: Dictionary = Welt.daten

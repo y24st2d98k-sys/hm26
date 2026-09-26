@@ -295,6 +295,14 @@ func _verhandlung(a: Dictionary) -> Control:
 		var t := Stil.text(str(a["antwort"]), Stil.S_MINI, Stil.TEXT_MATT)
 		t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		karte.add_child(t)
+	# Was der Käufer wohl noch zahlen würde. Eine Spanne und keine Zahl: wer
+	# die Schmerzgrenze genau kennt, fordert sie und gewinnt immer.
+	if eingehend and str(a["status"]) in ["eingegangen", "gegenangebot"]:
+		var schaetzung: String = Transfermarkt.schmerzgrenze_text(Welt.daten, str(a["id"]))
+		if schaetzung != "":
+			var st := Stil.text(schaetzung, Stil.S_MINI, Stil.BLAU)
+			st.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			karte.add_child(st)
 	var zeile := Stil.hbox(6)
 	karte.add_child(zeile)
 	if eingehend and str(a["status"]) == "eingegangen":
