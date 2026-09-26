@@ -896,6 +896,12 @@ func _daten_auffrischen() -> void:
 		if not auf_dict.is_empty() and not auf_dict.has("minuten"):
 			auf_dict["minuten"] = {}
 		Trikot.kader_nummerieren(daten, str(verein_cid))
+	# Die Gespanne haben eine fuenfte Anlage bekommen: wie stark sie eine
+	# einseitige Strafenbilanz wieder einfangen. Laufende Karrieren behalten
+	# ihre Gespanne samt Ruf und ziehen nur die neue Anlage nach.
+	for g in (daten.get("schiedsrichter", {}) as Dictionary).get("gespanne", {}).values():
+		if not (g as Dictionary).has("ausgleich"):
+			(g as Dictionary)["ausgleich"] = Namen.glocke(52.0, 18.0, 8.0, 94.0)
 	for sp in daten.get("spieler", {}).values():
 		if not sp.has("entwicklung_log"):
 			sp["entwicklung_log"] = []

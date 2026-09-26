@@ -12,11 +12,12 @@ extends RefCounted
 ## Im Handball pfeift ein Gespann aus zwei Personen, nie eine allein. Deshalb
 ## trägt jeder Eintrag zwei Namen und wird immer als Paar genannt.
 ##
-## Vier Eigenschaften, jede mit genau einer Wirkung:
+## Fünf Eigenschaften, jede mit genau einer Wirkung:
 ##  * strenge      — wie oft überhaupt gepfiffen wird (Zeitstrafen, Siebenmeter)
 ##  * zweikampf    — ob im Zweikampf früh unterbrochen oder laufen gelassen wird
 ##  * heimneigung  — wie sehr die Halle das Gespann beeinflusst
 ##  * konstanz     — wie stark die Tagesform des Gespanns schwankt
+##  * ausgleich    — wie sehr es eine einseitige Strafenbilanz wieder einfängt
 
 ## So viele Gespanne hat die Welt. Genug, dass man Gesichter wiedererkennt,
 ## wenige genug, dass man sie sich merkt — ein Bundesligist trifft in einer
@@ -31,6 +32,15 @@ const ANZAHL := 28
 ## verschieben. Ein Gespann ändert, wie ein einzelnes Spiel läuft — nicht,
 ## wie viele Zeitstrafen eine Saison hat.
 const STRENGE_SPANNE := Vector2(0.70, 1.30)
+
+## Bei diesem Abstand in der Strafenbilanz wirkt der Ausgleich voll.
+const AUSGLEICH_SPANNE := 3.0
+
+## Wie weit ein voll ausgleichendes Gespann heruntergeht. 0.42 heißt: wer drei
+## Zeitstrafen mehr gesammelt hat, wird beim nächsten Vergehen nur noch mit
+## rund vier Fünfteln der sonstigen Wahrscheinlichkeit belangt — und die andere
+## Seite entsprechend häufiger.
+const AUSGLEICH_STAERKE := 0.42
 
 static func leer() -> Dictionary:
 	return {"gespanne": {}, "reihenfolge": []}
@@ -65,6 +75,7 @@ static func _gespann_bauen(d: Dictionary, id: String, nation: String) -> Diction
 		"zweikampf": Namen.glocke(50.0, 16.0, 10.0, 92.0),
 		"heimneigung": Namen.glocke(50.0, 15.0, 8.0, 92.0),
 		"konstanz": Namen.glocke(58.0, 15.0, 15.0, 95.0),
+		"ausgleich": Namen.glocke(52.0, 18.0, 8.0, 94.0),
 		"erfahrung": float(Namen.wuerfel(1, 22)),
 		# Was das Gespann tatsächlich gepfiffen hat. Erst diese Zahlen machen
 		# aus einer Anlage einen Ruf: man liest nicht „strenge 78“, sondern
@@ -135,6 +146,49 @@ static func heimfaktor(g: Dictionary, hallenpuls: float) -> float:
 	var druck: float = clampf((hallenpuls - 50.0) / 50.0, -1.0, 1.0)
 	return clampf(1.0 + neigung * druck * 0.13, 0.87, 1.13)
 
+## Der Faktor auf die Zeitstrafenwahrscheinlichkeit aus der laufenden
+## Strafenbilanz — der Ausgleich.
+##
+## Kein Gespann pfeift eine Partie als Folge unabhängiger Entscheidungen. Wer
+## gerade die vierte Hinausstellung gegen dieselbe Mannschaft ausgesprochen hat, sieht beim fünften Vergehen genauer hin, ob es wirklich eines war — und
+## beim nächsten Kontakt am anderen Ende weniger genau. Das ist kein Vorwurf an
+## die Gespanne, sondern gut belegtes menschliches Verhalten, und es fehlte.
+##
+## Warum das für das Spiel wichtig ist: gemessen mit werkzeuge/Streusonde.gd
+## war die Zeitstrafendifferenz mit einer Streuung von 3,25 Toren die am
+## stärksten mit dem Ergebnis gekoppelte Einzelquelle (r −0,55) — und zwar eine
+## reine Zufallsquelle, an der der Trainer nichts entscheidet. Sie schaukelte
+## sich frei auf: acht Strafen hier, eine dort, beides gleich wahrscheinlich.
+## Genau daraus entstanden die Kantersiege, die über dem Bundesligawert lagen.
+##
+## Der Ausgleich nimmt dieser Quelle die Streuung, ohne ihr den Mittelwert oder
+## die Dramatik zu nehmen: es gibt weiterhin Abende, an denen eine Mannschaft
+## reihenweise draußen sitzt — nur nicht mehr denselben Abend zehnmal in einer
+## Saison. `eigene` sind die Zeitstrafen, die die jetzt verteidigende Seite
+## schon hat, `gegner` die der anderen.
+##
+## Gemessen, gepaart über dieselben Saaten, einmal ohne und einmal mit:
+##
+##                                    ohne     mit     Ziel
+##   Zeitstrafendifferenz, Streuung   3,25    2,26     —
+##   Siebenmeterdifferenz, Streuung   2,74    2,53     —
+##   Zeitstrafen je Mannschaft        3,16    3,22    3,0 - 4,5
+##   Streuung Torabstand (Liga)       7,42    7,16    rund 6,8
+##   Zufall je Partie                 6,12    5,73    5,0 - 5,5
+##   Unentschieden                    9,5 %  11,6 %   13,4 %
+##   Zehn Tore und mehr              22,0 %  20,1 %   rund 15 %
+##   Höchstens zwei Tore             32,4 %  33,8 %   rund 36 %
+##
+## Der Mittelwert der Zeitstrafen bleibt also, wo er war, und die Streuung geht
+## um ein Drittel zurück. Alle vier Kennzahlen der Ergebnisverteilung gehen in
+## Richtung Bundesliga — angekommen sind sie nicht.
+static func ausgleichsfaktor(g: Dictionary, eigene: int, gegner: int) -> float:
+	if g.is_empty():
+		return 1.0
+	var neigung: float = clampf(float(g.get("ausgleich", 52.0)) / 100.0, 0.0, 1.0)
+	var abstand: float = clampf(float(eigene - gegner) / AUSGLEICH_SPANNE, -1.0, 1.0)
+	return clampf(1.0 - abstand * neigung * AUSGLEICH_STAERKE, 0.55, 1.45)
+
 ## Die Tagesform des Gespanns für genau diese Partie.
 static func tagesform(g: Dictionary, rng: RandomNumberGenerator) -> float:
 	if g.is_empty():
@@ -161,6 +215,19 @@ static func ruf(g: Dictionary) -> String:
 	elif q >= 2.6:
 		return "großzügig"
 	return "lässt viel laufen"
+
+## Was man dem Gespann beim Ausgleichen nachsagt. Anders als der Ruf steht das
+## nicht in den Zahlen einer Saison, sondern ist Gespanncharakter — ein Duo, das
+## stark ausgleicht, lässt keine Mannschaft davonziehen.
+static func ausgleich_text(g: Dictionary) -> String:
+	if g.is_empty():
+		return "—"
+	var a: float = float(g.get("ausgleich", 52.0))
+	if a >= 72.0:
+		return "gleicht aus"
+	elif a >= 40.0:
+		return "pfeift, was kommt"
+	return "lässt laufen, was läuft"
 
 static func zeitstrafen_quote(g: Dictionary) -> float:
 	if g.is_empty() or int(g["spiele"]) <= 0:

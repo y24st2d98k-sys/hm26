@@ -216,6 +216,10 @@ func _gespann_karte(b: Dictionary, eltern: Node) -> void:
 	spalte.add_child(Bausteine.fliesstext(str(b.get("gespann_hinweis", "")), Stil.S_KLEIN))
 	zeile.add_child(Stil.dehner())
 	zeile.add_child(Stil.abzeichen(Schiedsrichter.ruf(g), farbe))
+	# Die zweite Anlage des Gespanns: gleicht es eine einseitige Strafenbilanz
+	# wieder aus? Das ist keine Statistik, sondern Charakter — und es aendert,
+	# was eine Zeitstrafe zur Unzeit wirklich kostet.
+	zeile.add_child(Stil.abzeichen(Schiedsrichter.ausgleich_text(g), Stil.TEXT_MATT))
 	if int(g["spiele"]) > 0:
 		var zahlen := Stil.hbox(18)
 		karte.add_child(zahlen)

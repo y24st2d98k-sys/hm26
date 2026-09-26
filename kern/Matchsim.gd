@@ -1216,6 +1216,13 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	# verteidigende Mannschaft auswärts ist.
 	if not bool(v["ist_heim"]):
 		pfiff *= Schiedsrichter.heimfaktor(gespann, hallenpuls)
+	# Und die laufende Strafenbilanz: ein Gespann, das eine Seite schon reihenweise
+	# hinausgestellt hat, schaut beim naechsten Mal genauer hin. Weil der Faktor
+	# auf `pfiff` sitzt, wirkt er auf Zeitstrafen und Siebenmeter gleichermassen —
+	# beides sind Entscheidungen desselben Gespanns im selben Zweikampf. Das haelt
+	# die Strafenbilanz zusammen, ohne ihren Mittelwert zu aendern.
+	pfiff *= Schiedsrichter.ausgleichsfaktor(gespann,
+		int(v["stats"]["zeitstrafen"]), int(a["stats"]["zeitstrafen"]))
 	var p_2min: float = ahndungsquote_bei_haerte(haerte) * float(td["zeitstrafe"]) * pfiff
 	var p_7m: float = clampf(0.034 + haerte * 0.00026 + maxf(diff, 0.0) * 0.0005, 0.015, 0.09) * pfiff
 	p_7m *= _anweisungsmittel(a, "angriff_auf", "angriff", "siebenmeter")
