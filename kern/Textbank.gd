@@ -312,6 +312,17 @@ const SIEBEN_GEGEN_SECHS_AUS := [
 	"Der siebte Feldspieler von %s geht runter.",
 ]
 
+## Der Favorit merkt, dass es nicht laeuft. Ein Platzhalter: sein Name.
+const NERVOS := [
+	"%s wird nervös — das läuft nicht nach Plan.",
+	"Bei %s schleichen sich die Fehler ein.",
+	"%s hatte sich das anders vorgestellt. Man sieht es.",
+	"Die Bank von %s wird unruhig.",
+	"%s spielt plötzlich mit angezogener Handbremse.",
+	"Kein Selbstverständnis mehr bei %s — jeder Pass wirkt überlegt.",
+	"%s greift zum zweiten Mal in Folge daneben. Die Köpfe gehen runter.",
+]
+
 ## Ein Platzhalter: der Verein, dem das Vorwarnzeichen gilt.
 const PASSIV := [
 	"Vorwarnzeichen gegen %s — das Spiel wird passiv.",

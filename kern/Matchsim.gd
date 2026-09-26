@@ -115,6 +115,7 @@ func _init(p_daten: Dictionary, p_spiel: Dictionary, saat: int = 0) -> void:
 func vorbereiten() -> void:
 	heim = _team_zustand(str(spiel["heim"]), true)
 	gast = _team_zustand(str(spiel["gast"]), false)
+	_erwartung_setzen()
 	zuschauer = _zuschauer_berechnen()
 	# Der Hallenpuls hängt nicht an der Auslastung allein: ein voller Block
 	# Stehplätze trägt mehr als eine ausverkaufte Loge, und die Stimmung der
@@ -557,7 +558,20 @@ const WURF_EMPFINDLICHKEIT := 0.0072
 ## vierundsechzig Prozent ihrer Varianz hergeben. Das ist keine Kalibrierung
 ## mehr, sondern eine Entscheidung darueber, wie viel Dramatik eine Partie
 ## haben soll.
-const STAERKE_AM_WURF := 0.0036
+## Von 0,0036 auf 0,0052 gehoben.
+##
+## Die Messreihen darueber haben den Tausch genannt: mehr Ertrag je
+## Staerkepunkt (0,650 auf 0,761) und eine weitere Tabelle (Punktestreuung
+## 12,54 auf 13,74) gegen mehr Kantersiege (19,2 auf 21,0 Prozent). Ich hatte
+## das fuer keinen klaren Gewinn gehalten und es stehen lassen.
+##
+## Das war die falsche Abwaegung, und zwar nicht rechnerisch, sondern von der
+## Absicht her: gute Mannschaften sollen gegen schlechte gewinnen, und in der
+## Bundesliga tun sie das auch oft hoch. Der hohe Sieg ist nicht der Fehler.
+## Der Fehler waere, dem Trainer des Aussenseiters nichts in die Hand zu geben —
+## und dafuer gibt es jetzt die Nervositaet weiter unten, die an seiner Arbeit
+## haengt statt am Wurfzufall.
+const STAERKE_AM_WURF := 0.0052
 const STAERKE_GRENZE := 40.0
 
 ## Trefferquote eines Wurfs von dieser Position, wenn sich gleich starke
@@ -1014,6 +1028,112 @@ static func siebenmeterquote_bei_haerte(haerte: float) -> float:
 static func kraftaufschlag_bei_wechselspiel(wechselspiel: float) -> float:
 	return clampf(wechselspiel, 0.0, 100.0) / 100.0 * 28.0
 
+# ------------------------------------------------------------ Nervositaet ---
+#
+# Gute Mannschaften sollen gegen schlechte gewinnen, und oft hoch — so ist es in
+# der Bundesliga auch. Nur darf daraus nicht folgen, dass der Trainer eines
+# Aufsteigers gegen Kiel nichts zu entscheiden hat. Er soll die Partie durch
+# Aufstellung und Taktik eng halten koennen, und wenn ihm das gelingt, soll der
+# Favorit es spueren.
+#
+# Genau das fehlte. Ein Favorit, der zur Halbzeit nur zwei statt acht Tore vorn
+# lag, spielte danach unveraendert weiter; die einzige Chance des Aussenseiters
+# war, dass der Wurfzufall fuer ihn lief. Damit haengt ein Sieg gegen einen
+# staerkeren Gegner am Glueck und nicht an der Arbeit.
+#
+# Jetzt gibt es einen zweiten Weg, und er ist kein Zufall: wer als Favorit
+# hinter seinem eigenen Anspruch zurueckbleibt, macht mehr Fehler. Die
+# Nervositaet greift erst in der zweiten Halbzeit, waechst mit der Zeit, mit der
+# Groesse der Erwartung und mit dem, was daran fehlt — und sie trifft eine
+# Mannschaft mit starken Nerven deutlich weniger als eine junge. Der
+# Aussenseiter bekommt dabei nichts geschenkt: seine Chance entsteht aus den
+# Fehlern des anderen, und die entstehen nur, wenn er selbst erst einmal
+# dranbleibt.
+
+## Ab welcher Sekunde die Nervositaet ueberhaupt einsetzt.
+const NERVOS_AB := 1500.0
+## Ab welchem erwarteten Vorsprung jemand als Favorit gilt, und ab wann voll.
+const NERVOS_FAVORIT_AB := 2.5
+const NERVOS_FAVORIT_VOLL := 9.0
+## Wie weit der Favorit hinter der Erwartung liegen muss, damit es voll wirkt.
+const NERVOS_SPANNE := 6.0
+## Was volle Nervositaet kostet: Anteil mehr technische Fehler und
+## Prozentpunkte weniger Trefferquote.
+const NERVOS_FEHLER := 0.34
+const NERVOS_ABSCHLUSS := 0.030
+## Wie viele Tore ein Punkt Unterschied in der Stammsieben ausmacht.
+## Gemessen mit werkzeuge/Tabellensonde.gd (Ertrag je Staerkepunkt).
+const ERWARTUNG_JE_PUNKT := 0.70
+## Und was die eigene Halle wert ist.
+const ERWARTUNG_HEIMVORTEIL := 1.5
+
+## Was von dieser Paarung zu erwarten war — einmal vor dem Anwurf gerechnet.
+func _erwartung_setzen() -> void:
+	var unterschied: float = _stammniveau(heim) - _stammniveau(gast)
+	var erwartet: float = unterschied * ERWARTUNG_JE_PUNKT + ERWARTUNG_HEIMVORTEIL
+	heim["erwartet"] = erwartet
+	gast["erwartet"] = -erwartet
+
+## Das Niveau der besten Sieben einer Mannschaft.
+func _stammniveau(t: Dictionary) -> float:
+	var werte: Array = []
+	for sid in alle_auf_platz(t):
+		werte.append(Spielerfabrik.gesamt(daten["spieler"][sid]))
+	if werte.is_empty():
+		return 70.0
+	werte.sort()
+	werte.reverse()
+	var summe := 0.0
+	var k: int = mini(7, werte.size())
+	for i in k:
+		summe += float(werte[i])
+	return summe / maxf(float(k), 1.0)
+
+## Wie nervoes diese Mannschaft gerade ist, 0 bis 1.
+func _nervositaet(t: Dictionary) -> float:
+	var erwartet: float = float(t.get("erwartet", 0.0))
+	if erwartet <= NERVOS_FAVORIT_AB or zeit < NERVOS_AB:
+		return 0.0
+	var gegner: Dictionary = gast if t == heim else heim
+	var vorsprung: float = float(int(t["tore"]) - int(gegner["tore"]))
+	var verfehlt: float = erwartet - vorsprung
+	if verfehlt <= 0.0:
+		return 0.0
+	# Je groesser der Anspruch, desto schwerer wiegt es, ihn zu verfehlen.
+	var anspruch: float = clampf((erwartet - NERVOS_FAVORIT_AB)
+		/ (NERVOS_FAVORIT_VOLL - NERVOS_FAVORIT_AB), 0.0, 1.0)
+	var uhr: float = clampf((zeit - NERVOS_AB) / (SPIELZEIT - NERVOS_AB), 0.0, 1.0)
+	var lage: float = clampf(verfehlt / NERVOS_SPANNE, 0.0, 1.0)
+	return clampf(anspruch * uhr * lage * _nervenfaktor(t), 0.0, 1.0)
+
+## Einmal je Partie und Mannschaft sagt der Ticker, dass es kippt. Oefter waere
+## Geraeusch: die Nervositaet waechst stetig, sie hat keine zweite Schwelle.
+const NERVOS_MELDEN_AB := 0.45
+
+func _nervositaet_melden(t: Dictionary, wert: float) -> void:
+	if wert < NERVOS_MELDEN_AB or bool(t.get("nervos_gemeldet", false)):
+		return
+	t["nervos_gemeldet"] = true
+	_warteschlange.append(_ereignis("nervos", _seite(t), "",
+		Textbank.satz(Textbank.NERVOS, rng, str(t["name"]))))
+	# Und die Halle spuert es: gegen den Favoriten, fuer den Aussenseiter.
+	_puls_aendern(t, -5.0 if t["ist_heim"] else 4.0)
+
+## Eine Mannschaft mit starken Nerven laesst sich weniger anstecken.
+func _nervenfaktor(t: Dictionary) -> float:
+	var cache: Dictionary = t["cache"]
+	if cache.has("nerven"):
+		return float(cache["nerven"])
+	var summe := 0.0
+	var anzahl := 0
+	for sid in alle_auf_platz(t):
+		summe += float(daten["spieler"][sid]["attr"]["nervenstaerke"])
+		anzahl += 1
+	var schnitt: float = summe / maxf(float(anzahl), 1.0)
+	var faktor: float = clampf(1.55 - schnitt / 14.0, 0.45, 1.30)
+	cache["nerven"] = faktor
+	return faktor
+
 # ---------------------------------------------------------- Angriffslogik ---
 
 func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
@@ -1075,6 +1195,12 @@ func _angriff_ausspielen(a: Dictionary, v: Dictionary) -> Dictionary:
 	p_fehler /= maxf(float(a["vertraut_angriff"]), 0.5)
 	p_fehler *= float(zug.get("fehler", 1.0))
 	p_fehler *= _reibung(a)
+	# Der Favorit, der seinem Anspruch hinterherlaeuft, wird fahrig.
+	var nervos: float = _nervositaet(a)
+	if nervos > 0.0:
+		p_fehler *= 1.0 + nervos * NERVOS_FEHLER
+		_nervositaet_melden(a, nervos)
+	a["nervos"] = nervos
 	if rng.randf() < p_fehler:
 		return _ballverlust(a, v)
 
@@ -1189,7 +1315,8 @@ func _wurf(a: Dictionary, v: Dictionary, diff: float, td: Dictionary, grunddiff:
 	var treffer: float = clampf(ziel + (wurfguete - paradenwert + WURF_AUSGLEICH) * WURF_EMPFINDLICHKEIT
 		+ _puls_abschluss(a) + float(_spielstandsdruck(a)["abschluss"])
 		+ float(int(a.get("ueberzahl", 0))) * UEBERZAHL_ABSCHLUSS
-		+ clampf(grunddiff, -STAERKE_GRENZE, STAERKE_GRENZE) * STAERKE_AM_WURF,
+		+ clampf(grunddiff, -STAERKE_GRENZE, STAERKE_GRENZE) * STAERKE_AM_WURF
+		- float(a.get("nervos", 0.0)) * NERVOS_ABSCHLUSS,
 		ziel * WURF_UNTEN_ANTEIL, minf(ziel * WURF_OBEN_ANTEIL, 0.97))
 	# Fehlwuerfe: gemessen lagen sie bei 8,7 Prozent aller Abschluesse, in der
 	# Bundesliga sind es rund sechs. Die drei Prozentpunkte gehoeren dem

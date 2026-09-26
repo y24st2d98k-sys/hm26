@@ -33,6 +33,7 @@ const EREIGNISDAUER := {
 	"auszeit": 1.00, "halbzeit": 1.30, "ende": 1.50, "wechsel": 0.28,
 	"verletzung": 0.95, "lauf": 0.55, "taktik": 0.55, "passiv": 0.45,
 	"verwarnung": 0.50, "anwurf": 0.70, "gespann": 0.60, "wechselfehler": 0.80,
+	"nervos": 0.90,
 	"matchplan": 0.70,
 }
 
@@ -717,6 +718,9 @@ func _ereignisfarbe(e: Dictionary) -> Color:
 			return Stil.ROT if eigene else Stil.GELB
 		"verwarnung", "passiv":
 			return Stil.GELB
+		"nervos":
+			# Wird der Gegner nervös, ist das eine gute Nachricht.
+			return Stil.GRUEN if not eigene else Stil.GELB
 		"auszeit", "taktik", "lauf", "matchplan":
 			return Stil.AKZENT
 		"halbzeit", "ende", "anwurf":
