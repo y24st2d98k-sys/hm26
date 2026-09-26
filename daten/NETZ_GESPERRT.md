@@ -1,4 +1,4 @@
-# Netz gesperrt (Stand 2026-09-26)
+# Netz gesperrt (Stand 2026-09-26, zuletzt geprüft 11:13 UTC)
 
 Die Datenbeschaffung (echte Kader, Spielpläne, Statistiken, Logos 2026/27) konnte
 nicht starten: Der Proxy dieser Cloud-Umgebung verweigert die Verbindung
@@ -16,6 +16,14 @@ nicht starten: Der Proxy dieser Cloud-Umgebung verweigert die Verbindung
 | www.transfermarkt.de | 403 (Proxy) |
 | pypi.org | 200 (erreichbar) |
 | github.com | erreichbar |
+
+## Erneute Prüfung 2026-09-26 11:13 UTC
+
+Trotz Hinweis, der Zugriff sei geöffnet: unverändert gesperrt. de/en.wikipedia.org,
+upload.wikimedia.org, www.handball-world.news, www.eurohandball.com liefern weiter
+`CONNECT tunnel failed, response 403`; auch das WebFetch-Werkzeug meldet
+`EGRESS_BLOCKED` für de.wikipedia.org. Diese Sitzung läuft also noch mit der alten
+Richtlinie — die Freigabe greift erst in einer neu gestarteten Sitzung.
 
 Es wurden keine Daten erfunden; `daten/*.json` sind unverändert.
 
