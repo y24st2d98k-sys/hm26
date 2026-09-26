@@ -1733,10 +1733,70 @@
                 "#ffffff"
               ],
               "ruf": 52
+            },
+            {
+              "name": "Billère Handball Pau Pyrénées",
+              "kurz": "BIL",
+              "ort": "Billère",
+              "ruf": 50
+            },
+            {
+              "name": "Draguignan Var Handball",
+              "kurz": "DRG",
+              "ort": "Draguignan",
+              "ruf": 50
+            },
+            {
+              "name": "Élite Val-d'Oise",
+              "kurz": "EVO",
+              "ort": "Cergy",
+              "ruf": 50
+            },
+            {
+              "name": "Frontignan Thau Handball",
+              "kurz": "FRT",
+              "ort": "Frontignan",
+              "ruf": 50
+            },
+            {
+              "name": "Grand Besançon Doubs Handball",
+              "kurz": "BES",
+              "ort": "Besançon",
+              "ruf": 50
+            },
+            {
+              "name": "HBC Cournon d'Auvergne",
+              "kurz": "COU",
+              "ort": "Cournon-d'Auvergne",
+              "ruf": 50
+            },
+            {
+              "name": "Pontault-Combault Handball",
+              "kurz": "PCH",
+              "ort": "Pontault-Combault",
+              "ruf": 50
+            },
+            {
+              "name": "Sarrebourg Moselle Sud Handball",
+              "kurz": "SMS",
+              "ort": "Sarrebourg",
+              "ruf": 50
+            },
+            {
+              "name": "US Saintes Handball",
+              "kurz": "SAI",
+              "ort": "Saintes",
+              "ruf": 50
+            },
+            {
+              "name": "Valence Handball",
+              "kurz": "VLC",
+              "ort": "Valence",
+              "ruf": 50
             }
           ],
           "teams": 16,
-          "teilweise_echt": true
+          "quelle": "FFHandball, Proligue 2026-27 (ffhandball.fr)"
         }
       ],
       "cl_plaetze": 3,

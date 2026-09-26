@@ -2153,63 +2153,1687 @@
     },
     "Daikin StarLigue": {
       "saison": "2026/27",
-      "quelle": "LNH, Calendrier 2026-2027 (1re journée, 4.–6. September 2026)",
+      "quelle": "FFHandball, Daikin StarLigue 2026-27 – Calendrier & Résultats (ffhandball.fr, Abruf 26.09.2026)",
       "partien": [
         {
           "spieltag": 1,
-          "datum": "2026-09-05",
-          "zeit": "",
-          "heim": "Pays d'Aix Université Club HB",
-          "gast": "Sélestat Alsace Handball"
+          "datum": "2026-09-04",
+          "zeit": "20:00",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Paris Saint-Germain Handball"
         },
         {
           "spieltag": 1,
-          "datum": "2026-09-05",
-          "zeit": "",
-          "heim": "Caen Handball",
-          "gast": "USDK Dunkerque"
+          "datum": "2026-09-04",
+          "zeit": "20:00",
+          "heim": "Limoges Handball",
+          "gast": "Saint-Raphaël Var Handball"
         },
         {
           "spieltag": 1,
-          "datum": "2026-09-05",
-          "zeit": "",
+          "datum": "2026-09-04",
+          "zeit": "20:00",
+          "heim": "Montpellier Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "20:30",
           "heim": "Cesson-Rennes Métropole HB",
           "gast": "USAM Nîmes Gard"
         },
         {
           "spieltag": 1,
           "datum": "2026-09-05",
-          "zeit": "",
-          "heim": "Chambéry Savoie Mont Blanc",
-          "gast": "Paris Saint-Germain Handball"
+          "zeit": "19:00",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Sélestat Alsace Handball"
         },
         {
           "spieltag": 1,
           "datum": "2026-09-05",
-          "zeit": "",
-          "heim": "Limoges Handball",
-          "gast": "Saint-Raphaël Var Handball"
+          "zeit": "19:00",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "HBC Nantes"
         },
         {
           "spieltag": 1,
           "datum": "2026-09-05",
-          "zeit": "",
-          "heim": "Montpellier Handball",
-          "gast": "C'Chartres Métropole Handball"
-        },
-        {
-          "spieltag": 1,
-          "datum": "2026-09-05",
-          "zeit": "",
+          "zeit": "20:00",
           "heim": "Saran Loiret Handball",
           "gast": "Fenix Toulouse Handball"
         },
         {
           "spieltag": 1,
-          "datum": "2026-09-05",
+          "datum": "2026-09-06",
+          "zeit": "17:00",
+          "heim": "Caen Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-10",
+          "zeit": "20:00",
+          "heim": "Limoges Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "19:30",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:00",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "19:00",
+          "heim": "HBC Nantes",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "20:00",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-13",
+          "zeit": "17:00",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-17",
+          "zeit": "20:30",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:00",
+          "heim": "USDK Dunkerque",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:00",
+          "heim": "Saran Loiret Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:00",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:30",
+          "heim": "Caen Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-19",
+          "zeit": "19:00",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-20",
+          "zeit": "17:00",
+          "heim": "Montpellier Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-20",
+          "zeit": "17:00",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "19:30",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:00",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:00",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:00",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:00",
+          "heim": "USAM Nîmes Gard",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:30",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "19:00",
+          "heim": "Limoges Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-27",
+          "zeit": "17:00",
+          "heim": "HBC Nantes",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-01",
+          "zeit": "20:00",
+          "heim": "Saran Loiret Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "Caen Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-03",
+          "zeit": "19:00",
+          "heim": "USDK Dunkerque",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-03",
+          "zeit": "19:00",
+          "heim": "Montpellier Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-03",
+          "zeit": "20:30",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-04",
+          "zeit": "17:00",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-04",
+          "zeit": "18:00",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-08",
+          "zeit": "20:00",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "19:30",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:00",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-10",
+          "zeit": "19:00",
+          "heim": "Limoges Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-10",
+          "zeit": "19:00",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-11",
+          "zeit": "16:00",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-11",
+          "zeit": "17:00",
+          "heim": "HBC Nantes",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-11",
+          "zeit": "17:00",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:00",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:00",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:30",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "19:00",
+          "heim": "Caen Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "20:00",
+          "heim": "USDK Dunkerque",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "20:00",
+          "heim": "Saran Loiret Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-18",
+          "zeit": "17:00",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-18",
+          "zeit": "17:00",
+          "heim": "Montpellier Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:00",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:00",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:00",
+          "heim": "Limoges Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "19:00",
+          "heim": "HBC Nantes",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-25",
+          "zeit": "16:00",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-25",
+          "zeit": "17:00",
+          "heim": "Montpellier Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "Saran Loiret Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:30",
+          "heim": "Caen Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-31",
+          "zeit": "19:00",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-01",
+          "zeit": "17:00",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "",
           "zeit": "",
           "heim": "Tremblay-en-France Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:00",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:00",
+          "heim": "Montpellier Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:30",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:30",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-14",
+          "zeit": "20:30",
+          "heim": "HBC Nantes",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-19",
+          "zeit": "20:00",
+          "heim": "USDK Dunkerque",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-19",
+          "zeit": "20:30",
+          "heim": "Caen Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-20",
+          "zeit": "20:00",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-20",
+          "zeit": "20:00",
+          "heim": "Saran Loiret Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-21",
+          "zeit": "19:00",
+          "heim": "Limoges Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-21",
+          "zeit": "20:30",
+          "heim": "HBC Nantes",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-22",
+          "zeit": "17:00",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 12,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:00",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:00",
+          "heim": "USDK Dunkerque",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:00",
+          "heim": "USAM Nîmes Gard",
           "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:00",
+          "heim": "Saran Loiret Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:30",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:00",
+          "heim": "Limoges Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:30",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-05",
+          "zeit": "20:00",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "",
+          "zeit": "",
+          "heim": "HBC Nantes",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:00",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:00",
+          "heim": "Saran Loiret Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:30",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-22",
+          "zeit": "20:00",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-22",
+          "zeit": "20:00",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-22",
+          "zeit": "20:30",
+          "heim": "HBC Nantes",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "USAM Nîmes Gard",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saran Loiret Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "HBC Nantes",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saran Loiret Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "HBC Nantes",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saran Loiret Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "HBC Nantes",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saran Loiret Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "HBC Nantes",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "HBC Nantes",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saran Loiret Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "HBC Nantes",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saran Loiret Handball",
+          "gast": "USDK Dunkerque"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pays d'Aix Université Club HB",
+          "gast": "Limoges Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Caen Handball",
+          "gast": "Saran Loiret Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Cesson-Rennes Métropole HB",
+          "gast": "C'Chartres Métropole Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Chambéry Savoie Mont Blanc",
+          "gast": "Montpellier Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "USDK Dunkerque",
+          "gast": "Sélestat Alsace Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "HBC Nantes",
+          "gast": "Tremblay-en-France Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Paris Saint-Germain Handball",
+          "gast": "Saint-Raphaël Var Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Fenix Toulouse Handball",
+          "gast": "USAM Nîmes Gard"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "C'Chartres Métropole Handball",
+          "gast": "Caen Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Limoges Handball",
+          "gast": "Chambéry Savoie Mont Blanc"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Montpellier Handball",
+          "gast": "Fenix Toulouse Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "USAM Nîmes Gard",
+          "gast": "Paris Saint-Germain Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saint-Raphaël Var Handball",
+          "gast": "Pays d'Aix Université Club HB"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Saran Loiret Handball",
+          "gast": "Cesson-Rennes Métropole HB"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sélestat Alsace Handball",
+          "gast": "HBC Nantes"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Tremblay-en-France Handball",
+          "gast": "USDK Dunkerque"
         }
       ]
     },
@@ -3495,7 +5119,7 @@
     },
     "HLA Meisterliga": {
       "saison": "2026/27",
-      "quelle": "HLA, Rahmenspielplan 2026/27 (Runde 1)",
+      "quelle": "hla.at, HLA Meisterliga – Ergebnisse Runde 1 (Abruf 26.09.2026); weitere Runden ergänzt das Spiel",
       "partien": [
         {
           "spieltag": 1,
@@ -3506,14 +5130,14 @@
         },
         {
           "spieltag": 1,
-          "datum": "2026-09-05",
+          "datum": "2026-09-04",
           "zeit": "",
           "heim": "MADx WAT Atzgersdorf",
           "gast": "HSG XeNTiS Lipizzanerheimat"
         },
         {
           "spieltag": 1,
-          "datum": "2026-09-05",
+          "datum": "2026-09-04",
           "zeit": "",
           "heim": "roomz JAGS Vöslau",
           "gast": "Sparkasse Schwaz Handball Tirol"
@@ -10910,6 +12534,2622 @@
           "zeit": "15:00",
           "heim": "AGF Håndbold",
           "gast": "Aarhus Håndbold"
+        }
+      ]
+    },
+    "Liga Națională": {
+      "saison": "2026/27",
+      "quelle": "frh.ro, Liga Zimbrilor 2026/27, Sezon regulat – Program complet (Abruf 26.09.2026)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-03",
+          "zeit": "18:00",
+          "heim": "CSM Constanța",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "17:30",
+          "heim": "CSA Steaua București",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "20:00",
+          "heim": "CSM București",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "17:30",
+          "heim": "CSU din Suceava",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "18:00",
+          "heim": "AHC Potaissa Turda",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "18:00",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "18:00",
+          "heim": "CS Dinamo București",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "18:00",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:00",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "17:30",
+          "heim": "CS Universitatea Cluj",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "18:00",
+          "heim": "CSM Vaslui",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-12",
+          "zeit": "18:00",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-25",
+          "zeit": "13:30",
+          "heim": "CSA Steaua București",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-25",
+          "zeit": "17:30",
+          "heim": "CSU din Suceava",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-25",
+          "zeit": "18:00",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-25",
+          "zeit": "20:00",
+          "heim": "CSM București",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-26",
+          "zeit": "18:00",
+          "heim": "CSM Constanța",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-02",
+          "zeit": "18:00",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-03",
+          "zeit": "18:00",
+          "heim": "CSM Vaslui",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-05",
+          "zeit": "18:00",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-10-08",
+          "zeit": "16:00",
+          "heim": "CSM București",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-12",
+          "zeit": "19:00",
+          "heim": "CS Dinamo București",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-14",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-17",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-17",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-18",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-19",
+          "zeit": "18:00",
+          "heim": "CSA Steaua București",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-23",
+          "zeit": "19:30",
+          "heim": "CSM București",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-24",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-25",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-28",
+          "zeit": "18:00",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-11-13",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-11-13",
+          "zeit": "18:00",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-11-14",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "CSM București",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-11-21",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-11-28",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "CSM București",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-12-05",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-12-19",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2027-02-13",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2027-02-20",
+          "zeit": "",
+          "heim": "CSM București",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2027-02-27",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2027-03-06",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "CSM București",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2027-03-20",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-03-27",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "CSM București",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "AHC Potaissa Turda",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-04-03",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "CSO Teutonii Ghimbav"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-04-17",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "CSM București",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-04-24",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "CSO Teutonii Ghimbav",
+          "gast": "SCM Politehnica Timișoara"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "CS Universitatea Cluj",
+          "gast": "AHC Potaissa Turda"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "CSM Vaslui",
+          "gast": "CSM București"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "CS Dinamo București",
+          "gast": "CS Minaur Baia Mare"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "ACS HC Buzău 2012",
+          "gast": "CSU din Suceava"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-05-15",
+          "zeit": "",
+          "heim": "CSA Steaua București",
+          "gast": "CSM Constanța"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-05-22",
+          "zeit": "",
+          "heim": "SCM Politehnica Timișoara",
+          "gast": "CSA Steaua București"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-05-22",
+          "zeit": "",
+          "heim": "CSM Constanța",
+          "gast": "ACS HC Buzău 2012"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-05-22",
+          "zeit": "",
+          "heim": "CSU din Suceava",
+          "gast": "CS Dinamo București"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-05-22",
+          "zeit": "",
+          "heim": "CS Minaur Baia Mare",
+          "gast": "CSM Vaslui"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-05-22",
+          "zeit": "",
+          "heim": "CSM București",
+          "gast": "CS Universitatea Cluj"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-05-22",
+          "zeit": "",
+          "heim": "AHC Potaissa Turda",
+          "gast": "CSO Teutonii Ghimbav"
+        }
+      ]
+    },
+    "ProLigue": {
+      "saison": "2026/27",
+      "quelle": "FFHandball, Proligue 2026-27 – Calendrier & Résultats (ffhandball.fr, Abruf 26.09.2026)",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "20:00",
+          "heim": "Istres Provence Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "20:30",
+          "heim": "Draguignan Var Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "20:30",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-04",
+          "zeit": "20:30",
+          "heim": "US Saintes Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "20:00",
+          "heim": "Valence Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-05",
+          "zeit": "20:30",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:00",
+          "heim": "Istres Provence Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "US Ivry Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 2,
+          "datum": "2026-09-11",
+          "zeit": "20:30",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-17",
+          "zeit": "20:00",
+          "heim": "Valence Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:30",
+          "heim": "Draguignan Var Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:30",
+          "heim": "Massy Essonne Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:30",
+          "heim": "Pontault-Combault Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-18",
+          "zeit": "20:30",
+          "heim": "US Saintes Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 3,
+          "datum": "2026-09-19",
+          "zeit": "20:30",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:00",
+          "heim": "Istres Provence Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:30",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:30",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:30",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-25",
+          "zeit": "20:30",
+          "heim": "US Saintes Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 4,
+          "datum": "2026-09-26",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:00",
+          "heim": "Valence Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "Draguignan Var Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "US Ivry Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-02",
+          "zeit": "20:30",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 5,
+          "datum": "2026-10-03",
+          "zeit": "20:30",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:00",
+          "heim": "Istres Provence Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:30",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:30",
+          "heim": "Massy Essonne Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:30",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 6,
+          "datum": "2026-10-09",
+          "zeit": "20:30",
+          "heim": "US Saintes Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:00",
+          "heim": "Valence Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:30",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:30",
+          "heim": "Draguignan Var Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:30",
+          "heim": "US Ivry Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-16",
+          "zeit": "20:30",
+          "heim": "Pontault-Combault Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 7,
+          "datum": "2026-10-17",
+          "zeit": "20:30",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "Massy Essonne Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-23",
+          "zeit": "20:30",
+          "heim": "US Saintes Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 8,
+          "datum": "2026-10-24",
+          "zeit": "20:30",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-29",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "Istres Provence Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:00",
+          "heim": "Valence Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:30",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:30",
+          "heim": "Draguignan Var Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:30",
+          "heim": "US Ivry Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 9,
+          "datum": "2026-10-30",
+          "zeit": "20:30",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:30",
+          "heim": "Massy Essonne Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:30",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-13",
+          "zeit": "20:30",
+          "heim": "US Saintes Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-14",
+          "zeit": "20:30",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 10,
+          "datum": "2026-11-14",
+          "zeit": "20:45",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-19",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-20",
+          "zeit": "20:00",
+          "heim": "Istres Provence Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-20",
+          "zeit": "20:00",
+          "heim": "Valence Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-20",
+          "zeit": "20:30",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-20",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-20",
+          "zeit": "20:30",
+          "heim": "Élite Val-d'Oise",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 11,
+          "datum": "2026-11-20",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:30",
+          "heim": "Draguignan Var Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:30",
+          "heim": "Massy Essonne Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:30",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:30",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-27",
+          "zeit": "20:30",
+          "heim": "US Saintes Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 12,
+          "datum": "2026-11-28",
+          "zeit": "20:30",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:00",
+          "heim": "Istres Provence Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:00",
+          "heim": "Valence Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:30",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:30",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 13,
+          "datum": "2026-12-04",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:00",
+          "heim": "Valence Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:30",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:30",
+          "heim": "Draguignan Var Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:30",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:30",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-11",
+          "zeit": "20:30",
+          "heim": "US Saintes Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 14,
+          "datum": "2026-12-13",
+          "zeit": "16:00",
+          "heim": "Massy Essonne Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 15,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-18",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-18",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-18",
+          "zeit": "20:30",
+          "heim": "Draguignan Var Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-18",
+          "zeit": "20:30",
+          "heim": "Élite Val-d'Oise",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-18",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-18",
+          "zeit": "20:30",
+          "heim": "Massy Essonne Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 15,
+          "datum": "2026-12-19",
+          "zeit": "18:00",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Saintes Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "",
+          "zeit": "",
+          "heim": "Valence Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-22",
+          "zeit": "20:00",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-22",
+          "zeit": "20:00",
+          "heim": "Istres Provence Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-22",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-22",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 16,
+          "datum": "2026-12-23",
+          "zeit": "20:30",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Élite Val-d'Oise",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Massy Essonne Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pontault-Combault Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 17,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-05",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 17,
+          "datum": "2027-02-05",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Draguignan Var Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Istres Provence Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "Massy Essonne Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Saintes Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-12",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-12",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 18,
+          "datum": "2027-02-12",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frontignan Thau Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "",
+          "zeit": "",
+          "heim": "Valence Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 19,
+          "datum": "2027-02-19",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Draguignan Var Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Istres Provence Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Massy Essonne Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Saintes Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 20,
+          "datum": "2027-02-26",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frontignan Thau Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pontault-Combault Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "",
+          "zeit": "",
+          "heim": "Valence Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-05",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-05",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 21,
+          "datum": "2027-03-05",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Draguignan Var Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Istres Provence Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Massy Essonne Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Saintes Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-19",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 22,
+          "datum": "2027-03-19",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Draguignan Var Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pontault-Combault Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "",
+          "zeit": "",
+          "heim": "Valence Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-26",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-26",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 23,
+          "datum": "2027-03-26",
+          "zeit": "20:30",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Istres Provence Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "Massy Essonne Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Saintes Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-30",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-30",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 24,
+          "datum": "2027-03-30",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Draguignan Var Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Massy Essonne Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "",
+          "zeit": "",
+          "heim": "Valence Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-02",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 25,
+          "datum": "2027-04-02",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Élite Val-d'Oise",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "Istres Provence Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-09",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-09",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 26,
+          "datum": "2027-04-09",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Draguignan Var Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Élite Val-d'Oise",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Massy Essonne Handball",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Saintes Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 27,
+          "datum": "",
+          "zeit": "",
+          "heim": "Valence Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 27,
+          "datum": "2027-04-16",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Istres Provence Handball",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-23",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "Élite Val-d'Oise"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-23",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 28,
+          "datum": "2027-04-23",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "JS Cherbourg Manche Handball",
+          "gast": "Pontault-Combault Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Draguignan Var Handball",
+          "gast": "HBC Cournon d'Auvergne"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Élite Val-d'Oise",
+          "gast": "US Saintes Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Frontignan Thau Handball",
+          "gast": "Dijon Métropole Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Ivry Handball",
+          "gast": "US Créteil Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Billère Handball Pau Pyrénées",
+          "gast": "Istres Provence Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "",
+          "zeit": "",
+          "heim": "Valence Handball",
+          "gast": "Sarrebourg Moselle Sud Handball"
+        },
+        {
+          "spieltag": 29,
+          "datum": "2027-04-30",
+          "zeit": "20:30",
+          "heim": "Grand Besançon Doubs Handball",
+          "gast": "Massy Essonne Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Istres Provence Handball",
+          "gast": "Draguignan Var Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Massy Essonne Handball",
+          "gast": "US Ivry Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Pontault-Combault Handball",
+          "gast": "Valence Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "US Saintes Handball",
+          "gast": "Billère Handball Pau Pyrénées"
+        },
+        {
+          "spieltag": 30,
+          "datum": "",
+          "zeit": "",
+          "heim": "Sarrebourg Moselle Sud Handball",
+          "gast": "Frontignan Thau Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-14",
+          "zeit": "20:30",
+          "heim": "HBC Cournon d'Auvergne",
+          "gast": "JS Cherbourg Manche Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-14",
+          "zeit": "20:30",
+          "heim": "US Créteil Handball",
+          "gast": "Grand Besançon Doubs Handball"
+        },
+        {
+          "spieltag": 30,
+          "datum": "2027-05-14",
+          "zeit": "20:30",
+          "heim": "Dijon Métropole Handball",
+          "gast": "Élite Val-d'Oise"
         }
       ]
     }
