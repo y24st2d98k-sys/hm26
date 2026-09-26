@@ -5167,46 +5167,46 @@
     },
     "Liga NLB": {
       "saison": "2026/27",
-      "quelle": "RZS, Liga NLB 2026/27 (1. krog)",
+      "quelle": "rokomet.net, 11.09.2026: „Zaključen je uvodni krog Lige NLB“ (1. krog am 2. September); weitere Spieltage ergänzt das Spiel",
       "partien": [
         {
           "spieltag": 1,
-          "datum": "",
+          "datum": "2026-09-02",
           "zeit": "",
           "heim": "RK Krka",
           "gast": "RK Gorenje Velenje"
         },
         {
           "spieltag": 1,
-          "datum": "",
+          "datum": "2026-09-02",
           "zeit": "",
           "heim": "RK Celje Pivovarna Laško",
           "gast": "RK SVIŠ Ivančna Gorica"
         },
         {
           "spieltag": 1,
-          "datum": "",
+          "datum": "2026-09-02",
           "zeit": "",
           "heim": "RD Riko Ribnica",
           "gast": "RK Trimo Trebnje"
         },
         {
           "spieltag": 1,
-          "datum": "",
+          "datum": "2026-09-02",
           "zeit": "",
           "heim": "RD Urbanscape Loka",
           "gast": "RK Jeruzalem Ormož"
         },
         {
           "spieltag": 1,
-          "datum": "",
+          "datum": "2026-09-02",
           "zeit": "",
           "heim": "RK Slovenj Gradec 2011",
           "gast": "RK Škofljica"
         },
         {
           "spieltag": 1,
-          "datum": "",
+          "datum": "2026-09-02",
           "zeit": "",
           "heim": "RK Ajdovščina",
           "gast": "RD LL Grosist Slovan"
@@ -17710,6 +17710,164 @@
           "zeit": "19:00",
           "heim": "Lugi HF",
           "gast": "HF Karlskrona"
+        }
+      ]
+    },
+    "Campeonato Placard Andebol 1": {
+      "saison": "2026/27",
+      "quelle": "Diário de Aveiro, 17.07.2026 (Auslosung der FAP, jornada inaugural am 29. August); weitere Spieltage ergänzt das Spiel",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "Sporting CP",
+          "gast": "Ginásio Clube de Santo Tirso"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "AD Avanca",
+          "gast": "FC Porto"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "SL Benfica",
+          "gast": "Águas Santas Milaneza"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "AD Carvalhos",
+          "gast": "CS Marítimo"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "CF Os Belenenses",
+          "gast": "Vitória SC"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-08-29",
+          "zeit": "",
+          "heim": "ABC de Braga",
+          "gast": "Póvoa AC"
+        }
+      ]
+    },
+    "Paket24 Premijer liga": {
+      "saison": "2026/27",
+      "quelle": "handballinsider.com, 16.07.2026 (1. kolo Liga A und Liga B am 12. September); weitere Spieltage ergänzt das Spiel",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "RK Zagreb",
+          "gast": "RK Bjelovar"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "RK Nexe",
+          "gast": "RK Ardiaei"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "RK Dugo Selo",
+          "gast": "RK Bjelin Spačva Vinkovci"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "RK Poreč",
+          "gast": "RK Rudar"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "RK Sesvete",
+          "gast": "RK Karlovac"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "RK Gorica",
+          "gast": "RK Sisak"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "RK Trogir",
+          "gast": "RK Osijek"
+        },
+        {
+          "spieltag": 1,
+          "datum": "2026-09-12",
+          "zeit": "",
+          "heim": "RK Čakovec",
+          "gast": "RK Metković"
+        }
+      ]
+    },
+    "Super liga": {
+      "saison": "2026/27",
+      "quelle": "24rakomet.mk, 04.09.2026 (Супер машка лига, 1. коло); weitere Spieltage ergänzt das Spiel",
+      "partien": [
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Vardar 1961",
+          "gast": "RK Eurofarm Pelister 2"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Butel Skopje",
+          "gast": "RK Mladost Bogdanci"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Prilep 2010",
+          "gast": "RK Kumanovo"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Struga",
+          "gast": "RK Tikveš"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Alkaloid",
+          "gast": "RK Multi Essence"
+        },
+        {
+          "spieltag": 1,
+          "datum": "",
+          "zeit": "",
+          "heim": "RK Ohrid",
+          "gast": "RK Eurofarm Pelister"
         }
       ]
     }

@@ -98,13 +98,13 @@ arbeiten:
 
 * **Echte Vereine** (Voreinstellung): fünfzehn Nationen mit den echten
   Ligen der Saison 2026/27 — Handball-Bundesliga und 2. Bundesliga (je 18
-  Vereine), Håndboldligaen, Daikin StarLigue, Liga ASOBAL, Orlen Superliga,
-  dazu NB I (Ungarn), Andebol 1 (Portugal), REMA 1000-ligaen (Norwegen),
-  Handbollsligan (Schweden), Premijer liga (Kroatien), Super liga
-  (Nordmazedonien), Liga NLB (Slowenien), Liga Națională (Rumänien), Quickline
-  Handball League (Schweiz) und HLA Meisterliga (Österreich). 229 echte Vereine
-  mit Ort, Halle und Vereinsfarben, echte Cheftrainer bei den Topklubs, echte
-  Schiedsrichtergespanne, dazu echte Spieler, soweit im Datensatz hinterlegt.
+  Vereine), Håndboldligaen und 1. division, Daikin StarLigue und ProLigue,
+  Liga ASOBAL, Orlen Superliga, dazu NB I (Ungarn), Andebol 1 (Portugal),
+  Elkjøp-ligaen (Norwegen), Handbollsligan (Schweden), Premijer liga
+  (Kroatien, 16 Vereine), Super liga (Nordmazedonien), Liga NLB (Slowenien),
+  Liga Națională (Rumänien), Quickline Handball League (Schweiz) und HLA
+  Meisterliga (Österreich). 260 echte Vereine, Cheftrainer bei 142 davon,
+  echte Schiedsrichtergespanne, echte Kader und die echten Spielpläne.
 * **Ganz Europa** (Voreinstellung, abschaltbar): ohne Haken bleibt es bei den
   fünf Kernnationen Deutschland, Dänemark, Frankreich, Spanien und Polen. Die
   zehn übrigen machen den Europapokal echt, verdoppeln aber die Welt — eine
@@ -124,14 +124,20 @@ Wie weit die echten Daten reichen, zeigt
 godot4 --headless res://werkzeuge/Datenbericht.tscn
 ```
 
-Aktueller Stand: **229 von 264 Vereinen** echt, **383 echte Spieler** — alle
-18 Bundesligisten vollständig, bei den Topklubs im Ausland die tragenden
-Spieler; alle übrigen Kaderplätze sind gefüllt. Was nach Wissensstand statt
-nach einer Quelle eingetragen ist, trägt im Datensatz `"geprueft": false`. In der Oberfläche ist das
-nicht zu sehen: hinterlegte und erfundene Spieler stehen ununterschieden
-nebeneinander, werden nach denselben Regeln erzeugt und entwickeln sich
-gleich. Wer wissen will, wie weit der Datensatz reicht, ruft den
-Datenbericht auf — im Spiel selbst soll die Welt aus einem Guss wirken.
+Aktueller Stand (26. September 2026): **260 echte Vereine**, davon **155 mit
+echtem Kader** und zusammen **2811 echten Spielern** — alle 36 Vereine der
+beiden Bundesligen, Frankreich (StarLigue und ProLigue), Spanien und Polen
+komplett, dazu die Europapokal-Teilnehmer und viele weitere Vereine. Die
+Quelle steht je Verein in `daten/ligen.json`. **Vollständige echte
+Spielpläne** für zwölf Ligen (beide Bundesligen, Dänemark mit 1. division,
+Frankreich mit ProLigue, Spanien, Polen, Ungarn, Rumänien, Norwegen,
+Schweden); für Österreich, Slowenien, Portugal, Kroatien und Nordmazedonien
+ist der erste Spieltag hinterlegt und das Spiel ergänzt den Rest. Was
+fehlt, steht in [`daten/PRUEFLISTE.md`](daten/PRUEFLISTE.md). In der
+Oberfläche ist das nicht zu sehen: hinterlegte und erfundene Spieler stehen
+ununterschieden nebeneinander, werden nach denselben Regeln erzeugt und
+entwickeln sich gleich. Wer wissen will, wie weit der Datensatz reicht, ruft
+den Datenbericht auf — im Spiel selbst soll die Welt aus einem Guss wirken.
 
 Kader veralten mit jedem Transferfenster. Das Format ist in
 [`daten/README.md`](daten/README.md) beschrieben und bewusst so einfach

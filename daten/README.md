@@ -166,27 +166,38 @@ unter der Stärke des besten echten Spielers, damit sie die Leistungsträger nic
 
 ## Wie genau ist das hier?
 
-* **Verlässlich:** Vereinsnamen, Ligazugehörigkeit und Ligagrößen der Saison 2026/27
-  für die Bundesliga, Frankreich, Spanien, Dänemark, Polen, Ungarn, Slowenien,
-  Rumänien und Österreich — abgeglichen über die Ansetzungen des ersten Spieltags.
-  Die Teilnehmer der Champions League 2026/27 (21 von 24) aus der Auslosung.
-  Die DHB-Schiedsrichtergespanne 2026/27.
-* **Nach Wissensstand, ungeprüft:** die Ligen in Portugal, Norwegen, Schweden,
-  Kroatien, Nordmazedonien und der Schweiz, die Unterhäuser außerhalb
-  Deutschlands, die internationalen Gespanne und alle Einträge mit
-  `"geprueft": false`. Was im Einzelnen zu prüfen ist, steht in
+Stand 26. September 2026. Jede Liga und jeder Verein nennt seine Quelle im Feld
+`quelle` (Liga: Zusammensetzung; Verein: Kader und Trainer).
+
+* **Verlässlich, gegen Quellen geprüft:** die Zusammensetzung aller ersten Ligen
+  und der Unterhäuser in Deutschland, Dänemark und Frankreich (Saisonartikel,
+  Verbands- und Ligaseiten, Presseberichte zum ersten Spieltag). Die Teilnehmer
+  der Champions League und European League aus der tatsächlichen Gruppenphase.
+  Die DHB-Schiedsrichtergespanne.
+* **Echte Kader (2811 Spieler bei 155 Vereinen):** beide Bundesligen komplett,
+  Spanien (asobal.es), Frankreich mit ProLigue (lnh.fr, mit Geburtsdatum, Größe
+  und Gewicht), Polen (orlen-superliga.pl), dazu die Kaderabschnitte 2026/27
+  der Wikipedia für viele weitere Vereine. Wo ein Wikipedia-Kader noch 2025/26
+  zeigt, aber die Transfers 2026/27 aufführt, gilt Kader minus Abgänge plus
+  Zugänge. Die 18 Bundesliga-Kader sind unverändert geblieben und nur um
+  Geburtsdatum, Wurfhand, Größe und Vertrag aus den Spielerartikeln ergänzt.
+* **Vollständige Spielpläne 2026/27:** beide Bundesligen, Dänemark (beide
+  Ligen), Frankreich (beide Ligen), Spanien, Polen, Ungarn, Rumänien, Norwegen,
+  Schweden. Wo eine Quelle keine Spieltagnummern nennt (Dänemark, Schweden),
+  sind die Runden aus der zeitlichen Reihenfolge gebildet. Für Österreich,
+  Slowenien, Portugal, Kroatien und Nordmazedonien ist der erste Spieltag
+  hinterlegt; den Rest ergänzt das Spiel.
+* **Schätzwerte, keine Tatsachenbehauptungen:** die Stärke. Sie ordnet einen
+  Spieler nach Vereinsniveau (Ruf), Länderspielen, Alter und — wo die laufende
+  Saison schon Statistik hergibt (Dänemark, Norwegen, Ungarn) — seiner Torquote
+  im Verein ein. Bereits gesetzte Stärken bleiben. Wo das Alter unbekannt ist,
+  bleibt das Feld leer und das Spiel nimmt 26 an.
+* **Näherung:** Hallennamen und Kapazitäten außerhalb Spaniens und Frankreichs,
+  Gründungsjahre, Vereinsfarben, alle Ruf-Werte.
+* **Lücken:** Schweden, Kroatien, Slowenien, Rumänien, große Teile Portugals,
+  Norwegens und der Schweiz haben keine belegbare Kaderquelle 2026/27 — dort
+  füllt das Spiel auf. Was im Einzelnen fehlt, steht in
   [`PRUEFLISTE.md`](PRUEFLISTE.md) — neu erzeugen mit `python3 werkzeuge/pruefliste.py`.
-* **Näherung:** Hallennamen, Kapazitäten, Gründungsjahre, Vereinsfarben, alle Ruf-Werte.
-* **Vollständig:** die Kader aller 18 Bundesligisten — 327 Spieler, kein einziger
-  ergänzt. Wer im Spiel für einen deutschen Erstligisten auf dem Bogen steht, steht
-  dort auch in Wirklichkeit.
-* **Lückenhaft:** alle übrigen Ligen. Bei den Europapokal-Teilnehmern sind die
-  tragenden Spieler und die Neuzugänge 2026/27 hinterlegt, soweit sie sich
-  belegen ließen; den Rest füllt das Spiel auf. Die 2. Bundesliga hat noch keine
-  echten Spieler.
-* **Schätzwerte, keine Tatsachenbehauptungen:** Alter und Stärke. Das Alter ist zum
-  1. September 2026 gerechnet, die Stärke ordnet einen Spieler nur für die
-  Simulation ein.
 
 Kader veralten mit jedem Transferfenster. Die Dateien sind bewusst so einfach
 gehalten, dass sie sich ohne Programmierkenntnisse pflegen lassen.
